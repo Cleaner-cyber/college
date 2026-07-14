@@ -94,7 +94,23 @@
       "effects": { "typewriter": true }
     }
   ],
+  "presetAssets": {
+    "bg-desk": "/assets/bg-desk.svg",
+    "bg-gate": "/assets/bg-gate.svg",
+    "bg-dorm": "/assets/bg-dorm.svg",
+    "sprite-senpai": "/assets/sprite-senpai.svg"
+  },
   "copy": {
+    "scene-S1": "bg-desk",
+    "scene-S2": "bg-desk",
+    "scene-S4a": "bg-gate",
+    "scene-S4b": "bg-gate",
+    "scene-S4c": "bg-gate",
+    "scene-S4d": "bg-gate",
+    "scene-S5": "bg-gate",
+    "sprite-S5": "sprite-senpai",
+    "scene-S7": "bg-dorm",
+    "sprite-S7": "sprite-senpai",
     "next-S1": "拆开",
     "confirm-S2": "就是这个名字",
     "next-S5": "你是谁？",

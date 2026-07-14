@@ -59,6 +59,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
   const [checked, setChecked] = useState<string[]>([]);
   const [loadedScreens, setLoadedScreens] = useState<string[]>([]);
   const [typingDone, setTypingDone] = useState(false);
+  const [forceFull, setForceFull] = useState(false); // 场景点击跳过打字机
   const [inputValue, setInputValue] = useState('');
 
   const screen = useMemo(
@@ -91,6 +92,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
   const enter = (id: string) => {
     setCurrentId(id);
     setTypingDone(false);
+    setForceFull(false);
     setInputValue('');
     window.scrollTo(0, 0);
   };
@@ -257,7 +259,138 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
 
   const customRenderer = custom?.[screen.id];
 
-  const isWide = wideScreens.includes(screen.id);
+  // 视觉小说模式：copy 里 scene-{屏id} / sprite-{屏id} 指向 presetAssets 的场景与立绘
+  const sceneSrc = content.presetAssets?.[content.copy[`scene-${screen.id}`] ?? ''];
+  const spriteSrc = content.presetAssets?.[content.copy[`sprite-${screen.id}`] ?? ''];
+  const isVN =
+    !!sceneSrc &&
+    !customRenderer &&
+    (screen.type === 'dialogue' || screen.type === 'choice' || screen.type === 'input');
+
+  const renderVN = () => {
+    const useTypewriter = screen.effects?.typewriter === true;
+    const ready = !useTypewriter || typingDone || forceFull;
+    const isSystem = !screen.speaker || screen.speaker === 'system';
+    const name = screen.speaker === 'senpai' ? senpaiLabel : (screen.npcName ?? '');
+    const text = screen.text ? t(screen.text) : '';
+    const confirmLabel = copy(`confirm-${screen.id}`, defaultNextLabel);
+    const canConfirm = inputValue.trim().length > 0;
+
+    const handleSceneClick = () => {
+      if (!ready) {
+        setForceFull(true);
+        setTypingDone(true);
+      } else if (screen.type === 'dialogue') {
+        advance();
+      }
+    };
+
+    return (
+      <div
+        onClick={handleSceneClick}
+        className="relative h-[min(72dvh,660px)] w-full select-none overflow-hidden rounded-2xl border border-line shadow-sm"
+      >
+        {/* 场景 */}
+        <img src={sceneSrc} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        {/* 立绘：学长在右，NPC 在左 */}
+        {spriteSrc && (
+          <img
+            src={spriteSrc}
+            alt=""
+            className={`absolute bottom-0 h-[76%] animate-fade-up ${
+              screen.speaker === 'npc' ? 'left-[6%]' : 'right-[6%]'
+            }`}
+          />
+        )}
+        {/* 选项浮层 */}
+        {screen.type === 'choice' && ready && (
+          <div className="absolute inset-x-0 bottom-40 top-0 flex items-center justify-center">
+            <div className="flex w-full max-w-md flex-col gap-2.5 px-8">
+              {(screen.choices ?? []).map((c, i) => (
+                <button
+                  key={c.id}
+                  style={{ animationDelay: `${i * 70}ms` }}
+                  className="animate-fade-up rounded-xl border border-line bg-paper/95 px-5 py-3 text-[15px] shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (c.setVar) setVar(c.setVar.key, c.setVar.value);
+                    if (c.checkItem) check(c.checkItem);
+                    goto(c.next);
+                  }}
+                >
+                  {t(c.label)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* 底部对话盒 */}
+        <div className="absolute inset-x-0 bottom-0 p-4">
+          <div className="mx-auto max-w-3xl">
+            {!isSystem && (
+              <span
+                className={`relative z-10 -mb-px ml-4 inline-block rounded-t-lg border border-b-0 border-line px-4 py-1.5 text-sm font-semibold ${
+                  screen.speaker === 'senpai' ? 'bg-accent text-white' : 'bg-ink text-paper'
+                }`}
+              >
+                {name}
+              </span>
+            )}
+            <div className="relative min-h-[104px] rounded-2xl border border-line bg-paper/95 px-6 py-4 shadow-lg backdrop-blur">
+              {text &&
+                (useTypewriter && !forceFull ? (
+                  <Typewriter
+                    text={text}
+                    onDone={() => setTypingDone(true)}
+                    className={`text-[16px] ${isSystem ? 'text-center tracking-wide' : ''}`}
+                  />
+                ) : (
+                  <p
+                    className={`whitespace-pre-wrap text-[16px] leading-relaxed ${
+                      isSystem ? 'text-center tracking-wide' : ''
+                    }`}
+                  >
+                    {text}
+                  </p>
+                ))}
+              {screen.type === 'input' && (
+                <div className="mt-3 flex gap-2" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    value={inputValue}
+                    maxLength={8}
+                    autoFocus
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && canConfirm) {
+                        if (screen.inputKey) setVar(screen.inputKey, inputValue.trim());
+                        advance();
+                      }
+                    }}
+                    placeholder={screen.placeholder ? t(screen.placeholder) : ''}
+                    className="flex-1 rounded-xl border border-line bg-card px-4 py-2.5 text-[16px] outline-none focus:border-accent"
+                  />
+                  <Button
+                    disabled={!canConfirm}
+                    onClick={() => {
+                      if (screen.inputKey) setVar(screen.inputKey, inputValue.trim());
+                      advance();
+                    }}
+                  >
+                    {confirmLabel}
+                  </Button>
+                </div>
+              )}
+              {screen.type === 'dialogue' && ready && (
+                <span className="absolute bottom-2.5 right-4 animate-bounce text-accent">▾</span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const isWide = wideScreens.includes(screen.id) || isVN;
   return (
     <div
       className={`mx-auto flex w-full flex-col px-6 pb-16 pt-10 ${isWide ? 'max-w-5xl' : 'max-w-xl'}`}
@@ -277,7 +410,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
         />
       ) : (
         <div key={screen.id} className="flex-1 animate-fade-up">
-          {customRenderer ? customRenderer(api) : renderDefault()}
+          {customRenderer ? customRenderer(api) : isVN ? renderVN() : renderDefault()}
         </div>
       )}
       {overlay?.(api)}

@@ -436,12 +436,15 @@ const ArchiveDetail: React.FC<{
         <div className="rounded-xl border border-accent/40 bg-card p-4">
           <div className="mb-3 text-base font-semibold">{copy['s6-card-title']}</div>
           <ul className="space-y-2.5 text-[14px] leading-relaxed">
-            {[1, 2, 3, 4].map((n) => (
-              <li key={n} className="flex gap-2">
-                <span className="text-accent">✓</span>
-                {copy[`s6-card-line${n}`]}
-              </li>
-            ))}
+            {[1, 2, 3, 4, 5]
+              .map((n) => copy[`s6-card-line${n}`])
+              .filter(Boolean)
+              .map((line, i) => (
+                <li key={i} className="flex gap-2">
+                  <span className="text-accent">✓</span>
+                  {line}
+                </li>
+              ))}
           </ul>
         </div>
       );

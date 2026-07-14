@@ -8,6 +8,9 @@
     { "id": "ck-169", "label": "追加 16:9 版" }
   ],
   "presetAssets": {
+    "bg-club": "/assets/bg-club.svg",
+    "sprite-senpai": "/assets/sprite-senpai.svg",
+    "sprite-xuejie": "/assets/sprite-xuejie.svg",
     "poster-jj-34-v1": "/assets/poster-jj-34-v1.svg",
     "poster-jj-34-v2": "/assets/poster-jj-34-v2.svg",
     "poster-jj-169": "/assets/poster-jj-169.svg",
@@ -113,6 +116,12 @@
     }
   ],
   "copy": {
+    "scene-S1": "bg-club",
+    "sprite-S1": "sprite-xuejie",
+    "scene-S2": "bg-club",
+    "sprite-S2": "sprite-senpai",
+    "scene-S6": "bg-club",
+    "sprite-S6": "sprite-xuejie",
     "next-S1": "接下",
     "next-S2": "开始",
     "s3-club-label": "社团名",

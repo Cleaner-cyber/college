@@ -24,7 +24,7 @@ export const OnboardingPage: React.FC = () => {
         setFlag: (flag) => setProfile({ flag }),
       }}
     >
-      <div className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center">
+      <div className="flex min-h-dvh flex-col justify-center">
         <mod.Component
           state={state}
           content={content}

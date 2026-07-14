@@ -1,38 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
-  <!-- 学长头像 · 手绘线稿风占位。换成真手绘图时同名替换本文件即可 -->
-  <defs>
-    <clipPath id="c"><circle cx="60" cy="60" r="56"/></clipPath>
-  </defs>
-  <circle cx="60" cy="60" r="56" fill="#F3E4DC"/>
-  <g clip-path="url(#c)" fill="none" stroke="#1C1B18" stroke-linecap="round" stroke-linejoin="round">
-    <!-- 肩膀/连帽衫 -->
-    <path d="M14 118 C 20 92, 38 84, 60 84 C 82 84, 100 92, 106 118" stroke-width="3" fill="#FDFCF9"/>
-    <path d="M40 92 C 44 100, 50 104, 60 105 C 70 104, 76 100, 80 92" stroke-width="2.2"/>
-    <!-- 围巾（强调色） -->
-    <path d="M34 95 C 46 88, 74 88, 86 95 C 82 101, 72 104, 60 104 C 48 104, 38 101, 34 95 Z" fill="#C05A32" stroke="#A34724" stroke-width="2"/>
-    <path d="M72 100 L 76 116 M79 99 L 85 114" stroke="#A34724" stroke-width="2"/>
-    <!-- 脖子 -->
-    <path d="M51 74 L 51 88 M69 74 L 69 88" stroke-width="2.4"/>
-    <!-- 脸 -->
-    <path d="M36 46 C 35 68, 44 80, 60 81 C 76 80, 85 68, 84 46 C 83 30, 74 20, 60 20 C 46 20, 37 30, 36 46 Z" stroke-width="3" fill="#FDFCF9"/>
-    <!-- 乱发 -->
-    <path d="M33 50 C 28 28, 42 12, 60 13 C 79 12, 92 28, 87 50 C 88 38, 83 32, 78 28 C 80 33, 79 36, 77 39 C 74 30, 68 26, 60 25 C 63 28, 64 31, 63 34 C 56 27, 47 27, 42 31 C 45 33, 46 36, 45 39 C 41 36, 37 40, 36 46 Z" stroke-width="2.6" fill="#1C1B18"/>
-    <path d="M50 16 C 54 13, 66 12, 71 16" stroke-width="2.2"/>
-    <!-- 圆框眼镜 -->
-    <circle cx="48" cy="52" r="9.5" stroke-width="2.4" fill="#FDFCF9" fill-opacity="0.45"/>
-    <circle cx="72" cy="52" r="9.5" stroke-width="2.4" fill="#FDFCF9" fill-opacity="0.45"/>
-    <path d="M57.5 52 C 59 50.5, 61 50.5, 62.5 52" stroke-width="2.2"/>
-    <path d="M38.5 51 L 35 49 M81.5 51 L 85 49" stroke-width="2.2"/>
-    <!-- 眼睛（镜片后） -->
-    <path d="M45 52.5 C 46.5 51, 49.5 51, 51 52.5" stroke-width="2.2"/>
-    <path d="M69 52.5 C 70.5 51, 73.5 51, 75 52.5" stroke-width="2.2"/>
-    <!-- 眉毛 -->
-    <path d="M42 40 C 45 38.5, 50 38.5, 53 40" stroke-width="2.2"/>
-    <path d="M67 40 C 70 38.5, 75 38.5, 78 40" stroke-width="2.2"/>
-    <!-- 鼻子和笑 -->
-    <path d="M60 58 C 59.4 61, 59.4 63, 60.6 65" stroke-width="2"/>
-    <path d="M52 70 C 56 73.5, 64 73.5, 68 70" stroke-width="2.4"/>
-    <!-- 手绘感的小瑕疵线 -->
-    <path d="M83 60 C 83.8 61.5, 83.8 63, 83 64.5" stroke-width="1.6" opacity="0.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <!-- 学长头像 · 与立绘同风格，可同名替换 -->
+  <defs><clipPath id="c"><circle cx="80" cy="80" r="76"/></clipPath></defs>
+  <circle cx="80" cy="80" r="76" fill="#F3E4DC"/>
+  <g clip-path="url(#c)">
+    <path d="M28 160 C 34 130, 56 116, 80 114 C 104 116, 126 130, 132 160 Z" fill="#FDFCF9" stroke="#2A241D" stroke-width="4"/>
+    <path d="M52 128 C 62 120, 98 120, 108 128 C 104 140, 94 146, 80 146 C 66 146, 56 140, 52 128 Z" fill="#C05A32" stroke="#A34724" stroke-width="3"/>
+    <path d="M46 74 C 44 104, 60 124, 80 126 C 100 124, 116 104, 114 74 C 112 48, 98 32, 80 31 C 62 32, 48 48, 46 74 Z" fill="#F6DCC8" stroke="#2A241D" stroke-width="4"/>
+    <path d="M43 78 C 36 40, 54 16, 80 15 C 106 16, 124 40, 117 78 C 113 64, 108 57, 101 54 C 103 60, 102 65, 99 69 C 94 56, 85 49, 75 48 C 78 54, 78 60, 75 64 C 66 54, 55 52, 48 57 C 45 63, 43 70, 43 78 Z" fill="#2A241D"/>
+    <path d="M78 16 C 76 8, 80 2, 87 0 C 84 6, 85 11, 88 15" fill="#2A241D"/>
+    <path d="M56 70 C 60 67, 67 66.5, 72 68.5" stroke="#2A241D" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <path d="M88 68.5 C 93 66.5, 100 67, 104 70" stroke="#2A241D" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <path d="M57 82 C 60 78, 69 78, 72 82 C 72 88, 69 92, 64.5 92 C 60 92, 57 88, 57 82 Z" fill="#2A241D"/>
+    <circle cx="68" cy="82" r="2.2" fill="#FDFCF9"/>
+    <path d="M88 82 C 91 78, 100 78, 103 82 C 103 88, 100 92, 95.5 92 C 91 92, 88 88, 88 82 Z" fill="#2A241D"/>
+    <circle cx="99" cy="82" r="2.2" fill="#FDFCF9"/>
+    <ellipse cx="54" cy="97" rx="7" ry="4" fill="#EFB79B" opacity="0.55"/>
+    <ellipse cx="106" cy="97" rx="7" ry="4" fill="#EFB79B" opacity="0.55"/>
+    <path d="M80 93 C 79 97, 79 100, 80.5 103" stroke="#2A241D" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M70 110 C 76 115, 84 115, 90 110" stroke="#2A241D" stroke-width="3.5" stroke-linecap="round" fill="none"/>
   </g>
 </svg>

@@ -28,8 +28,14 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-dvh items-center justify-center px-6">
-      <div className="w-full max-w-sm">
+    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden px-6">
+      {/* 校园底景 */}
+      <img
+        src="/assets/bg-gate.svg"
+        alt=""
+        className="pointer-events-none absolute bottom-0 left-1/2 w-full min-w-[1100px] -translate-x-1/2 opacity-45"
+      />
+      <div className="relative w-full max-w-sm pb-24">
         <header className="mb-8 text-center">
           <h1 className="text-3xl font-semibold tracking-widest">{copy['welcome-title']}</h1>
           <p className="mt-2 text-sm text-ink-soft">{copy['welcome-sub']}</p>

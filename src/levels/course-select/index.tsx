@@ -136,7 +136,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
     const q = api.copy(QA[round].q);
     let i = 0;
     const t = window.setInterval(() => {
-      i = Math.min(q.length, i + 2);
+      i = Math.min(q.length, i + 4);
       setInputText(q.slice(0, i));
       if (i >= q.length) {
         window.clearInterval(t);
@@ -171,7 +171,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
       finishStream();
       return;
     }
-    const t = window.setTimeout(() => setStreamCount((c) => Math.min(full.length, c + 5)), 16);
+    const t = window.setTimeout(() => setStreamCount((c) => Math.min(full.length, c + 9)), 14);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, streamCount]);
@@ -364,12 +364,15 @@ const DeliverList: React.FC<{ api: FlowAPI }> = ({ api }) => {
       <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-sm">
         <div className="text-base font-semibold">{api.copy('s6-card-title')}</div>
         <ul className="mt-3 space-y-2.5 text-[14px] leading-relaxed">
-          {[1, 2, 3, 4].map((n) => (
-            <li key={n} className="flex gap-2">
-              <span className="text-accent">✓</span>
-              {api.copy(`s6-card-line${n}`)}
-            </li>
-          ))}
+          {[1, 2, 3, 4, 5]
+            .map((n) => api.copy(`s6-card-line${n}`))
+            .filter(Boolean)
+            .map((line, i) => (
+              <li key={i} className="flex gap-2">
+                <span className="text-accent">✓</span>
+                {line}
+              </li>
+            ))}
         </ul>
       </div>
       <p className="mt-2 text-center text-xs text-ink-soft">{api.copy('s6-footer')}</p>
