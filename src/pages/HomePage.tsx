@@ -7,7 +7,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { ArchiveItem, PlayerState, QuickAction } from '@/contracts';
-import { boards, getMajor, interpolate, quickActions, ui } from '@/engine/content';
+import {
+  boards,
+  getLevelContent,
+  getMajor,
+  interpolate,
+  quickActions,
+  ui,
+} from '@/engine/content';
 import { useEngine, effectiveCost, isMainlineComplete } from '@/engine/store';
 import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
@@ -100,6 +107,35 @@ const StatusRail: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
 
 // ---------- 左侧导航 ----------
 
+const NavIcon: React.FC<{ tab: Tab }> = ({ tab }) => {
+  const paths: Record<Tab, React.ReactNode> = {
+    semester: (
+      <>
+        <rect x="3" y="4" width="14" height="13" rx="2" />
+        <path d="M6.5 9l2 2 4-4M6.5 13.5h7" />
+      </>
+    ),
+    folder: <path d="M3 6a2 2 0 0 1 2-2h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" />,
+    stats: <path d="M4 16V9M10 16V4M16 16v-5" />,
+    log: <path d="M5 5h10M5 10h10M5 15h6" />,
+  };
+  return (
+    <svg
+      width="17"
+      height="17"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="shrink-0"
+    >
+      {paths[tab]}
+    </svg>
+  );
+};
+
 const NavColumn: React.FC<{
   tab: Tab;
   onTab: (t: Tab) => void;
@@ -120,13 +156,14 @@ const NavColumn: React.FC<{
           <button
             key={key}
             onClick={() => onTab(key)}
-            className={`rounded-xl px-4 py-2.5 text-left text-[15px] transition ${
+            className={`flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-left text-[15px] transition ${
               tab === key ? 'bg-ink font-medium text-paper' : 'text-ink hover:bg-line/60'
             }`}
           >
+            <NavIcon tab={key} />
             {label}
             {key === 'folder' && state.archive.length > 0 && (
-              <span className="ml-2 text-xs opacity-70">{state.archive.length}</span>
+              <span className="ml-auto text-xs opacity-70">{state.archive.length}</span>
             )}
           </button>
         ))}
@@ -263,7 +300,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                   runQuickAction(qa);
                   window.setTimeout(() => setLastQuick(qa), 250);
                 }}
-                className={`rounded-xl border border-line bg-card p-4 text-left transition hover:border-ink/30 disabled:hover:border-line ${
+                className={`rounded-xl border border-line bg-card p-4 text-left transition hover:-translate-y-0.5 hover:border-ink/30 hover:shadow-md disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-none ${
                   done ? 'opacity-55' : unaffordable ? 'opacity-40' : ''
                 }`}
               >
@@ -337,10 +374,13 @@ const SemesterEnded: React.FC = () => {
 
 // ---------- 文件夹 / 属性 / 记录 ----------
 
-const ArchiveCard: React.FC<{ item: ArchiveItem }> = ({ item }) => {
+const ArchiveCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
   const [imgOk, setImgOk] = useState(true);
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-card">
+    <button
+      onClick={onOpen}
+      className="overflow-hidden rounded-xl border border-line bg-card text-left transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
+    >
       {item.assetRef && imgOk && (
         <img
           src={`/assets/${item.assetRef}.svg`}
@@ -351,31 +391,126 @@ const ArchiveCard: React.FC<{ item: ArchiveItem }> = ({ item }) => {
       )}
       <div className="flex items-center justify-between gap-2 p-3.5">
         <span className="truncate text-[14px] font-medium">📁 {item.title}</span>
-        {item.borrowed && (
+        {item.borrowed ? (
           <span className="shrink-0 rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
             {home['borrowed-tag']}
           </span>
+        ) : (
+          <span className="shrink-0 text-xs text-ink-soft">›</span>
         )}
+      </div>
+    </button>
+  );
+};
+
+/** 档案详情：按来源关卡还原内容（专业卡片 / 避坑清单 / 海报双图） */
+const ArchiveDetail: React.FC<{
+  item: ArchiveItem;
+  state: Readonly<PlayerState>;
+  onClose: () => void;
+}> = ({ item, state, onClose }) => {
+  const renderBody = () => {
+    if (item.levelId === 'prologue') {
+      const major = getMajor(state.player.majorId);
+      const copy = getLevelContent('prologue').copy;
+      const row = (label: string, body: React.ReactNode) => (
+        <div className="border-t border-line py-2.5 first:border-t-0">
+          <div className="text-[11px] tracking-widest text-ink-soft">{label}</div>
+          <div className="mt-1 text-[14px] leading-relaxed">{body}</div>
+        </div>
+      );
+      return (
+        <div className="rounded-xl border border-accent/40 bg-card p-4">
+          <div className="mb-2 text-lg font-semibold">{major.name}</div>
+          {row(copy['card-core-courses'], major.card.coreCourses.join(' · '))}
+          {row(copy['card-hardest'], major.card.hardestY1.join(' / '))}
+          {row(copy['card-gpa-killer'], major.card.gpaKiller)}
+          {row(copy['card-destinations'], major.card.destinations.join(' · '))}
+          {row(copy['card-secret'], <span className="text-accent">{major.card.secret}</span>)}
+        </div>
+      );
+    }
+    if (item.levelId === 'course-select') {
+      const copy = getLevelContent('course-select').copy;
+      return (
+        <div className="rounded-xl border border-accent/40 bg-card p-4">
+          <div className="mb-3 text-base font-semibold">{copy['s6-card-title']}</div>
+          <ul className="space-y-2.5 text-[14px] leading-relaxed">
+            {[1, 2, 3, 4].map((n) => (
+              <li key={n} className="flex gap-2">
+                <span className="text-accent">✓</span>
+                {copy[`s6-card-line${n}`]}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+    if (item.levelId === 'poster' && item.assetRef) {
+      const wideRef = item.assetRef.includes('senpai')
+        ? 'poster-senpai-169'
+        : item.assetRef.replace('-34-v2', '-169');
+      return (
+        <div>
+          <div className="flex items-end gap-3">
+            <img src={`/assets/${item.assetRef}.svg`} alt="" className="w-[42%] rounded-lg border border-line" />
+            <img src={`/assets/${wideRef}.svg`} alt="" className="w-[56%] rounded-lg border border-line" />
+          </div>
+          {item.resumeLine && (
+            <p className="mt-3 text-sm text-ink-soft">{item.resumeLine}</p>
+          )}
+        </div>
+      );
+    }
+    return item.assetRef ? (
+      <img src={`/assets/${item.assetRef}.svg`} alt="" className="w-full rounded-lg border border-line" />
+    ) : null;
+  };
+
+  return (
+    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6" onClick={onClose}>
+      <div
+        className="max-h-[85dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-paper p-6 animate-fade-up"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h3 className="text-[16px] font-semibold">📁 {item.title}</h3>
+          {item.borrowed && (
+            <span className="rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
+              {home['borrowed-tag']}
+            </span>
+          )}
+        </div>
+        {renderBody()}
+        <Button variant="secondary" full className="mt-5" onClick={onClose}>
+          {ui.common.continue}
+        </Button>
       </div>
     </div>
   );
 };
 
-const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
-  <Panel title={home['folder-title']} sub={home['folder-sub']}>
-    {state.archive.length === 0 ? (
-      <p className="rounded-xl border border-dashed border-line p-10 text-center text-sm text-ink-soft">
-        {home['folder-empty']}
-      </p>
-    ) : (
-      <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
-        {state.archive.map((item) => (
-          <ArchiveCard key={item.id} item={item} />
-        ))}
-      </div>
-    )}
-  </Panel>
-);
+const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const [openItem, setOpenItem] = useState<ArchiveItem | null>(null);
+  return (
+    <Panel title={home['folder-title']} sub={home['folder-sub']}>
+      {state.archive.length === 0 ? (
+        <p className="rounded-xl border border-dashed border-line p-10 text-center text-sm text-ink-soft">
+          {home['folder-empty']}
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
+          {state.archive.map((item) => (
+            <ArchiveCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
+          ))}
+        </div>
+      )}
+      {openItem && (
+        <ArchiveDetail item={openItem} state={state} onClose={() => setOpenItem(null)} />
+      )}
+    </Panel>
+  );
+};
 
 const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   <div className="flex flex-col gap-4">

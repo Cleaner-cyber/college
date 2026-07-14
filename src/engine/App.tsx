@@ -49,6 +49,7 @@ export const App: React.FC = () => {
   const { status, userId, init } = useAuth();
   const hydrate = useEngine((s) => s.hydrate);
   const unload = useEngine((s) => s.unload);
+  const location = useLocation();
 
   useEffect(() => {
     init();
@@ -69,8 +70,8 @@ export const App: React.FC = () => {
   }, [status, userId, hydrate, unload]);
 
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
+    <div key={location.pathname} className="animate-fade-up">
+      <Routes>
       <Route
         path="/onboarding"
         element={
@@ -103,7 +104,9 @@ export const App: React.FC = () => {
           </Guard>
         }
       />
-      <Route path="*" element={<Navigate to="/home" replace />} />
-    </Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Routes>
+    </div>
   );
 };

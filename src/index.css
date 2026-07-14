@@ -7,6 +7,26 @@ body {
   @apply bg-paper text-ink;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+  /* 信纸质感：极淡的点状纹理 */
+  background-image: radial-gradient(rgba(28, 27, 24, 0.045) 0.6px, transparent 0.6px);
+  background-size: 22px 22px;
+}
+
+::selection {
+  background: #f3e4dc;
+}
+
+/* 细滚动条，配合纸面基调 */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #e4e0d6;
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 button {

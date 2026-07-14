@@ -38,6 +38,8 @@ interface ScreenPlayerProps {
   overlay?: (api: FlowAPI) => React.ReactNode;
   defaultNextLabel: string;
   senpaiLabel: string;
+  /** 需要宽版面的屏 id（如 AI 对话工作台），其余屏保持窄栏叙事 */
+  wideScreens?: string[];
 }
 
 export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
@@ -50,6 +52,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
   overlay,
   defaultNextLabel,
   senpaiLabel,
+  wideScreens = [],
 }) => {
   const [currentId, setCurrentId] = useState(content.screens[0].id);
   const [vars, setVars] = useState<Record<string, string>>({});
@@ -150,7 +153,8 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
     const ready = !useTypewriter || typingDone;
 
     switch (screen.type) {
-      case 'dialogue':
+      case 'dialogue': {
+        const isSystem = screen.speaker === 'system' || !screen.speaker;
         return (
           <div>
             {screen.speaker && (
@@ -160,7 +164,13 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
                 senpaiLabel={senpaiLabel}
               />
             )}
-            {body}
+            {isSystem ? (
+              <div className="py-4 text-center tracking-wide">{body}</div>
+            ) : (
+              <div className="ml-[52px] rounded-2xl rounded-tl-md border border-line bg-card p-4 shadow-sm">
+                {body}
+              </div>
+            )}
             <div className={`mt-8 transition-opacity ${ready ? 'opacity-100' : 'opacity-0'}`}>
               <Button full onClick={advance} disabled={!ready}>
                 {api.nextLabel}
@@ -168,6 +178,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
             </div>
           </div>
         );
+      }
       case 'input': {
         const confirmLabel = copy(`confirm-${screen.id}`, defaultNextLabel);
         const canConfirm = inputValue.trim().length > 0;
@@ -246,8 +257,11 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
 
   const customRenderer = custom?.[screen.id];
 
+  const isWide = wideScreens.includes(screen.id);
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col px-6 pb-16 pt-10">
+    <div
+      className={`mx-auto flex w-full flex-col px-6 pb-16 pt-10 ${isWide ? 'max-w-5xl' : 'max-w-xl'}`}
+    >
       {needsLoading ? (
         <FakeLoading
           key={screen.id}

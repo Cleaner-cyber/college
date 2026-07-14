@@ -1,102 +1,375 @@
 /**
- * 选课关：教学「投喂长文档」。必修·免费。
- * S2 拖入 PDF 工作台 / S5 追问 / S6 交付避坑课表 为自定义屏。
+ * 选课关：教学「投喂长文档」。主线必修 · 不耗行动点。
+ * S2 是一个拟真的 AI 对话工作台：把《培养方案》《学生手册》两份真实文件
+ * 拖进对话框 → 预设提示词打字输入 → AI 流式输出真实分析结果（含表格）。
+ * 分析内容为基于真实浙大文档预先跑出的结果，存于 /content（无运行时 AI 调用）。
  */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { LevelModule, LevelProps } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
-import { getMajor, ui } from '@/engine/content';
+import { ui } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
+import { renderMarkdown } from '@/components/ui/Markdown';
+import { SenpaiAvatar } from '@/components/ui/SpeakerTag';
 
-const FeedPdfBench: React.FC<{ api: FlowAPI }> = ({ api }) => {
-  const [dropped, setDropped] = useState(false);
+type FileId = 'plan' | 'handbook';
+
+type Msg =
+  | { kind: 'file'; file: FileId }
+  | { kind: 'user'; text: string }
+  | { kind: 'ai'; text: string; done: boolean }
+  | { kind: 'senpai'; text: string };
+
+type Stage =
+  | 'need-plan' // 等待拖入培养方案
+  | 'chip-q1'
+  | 'typing-q1'
+  | 'thinking-1'
+  | 'stream-a1'
+  | 'need-handbook' // 等待拖入学生手册
+  | 'chip-q2'
+  | 'typing-q2'
+  | 'thinking-2'
+  | 'stream-a2'
+  | 'chip-q3'
+  | 'typing-q3'
+  | 'thinking-3'
+  | 'stream-a3'
+  | 'wrap';
+
+const QA: Record<1 | 2 | 3, { q: string; a: string }> = {
+  1: { q: 'q1', a: 'a1' },
+  2: { q: 'q2', a: 'a2' },
+  3: { q: 'q3', a: 'a3' },
+};
+
+/** 文件卡片（HTML5 拖拽源） */
+const FileCard: React.FC<{
+  id: FileId;
+  api: FlowAPI;
+  fed: boolean;
+  highlight: boolean;
+  onFallbackFeed: (id: FileId) => void;
+}> = ({ id, api, fed, highlight, onFallbackFeed }) => (
+  <div
+    draggable={!fed}
+    onDragStart={(e) => {
+      e.dataTransfer.setData('text/plain', id);
+      e.dataTransfer.effectAllowed = 'copy';
+    }}
+    onDoubleClick={() => !fed && onFallbackFeed(id)}
+    className={`select-none rounded-xl border bg-card p-3 transition ${
+      fed
+        ? 'border-line opacity-50'
+        : highlight
+          ? 'cursor-grab border-accent shadow-sm hover:-translate-y-0.5 hover:shadow-md'
+          : 'cursor-grab border-line hover:-translate-y-0.5 hover:shadow-md'
+    }`}
+  >
+    <div className="flex items-start gap-2.5">
+      <span className="mt-0.5 text-xl">📄</span>
+      <div className="min-w-0">
+        <div className="break-all text-[12.5px] font-medium leading-snug">
+          {api.copy(`file-${id}-name`)}
+        </div>
+        <div className="mt-0.5 text-[11px] text-ink-soft">{api.copy(`file-${id}-meta`)}</div>
+      </div>
+    </div>
+    <div className="mt-2 text-[11px]">
+      {fed ? (
+        <span className="rounded bg-accent-soft px-1.5 py-0.5 text-accent">
+          ✓ {api.copy('file-fed-tag')}
+        </span>
+      ) : (
+        highlight && (
+          <span className="text-accent animate-fade-up">← {api.copy('file-drag-hint')}</span>
+        )
+      )}
+    </div>
+  </div>
+);
+
+const ThinkingDots: React.FC<{ label: string }> = ({ label }) => (
+  <div className="flex items-center gap-2 text-[13px] text-ink-soft">
+    <span className="flex gap-1">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent"
+          style={{ animationDelay: `${i * 0.25}s` }}
+        />
+      ))}
+    </span>
+    {label}
+  </div>
+);
+
+const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
+  const [stage, setStage] = useState<Stage>('need-plan');
+  const [msgs, setMsgs] = useState<Msg[]>([]);
+  const [fed, setFed] = useState<FileId[]>([]);
+  const [inputText, setInputText] = useState('');
+  const [dragOver, setDragOver] = useState(false);
+  const [streamCount, setStreamCount] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const round: 1 | 2 | 3 = stage.includes('1')
+    ? 1
+    : stage.includes('2')
+      ? 2
+      : stage.includes('3')
+        ? 3
+        : stage === 'need-handbook'
+          ? 2
+          : 1;
+
+  // 自动滚到底部
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [msgs, streamCount, stage, inputText]);
+
+  // 提示词打字动画 → 发送
+  useEffect(() => {
+    if (!stage.startsWith('typing-')) return;
+    const q = api.copy(QA[round].q);
+    let i = 0;
+    const t = window.setInterval(() => {
+      i = Math.min(q.length, i + 2);
+      setInputText(q.slice(0, i));
+      if (i >= q.length) {
+        window.clearInterval(t);
+        window.setTimeout(() => {
+          setInputText('');
+          setMsgs((m) => [...m, { kind: 'user', text: q }]);
+          setStage(`thinking-${round}` as Stage);
+        }, 450);
+      }
+    }, 22);
+    return () => window.clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
+
+  // 思考 → 开始流式输出
+  useEffect(() => {
+    if (!stage.startsWith('thinking-')) return;
+    const t = window.setTimeout(() => {
+      setMsgs((m) => [...m, { kind: 'ai', text: api.copy(QA[round].a), done: false }]);
+      setStreamCount(0);
+      setStage(`stream-a${round}` as Stage);
+    }, 1400);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
+
+  // 流式输出
+  useEffect(() => {
+    if (!stage.startsWith('stream-')) return;
+    const full = api.copy(QA[round].a);
+    if (streamCount >= full.length) {
+      finishStream();
+      return;
+    }
+    const t = window.setTimeout(() => setStreamCount((c) => Math.min(full.length, c + 5)), 16);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, streamCount]);
+
+  const finishStream = () => {
+    setMsgs((m) => m.map((msg) => (msg.kind === 'ai' ? { ...msg, done: true } : msg)));
+    if (stage === 'stream-a1') {
+      setMsgs((m) => [...m, { kind: 'senpai', text: api.copy('senpai-tip-2') }]);
+      setStage('need-handbook');
+    } else if (stage === 'stream-a2') {
+      setMsgs((m) => [...m, { kind: 'senpai', text: api.copy('senpai-tip-3') }]);
+      setStage('chip-q3');
+    } else if (stage === 'stream-a3') {
+      setMsgs((m) => [...m, { kind: 'senpai', text: api.copy('senpai-wrap') }]);
+      setStage('wrap');
+    }
+  };
+
+  const feed = (id: FileId) => {
+    if (fed.includes(id)) return;
+    if (id === 'plan' && stage === 'need-plan') {
+      setFed((f) => [...f, id]);
+      setMsgs((m) => [
+        ...m,
+        { kind: 'file', file: id },
+        { kind: 'senpai', text: api.copy('senpai-tip-1') },
+      ]);
+      setStage('chip-q1');
+    } else if (id === 'handbook' && stage === 'need-handbook') {
+      setFed((f) => [...f, id]);
+      setMsgs((m) => [...m, { kind: 'file', file: id }]);
+      setStage('chip-q2');
+    }
+  };
+
+  const chipStage = stage === 'chip-q1' || stage === 'chip-q2' || stage === 'chip-q3';
+  const streaming = stage.startsWith('stream-');
+  const thinking = stage.startsWith('thinking-');
+  const needFile: FileId | null =
+    stage === 'need-plan' ? 'plan' : stage === 'need-handbook' ? 'handbook' : null;
 
   return (
-    <div className="flex flex-col items-center gap-6 pt-4">
-      <p className="text-[17px]">{api.t(api.screen.text ?? '')}</p>
+    <div className="grid grid-cols-[220px_minmax(0,1fr)] gap-5">
+      {/* 文件面板 */}
+      <aside>
+        <div className="mb-2 text-[11px] tracking-widest text-ink-soft">
+          {api.copy('files-title')}
+        </div>
+        <div className="flex flex-col gap-2.5">
+          <FileCard
+            id="plan"
+            api={api}
+            fed={fed.includes('plan')}
+            highlight={needFile === 'plan'}
+            onFallbackFeed={feed}
+          />
+          <FileCard
+            id="handbook"
+            api={api}
+            fed={fed.includes('handbook')}
+            highlight={needFile === 'handbook'}
+            onFallbackFeed={feed}
+          />
+        </div>
+      </aside>
+
       {/* AI 对话框 */}
       <div
-        className={`flex h-44 w-full items-center justify-center rounded-2xl border-2 border-dashed transition-colors ${
-          dropped ? 'border-accent bg-accent-soft' : 'border-line bg-card'
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'copy';
+          setDragOver(true);
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragOver(false);
+          feed(e.dataTransfer.getData('text/plain') as FileId);
+        }}
+        className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-card transition-colors ${
+          dragOver ? 'border-accent bg-accent-soft/40' : needFile ? 'border-dashed border-line' : 'border-line'
         }`}
       >
-        {dropped ? (
-          <div className="text-center animate-fade-up">
-            <div className="text-3xl">📄</div>
-            <div className="mt-1 text-sm text-accent">{api.copy('s2-pdf-name')}</div>
-          </div>
-        ) : (
-          <span className="text-sm text-ink-soft">{api.copy('s2-chat-placeholder')}</span>
-        )}
-      </div>
-      {/* PDF 文件 */}
-      {!dropped && (
-        <div className="flex w-full items-center gap-3 rounded-xl border border-line bg-card p-3">
-          <div className="text-2xl">📄</div>
-          <div className="flex-1">
-            <div className="text-sm font-medium">{api.copy('s2-pdf-name')}</div>
-            <div className="text-xs text-ink-soft">{api.copy('s2-pdf-size')}</div>
-          </div>
-          <Button
-            onClick={() => {
-              setDropped(true);
-              window.setTimeout(api.advance, 800);
-            }}
-          >
-            {api.copy('s2-drop-btn')}
-          </Button>
+        {/* 对话框标题栏 */}
+        <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
+          <span className="h-2 w-2 rounded-full bg-accent" />
+          <span className="text-[13px] font-medium">{api.copy('chat-title')}</span>
+          {streaming && (
+            <span className="ml-auto text-[11px] text-ink-soft">{api.copy('chat-skip-hint')}</span>
+          )}
         </div>
-      )}
-      {!dropped && <p className="text-xs text-ink-soft">{api.copy('s2-hint')}</p>}
-    </div>
-  );
-};
 
-const FollowUp: React.FC<{ api: FlowAPI }> = ({ api }) => {
-  const [answered, setAnswered] = useState<string[]>([]);
-
-  return (
-    <div>
-      <p className="text-[17px]">{api.t(api.screen.text ?? '')}</p>
-      <div className="mt-5 flex flex-col gap-4">
-        {(api.screen.choices ?? []).map((c) => (
-          <div key={c.id}>
-            <Button
-              variant="secondary"
-              full
-              disabled={answered.includes(c.id)}
-              onClick={() => setAnswered((a) => [...a, c.id])}
-            >
-              {c.label}
-            </Button>
-            {answered.includes(c.id) && (
-              <div className="mt-2 rounded-xl bg-card p-3 text-[14px] leading-relaxed text-ink animate-fade-up">
-                {api.copy(`s5-answer-${c.id}`)}
-              </div>
-            )}
+        {/* 消息区 */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4">
+          {msgs.length === 0 && (
+            <div className="flex h-full items-center justify-center text-sm text-ink-soft">
+              {dragOver ? api.copy('chat-drop-active') : api.copy('chat-empty-hint')}
+            </div>
+          )}
+          <div className="flex flex-col gap-3">
+            {msgs.map((m, i) => {
+              if (m.kind === 'file') {
+                return (
+                  <div key={i} className="flex justify-end animate-fade-up">
+                    <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line bg-paper px-3 py-2 text-[12.5px]">
+                      📄 <span className="break-all">{api.copy(`file-${m.file}-name`)}</span>
+                    </span>
+                  </div>
+                );
+              }
+              if (m.kind === 'user') {
+                return (
+                  <div key={i} className="flex justify-end animate-fade-up">
+                    <div className="max-w-[80%] rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13.5px] leading-relaxed text-paper">
+                      {m.text}
+                    </div>
+                  </div>
+                );
+              }
+              if (m.kind === 'senpai') {
+                return (
+                  <div key={i} className="flex items-start gap-2 py-1 animate-fade-up">
+                    <SenpaiAvatar size={26} />
+                    <p className="pt-0.5 text-[12.5px] leading-relaxed text-accent">{m.text}</p>
+                  </div>
+                );
+              }
+              // ai
+              const isLast = i === msgs.length - 1;
+              const shown = !m.done && isLast && streaming ? m.text.slice(0, streamCount) : m.text;
+              return (
+                <div key={i} className="flex justify-start animate-fade-up">
+                  <div
+                    onClick={() => {
+                      if (!m.done && streaming) setStreamCount(m.text.length);
+                    }}
+                    className="max-w-[92%] rounded-2xl rounded-tl-md border border-line bg-paper px-4 py-3"
+                  >
+                    {renderMarkdown(shown)}
+                    {!m.done && isLast && <span className="animate-pulse text-accent">▍</span>}
+                  </div>
+                </div>
+              );
+            })}
+            {thinking && <ThinkingDots label={api.copy('chat-thinking')} />}
           </div>
-        ))}
+        </div>
+
+        {/* 输入区 */}
+        <div className="border-t border-line px-4 py-3">
+          {chipStage && (
+            <button
+              onClick={() => setStage(`typing-q${round}` as Stage)}
+              className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm animate-fade-up"
+            >
+              {api.copy(`chip-q${round}`)}
+            </button>
+          )}
+          {stage === 'wrap' && (
+            <div className="mb-2.5 animate-fade-up">
+              <Button onClick={api.advance}>{api.copy('to-deliver')}</Button>
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <div
+              className={`min-h-[42px] flex-1 rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                inputText ? 'text-ink' : 'text-ink-soft/60'
+              }`}
+            >
+              {inputText || api.copy('chat-input-placeholder')}
+              {stage.startsWith('typing-') && <span className="animate-pulse text-accent">▍</span>}
+            </div>
+            <button
+              disabled
+              className="rounded-xl bg-ink px-4 py-2.5 text-[13px] text-paper opacity-40"
+            >
+              {api.copy('chat-send')}
+            </button>
+          </div>
+        </div>
       </div>
-      {answered.length > 0 && (
-        <Button full className="mt-8 animate-fade-up" onClick={() => api.goto('S6')}>
-          {api.copy('s5-done-btn')}
-        </Button>
-      )}
     </div>
   );
 };
 
-const DeliverCourseMap: React.FC<{ api: FlowAPI }> = ({ api }) => {
+const DeliverList: React.FC<{ api: FlowAPI }> = ({ api }) => {
   const [typed, setTyped] = useState(false);
   return (
     <div>
-      <div className="rounded-2xl border border-accent/40 bg-card p-4 shadow-sm">
+      <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-sm">
         <div className="text-base font-semibold">{api.copy('s6-card-title')}</div>
-        <ul className="mt-3 space-y-2 text-[14px] leading-relaxed">
-          <li>✓ {api.copy('s6-card-line1')}</li>
-          <li>✓ {api.copy('s6-card-line2')}</li>
-          <li>✓ {api.copy('s6-card-line3')}</li>
+        <ul className="mt-3 space-y-2.5 text-[14px] leading-relaxed">
+          {[1, 2, 3, 4].map((n) => (
+            <li key={n} className="flex gap-2">
+              <span className="text-accent">✓</span>
+              {api.copy(`s6-card-line${n}`)}
+            </li>
+          ))}
         </ul>
       </div>
       <p className="mt-2 text-center text-xs text-ink-soft">{api.copy('s6-footer')}</p>
@@ -104,7 +377,7 @@ const DeliverCourseMap: React.FC<{ api: FlowAPI }> = ({ api }) => {
         <Typewriter
           text={api.t(api.screen.text ?? '')}
           onDone={() => setTyped(true)}
-          className="text-[17px]"
+          className="text-[16px]"
         />
       </div>
       {typed && (
@@ -120,16 +393,13 @@ const CourseSelectComponent: React.FC<LevelProps> = ({ state, content, onComplet
   return (
     <ScreenPlayer
       content={content}
-      globalVars={{
-        playerName: state.player.name,
-        majorName: getMajor(state.player.majorId).name,
-      }}
+      globalVars={{ playerName: state.player.name }}
       defaultNextLabel={ui.common.continue}
       senpaiLabel={ui.board['senpai-prefix']}
+      wideScreens={['S2']}
       custom={{
-        S2: (api) => <FeedPdfBench api={api} />,
-        S5: (api) => <FollowUp api={api} />,
-        S6: (api) => <DeliverCourseMap api={api} />,
+        S2: (api) => <AiChat api={api} />,
+        S6: (api) => <DeliverList api={api} />,
       }}
       onFinish={() =>
         onComplete({
