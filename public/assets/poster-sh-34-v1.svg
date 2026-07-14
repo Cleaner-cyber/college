@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#F6EBD9"/>
+  
+  <rect x="60" y="90" width="480" height="660" rx="18" fill="#8A5A3B" opacity="0.88"/>
+  <circle cx="300" cy="367.2" r="86" fill="#D08C3F" opacity="0.85"/>
+  
+  <g font-family="sans-serif" text-anchor="middle" fill="#1C1B18" opacity="0.55">
+    <text x="50%" y="46%" font-size="26" font-weight="bold">[占位] poster-sh-34-v1</text>
+    <text x="50%" y="52%" font-size="18">3:4 手绘 首版·主体偏满</text>
+  </g>
+</svg>

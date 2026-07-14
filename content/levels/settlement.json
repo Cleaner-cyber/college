@@ -1,0 +1,44 @@
+{
+  "id": "settlement",
+  "title": "学期结算",
+  "screens": [
+    { "id": "S1", "type": "reveal", "text": "大一上 · 结束", "next": "S2" },
+    { "id": "S2", "type": "reveal", "text": "你的文件夹", "next": "S3" },
+    { "id": "S3", "type": "reveal", "text": "学期小卡", "next": "S4" },
+    {
+      "id": "S4",
+      "type": "dialogue",
+      "speaker": "senpai",
+      "text": "这才是第一个学期。",
+      "next": "end",
+      "effects": { "typewriter": true }
+    }
+  ],
+  "copy": {
+    "s1-title": "大一上 · 结束",
+    "s1-replay-title": "这学期你做了",
+    "next-S1": "看看文件夹",
+    "s2-title": "你的文件夹",
+    "s2-empty": "这学期文件夹是空的。也是一种过法。",
+    "borrowed-tag": "借来的",
+    "next-S2": "生成学期小卡",
+    "s3-flag-title": "入学前，你说你想要——",
+    "s3-flag-salary": "年薪",
+    "s3-flag-city": "城市",
+    "s3-flag-work": "工作",
+    "s3-flag-time": "下班",
+    "s3-axes-title": "第一学期的形状",
+    "s3-made-count": "这学期 {total} 件作品里，你自己做了 {own} 件",
+    "verdict-academic": "开局最稳的一条路：先把分数握在手里。图书馆的灯记得你。",
+    "verdict-portfolio": "你已经开始留下能拿出手的东西了。文件夹比分数诚实。",
+    "verdict-expression": "你选择了先让别人认识你。声音也是一种作品。",
+    "verdict-cash": "第一个学期就开始自己挣钱，这件事本身就写进了履历。",
+    "verdict-rest": "休整型开局。你把精力留住了——大学是长跑，这不丢人。",
+    "verdict-flat": "均衡型开局。每条线都碰了一下，方向感会在大一下长出来。",
+    "next-S3": "继续",
+    "s4-timeline-title": "接下来",
+    "s4-timeline": "大一下 · 部门PPT｜大二 · 找导师｜大二暑假 · 第一笔AI收入｜大三 · 简历与面试｜大四 · 毕业论文｜毕业 · 结局",
+    "s4-demo-end": "Demo 到这里。想看后面的，告诉学长。",
+    "next-S4": "完成"
+  }
+}

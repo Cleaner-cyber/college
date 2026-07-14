@@ -1,0 +1,84 @@
+{
+  "id": "course-select",
+  "title": "选课周",
+  "screens": [
+    {
+      "id": "S1",
+      "type": "dialogue",
+      "speaker": "npc",
+      "npcName": "教务处",
+      "text": "新生请于本周内完成选课。\n附件：《2026级培养方案》.pdf（87页）",
+      "next": "S1b",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S1b",
+      "type": "dialogue",
+      "speaker": "senpai",
+      "text": "我当年没读。大二才发现有门课必须大一修，卡了我保研资格。\n这次你不用读。你只需要学会一个动作。",
+      "next": "S2",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S2",
+      "type": "workbench",
+      "text": "把 PDF 喂给 AI",
+      "next": "S3"
+    },
+    {
+      "id": "S3",
+      "type": "reveal",
+      "next": "S4",
+      "effects": {
+        "fakeLoading": {
+          "ms": 2500,
+          "tips": ["87页，AI 读它只要几秒", "你要学的不是读文件，是喂文件"]
+        }
+      }
+    },
+    {
+      "id": "S4",
+      "type": "reveal",
+      "text": "① 必修里有一门《{majorName}基础》只在大一开，错过等大三重修。\n② 《高等数学A》是全院挂科率最高的课，占学分最重。\n③ 想保研的话，前三学期绩点占评定的 70%。",
+      "next": "S5",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S5",
+      "type": "choice",
+      "text": "还有什么想问的？",
+      "choices": [
+        { "id": "q1", "label": "哪些课能大二再修？", "next": "S5" },
+        { "id": "q2", "label": "我想转专业要注意什么？", "next": "S5" }
+      ],
+      "next": "S6"
+    },
+    {
+      "id": "S6",
+      "type": "deliver",
+      "text": "这一关我不收你行动点。因为学会了它，你后面每一关都省时间。\n记住这个动作：别读长文件，喂长文件。",
+      "next": "end",
+      "effects": { "typewriter": true }
+    }
+  ],
+  "copy": {
+    "next-S1": "……87页？",
+    "next-S1b": "什么动作？",
+    "s2-hint": "把 PDF 拖进对话框",
+    "s2-drop-btn": "拖入",
+    "s2-pdf-name": "《2026级培养方案》.pdf",
+    "s2-pdf-size": "87 页 · 4.2 MB",
+    "s2-chat-placeholder": "AI 对话框",
+    "next-S4": "继续",
+    "s5-answer-q1": "选修课和大部分通识课都能等，《形势与政策》甚至可以大四补。但表里标了「先修课」的一门都别拖——它们是后面课程的钥匙。",
+    "s5-answer-q2": "转专业看大一学年绩点，通常前 10% 才有资格。也就是说：越想离开一个专业，越要先把它学好。这是大学第一个反直觉规则。",
+    "s5-done-btn": "去选课",
+    "s6-card-title": "大一避坑课表",
+    "s6-card-line1": "必修优先：《{majorName}基础》（仅大一开课）",
+    "s6-card-line2": "重点投入：《高等数学A》（挂科率最高）",
+    "s6-card-line3": "绩点策略：前三学期分数决定保研资格",
+    "s6-footer": "已放进文件夹",
+    "next-S6": "收进文件夹",
+    "archive-title": "大一避坑课表"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "app-title": "大学模拟器",
+  "axes": {
+    "academic": "学术",
+    "portfolio": "作品",
+    "expression": "表达",
+    "cash": "现金"
+  },
+  "hud": {
+    "action-points": "行动点",
+    "folder": "文件夹"
+  },
+  "board": {
+    "end-semester": "结束这学期",
+    "end-semester-hint": "行动点用尽后可结算",
+    "completed-tag": "已完成",
+    "discount-tag": "⚡ 已学会，省时间",
+    "cost-unit": "点",
+    "free-tag": "不耗点",
+    "locked-hint": "行动点不够了",
+    "senpai-prefix": "学长"
+  },
+  "checklist": {
+    "title": "学姐的要求",
+    "progress": "{done}/{total}"
+  },
+  "escape": {
+    "button": "问学长"
+  },
+  "end": {
+    "restart": "重新开始",
+    "restart-confirm": "会清空这份存档，重新入学。确定吗？",
+    "restart-yes": "确定重开",
+    "restart-no": "再想想"
+  },
+  "common": {
+    "continue": "继续",
+    "confirm": "确认",
+    "skip-typing": "点击跳过"
+  }
+}

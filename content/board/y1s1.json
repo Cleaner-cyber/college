@@ -1,0 +1,20 @@
+{
+  "id": "y1s1",
+  "header": "大一上 · 9月",
+  "required": {
+    "id": "course-select",
+    "label": "选课周",
+    "tag": "必修 · 免费",
+    "lockText": "先把课选了"
+  },
+  "levels": [
+    {
+      "id": "poster",
+      "label": "给社团做招新海报",
+      "tag": "深度关卡",
+      "cost": 2,
+      "costWithAbility": { "ability": "image-gen", "cost": 1 }
+    }
+  ],
+  "quickActionsRef": "y1s1"
+}

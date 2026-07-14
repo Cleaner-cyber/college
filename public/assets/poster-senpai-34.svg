@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#E8E4DA"/>
+  <rect x="60" y="336" width="480" height="400" rx="18" fill="#3A3630" opacity="0.9"/>
+  <text x="50%" y="128" font-family="serif" font-size="52" font-weight="bold" text-anchor="middle" fill="#1C1B18" >秋季招新</text>
+  <text x="50%" y="192" font-family="sans-serif" font-size="26" text-anchor="middle" fill="#6B675E" >星野动漫社 · 每周五晚</text>
+  
+  <g font-family="sans-serif" text-anchor="middle" fill="#1C1B18" opacity="0.55">
+    <text x="50%" y="46%" font-size="26" font-weight="bold">[占位] poster-senpai-34</text>
+    <text x="50%" y="52%" font-size="18">3:4 学长成品（含完成态排版）</text>
+  </g>
+</svg>

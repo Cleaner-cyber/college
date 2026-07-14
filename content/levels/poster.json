@@ -1,0 +1,154 @@
+{
+  "id": "poster",
+  "title": "给社团做招新海报",
+  "checklist": [
+    { "id": "ck-ratio", "label": "3:4 竖版" },
+    { "id": "ck-space", "label": "标题区留白在上方" },
+    { "id": "ck-name", "label": "出现社团名" },
+    { "id": "ck-169", "label": "追加 16:9 版" }
+  ],
+  "presetAssets": {
+    "poster-jj-34-v1": "/assets/poster-jj-34-v1.svg",
+    "poster-jj-34-v2": "/assets/poster-jj-34-v2.svg",
+    "poster-jj-169": "/assets/poster-jj-169.svg",
+    "poster-sh-34-v1": "/assets/poster-sh-34-v1.svg",
+    "poster-sh-34-v2": "/assets/poster-sh-34-v2.svg",
+    "poster-sh-169": "/assets/poster-sh-169.svg",
+    "poster-sy-34-v1": "/assets/poster-sy-34-v1.svg",
+    "poster-sy-34-v2": "/assets/poster-sy-34-v2.svg",
+    "poster-sy-169": "/assets/poster-sy-169.svg",
+    "poster-senpai-34": "/assets/poster-senpai-34.svg",
+    "poster-senpai-169": "/assets/poster-senpai-169.svg"
+  },
+  "screens": [
+    {
+      "id": "S1",
+      "type": "dialogue",
+      "speaker": "npc",
+      "npcName": "学姐",
+      "text": "周五要用招新海报。3:4，贴宣传栏。\n标题那块给我留空，字我们自己压。要有社团名。",
+      "next": "S2",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S2",
+      "type": "dialogue",
+      "speaker": "senpai",
+      "text": "先别急着跟 AI 说「好看一点」。\n她要的三件事，就是你提示词的三句话。",
+      "next": "S3",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S3",
+      "type": "workbench",
+      "text": "准备喂料",
+      "inputKey": "clubName",
+      "placeholder": "星野动漫社",
+      "next": "S4"
+    },
+    {
+      "id": "S4",
+      "type": "reveal",
+      "next": "S5",
+      "effects": {
+        "fakeLoading": {
+          "ms": 3000,
+          "tips": ["真实出图大概要 20 秒，习惯它", "提示词已带上：上三分之一留白，主体在下"]
+        }
+      }
+    },
+    {
+      "id": "S5",
+      "type": "reveal",
+      "text": "注意，它没完全听你的——主体有点满。\n真实的 AI 就这样。所以才有下一步。",
+      "next": "S6",
+      "effects": { "showAsset": "poster-{style}-34-v1" }
+    },
+    {
+      "id": "S6",
+      "type": "dialogue",
+      "speaker": "npc",
+      "npcName": "学姐",
+      "text": "主体太满了，标题没地方放。\n另外公众号头图还要一版 16:9 的。",
+      "next": "S7",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S7",
+      "type": "choice",
+      "text": "怎么改？",
+      "choices": [
+        { "id": "r1", "label": "主体往下压", "next": "S8", "setVar": { "key": "revision", "value": "down" }, "checkItem": "ck-space" },
+        { "id": "r2", "label": "背景压暗", "next": "S8", "setVar": { "key": "revision", "value": "dark" }, "checkItem": "ck-space" },
+        { "id": "r3", "label": "保持构图再抽一次", "next": "S8", "setVar": { "key": "revision", "value": "reroll" }, "checkItem": "ck-space" }
+      ]
+    },
+    {
+      "id": "S8",
+      "type": "reveal",
+      "next": "S9",
+      "effects": {
+        "fakeLoading": { "ms": 2000, "tips": ["改提示词，不是重新许愿"] },
+        "showAsset": "poster-{style}-34-v2"
+      }
+    },
+    {
+      "id": "S9",
+      "type": "reveal",
+      "text": "同一句提示词，只换一个参数。",
+      "next": "S10",
+      "effects": { "showAsset": "poster-{style}-169" }
+    },
+    {
+      "id": "S10",
+      "type": "deliver",
+      "text": "双版本已入库。",
+      "next": "end"
+    },
+    {
+      "id": "ESC",
+      "type": "deliver",
+      "text": "卡住了？拿我那版去交吧。\n但答应我，下学期自己做一张。",
+      "next": "end"
+    }
+  ],
+  "copy": {
+    "next-S1": "接下",
+    "next-S2": "开始",
+    "s3-club-label": "社团名",
+    "s3-club-hint": "不想打字？直接用默认的",
+    "s3-style-label": "风格",
+    "s3-style-jj": "极简",
+    "s3-style-sh": "手绘",
+    "s3-style-sy": "摄影",
+    "s3-size-label": "尺寸",
+    "s3-size-note": "尺寸是参数，不用写进提示词——构图才需要你说话",
+    "s3-size-warn": "学姐要的是 3:4，先按需求来",
+    "s3-generate": "生成",
+    "next-S5": "交给学姐",
+    "next-S6": "改",
+    "s7-prompt-title": "提示词",
+    "s7-prompt-base": "为「{clubName}」画一张社团招新海报，{styleName}风格，上三分之一留白，主体在画面下方，不要出现文字。",
+    "s7-append-down": "＋ 主体再往下压，占画面更小",
+    "s7-append-dark": "＋ 背景整体压暗，突出留白区",
+    "s7-append-reroll": "＋ 保持构图不变，重新生成一次",
+    "next-S8": "出 16:9 版",
+    "next-S9": "交付",
+    "s10-npc-line": "学姐：「行，比上届强。」",
+    "s10-senpai-line": "学长：「当年这张我改了三遍。你比我快。」",
+    "s10-checklist-done": "验收清单 {done}/{total}",
+    "s10-show-prompt": "看学长当年的完整提示词",
+    "s10-full-prompt": "社团招新海报，竖版 3:4。主题：{clubName}。构图：上三分之一完全留白（后期压标题字），视觉主体集中在画面下方三分之二。风格：{styleName}，色彩克制，校园氛围。画面中不要生成任何文字。输出后追加一版 16:9，同一构图逻辑，留白区改为左侧。",
+    "next-S10": "收进文件夹",
+    "s7-regen": "重新生成",
+    "esc-button": "问学长",
+    "esc-confirm-title": "要直接拿学长那版吗？",
+    "esc-confirm-yes": "拿学长的版本",
+    "esc-confirm-no": "我再试试",
+    "next-ESC": "收下学长的海报",
+    "archive-title": "社团招新海报 · 双版本",
+    "archive-resume-line": "独立完成社团宣传物料设计（3:4/16:9双版本）",
+    "archive-title-borrowed": "社团招新海报 · 学长版",
+    "archive-resume-line-borrowed": "完成社团宣传物料交付（在学长协助下）"
+  }
+}

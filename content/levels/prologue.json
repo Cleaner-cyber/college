@@ -1,0 +1,115 @@
+{
+  "id": "prologue",
+  "title": "序章 · 录取通知书",
+  "screens": [
+    {
+      "id": "S1",
+      "type": "dialogue",
+      "speaker": "system",
+      "text": "2026年8月。\n你的录取通知书到了。",
+      "next": "S2",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S2",
+      "type": "input",
+      "text": "通知书上的名字是——",
+      "inputKey": "playerName",
+      "placeholder": "写下你的名字（8 字以内）",
+      "next": "S3"
+    },
+    {
+      "id": "S3",
+      "type": "choice",
+      "text": "录取专业：",
+      "next": "S4a"
+    },
+    {
+      "id": "S4a",
+      "type": "choice",
+      "text": "入学之前，先回答一个没人会问你的问题：\n四年后，你想要什么样的生活？",
+      "choices": [
+        { "id": "s1", "label": "年薪 10 万以内也行", "next": "S4b", "setVar": { "key": "salaryBand", "value": "10万以内" } },
+        { "id": "s2", "label": "年薪 10~20 万", "next": "S4b", "setVar": { "key": "salaryBand", "value": "10~20万" } },
+        { "id": "s3", "label": "年薪 20~30 万", "next": "S4b", "setVar": { "key": "salaryBand", "value": "20~30万" } },
+        { "id": "s4", "label": "年薪 30 万以上", "next": "S4b", "setVar": { "key": "salaryBand", "value": "30万以上" } }
+      ]
+    },
+    {
+      "id": "S4b",
+      "type": "choice",
+      "text": "在哪座城市？",
+      "choices": [
+        { "id": "c1", "label": "一线", "next": "S4c", "setVar": { "key": "city", "value": "一线" } },
+        { "id": "c2", "label": "新一线", "next": "S4c", "setVar": { "key": "city", "value": "新一线" } },
+        { "id": "c3", "label": "回家乡", "next": "S4c", "setVar": { "key": "city", "value": "家乡" } },
+        { "id": "c4", "label": "无所谓", "next": "S4c", "setVar": { "key": "city", "value": "无所谓" } }
+      ]
+    },
+    {
+      "id": "S4c",
+      "type": "choice",
+      "text": "做一份什么样的工作？",
+      "choices": [
+        { "id": "w1", "label": "大厂", "next": "S4d", "setVar": { "key": "workStyle", "value": "大厂" } },
+        { "id": "w2", "label": "体制内", "next": "S4d", "setVar": { "key": "workStyle", "value": "体制内" } },
+        { "id": "w3", "label": "自由职业", "next": "S4d", "setVar": { "key": "workStyle", "value": "自由职业" } },
+        { "id": "w4", "label": "还没想", "next": "S4d", "setVar": { "key": "workStyle", "value": "还没想" } }
+      ]
+    },
+    {
+      "id": "S4d",
+      "type": "choice",
+      "text": "每天几点下班？",
+      "choices": [
+        { "id": "t1", "label": "六点下班", "next": "S5", "setVar": { "key": "offTime", "value": "六点下班" } },
+        { "id": "t2", "label": "不介意加班", "next": "S5", "setVar": { "key": "offTime", "value": "不介意加班" } },
+        { "id": "t3", "label": "想自己安排时间", "next": "S5", "setVar": { "key": "offTime", "value": "想自己安排时间" } }
+      ]
+    },
+    {
+      "id": "S5",
+      "type": "dialogue",
+      "speaker": "senpai",
+      "text": "叮——学长系统绑定成功。\n别紧张，我不是客服。我是四年前坐在你这个位置的人。",
+      "next": "S6",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S6",
+      "type": "reveal",
+      "text": "关于{majorName}，有几件事你现在就该知道。",
+      "next": "S7",
+      "effects": {
+        "typewriter": true,
+        "fakeLoading": { "ms": 1500, "tips": ["学长翻了翻他的旧笔记…"] }
+      }
+    },
+    {
+      "id": "S7",
+      "type": "dialogue",
+      "speaker": "senpai",
+      "text": "我毕业时留下了一个文件夹，里面是我四年做过的每一件东西。\n现在它是你的了。往里装点你自己的吧。",
+      "next": "end",
+      "effects": { "typewriter": true }
+    }
+  ],
+  "copy": {
+    "next-S1": "拆开",
+    "confirm-S2": "就是这个名字",
+    "next-S5": "你是谁？",
+    "next-S6": "收下",
+    "next-S7": "开始大一",
+    "flag-footnote": "随便选。反正你会忘。",
+    "major-search-placeholder": "搜索你的专业",
+    "major-search-empty": "你的专业比较小众，学长帮你按大类看",
+    "major-fallback-pick": "先按通用大类看",
+    "card-core-courses": "四年主干课",
+    "card-hardest": "大一最难两门",
+    "card-gpa-killer": "绩点杀手",
+    "card-destinations": "毕业去向",
+    "card-secret": "没人告诉你的一件事",
+    "card-footer": "第 1 件 · 已放进文件夹",
+    "archive-major-card-title": "我的专业卡片"
+  }
+}
