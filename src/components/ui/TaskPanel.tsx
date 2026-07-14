@@ -13,7 +13,7 @@ export const TaskPanel: React.FC<TaskPanelProps> = ({ items, checked }) => {
   const done = items.filter((i) => checked.includes(i.id)).length;
 
   return (
-    <div className="fixed right-3 top-16 z-20 text-sm">
+    <div className="fixed right-6 top-20 z-20 text-sm">
       <button
         onClick={() => setOpen((o) => !o)}
         className="rounded-full border border-line bg-card px-3 py-1.5 shadow-sm"

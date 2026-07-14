@@ -313,7 +313,7 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
   const checklist = content.checklist ?? [];
   const assets = content.presetAssets ?? {};
 
-  const buildResult = (borrowed: boolean, done: number): LevelResult => ({
+  const buildResult = (borrowed: boolean, done: number, style?: string): LevelResult => ({
     deltas: { portfolio: !borrowed && done === checklist.length ? 2 : 1 },
     abilityUnlocks: ['image-gen'],
     checklistScore: { done, total: checklist.length },
@@ -328,7 +328,7 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
           ? content.copy['archive-resume-line-borrowed']
           : content.copy['archive-resume-line'],
         borrowed,
-        assetRef: borrowed ? 'poster-senpai-34' : 'poster-y1',
+        assetRef: borrowed ? 'poster-senpai-34' : style ? `poster-${style}-34-v2` : undefined,
       },
     ],
   });
@@ -352,7 +352,7 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
               api={api}
               assets={assets}
               total={checklist.length}
-              onDone={() => onComplete(buildResult(false, api.checked.length))}
+              onDone={() => onComplete(buildResult(false, api.checked.length, api.vars.style))}
             />
           ),
           ESC: (api) => (
@@ -366,7 +366,7 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
           ),
         }}
         overlay={(api) => <EscapeOverlay api={api} />}
-        onFinish={(r) => onComplete(buildResult(false, r.checked.length))}
+        onFinish={(r) => onComplete(buildResult(false, r.checked.length, r.vars.style))}
       />
     </>
   );

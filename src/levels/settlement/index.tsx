@@ -55,11 +55,11 @@ const AxesBars: React.FC<{ state: Readonly<PlayerState>; animate?: boolean }> = 
 /** 本学期行动回放：速结行动取 resultText，关卡取档案条目标题 */
 function replayLines(state: Readonly<PlayerState>): { label: string; text: string }[] {
   const qas: QuickAction[] = quickActions[boards.y1s1.quickActionsRef] ?? [];
-  return state.completedActions.map((id) => {
+  return state.completedActions.flatMap((id) => {
     const qa = qas.find((q) => q.id === id);
-    if (qa) return { label: qa.label, text: qa.resultText };
+    if (qa) return [{ label: qa.label, text: qa.resultText }];
     const item = state.archive.find((a) => a.levelId === id);
-    return { label: item?.title ?? id, text: '' };
+    return item ? [{ label: item.title, text: '' }] : [];
   });
 }
 

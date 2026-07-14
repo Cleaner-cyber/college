@@ -1,112 +1,109 @@
 /**
- * 引擎路由/状态机：序章 → 行动板 ⇄ 关卡 → 结算 → 结束（可复看结局卡 + 重开）。
+ * 应用外壳：认证初始化 → 存档适配器注入 → 路由守卫。
+ * 路由：/login /onboarding /home /level/:levelId /settlement
  */
-import React, { useState } from 'react';
-import type { LevelResult } from '@/contracts';
-import { useEngine, effectiveCost } from './store';
-import { levelRegistry } from './registry';
-import { getLevelContent, boards, ui } from './content';
-import { ProfileContext } from './profile';
-import { ActionBoard } from './ActionBoard';
-import { Button } from '@/components/ui/Button';
+import React, { useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { useAuth } from '@/services/auth';
+import {
+  LocalSaveAdapter,
+  SupabaseSaveAdapter,
+  setSaveAdapter,
+} from '@/services/saveAdapter';
+import { useEngine } from './store';
+import { ui } from './content';
+import { LoginPage } from '@/pages/LoginPage';
+import { OnboardingPage } from '@/pages/OnboardingPage';
+import { HomePage } from '@/pages/HomePage';
+import { LevelPage } from '@/pages/LevelPage';
+import { SettlementPage } from '@/pages/SettlementPage';
 
-/** 关卡宿主：查插件、注入内容、承接 onComplete/onEscape */
-const LevelHost: React.FC<{ levelId: string; onDone: () => void }> = ({ levelId, onDone }) => {
+const Loading: React.FC = () => (
+  <div className="flex min-h-dvh items-center justify-center text-sm text-ink-soft">
+    {ui.common.loading}
+  </div>
+);
+
+/** 受保护区域：需要（云端模式下）已登录 + 存档已水合；序章未完成时强制进入序章 */
+const Guard: React.FC<{ children: React.ReactElement }> = ({ children }) => {
+  const status = useAuth((s) => s.status);
+  const ready = useEngine((s) => s.ready);
   const state = useEngine((s) => s.state);
-  const applyLevelResult = useEngine((s) => s.applyLevelResult);
-  const mod = levelRegistry[levelId];
-  const content = getLevelContent(levelId);
+  const location = useLocation();
 
-  const levelEntry = boards.y1s1.levels.find((lv) => lv.id === levelId);
-  const cost = levelEntry
-    ? effectiveCost(levelEntry.cost, levelEntry.costWithAbility, state.abilities)
-    : 0;
+  if (status === 'loading') return <Loading />;
+  if (status === 'signed-out') return <Navigate to="/login" replace />;
+  if (!ready || !state) return <Loading />;
 
-  const finish = (result: LevelResult) => {
-    applyLevelResult(levelId, cost, result);
-    onDone();
-  };
-
-  return (
-    <mod.Component state={state} content={content} onComplete={finish} onEscape={finish} />
-  );
-};
-
-/** 结局复看模式：结算屏可重复进入，底部提供重开 */
-const EndView: React.FC = () => {
-  const state = useEngine((s) => s.state);
-  const reset = useEngine((s) => s.reset);
-  const [confirming, setConfirming] = useState(false);
-  const mod = levelRegistry['settlement'];
-  const content = getLevelContent('settlement');
-
-  return (
-    <div className="pb-20">
-      <mod.Component
-        state={state}
-        content={content}
-        onComplete={() => setConfirming(true)}
-        onEscape={() => setConfirming(true)}
-      />
-      <div className="fixed inset-x-0 bottom-0 border-t border-line bg-paper/95 p-3 backdrop-blur">
-        <div className="mx-auto max-w-app">
-          <Button variant="ghost" full onClick={() => setConfirming(true)}>
-            {ui.end.restart}
-          </Button>
-        </div>
-      </div>
-      {confirming && (
-        <div className="fixed inset-0 z-30 flex items-end justify-center bg-black/30 p-5">
-          <div className="w-full max-w-app rounded-2xl bg-paper p-5 animate-fade-up">
-            <p className="text-[16px] font-medium">{ui.end['restart-confirm']}</p>
-            <div className="mt-5 flex flex-col gap-2">
-              <Button full onClick={reset}>
-                {ui.end['restart-yes']}
-              </Button>
-              <Button variant="secondary" full onClick={() => setConfirming(false)}>
-                {ui.end['restart-no']}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  const atOnboarding = location.pathname === '/onboarding';
+  if (state.semester === 'prologue' && !atOnboarding) {
+    return <Navigate to="/onboarding" replace />;
+  }
+  if (state.semester !== 'prologue' && atOnboarding) {
+    return <Navigate to="/home" replace />;
+  }
+  return children;
 };
 
 export const App: React.FC = () => {
-  const state = useEngine((s) => s.state);
-  const setProfile = useEngine((s) => s.setProfile);
-  const [activeLevel, setActiveLevel] = useState<string | null>(null);
+  const { status, userId, init } = useAuth();
+  const hydrate = useEngine((s) => s.hydrate);
+  const unload = useEngine((s) => s.unload);
 
-  if (state.semester === 'prologue') {
-    return (
-      <ProfileContext.Provider
-        value={{
-          setName: (name) => setProfile({ name }),
-          setMajor: (majorId) => setProfile({ majorId }),
-          setFlag: (flag) => setProfile({ flag }),
-        }}
-      >
-        <LevelHost levelId="prologue" onDone={() => setActiveLevel(null)} />
-      </ProfileContext.Provider>
-    );
-  }
+  useEffect(() => {
+    init();
+  }, [init]);
 
-  if (state.semester === 'y1s1-end') {
-    return <EndView />;
-  }
-
-  // y1s1
-  if (activeLevel) {
-    return <LevelHost levelId={activeLevel} onDone={() => setActiveLevel(null)} />;
-  }
+  // 认证状态 → 存档适配器
+  useEffect(() => {
+    if (status === 'local') {
+      setSaveAdapter(new LocalSaveAdapter());
+      void hydrate();
+    } else if (status === 'signed-in' && userId) {
+      setSaveAdapter(new SupabaseSaveAdapter(userId));
+      void hydrate();
+    } else if (status === 'signed-out') {
+      setSaveAdapter(null);
+      unload();
+    }
+  }, [status, userId, hydrate, unload]);
 
   return (
-    <ActionBoard
-      state={state}
-      onEnterLevel={setActiveLevel}
-      onSettle={() => setActiveLevel('settlement')}
-    />
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/onboarding"
+        element={
+          <Guard>
+            <OnboardingPage />
+          </Guard>
+        }
+      />
+      <Route
+        path="/home"
+        element={
+          <Guard>
+            <HomePage />
+          </Guard>
+        }
+      />
+      <Route
+        path="/level/:levelId"
+        element={
+          <Guard>
+            <LevelPage />
+          </Guard>
+        }
+      />
+      <Route
+        path="/settlement"
+        element={
+          <Guard>
+            <SettlementPage />
+          </Guard>
+        }
+      />
+      <Route path="*" element={<Navigate to="/home" replace />} />
+    </Routes>
   );
 };

@@ -1,6 +1,7 @@
 /**
  * 类型契约 —— 与 docs/02_数据契约.md 一一对应。
  * 【冻结件】改动需项目负责人确认，禁止自行扩展。
+ * v2：桌面端 + 云存档版。新增行动日志 log；行动点只用于选修，教学关为主线必修。
  */
 import type React from 'react';
 
@@ -30,8 +31,15 @@ export interface ArchiveItem {
   assetRef?: string; // 关联资产 id（可选）
 }
 
+/** 行动记录（Home 的「记录」页展示；文案由引擎用 /content 模板生成） */
+export interface LogEntry {
+  ts: string; // ISO
+  type: 'level' | 'quick' | 'semester' | 'system';
+  text: string;
+}
+
 export interface PlayerState {
-  version: 1; // 存档版本，迁移用
+  version: 2; // 存档版本，迁移用
   createdAt: string; // ISO
   player: {
     name: string; // 打字输入①
@@ -51,11 +59,12 @@ export interface PlayerState {
     cash: number; // 现金
     energy: number; // 精力（隐藏轴）
   };
-  actionPoints: number; // 当前学期剩余行动点
+  actionPoints: number; // 当前学期剩余行动点（只用于选修行动；主线教学关不耗点）
   semester: SemesterId;
   abilities: AbilityId[]; // 已解锁 AI 能力
   archive: ArchiveItem[]; // 档案（驱动简历/结局个性化）
   completedActions: string[]; // 本学期已执行的行动 id（含关卡与速结）
+  log: LogEntry[]; // 全程行动记录
 }
 
 // ---------- 2. 关卡插件接口 ----------
@@ -152,6 +161,8 @@ export interface QuickAction {
 }
 
 // ---------- 4. 存档 ----------
+// 云端：Supabase game_saves 表（user_id 主键 + state jsonb，RLS 仅本人可读写）
+// 本地降级模式：localStorage（未配置 Supabase 环境变量时）
 
-export const SAVE_KEY = 'unisim_save_v1';
-export const SAVE_VERSION = 1 as const;
+export const SAVE_KEY = 'unisim_save_v2';
+export const SAVE_VERSION = 2 as const;

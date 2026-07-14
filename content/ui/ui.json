@@ -1,18 +1,107 @@
 {
   "app-title": "大学模拟器",
+  "app-subtitle": "把大学四年先过一遍",
   "axes": {
     "academic": "学术",
     "portfolio": "作品",
     "expression": "表达",
-    "cash": "现金"
+    "cash": "现金",
+    "energy": "精力"
   },
-  "hud": {
+  "abilities": {
+    "doc-feeding": "投喂长文档",
+    "image-gen": "生图与迭代",
+    "role-play": "角色扮演",
+    "structured-gen": "结构化生成",
+    "ai-coding": "AI 编程",
+    "examiner": "考官模式",
+    "note-taking": "语音笔记",
+    "lit-review": "文献综述",
+    "data-analysis": "数据分析",
+    "multimodal": "多模态"
+  },
+  "auth": {
+    "welcome-title": "大学模拟器",
+    "welcome-sub": "一个大学四年模拟器。里面掉落的东西是真的。",
+    "email-label": "邮箱",
+    "email-placeholder": "you@example.com",
+    "password-label": "密码",
+    "password-placeholder": "至少 6 位",
+    "login-btn": "登录",
+    "register-btn": "注册",
+    "to-register": "还没有账号？注册一个",
+    "to-login": "已有账号？直接登录",
+    "submitting": "请稍候…",
+    "confirm-email-sent": "注册成功。请到邮箱点击确认链接，然后回来登录。",
+    "err-invalid": "邮箱或密码不对，再试试",
+    "err-exists": "这个邮箱已经注册过了，直接登录吧",
+    "err-weak-password": "密码太短，至少 6 位",
+    "err-generic": "出了点问题，稍后再试",
+    "err-email-not-confirmed": "邮箱还没确认。去收件箱找一下确认邮件",
+    "local-mode-title": "本地试玩模式",
+    "local-mode-desc": "未配置云端数据库（Supabase），进度只存在这台电脑的浏览器里。",
+    "local-mode-btn": "开始本地试玩",
+    "logout": "退出登录"
+  },
+  "home": {
+    "nav-semester": "本学期",
+    "nav-folder": "文件夹",
+    "nav-stats": "属性",
+    "nav-log": "记录",
+    "mainline-title": "主线任务",
+    "mainline-sub": "教学关不耗行动点，全部完成才能结束学期",
+    "mainline-done-tag": "已完成",
+    "mainline-enter": "进入",
+    "mainline-locked": "未解锁",
+    "electives-title": "行动板 · 选修",
+    "electives-sub": "行动点花在哪，学期就长成什么样",
+    "settle-btn": "结束这学期",
+    "settle-hint-mainline": "主线任务还没做完",
+    "settle-hint-ready": "剩余行动点会转化为休息（精力 +1/点）",
+    "folder-title": "文件夹",
+    "folder-sub": "你四年做过的每一件东西，都会在这里",
+    "folder-empty": "还是空的。去做点什么吧。",
+    "borrowed-tag": "借来的",
+    "stats-title": "属性面板",
+    "stats-flag-title": "入学时立的四年目标",
+    "stats-flag-salary": "年薪",
+    "stats-flag-city": "城市",
+    "stats-flag-work": "工作",
+    "stats-flag-time": "下班",
+    "stats-abilities-title": "已解锁 AI 能力",
+    "stats-abilities-empty": "还没解锁任何能力。主线教学关里学。",
+    "stats-energy-note": "精力过低时，学长会提醒你歇歇",
+    "log-title": "记录",
+    "log-empty": "还没有记录。",
     "action-points": "行动点",
-    "folder": "文件夹"
+    "timeline-title": "四年时间轴",
+    "timeline": "序章｜大一上｜大一下｜大二上｜大二下｜大三上｜大三下｜大四｜毕业",
+    "timeline-current": "当前",
+    "demo-end-title": "大一上 · 已结束",
+    "demo-end-desc": "Demo 到这里。后面的学期正在路上。",
+    "view-ending": "查看结局卡",
+    "restart": "重新开始",
+    "restart-confirm": "会清空这份存档，重新入学。确定吗？",
+    "restart-yes": "确定重开",
+    "restart-no": "再想想",
+    "greeting": "{playerName} · {majorName}"
+  },
+  "level-page": {
+    "back": "返回主页",
+    "leave-confirm-title": "现在离开，这一关的进度不会保存。",
+    "leave-yes": "离开",
+    "leave-no": "继续做"
+  },
+  "log-tmpl": {
+    "level-complete": "完成主线「{label}」",
+    "level-borrowed": "在学长帮助下交付了「{label}」",
+    "quick": "{label}：{result}",
+    "semester-start": "大一上学期开始了",
+    "semester-end": "大一上学期结束，剩余 {points} 点行动点转化为休息",
+    "profile-created": "{playerName} 入学，专业：{majorName}",
+    "ability-unlock": "解锁 AI 能力「{ability}」"
   },
   "board": {
-    "end-semester": "结束这学期",
-    "end-semester-hint": "行动点用尽后可结算",
     "completed-tag": "已完成",
     "discount-tag": "⚡ 已学会，省时间",
     "cost-unit": "点",
@@ -24,18 +113,10 @@
     "title": "学姐的要求",
     "progress": "{done}/{total}"
   },
-  "escape": {
-    "button": "问学长"
-  },
-  "end": {
-    "restart": "重新开始",
-    "restart-confirm": "会清空这份存档，重新入学。确定吗？",
-    "restart-yes": "确定重开",
-    "restart-no": "再想想"
-  },
   "common": {
     "continue": "继续",
     "confirm": "确认",
-    "skip-typing": "点击跳过"
+    "cancel": "取消",
+    "loading": "加载中…"
   }
 }

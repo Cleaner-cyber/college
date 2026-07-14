@@ -1,0 +1,489 @@
+/**
+ * Home 主界面（桌面端游戏 hub）：
+ * 左侧导航（本学期/文件夹/属性/记录 + 四年时间轴）
+ * 中间内容区（主线任务 / 选修行动板 / 档案 / 属性 / 记录）
+ * 右侧状态栏（行动点 / 四轴 / 四年目标 / 已解锁能力）
+ */
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import type { ArchiveItem, PlayerState, QuickAction } from '@/contracts';
+import { boards, getMajor, interpolate, quickActions, ui } from '@/engine/content';
+import { useEngine, effectiveCost, isMainlineComplete } from '@/engine/store';
+import { useAuth } from '@/services/auth';
+import { isCloudMode } from '@/services/supabase';
+import { Button } from '@/components/ui/Button';
+import { Panel } from '@/components/ui/Panel';
+
+const home = ui.home as Record<string, string>;
+const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
+const AXIS_MAX = 8;
+
+type Tab = 'semester' | 'folder' | 'stats' | 'log';
+
+// ---------- 右侧状态栏 ----------
+
+const AxisBar: React.FC<{ label: string; value: number; strong?: boolean }> = ({
+  label,
+  value,
+  strong = false,
+}) => (
+  <div className="flex items-center gap-3">
+    <span className="w-8 shrink-0 text-right text-xs text-ink-soft">{label}</span>
+    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+      <div
+        className={`h-full rounded-full transition-[width] duration-500 ${strong ? 'bg-accent' : 'bg-ink'}`}
+        style={{ width: `${Math.max(0, Math.min(100, (value / AXIS_MAX) * 100))}%` }}
+      />
+    </div>
+    <span className="w-4 text-right text-xs font-semibold">{value}</span>
+  </div>
+);
+
+const StatusRail: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
+  <div className="flex flex-col gap-4">
+    <Panel title={home['action-points']}>
+      <div className="flex items-center gap-2">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <span
+            key={i}
+            className={`inline-block h-4 w-4 rounded-full ${
+              i < state.actionPoints ? 'bg-accent' : 'border border-line bg-paper'
+            }`}
+          />
+        ))}
+        <span className="ml-1 text-sm font-semibold">{state.actionPoints}/3</span>
+      </div>
+    </Panel>
+    <Panel title={home['stats-title']}>
+      <div className="flex flex-col gap-2.5">
+        {VISIBLE_AXES.map((a) => (
+          <AxisBar key={a} label={ui.axes[a]} value={state.axes[a]} />
+        ))}
+        <AxisBar label={ui.axes.energy} value={state.axes.energy} strong />
+      </div>
+    </Panel>
+    <Panel title={home['stats-flag-title']}>
+      <dl className="grid grid-cols-1 gap-1.5 text-sm">
+        {(
+          [
+            ['stats-flag-salary', state.flag.salaryBand],
+            ['stats-flag-city', state.flag.city],
+            ['stats-flag-work', state.flag.workStyle],
+            ['stats-flag-time', state.flag.offTime],
+          ] as const
+        ).map(([k, v]) => (
+          <div key={k} className="flex items-baseline justify-between">
+            <dt className="text-xs text-ink-soft">{home[k]}</dt>
+            <dd className="font-medium">{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </Panel>
+    <Panel title={home['stats-abilities-title']}>
+      {state.abilities.length === 0 ? (
+        <p className="text-xs leading-relaxed text-ink-soft">{home['stats-abilities-empty']}</p>
+      ) : (
+        <div className="flex flex-wrap gap-1.5">
+          {state.abilities.map((a) => (
+            <span
+              key={a}
+              className="rounded-lg bg-accent-soft px-2 py-1 text-xs font-medium text-accent"
+            >
+              ⚡ {ui.abilities[a] ?? a}
+            </span>
+          ))}
+        </div>
+      )}
+    </Panel>
+  </div>
+);
+
+// ---------- 左侧导航 ----------
+
+const NavColumn: React.FC<{
+  tab: Tab;
+  onTab: (t: Tab) => void;
+  state: Readonly<PlayerState>;
+}> = ({ tab, onTab, state }) => {
+  const items: [Tab, string][] = [
+    ['semester', home['nav-semester']],
+    ['folder', home['nav-folder']],
+    ['stats', home['nav-stats']],
+    ['log', home['nav-log']],
+  ];
+  const timeline = home['timeline'].split('｜');
+  const currentIdx = state.semester === 'prologue' ? 0 : 1; // demo 只到大一上
+  return (
+    <div className="flex flex-col gap-6">
+      <nav className="flex flex-col gap-1">
+        {items.map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => onTab(key)}
+            className={`rounded-xl px-4 py-2.5 text-left text-[15px] transition ${
+              tab === key ? 'bg-ink font-medium text-paper' : 'text-ink hover:bg-line/60'
+            }`}
+          >
+            {label}
+            {key === 'folder' && state.archive.length > 0 && (
+              <span className="ml-2 text-xs opacity-70">{state.archive.length}</span>
+            )}
+          </button>
+        ))}
+      </nav>
+      <div>
+        <div className="mb-2 px-1 text-[11px] tracking-widest text-ink-soft">
+          {home['timeline-title']}
+        </div>
+        <ol className="flex flex-col gap-1 px-1">
+          {timeline.map((t, i) => (
+            <li
+              key={t}
+              className={`flex items-center gap-2 text-xs ${
+                i === currentIdx ? 'font-semibold text-accent' : i < currentIdx ? 'text-ink' : 'text-ink-soft/50'
+              }`}
+            >
+              <span
+                className={`inline-block h-1.5 w-1.5 rounded-full ${
+                  i === currentIdx ? 'bg-accent' : i < currentIdx ? 'bg-ink' : 'bg-line'
+                }`}
+              />
+              {t}
+              {i === currentIdx && <span className="text-[10px]">◀ {home['timeline-current']}</span>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  );
+};
+
+// ---------- 本学期 ----------
+
+const QuickResultModal: React.FC<{ qa: QuickAction; onClose: () => void }> = ({ qa, onClose }) => (
+  <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6">
+    <div className="w-full max-w-md rounded-2xl bg-paper p-6 animate-fade-up">
+      <div className="flex flex-wrap gap-2">
+        {VISIBLE_AXES.filter((a) => (qa.deltas[a] ?? 0) !== 0).map((a) => (
+          <span
+            key={a}
+            className="animate-num-pop rounded-lg bg-accent-soft px-2.5 py-1 text-sm font-semibold text-accent"
+          >
+            {ui.axes[a]} {qa.deltas[a]! > 0 ? '+' : ''}
+            {qa.deltas[a]}
+          </span>
+        ))}
+      </div>
+      <p className="mt-4 text-[16px] leading-relaxed">{qa.resultText}</p>
+      {qa.senpaiComment && (
+        <p className="mt-3 text-sm text-ink-soft">
+          <span className="mr-1.5 rounded bg-accent-soft px-1.5 py-0.5 text-xs font-semibold text-accent">
+            {ui.board['senpai-prefix']}
+          </span>
+          {qa.senpaiComment}
+        </p>
+      )}
+      <Button full className="mt-6" onClick={onClose}>
+        {ui.common.continue}
+      </Button>
+    </div>
+  </div>
+);
+
+const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const navigate = useNavigate();
+  const runQuickAction = useEngine((s) => s.runQuickAction);
+  const [lastQuick, setLastQuick] = useState<QuickAction | null>(null);
+  const board = boards.y1s1;
+  const qas = quickActions[board.quickActionsRef] ?? [];
+  const mainlineDone = isMainlineComplete(state);
+  const firstMainlineDone = state.completedActions.includes(board.mainline[0]?.id);
+
+  if (state.semester === 'y1s1-end') {
+    return <SemesterEnded />;
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Panel title={home['mainline-title']} sub={home['mainline-sub']}>
+        <ol className="flex flex-col gap-3">
+          {board.mainline.map((m, i) => {
+            const done = state.completedActions.includes(m.id);
+            const unlocked = i === 0 || state.completedActions.includes(board.mainline[i - 1].id);
+            return (
+              <li
+                key={m.id}
+                className={`flex items-center gap-4 rounded-xl border p-4 ${
+                  done ? 'border-line bg-paper opacity-70' : unlocked ? 'border-accent/50 bg-card' : 'border-line bg-paper opacity-45'
+                }`}
+              >
+                <span
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+                    done ? 'bg-ink text-paper' : unlocked ? 'bg-accent text-white' : 'bg-line text-ink-soft'
+                  }`}
+                >
+                  {done ? '✓' : i + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[16px] font-medium">{m.label}</span>
+                    <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[11px] text-accent">
+                      {m.tag}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 truncate text-sm text-ink-soft">{m.desc}</p>
+                </div>
+                {done ? (
+                  <span className="text-xs text-ink-soft">{home['mainline-done-tag']}</span>
+                ) : unlocked ? (
+                  <Button onClick={() => navigate(`/level/${m.id}`)}>{home['mainline-enter']}</Button>
+                ) : (
+                  <span className="text-xs text-ink-soft">{board.mainlineLockText}</span>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </Panel>
+
+      <Panel title={home['electives-title']} sub={home['electives-sub']}>
+        {!firstMainlineDone && (
+          <p className="mb-3 text-sm text-accent">{board.electivesLockText}</p>
+        )}
+        <div className={`grid grid-cols-2 gap-3 ${firstMainlineDone ? '' : 'pointer-events-none opacity-40'}`}>
+          {qas.map((qa) => {
+            const cost = effectiveCost(qa.cost, qa.costWithAbility, state.abilities);
+            const done = state.completedActions.includes(qa.id);
+            const unaffordable = cost > state.actionPoints;
+            return (
+              <button
+                key={qa.id}
+                disabled={done || unaffordable}
+                onClick={() => {
+                  runQuickAction(qa);
+                  window.setTimeout(() => setLastQuick(qa), 250);
+                }}
+                className={`rounded-xl border border-line bg-card p-4 text-left transition hover:border-ink/30 disabled:hover:border-line ${
+                  done ? 'opacity-55' : unaffordable ? 'opacity-40' : ''
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[15px] font-medium">{qa.label}</span>
+                  {done ? (
+                    <span className="text-xs text-ink-soft">✓ {ui.board['completed-tag']}</span>
+                  ) : (
+                    <span className={`text-xs ${cost < qa.cost ? 'text-accent' : 'text-ink-soft'}`}>
+                      {cost === 0 ? ui.board['free-tag'] : `${'●'.repeat(cost)} ${cost}${ui.board['cost-unit']}`}
+                    </span>
+                  )}
+                </div>
+                {cost < qa.cost && !done && (
+                  <div className="mt-1 text-xs text-accent">{ui.board['discount-tag']}</div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </Panel>
+
+      <div className="flex items-center justify-end gap-4">
+        <span className="text-sm text-ink-soft">
+          {mainlineDone ? home['settle-hint-ready'] : home['settle-hint-mainline']}
+        </span>
+        <Button disabled={!mainlineDone} onClick={() => navigate('/settlement')}>
+          {home['settle-btn']}
+        </Button>
+      </div>
+
+      {lastQuick && <QuickResultModal qa={lastQuick} onClose={() => setLastQuick(null)} />}
+    </div>
+  );
+};
+
+const SemesterEnded: React.FC = () => {
+  const navigate = useNavigate();
+  const reset = useEngine((s) => s.reset);
+  const [confirming, setConfirming] = useState(false);
+  return (
+    <Panel>
+      <div className="py-6 text-center">
+        <h2 className="text-xl font-semibold">{home['demo-end-title']}</h2>
+        <p className="mt-2 text-sm text-ink-soft">{home['demo-end-desc']}</p>
+        <div className="mx-auto mt-6 flex max-w-xs flex-col gap-2">
+          <Button onClick={() => navigate('/settlement')}>{home['view-ending']}</Button>
+          <Button variant="ghost" onClick={() => setConfirming(true)}>
+            {home['restart']}
+          </Button>
+        </div>
+      </div>
+      {confirming && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6">
+          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 animate-fade-up">
+            <p className="text-[16px] font-medium">{home['restart-confirm']}</p>
+            <div className="mt-5 flex flex-col gap-2">
+              <Button full onClick={() => void reset()}>
+                {home['restart-yes']}
+              </Button>
+              <Button variant="secondary" full onClick={() => setConfirming(false)}>
+                {home['restart-no']}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </Panel>
+  );
+};
+
+// ---------- 文件夹 / 属性 / 记录 ----------
+
+const ArchiveCard: React.FC<{ item: ArchiveItem }> = ({ item }) => {
+  const [imgOk, setImgOk] = useState(true);
+  return (
+    <div className="overflow-hidden rounded-xl border border-line bg-card">
+      {item.assetRef && imgOk && (
+        <img
+          src={`/assets/${item.assetRef}.svg`}
+          alt=""
+          onError={() => setImgOk(false)}
+          className="h-36 w-full border-b border-line object-cover"
+        />
+      )}
+      <div className="flex items-center justify-between gap-2 p-3.5">
+        <span className="truncate text-[14px] font-medium">📁 {item.title}</span>
+        {item.borrowed && (
+          <span className="shrink-0 rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
+            {home['borrowed-tag']}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
+  <Panel title={home['folder-title']} sub={home['folder-sub']}>
+    {state.archive.length === 0 ? (
+      <p className="rounded-xl border border-dashed border-line p-10 text-center text-sm text-ink-soft">
+        {home['folder-empty']}
+      </p>
+    ) : (
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
+        {state.archive.map((item) => (
+          <ArchiveCard key={item.id} item={item} />
+        ))}
+      </div>
+    )}
+  </Panel>
+);
+
+const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
+  <div className="flex flex-col gap-4">
+    <Panel title={home['stats-title']}>
+      <div className="flex flex-col gap-3">
+        {VISIBLE_AXES.map((a) => (
+          <AxisBar key={a} label={ui.axes[a]} value={state.axes[a]} />
+        ))}
+        <AxisBar label={ui.axes.energy} value={state.axes.energy} strong />
+        <p className="text-xs text-ink-soft">{home['stats-energy-note']}</p>
+      </div>
+    </Panel>
+    <Panel title={home['stats-abilities-title']}>
+      {state.abilities.length === 0 ? (
+        <p className="text-sm text-ink-soft">{home['stats-abilities-empty']}</p>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {state.abilities.map((a) => (
+            <span key={a} className="rounded-lg bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent">
+              ⚡ {ui.abilities[a] ?? a}
+            </span>
+          ))}
+        </div>
+      )}
+    </Panel>
+  </div>
+);
+
+const LogTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
+  <Panel title={home['log-title']}>
+    {state.log.length === 0 ? (
+      <p className="text-sm text-ink-soft">{home['log-empty']}</p>
+    ) : (
+      <ol className="flex flex-col gap-0.5">
+        {[...state.log].reverse().map((entry, i) => (
+          <li key={i} className="flex items-baseline gap-3 border-b border-line/60 py-2.5 last:border-b-0">
+            <time className="shrink-0 text-xs tabular-nums text-ink-soft">
+              {new Date(entry.ts).toLocaleString('zh-CN', {
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </time>
+            <span
+              className={`text-sm leading-relaxed ${entry.type === 'semester' ? 'font-semibold' : ''}`}
+            >
+              {entry.text}
+            </span>
+          </li>
+        ))}
+      </ol>
+    )}
+  </Panel>
+);
+
+// ---------- 页面 ----------
+
+export const HomePage: React.FC = () => {
+  const state = useEngine((s) => s.state)!;
+  const { email, signOut } = useAuth();
+  const [tab, setTab] = useState<Tab>('semester');
+  const major = getMajor(state.player.majorId);
+
+  return (
+    <div className="min-h-dvh">
+      <header className="border-b border-line bg-paper/95">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3.5">
+          <div className="flex items-baseline gap-4">
+            <span className="text-lg font-semibold tracking-widest">{ui['app-title']}</span>
+            <span className="text-sm text-ink-soft">{boards.y1s1.header}</span>
+          </div>
+          <div className="flex items-center gap-4 text-sm">
+            <span className="font-medium">
+              {interpolate(home['greeting'], {
+                playerName: state.player.name,
+                majorName: major.name,
+              })}
+            </span>
+            {isCloudMode ? (
+              <>
+                <span className="text-xs text-ink-soft">{email}</span>
+                <button
+                  className="text-xs text-ink-soft underline underline-offset-4"
+                  onClick={() => void signOut()}
+                >
+                  {(ui.auth as Record<string, string>)['logout']}
+                </button>
+              </>
+            ) : (
+              <span className="rounded bg-line px-2 py-0.5 text-xs text-ink-soft">
+                {(ui.auth as Record<string, string>)['local-mode-title']}
+              </span>
+            )}
+          </div>
+        </div>
+      </header>
+
+      <div className="mx-auto grid max-w-[1200px] grid-cols-[200px_minmax(0,1fr)_280px] gap-6 px-6 py-6">
+        <NavColumn tab={tab} onTab={setTab} state={state} />
+        <main className="animate-fade-up" key={tab}>
+          {tab === 'semester' && <SemesterTab state={state} />}
+          {tab === 'folder' && <FolderTab state={state} />}
+          {tab === 'stats' && <StatsTab state={state} />}
+          {tab === 'log' && <LogTab state={state} />}
+        </main>
+        <StatusRail state={state} />
+      </div>
+    </div>
+  );
+};

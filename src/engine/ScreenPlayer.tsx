@@ -247,8 +247,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
   const customRenderer = custom?.[screen.id];
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-app flex-col px-5 pb-10 pt-6">
-      <div className="mb-6 text-xs tracking-widest text-ink-soft">{content.title}</div>
+    <div className="mx-auto flex w-full max-w-xl flex-col px-6 pb-16 pt-10">
       {needsLoading ? (
         <FakeLoading
           key={screen.id}

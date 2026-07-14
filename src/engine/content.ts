@@ -2,7 +2,7 @@
  * 内容加载器：所有面向用户的文案均来自 /content 下的 JSON。
  * 引擎负责加载并注入关卡（关卡不自行 import 内容）。
  */
-import type { LevelContent, Major, QuickAction, AbilityId } from '@/contracts';
+import type { LevelContent, Major, QuickAction } from '@/contracts';
 
 import prologueJson from '@content/levels/prologue.json';
 import courseSelectJson from '@content/levels/course-select.json';
@@ -45,19 +45,19 @@ export const quickActions: Record<string, QuickAction[]> = {
   y1s1: quickActionsY1s1 as QuickAction[],
 };
 
-export interface BoardLevelEntry {
-  id: string;
+export interface BoardMainlineEntry {
+  id: string; // 关卡 id
   label: string;
-  tag: string;
-  cost: number;
-  costWithAbility?: { ability: AbilityId; cost: number };
+  tag: string; // 如「教学 · 投喂长文档」
+  desc: string; // 卡片描述
 }
 
 export interface BoardConfig {
   id: string;
   header: string;
-  required: { id: string; label: string; tag: string; lockText: string };
-  levels: BoardLevelEntry[];
+  mainline: BoardMainlineEntry[]; // 主线必修（教学关）：不耗行动点，顺序解锁，全部完成才能结算
+  mainlineLockText: string;
+  electivesLockText: string;
   quickActionsRef: string;
 }
 
