@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import type { LevelModule, LevelProps, PlayerState, QuickAction } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
-import { ui, quickActions, boards, interpolate } from '@/engine/content';
+import { ui, quickActions, boards, interpolate, getFolderSection } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
 
@@ -119,8 +119,10 @@ const Folder: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api,
 );
 
 const EndingCard: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => {
-  const total = state.archive.length;
-  const own = state.archive.filter((a) => !a.borrowed).length;
+  // 「做了 N 件」只数作品与档案，提示词模板不算产出
+  const made = state.archive.filter((a) => getFolderSection(a.id) !== 'prompts');
+  const total = made.length;
+  const own = made.filter((a) => !a.borrowed).length;
   const flagRows: [string, string][] = [
     [api.copy('s3-flag-salary'), state.flag.salaryBand],
     [api.copy('s3-flag-city'), state.flag.city],

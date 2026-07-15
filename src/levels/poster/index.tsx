@@ -330,6 +330,14 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
         borrowed,
         assetRef: borrowed ? 'poster-senpai-34' : style ? `poster-${style}-34-v2` : undefined,
       },
+      {
+        // 学完即沉淀：生图提示词模板入库（走[问学长]也给——模板是知识，不打借条）
+        id: 'prompt-image-gen',
+        levelId: 'poster',
+        title: content.copy['prompt-item-title'],
+        resumeLine: '',
+        borrowed: false,
+      },
     ],
   });
 

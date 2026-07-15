@@ -22,6 +22,32 @@ function inline(text: string, key?: React.Key): React.ReactNode {
   );
 }
 
+/**
+ * 提示词模板渲染：【填：xxx】为用户填空槽位（橙色高亮），其余为固定文本。
+ */
+export const PromptText: React.FC<{ text: string; className?: string }> = ({
+  text,
+  className = '',
+}) => {
+  const parts = text.split(/(【填：[^】]*】)/g);
+  return (
+    <div className={`whitespace-pre-wrap leading-relaxed ${className}`}>
+      {parts.map((p, i) =>
+        p.startsWith('【填：') ? (
+          <mark
+            key={i}
+            className="mx-0.5 rounded border-b-2 border-dashed border-accent bg-accent-soft px-1.5 py-0.5 text-[0.92em] text-accent"
+          >
+            ✎ {p.slice(3, -1)}
+          </mark>
+        ) : (
+          p
+        ),
+      )}
+    </div>
+  );
+};
+
 export function renderMarkdown(md: string): React.ReactNode {
   const lines = md.split('\n');
   const blocks: React.ReactNode[] = [];

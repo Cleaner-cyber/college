@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import type { ArchiveItem, PlayerState, QuickAction } from '@/contracts';
 import {
   boards,
+  getFolderSection,
   getLevelContent,
   getMajor,
   interpolate,
@@ -20,6 +21,7 @@ import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
+import { PromptText, renderMarkdown } from '@/components/ui/Markdown';
 
 const home = ui.home as Record<string, string>;
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
@@ -372,47 +374,139 @@ const SemesterEnded: React.FC = () => {
   );
 };
 
-// ---------- 文件夹 / 属性 / 记录 ----------
+// ---------- 文件夹：作品集 / 提示词库 / 档案 ----------
 
-const ArchiveCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
+const SectionHead: React.FC<{ title: string; sub: string; count: number }> = ({
+  title,
+  sub,
+  count,
+}) => (
+  <header className="mb-3 mt-1 flex items-baseline gap-3">
+    <h3 className="border-b-2 border-accent pb-1 text-[15px] font-semibold tracking-wide">
+      {title}
+    </h3>
+    <span className="text-xs text-ink-soft">{sub}</span>
+    {count > 0 && (
+      <span className="ml-auto rounded-full bg-line px-2 py-0.5 text-[11px] text-ink-soft">
+        {count}
+      </span>
+    )}
+  </header>
+);
+
+/** 作品卡：横向堆叠的大图卡片 */
+const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
   const [imgOk, setImgOk] = useState(true);
   return (
     <button
       onClick={onOpen}
-      className="overflow-hidden rounded-xl border border-line bg-card text-left transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
+      className="w-[270px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left shadow-sm transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lg"
     >
-      {item.assetRef && imgOk && (
-        <img
-          src={`/assets/${item.assetRef}.svg`}
-          alt=""
-          onError={() => setImgOk(false)}
-          className="h-36 w-full border-b border-line object-cover"
-        />
-      )}
-      <div className="flex items-center justify-between gap-2 p-3.5">
-        <span className="truncate text-[14px] font-medium">📁 {item.title}</span>
-        {item.borrowed ? (
-          <span className="shrink-0 rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
-            {home['borrowed-tag']}
-          </span>
+      <div className="h-[180px] w-full overflow-hidden border-b border-line bg-paper">
+        {item.assetRef && imgOk ? (
+          <img
+            src={`/assets/${item.assetRef}.svg`}
+            alt=""
+            onError={() => setImgOk(false)}
+            className="h-full w-full object-cover"
+          />
         ) : (
-          <span className="shrink-0 text-xs text-ink-soft">›</span>
+          <div className="flex h-full items-center justify-center text-4xl">🗂️</div>
+        )}
+      </div>
+      <div className="p-4">
+        <div className="flex items-center justify-between gap-2">
+          <span className="truncate text-[14.5px] font-medium">{item.title}</span>
+          {item.borrowed && (
+            <span className="shrink-0 rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
+              {home['borrowed-tag']}
+            </span>
+          )}
+        </div>
+        {item.resumeLine && (
+          <p className="mt-1 truncate text-xs text-ink-soft">{item.resumeLine}</p>
         )}
       </div>
     </button>
   );
 };
 
-/** 档案详情：按来源关卡还原内容（专业卡片 / 避坑清单 / 海报双图） */
+/** 提示词模板卡：带槽位预览 */
+const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
+  const template = getLevelContent(item.levelId).copy['prompt-template'] ?? '';
+  return (
+    <button
+      onClick={onOpen}
+      className="break-inside-avoid overflow-hidden rounded-2xl border border-line bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
+    >
+      <div className="mb-2 flex items-center gap-2">
+        <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[11px] font-medium text-accent">
+          ⚡ {home['prompt-badge']}
+        </span>
+        <span className="text-[14.5px] font-semibold">{item.title}</span>
+      </div>
+      <div className="relative max-h-24 overflow-hidden">
+        <PromptText text={template} className="text-[12px] text-ink-soft" />
+        <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-card to-transparent" />
+      </div>
+    </button>
+  );
+};
+
+/** 档案卡：信纸折角样式 */
+const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
+  <button
+    onClick={onOpen}
+    className="relative break-inside-avoid overflow-hidden rounded-xl border border-line bg-card p-4 pr-8 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
+  >
+    <span className="absolute right-0 top-0 h-0 w-0 border-l-[18px] border-t-[18px] border-l-transparent border-t-line" />
+    <div className="text-[14.5px] font-medium">{item.title}</div>
+    <div className="mt-1 text-xs text-ink-soft">{boards.y1s1.header}</div>
+  </button>
+);
+
+/** 详情弹层：完整内容，不做删减 */
 const ArchiveDetail: React.FC<{
   item: ArchiveItem;
   state: Readonly<PlayerState>;
   onClose: () => void;
 }> = ({ item, state, onClose }) => {
+  const [copied, setCopied] = useState(false);
+  const section = getFolderSection(item.id);
+  const levelCopy = getLevelContent(item.levelId).copy;
+
+  const copyTemplate = () => {
+    const tpl = levelCopy['prompt-template'] ?? '';
+    void navigator.clipboard?.writeText(tpl).then(() => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    });
+  };
+
   const renderBody = () => {
+    // 提示词模板：用途 + 全文（槽位高亮）+ 复制
+    if (section === 'prompts') {
+      return (
+        <div className="flex flex-col gap-4">
+          <div className="rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px] leading-relaxed">
+            <span className="mr-2 font-semibold text-accent">{home['prompt-usage-label']}</span>
+            {levelCopy['prompt-usage']}
+          </div>
+          <div className="rounded-xl border border-line bg-card p-4">
+            <PromptText text={levelCopy['prompt-template'] ?? ''} className="text-[14px]" />
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs text-ink-soft">{home['prompt-slot-legend']}</span>
+            <Button variant="secondary" onClick={copyTemplate}>
+              {copied ? home['prompt-copied'] : home['prompt-copy']}
+            </Button>
+          </div>
+        </div>
+      );
+    }
+    // 专业卡片：完整五栏
     if (item.levelId === 'prologue') {
       const major = getMajor(state.player.majorId);
-      const copy = getLevelContent('prologue').copy;
       const row = (label: string, body: React.ReactNode) => (
         <div className="border-t border-line py-2.5 first:border-t-0">
           <div className="text-[11px] tracking-widest text-ink-soft">{label}</div>
@@ -422,72 +516,117 @@ const ArchiveDetail: React.FC<{
       return (
         <div className="rounded-xl border border-accent/40 bg-card p-4">
           <div className="mb-2 text-lg font-semibold">{major.name}</div>
-          {row(copy['card-core-courses'], major.card.coreCourses.join(' · '))}
-          {row(copy['card-hardest'], major.card.hardestY1.join(' / '))}
-          {row(copy['card-gpa-killer'], major.card.gpaKiller)}
-          {row(copy['card-destinations'], major.card.destinations.join(' · '))}
-          {row(copy['card-secret'], <span className="text-accent">{major.card.secret}</span>)}
+          {row(levelCopy['card-core-courses'], major.card.coreCourses.join(' · '))}
+          {row(levelCopy['card-hardest'], major.card.hardestY1.join(' / '))}
+          {row(levelCopy['card-gpa-killer'], major.card.gpaKiller)}
+          {row(levelCopy['card-destinations'], major.card.destinations.join(' · '))}
+          {row(levelCopy['card-secret'], <span className="text-accent">{major.card.secret}</span>)}
         </div>
       );
     }
-    if (item.levelId === 'course-select') {
-      const copy = getLevelContent('course-select').copy;
+    // 避坑清单：要点卡 + 三轮完整问答记录
+    if (item.id === 'course-map') {
       return (
-        <div className="rounded-xl border border-accent/40 bg-card p-4">
-          <div className="mb-3 text-base font-semibold">{copy['s6-card-title']}</div>
-          <ul className="space-y-2.5 text-[14px] leading-relaxed">
-            {[1, 2, 3, 4, 5]
-              .map((n) => copy[`s6-card-line${n}`])
-              .filter(Boolean)
-              .map((line, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="text-accent">✓</span>
-                  {line}
-                </li>
-              ))}
-          </ul>
+        <div className="flex flex-col gap-4">
+          <div className="rounded-xl border border-accent/40 bg-card p-4">
+            <div className="mb-2 text-[13px] font-semibold text-accent">
+              {home['detail-summary']}
+            </div>
+            <ul className="space-y-2 text-[14px] leading-relaxed">
+              {[1, 2, 3, 4, 5]
+                .map((n) => levelCopy[`s6-card-line${n}`])
+                .filter(Boolean)
+                .map((line, i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className="text-accent">✓</span>
+                    {line}
+                  </li>
+                ))}
+            </ul>
+          </div>
+          <h4 className="text-[13px] font-semibold tracking-widest text-ink-soft">
+            {home['detail-full-record']}
+          </h4>
+          {([1, 2, 3] as const).map((n) => (
+            <div key={n} className="flex flex-col gap-2">
+              <div className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13px] leading-relaxed text-paper">
+                <span className="whitespace-pre-wrap">{levelCopy[`q${n}`]}</span>
+              </div>
+              <div className="rounded-2xl rounded-tl-md border border-line bg-card px-4 py-3">
+                {renderMarkdown(levelCopy[`a${n}`] ?? '')}
+              </div>
+            </div>
+          ))}
         </div>
       );
     }
+    // 海报：双图 + 简历措辞
     if (item.levelId === 'poster' && item.assetRef) {
       const wideRef = item.assetRef.includes('senpai')
         ? 'poster-senpai-169'
         : item.assetRef.replace('-34-v2', '-169');
       return (
-        <div>
+        <div className="flex flex-col gap-4">
           <div className="flex items-end gap-3">
-            <img src={`/assets/${item.assetRef}.svg`} alt="" className="w-[42%] rounded-lg border border-line" />
-            <img src={`/assets/${wideRef}.svg`} alt="" className="w-[56%] rounded-lg border border-line" />
+            <img
+              src={`/assets/${item.assetRef}.svg`}
+              alt=""
+              className="w-[42%] rounded-lg border border-line"
+            />
+            <img
+              src={`/assets/${wideRef}.svg`}
+              alt=""
+              className="w-[56%] rounded-lg border border-line"
+            />
           </div>
           {item.resumeLine && (
-            <p className="mt-3 text-sm text-ink-soft">{item.resumeLine}</p>
+            <div className="rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px]">
+              <span className="mr-2 font-semibold text-accent">
+                {home['detail-resume-line']}
+              </span>
+              {item.resumeLine}
+            </div>
           )}
         </div>
       );
     }
     return item.assetRef ? (
-      <img src={`/assets/${item.assetRef}.svg`} alt="" className="w-full rounded-lg border border-line" />
+      <img
+        src={`/assets/${item.assetRef}.svg`}
+        alt=""
+        className="w-full rounded-lg border border-line"
+      />
     ) : null;
   };
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6"
+      onClick={onClose}
+    >
       <div
-        className="max-h-[85dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-paper p-6 animate-fade-up"
+        className="max-h-[88dvh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-paper p-6 animate-fade-up"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h3 className="text-[16px] font-semibold">📁 {item.title}</h3>
-          {item.borrowed && (
-            <span className="rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
-              {home['borrowed-tag']}
-            </span>
-          )}
+          <h3 className="text-[17px] font-semibold">
+            {section === 'prompts' ? '⚡' : '📁'} {item.title}
+          </h3>
+          <div className="flex items-center gap-2">
+            {item.borrowed && (
+              <span className="rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
+                {home['borrowed-tag']}
+              </span>
+            )}
+            <button
+              onClick={onClose}
+              className="rounded-full border border-line bg-card px-2.5 py-1 text-xs text-ink-soft hover:border-ink/40"
+            >
+              ✕
+            </button>
+          </div>
         </div>
         {renderBody()}
-        <Button variant="secondary" full className="mt-5" onClick={onClose}>
-          {ui.common.continue}
-        </Button>
       </div>
     </div>
   );
@@ -495,25 +634,73 @@ const ArchiveDetail: React.FC<{
 
 const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const [openItem, setOpenItem] = useState<ArchiveItem | null>(null);
+  const works = state.archive.filter((a) => getFolderSection(a.id) === 'works');
+  const prompts = state.archive.filter((a) => getFolderSection(a.id) === 'prompts');
+  const docs = state.archive.filter((a) => getFolderSection(a.id) === 'docs');
+
   return (
     <Panel title={home['folder-title']} sub={home['folder-sub']}>
-      {state.archive.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-line p-10 text-center text-sm text-ink-soft">
-          {home['folder-empty']}
+      {/* 作品集：横向堆叠大卡 */}
+      <SectionHead
+        title={home['folder-sec-works']}
+        sub={home['folder-sec-works-sub']}
+        count={works.length}
+      />
+      {works.length === 0 ? (
+        <p className="rounded-xl border border-dashed border-line p-6 text-center text-sm text-ink-soft">
+          {home['folder-empty-works']}
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
-          {state.archive.map((item) => (
-            <ArchiveCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
+        <div className="flex snap-x gap-4 overflow-x-auto pb-2">
+          {works.map((item) => (
+            <WorkCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
           ))}
         </div>
       )}
+
+      {/* 提示词库：瀑布流 */}
+      <div className="mt-6">
+        <SectionHead
+          title={home['folder-sec-prompts']}
+          sub={home['folder-sec-prompts-sub']}
+          count={prompts.length}
+        />
+        {prompts.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-line p-6 text-center text-sm text-ink-soft">
+            {home['folder-empty-prompts']}
+          </p>
+        ) : (
+          <div className="columns-2 gap-3 [&>*]:mb-3 [&>*]:w-full">
+            {prompts.map((item) => (
+              <PromptCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 档案：瀑布流 */}
+      {docs.length > 0 && (
+        <div className="mt-6">
+          <SectionHead
+            title={home['folder-sec-docs']}
+            sub={home['folder-sec-docs-sub']}
+            count={docs.length}
+          />
+          <div className="columns-2 gap-3 [&>*]:mb-3 [&>*]:w-full">
+            {docs.map((item) => (
+              <DocCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
+            ))}
+          </div>
+        </div>
+      )}
+
       {openItem && (
         <ArchiveDetail item={openItem} state={state} onClose={() => setOpenItem(null)} />
       )}
     </Panel>
   );
 };
+
 
 const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   <div className="flex flex-col gap-4">

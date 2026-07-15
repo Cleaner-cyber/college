@@ -12,6 +12,7 @@ import majorsJson from '@content/majors/majors.json';
 import quickActionsY1s1 from '@content/quick-actions/y1s1.json';
 import boardY1s1 from '@content/board/y1s1.json';
 import uiJson from '@content/ui/ui.json';
+import folderJson from '@content/folder/folder.json';
 
 const levelContents: Record<string, LevelContent> = {
   prologue: prologueJson as LevelContent,
@@ -67,6 +68,17 @@ export const boards: Record<string, BoardConfig> = {
 
 // 引擎级 UI 文案（HUD、行动板、通用按钮）
 export const ui = uiJson;
+
+// 文件夹分区：作品集 / 提示词库 / 档案
+export type FolderSection = 'works' | 'prompts' | 'docs';
+
+const folderItems = (folderJson as { items: Record<string, string> }).items;
+
+export function getFolderSection(itemId: string): FolderSection {
+  const s = folderItems[itemId];
+  if (s === 'works' || s === 'prompts' || s === 'docs') return s;
+  return itemId.startsWith('prompt-') ? 'prompts' : 'docs';
+}
 
 /** 文案插值：{playerName} {majorName} {clubName} 等 */
 export function interpolate(text: string, vars: Record<string, string | number>): string {

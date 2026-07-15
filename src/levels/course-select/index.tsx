@@ -416,6 +416,14 @@ const CourseSelectComponent: React.FC<LevelProps> = ({ state, content, onComplet
               resumeLine: '',
               borrowed: false,
             },
+            {
+              // 学完即沉淀：可复用的提示词模板入库
+              id: 'prompt-doc-feeding',
+              levelId: 'course-select',
+              title: content.copy['prompt-item-title'],
+              resumeLine: '',
+              borrowed: false,
+            },
           ],
         })
       }
