@@ -124,6 +124,7 @@
     "sprite-S6": "sprite-xuejie",
     "next-S1": "接下",
     "next-S2": "开始",
+    "s3-steps": "① 社团名可以直接用默认的 → ② 选一种风格 → ③ 选 3:4 尺寸 → ④ 点生成",
     "s3-club-label": "社团名",
     "s3-club-hint": "不想打字？直接用默认的",
     "s3-style-label": "风格",

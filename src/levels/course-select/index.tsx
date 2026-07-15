@@ -236,6 +236,12 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
             onFallbackFeed={feed}
           />
         </div>
+        {/* 保姆级拖拽提示（对刚拿到电脑的新生） */}
+        {needFile && (
+          <p className="mt-3 rounded-xl bg-accent-soft/60 p-2.5 text-[11.5px] leading-relaxed text-ink-soft">
+            {(ui.hints as Record<string, string>)['files-drag']}
+          </p>
+        )}
       </aside>
 
       {/* AI 对话框 */}

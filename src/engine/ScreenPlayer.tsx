@@ -4,7 +4,8 @@
  */
 import React, { useMemo, useState } from 'react';
 import type { LevelContent, Screen } from '@/contracts';
-import { interpolate } from './content';
+import { interpolate, ui } from './content';
+import { VN_HINT_KEY } from '@/components/ui/Tour';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
 import { FakeLoading } from '@/components/ui/FakeLoading';
@@ -61,6 +62,14 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
   const [typingDone, setTypingDone] = useState(false);
   const [forceFull, setForceFull] = useState(false); // 场景点击跳过打字机
   const [inputValue, setInputValue] = useState('');
+  // 新手提示：第一次玩 VN 时提示「单击继续」，推进一次后不再出现
+  const [showVnHint, setShowVnHint] = useState(() => {
+    try {
+      return !localStorage.getItem(VN_HINT_KEY);
+    } catch {
+      return false;
+    }
+  });
 
   const screen = useMemo(
     () => content.screens.find((s) => s.id === currentId) ?? content.screens[0],
@@ -281,6 +290,14 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
         setForceFull(true);
         setTypingDone(true);
       } else if (screen.type === 'dialogue') {
+        if (showVnHint) {
+          try {
+            localStorage.setItem(VN_HINT_KEY, '1');
+          } catch {
+            /* ignore */
+          }
+          setShowVnHint(false);
+        }
         advance();
       }
     };
@@ -292,6 +309,12 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
       >
         {/* 场景 */}
         <img src={sceneSrc} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        {/* 新手提示：单击继续 */}
+        {showVnHint && screen.type === 'dialogue' && (
+          <span className="absolute right-4 top-4 z-10 animate-pulse rounded-full bg-ink/60 px-3.5 py-1.5 text-xs text-paper">
+            👆 {(ui.hints as Record<string, string>)['vn-click']}
+          </span>
+        )}
         {/* 立绘：学长在右，NPC 在左 */}
         {spriteSrc && (
           <img

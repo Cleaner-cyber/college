@@ -3,7 +3,7 @@
  * 路由：/login /onboarding /home /level/:levelId /settlement
  */
 import React, { useEffect } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/services/auth';
 import {
   LocalSaveAdapter,
@@ -23,6 +23,30 @@ const Loading: React.FC = () => (
     {ui.common.loading}
   </div>
 );
+
+/** 开发调试用：固定左下角的一键重置（正式版移除） */
+const DevResetButton: React.FC = () => {
+  const reset = useEngine((s) => s.reset);
+  const navigate = useNavigate();
+  const dev = ui.dev as Record<string, string>;
+  return (
+    <button
+      onClick={() => {
+        if (!window.confirm(dev['reset-confirm'])) return;
+        try {
+          localStorage.removeItem('unisim_tour_v1');
+          localStorage.removeItem('unisim_vnhint_v1');
+        } catch {
+          /* ignore */
+        }
+        void reset().then(() => navigate('/onboarding', { replace: true }));
+      }}
+      className="fixed bottom-3 left-3 z-[70] rounded-full border border-line bg-card/90 px-3 py-1.5 text-[11px] text-ink-soft opacity-50 shadow-sm backdrop-blur transition hover:opacity-100"
+    >
+      ⟲ {dev['reset']} · {dev['reset-tag']}
+    </button>
+  );
+};
 
 /** 受保护区域：需要（云端模式下）已登录 + 存档已水合；序章未完成时强制进入序章 */
 const Guard: React.FC<{ children: React.ReactElement }> = ({ children }) => {
@@ -107,6 +131,7 @@ export const App: React.FC = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
+      <DevResetButton />
     </div>
   );
 };

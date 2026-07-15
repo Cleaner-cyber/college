@@ -22,6 +22,7 @@ import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
 import { PromptText, renderMarkdown } from '@/components/ui/Markdown';
+import { HomeTour, TOUR_KEY } from '@/components/ui/Tour';
 
 const home = ui.home as Record<string, string>;
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
@@ -244,7 +245,8 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Panel title={home['mainline-title']} sub={home['mainline-sub']}>
+      <div data-tour="mainline">
+        <Panel title={home['mainline-title']} sub={home['mainline-sub']}>
         <ol className="flex flex-col gap-3">
           {board.mainline.map((m, i) => {
             const done = state.completedActions.includes(m.id);
@@ -283,9 +285,11 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             );
           })}
         </ol>
-      </Panel>
+        </Panel>
+      </div>
 
-      <Panel title={home['electives-title']} sub={home['electives-sub']}>
+      <div data-tour="electives">
+        <Panel title={home['electives-title']} sub={home['electives-sub']}>
         {!firstMainlineDone && (
           <p className="mb-3 text-sm text-accent">{board.electivesLockText}</p>
         )}
@@ -324,8 +328,9 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
           })}
         </div>
       </Panel>
+      </div>
 
-      <div className="flex items-center justify-end gap-4">
+      <div className="flex items-center justify-end gap-4" data-tour="settle">
         <span className="text-sm text-ink-soft">
           {mainlineDone ? home['settle-hint-ready'] : home['settle-hint-mainline']}
         </span>
@@ -431,27 +436,29 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
   );
 };
 
-/** 提示词模板卡：带槽位预览 */
-const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
-  const template = getLevelContent(item.levelId).copy['prompt-template'] ?? '';
-  return (
-    <button
-      onClick={onOpen}
-      className="break-inside-avoid overflow-hidden rounded-2xl border border-line bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
-    >
-      <div className="mb-2 flex items-center gap-2">
-        <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[11px] font-medium text-accent">
-          ⚡ {home['prompt-badge']}
+/** 提示词模板卡：紧凑行卡（模板全文点进详情看） */
+const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
+  <button
+    onClick={onOpen}
+    className="flex w-full items-center gap-3.5 rounded-2xl border border-line bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
+  >
+    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
+      ⚡
+    </span>
+    <span className="min-w-0 flex-1">
+      <span className="flex items-center gap-2">
+        <span className="truncate text-[14.5px] font-semibold">{item.title}</span>
+        <span className="shrink-0 rounded bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent">
+          {home['prompt-badge']}
         </span>
-        <span className="text-[14.5px] font-semibold">{item.title}</span>
-      </div>
-      <div className="relative max-h-24 overflow-hidden">
-        <PromptText text={template} className="text-[12px] text-ink-soft" />
-        <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-card to-transparent" />
-      </div>
-    </button>
-  );
-};
+      </span>
+      <span className="mt-0.5 block truncate text-xs text-ink-soft">
+        {home['prompt-open-hint']}
+      </span>
+    </span>
+    <span className="shrink-0 text-ink-soft">›</span>
+  </button>
+);
 
 /** 档案卡：信纸折角样式 */
 const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
@@ -670,7 +677,7 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             {home['folder-empty-prompts']}
           </p>
         ) : (
-          <div className="columns-2 gap-3 [&>*]:mb-3 [&>*]:w-full">
+          <div className="grid grid-cols-2 gap-3">
             {prompts.map((item) => (
               <PromptCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
             ))}
@@ -763,6 +770,10 @@ export const HomePage: React.FC = () => {
   const state = useEngine((s) => s.state)!;
   const { email, signOut } = useAuth();
   const [tab, setTab] = useState<Tab>('semester');
+  // 首次进入 Home 自动播放新手引导（可跳过；顶栏可重看）
+  const [tourOpen, setTourOpen] = useState(
+    () => state.semester === 'y1s1' && !localStorage.getItem(TOUR_KEY),
+  );
   const major = getMajor(state.player.majorId);
 
   return (
@@ -774,6 +785,17 @@ export const HomePage: React.FC = () => {
             <span className="text-sm text-ink-soft">{boards.y1s1.header}</span>
           </div>
           <div className="flex items-center gap-4 text-sm">
+            {state.semester === 'y1s1' && (
+              <button
+                className="rounded-full border border-line bg-card px-2.5 py-1 text-xs text-ink-soft transition hover:border-accent hover:text-accent"
+                onClick={() => {
+                  setTab('semester');
+                  setTourOpen(true);
+                }}
+              >
+                ？{(ui.tour as Record<string, string>)['replay']}
+              </button>
+            )}
             <span className="font-medium">
               {interpolate(home['greeting'], {
                 playerName: state.player.name,
@@ -800,15 +822,21 @@ export const HomePage: React.FC = () => {
       </header>
 
       <div className="mx-auto grid max-w-[1200px] grid-cols-[200px_minmax(0,1fr)_280px] gap-6 px-6 py-6">
-        <NavColumn tab={tab} onTab={setTab} state={state} />
+        <div data-tour="nav">
+          <NavColumn tab={tab} onTab={setTab} state={state} />
+        </div>
         <main className="animate-fade-up" key={tab}>
           {tab === 'semester' && <SemesterTab state={state} />}
           {tab === 'folder' && <FolderTab state={state} />}
           {tab === 'stats' && <StatsTab state={state} />}
           {tab === 'log' && <LogTab state={state} />}
         </main>
-        <StatusRail state={state} />
+        <div data-tour="rail">
+          <StatusRail state={state} />
+        </div>
       </div>
+
+      {tourOpen && <HomeTour onClose={() => setTourOpen(false)} />}
     </div>
   );
 };

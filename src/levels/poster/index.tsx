@@ -28,6 +28,10 @@ const FeedBench: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({
 
   return (
     <div className="flex flex-col gap-5">
+      {/* 新手步骤提示 */}
+      <p className="rounded-xl bg-accent-soft/60 p-2.5 text-[12px] leading-relaxed text-ink-soft">
+        {api.copy('s3-steps')}
+      </p>
       <div>
         <div className="mb-1.5 text-xs tracking-widest text-ink-soft">
           {api.copy('s3-club-label')}
