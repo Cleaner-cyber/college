@@ -8,12 +8,32 @@ import prologueJson from '@content/levels/prologue.json';
 import courseSelectJson from '@content/levels/course-select.json';
 import posterJson from '@content/levels/poster.json';
 import pptJson from '@content/levels/ppt.json';
+import codingJson from '@content/levels/coding.json';
+import mentorJson from '@content/levels/mentor.json';
+import notesJson from '@content/levels/notes.json';
+import dachuangJson from '@content/levels/dachuang.json';
+import gigJson from '@content/levels/gig.json';
+import resumeJson from '@content/levels/resume.json';
+import examinerJson from '@content/levels/examiner.json';
+import forkJson from '@content/levels/fork.json';
+import interviewJson from '@content/levels/interview.json';
+import thesisJson from '@content/levels/thesis.json';
 import settlementJson from '@content/levels/settlement.json';
 import majorsJson from '@content/majors/majors.json';
 import quickActionsY1s1 from '@content/quick-actions/y1s1.json';
 import quickActionsY1s2 from '@content/quick-actions/y1s2.json';
+import quickActionsY2s1 from '@content/quick-actions/y2s1.json';
+import quickActionsY2s2 from '@content/quick-actions/y2s2.json';
+import quickActionsY3s1 from '@content/quick-actions/y3s1.json';
+import quickActionsY3s2 from '@content/quick-actions/y3s2.json';
+import quickActionsY4 from '@content/quick-actions/y4.json';
 import boardY1s1 from '@content/board/y1s1.json';
 import boardY1s2 from '@content/board/y1s2.json';
+import boardY2s1 from '@content/board/y2s1.json';
+import boardY2s2 from '@content/board/y2s2.json';
+import boardY3s1 from '@content/board/y3s1.json';
+import boardY3s2 from '@content/board/y3s2.json';
+import boardY4 from '@content/board/y4.json';
 import uiJson from '@content/ui/ui.json';
 import folderJson from '@content/folder/folder.json';
 
@@ -22,6 +42,16 @@ const levelContents: Record<string, LevelContent> = {
   'course-select': courseSelectJson as LevelContent,
   poster: posterJson as LevelContent,
   ppt: pptJson as LevelContent,
+  coding: codingJson as LevelContent,
+  mentor: mentorJson as LevelContent,
+  notes: notesJson as LevelContent,
+  dachuang: dachuangJson as LevelContent,
+  gig: gigJson as LevelContent,
+  resume: resumeJson as LevelContent,
+  examiner: examinerJson as LevelContent,
+  fork: forkJson as LevelContent,
+  interview: interviewJson as LevelContent,
+  thesis: thesisJson as LevelContent,
   settlement: settlementJson as LevelContent,
 };
 
@@ -49,6 +79,11 @@ export function searchMajors(query: string): Major[] {
 export const quickActions: Record<string, QuickAction[]> = {
   y1s1: quickActionsY1s1 as QuickAction[],
   y1s2: quickActionsY1s2 as QuickAction[],
+  y2s1: quickActionsY2s1 as QuickAction[],
+  y2s2: quickActionsY2s2 as QuickAction[],
+  y3s1: quickActionsY3s1 as QuickAction[],
+  y3s2: quickActionsY3s2 as QuickAction[],
+  y4: quickActionsY4 as QuickAction[],
 };
 
 export interface BoardMainlineEntry {
@@ -70,11 +105,21 @@ export interface BoardConfig {
 export const boards: Record<string, BoardConfig> = {
   y1s1: boardY1s1 as BoardConfig,
   y1s2: boardY1s2 as BoardConfig,
+  y2s1: boardY2s1 as BoardConfig,
+  y2s2: boardY2s2 as BoardConfig,
+  y3s1: boardY3s1 as BoardConfig,
+  y3s2: boardY3s2 as BoardConfig,
+  y4: boardY4 as BoardConfig,
 };
 
-/** 学期 → 行动板配置（*-end 复用本学期配置；prologue 前瞻 y1s1） */
+/** 学期 → 行动板配置（*-end 复用对应学期；prologue 前瞻 y1s1；grad-end 复用 y4） */
 export function getBoard(semester: string): BoardConfig {
-  if (semester.startsWith('y1s2')) return boards.y1s2;
+  if (semester === 'grad-end') return boards.y4;
+  for (const key of ['y1s1', 'y1s2', 'y2s1', 'y2s2', 'y3s1', 'y3s2', 'y4']) {
+    if (semester.startsWith(key) && (semester === key || semester === key + '-end')) {
+      return boards[key];
+    }
+  }
   return boards.y1s1;
 }
 

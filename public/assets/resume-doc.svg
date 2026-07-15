@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+  <rect width="900" height="560" fill="#F3EFE6"/>
+  <rect x="230" y="40" width="440" height="480" rx="12" fill="#FDFCF9" stroke="#2A241D" stroke-width="6"/>
+  <rect x="270" y="80" width="240" height="22" rx="6" fill="#C05A32" opacity="0.85"/>
+  <rect x="270" y="130" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="174" width="260" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="218" width="220" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="262" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="306" width="260" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="350" width="220" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="394" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="438" width="260" height="12" rx="5" fill="#D8D2C4"/>
+  <text x="450" y="545" font-family="sans-serif" font-size="16" text-anchor="middle" fill="#8A8072">[占位] resume-doc · 一页纸简历</text>
+</svg>

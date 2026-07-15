@@ -7,6 +7,12 @@
       "label": "部门的策划案 PPT",
       "tag": "教学 · 结构化生成",
       "desc": "周三例会要用。10 页以内，要预算表和分工。素材很乱。"
+    },
+    {
+      "id": "coding",
+      "label": "编程课的第一个报错",
+      "tag": "教学 · AI 编程",
+      "desc": "Segmentation fault。晚上十一点。作业还剩最后一题。"
     }
   ],
   "mainlineLockText": "先完成上一个主线任务",

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <rect width="1200" height="420" fill="#2E2933"/>
+  <text x="40" y="52" font-family="sans-serif" font-size="22" fill="#F3E4DC">短剧《重返 2019》分镜 · 同一角色三格</text>
+  
+    <rect x="60" y="90" width="330" height="250" rx="10" fill="#F6EEDF" stroke="#4A4453" stroke-width="5"/>
+    <circle cx="225" cy="185" r="46" fill="#F6DCC8" stroke="#2A241D" stroke-width="4"/>
+    <path d="M195 150 q 30 -26 60 0" fill="#2A241D"/>
+    <rect x="185" y="230" width="80" height="70" rx="10" fill="#C05A32" stroke="#2A241D" stroke-width="4"/>
+    <text x="225" y="365" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#B9AB94">镜头 1</text>
+    <rect x="440" y="90" width="330" height="250" rx="10" fill="#F6EEDF" stroke="#4A4453" stroke-width="5"/>
+    <circle cx="605" cy="200" r="46" fill="#F6DCC8" stroke="#2A241D" stroke-width="4"/>
+    <path d="M575 165 q 30 -34 60 0" fill="#2A241D"/>
+    <rect x="565" y="245" width="80" height="70" rx="10" fill="#5B6C82" stroke="#2A241D" stroke-width="4"/>
+    <text x="605" y="365" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#B9AB94">镜头 2</text>
+    <rect x="820" y="90" width="330" height="250" rx="10" fill="#F6EEDF" stroke="#4A4453" stroke-width="5"/>
+    <circle cx="985" cy="185" r="46" fill="#F6DCC8" stroke="#2A241D" stroke-width="4"/>
+    <path d="M955 150 q 30 -26 60 0" fill="#2A241D"/>
+    <rect x="945" y="230" width="80" height="70" rx="10" fill="#C05A32" stroke="#2A241D" stroke-width="4"/>
+    <text x="985" y="365" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#B9AB94">镜头 3</text>
+  <text x="600" y="405" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#8A8072">[占位] gig-board-v1</text>
+</svg>

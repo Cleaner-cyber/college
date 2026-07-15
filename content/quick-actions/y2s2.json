@@ -1,0 +1,6 @@
+[
+  { "id": "srtp", "label": "SRTP 结题冲刺", "cost": 1, "deltas": { "academic": 2, "energy": -1 }, "resultText": "结题答辩评了「良好」。评审老师记住了你的名字。", "senpaiComment": "科研履历的第一行，写上了。" },
+  { "id": "portfolio", "label": "整理个人作品集", "cost": 1, "deltas": { "portfolio": 2, "energy": -1 }, "resultText": "你把两年的东西整理成一个在线文档。发出去那天，有个学妹来问链接。", "senpaiComment": "文件夹只有整理过，才叫作品集。" },
+  { "id": "tutor", "label": "暑假带集训班", "cost": 1, "deltas": { "cash": 2, "energy": -1 }, "resultText": "两周集训班，比一学期家教挣得都多。你请爸妈吃了顿好的。", "senpaiComment": "用同一份时间挣更多钱，这叫杠杆。" },
+  { "id": "rest", "label": "什么都不做", "cost": 0, "deltas": { "energy": 2 }, "resultText": "暑假最后一周，你回家躺平。妈妈做的饭比什么都补精力。" }
+]

@@ -1,0 +1,21 @@
+{
+  "id": "y2s1",
+  "header": "大二上 · 9月",
+  "mainline": [
+    {
+      "id": "mentor",
+      "label": "找导师：读论文与套磁",
+      "tag": "教学 · 读文献",
+      "desc": "想进实验室，得先读懂导师的论文，再发出那封不社死的邮件。"
+    },
+    {
+      "id": "notes",
+      "label": "专业课救命笔记",
+      "tag": "教学 · 语音笔记",
+      "desc": "数据结构课越讲越快。你有 45 分钟的课堂录音和一脑子浆糊。"
+    }
+  ],
+  "mainlineLockText": "先完成上一个主线任务",
+  "electivesLockText": "先把导师的事办了，行动板再解锁",
+  "quickActionsRef": "y2s1"
+}

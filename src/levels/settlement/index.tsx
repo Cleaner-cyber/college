@@ -1,16 +1,30 @@
 /**
- * 学期结算：小结（数值动画）→ 档案一览 → 简易结局卡（flag 对照 + 判词）→ 结尾钩子。
- * 全部从 PlayerState 与内容 JSON 渲染，可重复进入（y1s1-end 复看）。
+ * 学期结算：小结（数值动画）→ 档案一览 → 结局卡（flag 对照 + 判词）→ 结尾钩子。
+ * 全学期通用；大四结算渲染毕业「身份卡」（#20 结局：flag 对照 + 四轴形状 + N/M + 能力回顾）。
  */
 import React, { useEffect, useState } from 'react';
 import type { LevelModule, LevelProps, PlayerState, QuickAction } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
-import { ui, quickActions, getBoard, interpolate, getFolderSection } from '@/engine/content';
+import {
+  ui,
+  quickActions,
+  getBoard,
+  interpolate,
+  getFolderSection,
+  semesterName,
+} from '@/engine/content';
+import { nextSemester } from '@/engine/store';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
 
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
 const AXIS_MAX = 8;
+const home = ui.home as Record<string, string>;
+
+/** 大四（或毕业复看）走毕业结局 */
+function isFinal(state: Readonly<PlayerState>): boolean {
+  return state.semester === 'y4' || state.semester === 'grad-end';
+}
 
 function pickVerdictKey(state: Readonly<PlayerState>): string {
   const values = VISIBLE_AXES.map((a) => state.axes[a]);
@@ -22,9 +36,20 @@ function pickVerdictKey(state: Readonly<PlayerState>): string {
   return `verdict-${top}`;
 }
 
-const AxesBars: React.FC<{ state: Readonly<PlayerState>; animate?: boolean }> = ({
+/** 毕业身份：四轴形状 → 身份键 */
+function pickIdentity(state: Readonly<PlayerState>): string {
+  const values = VISIBLE_AXES.map((a) => state.axes[a]);
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  if (max <= 1) return 'rest';
+  if (max - min <= 2 && min >= 2) return 'balanced';
+  return VISIBLE_AXES[values.indexOf(max)];
+}
+
+const AxesBars: React.FC<{ state: Readonly<PlayerState>; animate?: boolean; max?: number }> = ({
   state,
   animate = false,
+  max = AXIS_MAX,
 }) => {
   const [grown, setGrown] = useState(!animate);
   useEffect(() => {
@@ -41,7 +66,9 @@ const AxesBars: React.FC<{ state: Readonly<PlayerState>; animate?: boolean }> = 
             <div
               className="h-full rounded-full bg-ink transition-[width] duration-700 ease-out"
               style={{
-                width: grown ? `${Math.min(100, (state.axes[axis] / AXIS_MAX) * 100)}%` : '0%',
+                width: grown
+                  ? `${Math.max(0, Math.min(100, (state.axes[axis] / max) * 100))}%`
+                  : '0%',
               }}
             />
           </div>
@@ -52,12 +79,7 @@ const AxesBars: React.FC<{ state: Readonly<PlayerState>; animate?: boolean }> = 
   );
 };
 
-/** 结算语境下的学期 key（复看 y1s2-end 时也归到 y1s2） */
-function semesterKey(state: Readonly<PlayerState>): 'y1s1' | 'y1s2' {
-  return state.semester.startsWith('y1s2') ? 'y1s2' : 'y1s1';
-}
-
-/** 本学期行动回放：速结行动取 resultText，关卡取档案条目标题 */
+/** 本学期行动回放 */
 function replayLines(state: Readonly<PlayerState>): { label: string; text: string }[] {
   const qas: QuickAction[] = quickActions[getBoard(state.semester).quickActionsRef] ?? [];
   return state.completedActions.flatMap((id) => {
@@ -71,9 +93,9 @@ function replayLines(state: Readonly<PlayerState>): { label: string; text: strin
 const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => (
   <div className="flex flex-col gap-6">
     <h1 className="text-2xl font-semibold tracking-wide">
-      {api.copy(`s1-title-${semesterKey(state)}`)}
+      {interpolate(api.copy('s1-title'), { semester: semesterName(state.semester) })}
     </h1>
-    <AxesBars state={state} animate />
+    <AxesBars state={state} animate max={isFinal(state) ? 24 : AXIS_MAX} />
     <div>
       <div className="mb-2 text-xs tracking-widest text-ink-soft">
         {api.copy('s1-replay-title')}
@@ -125,21 +147,26 @@ const Folder: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api,
   </div>
 );
 
+/** 学期结局卡 / 毕业身份卡 */
 const EndingCard: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => {
-  // 「做了 N 件」只数作品与档案，提示词模板不算产出
   const made = state.archive.filter((a) => getFolderSection(a.id) !== 'prompts');
   const total = made.length;
   const own = made.filter((a) => !a.borrowed).length;
+  const final = isFinal(state);
   const flagRows: [string, string][] = [
     [api.copy('s3-flag-salary'), state.flag.salaryBand],
     [api.copy('s3-flag-city'), state.flag.city],
     [api.copy('s3-flag-work'), state.flag.workStyle],
     [api.copy('s3-flag-time'), state.flag.offTime],
   ];
+  const identity = pickIdentity(state);
+
   return (
     <div className="flex flex-col gap-5">
       <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-sm">
-        <div className="text-xs tracking-widest text-ink-soft">{api.copy('s3-flag-title')}</div>
+        <div className="text-xs tracking-widest text-ink-soft">
+          {api.copy(final ? 'grad-flag-title' : 's3-flag-title')}
+        </div>
         <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
           {flagRows.map(([label, value]) => (
             <div key={label} className="flex items-baseline gap-2">
@@ -148,19 +175,57 @@ const EndingCard: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
             </div>
           ))}
         </div>
+
+        {final && (
+          <div className="mt-5 rounded-xl bg-accent-soft/70 p-4 text-center animate-fade-up">
+            <div className="text-[11px] tracking-widest text-ink-soft">
+              {api.copy('grad-card-title')}
+            </div>
+            <div className="mt-1.5 text-2xl font-semibold text-accent">
+              {api.copy(`grad-id-${identity}`)}
+            </div>
+            <p className="mt-2 text-[14px] leading-relaxed">{api.copy(`grad-v-${identity}`)}</p>
+          </div>
+        )}
+
         <div className="mt-5 border-t border-line pt-4">
           <div className="mb-3 text-xs tracking-widest text-ink-soft">
-            {api.copy('s3-axes-title')}
+            {api.copy(final ? 'grad-axes-title' : 's3-axes-title')}
           </div>
-          <AxesBars state={state} />
+          <AxesBars state={state} max={final ? 24 : AXIS_MAX} />
         </div>
-        <p className="mt-5 text-[15px] leading-relaxed text-accent">
-          {api.copy(pickVerdictKey(state))}
-        </p>
-        {total > 0 && (
-          <p className="mt-3 text-sm text-ink-soft">
-            {interpolate(api.copy('s3-made-count'), { total, own })}
+
+        {!final && (
+          <p className="mt-5 text-[15px] leading-relaxed text-accent">
+            {api.copy(pickVerdictKey(state))}
           </p>
+        )}
+
+        {final && state.abilities.length > 0 && (
+          <div className="mt-5 border-t border-line pt-4">
+            <div className="mb-2 text-xs tracking-widest text-ink-soft">
+              {api.copy('grad-abilities-title')}
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {state.abilities.map((a) => (
+                <span
+                  key={a}
+                  className="rounded-lg bg-accent-soft px-2 py-1 text-xs font-medium text-accent"
+                >
+                  ⚡ {ui.abilities[a] ?? a}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {total > 0 && (
+          <p className="mt-4 text-sm text-ink-soft">
+            {interpolate(api.copy(final ? 'grad-made' : 's3-made-count'), { total, own })}
+          </p>
+        )}
+        {final && (
+          <p className="mt-2 text-sm font-medium text-accent">{api.copy('grad-flag-echo')}</p>
         )}
       </div>
       <Button full onClick={api.advance}>
@@ -172,36 +237,44 @@ const EndingCard: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
 
 const Hook: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => {
   const [typed, setTyped] = useState(false);
-  const sem = semesterKey(state);
+  const final = isFinal(state);
+  const sem = semesterName(state.semester);
+  const line = final
+    ? api.copy('s4-line-final')
+    : interpolate(api.copy('s4-line'), { semester: sem });
+  // 剩余时间轴：从 Home 的全局时间轴推剩余站点
+  const timeline = home['timeline'].split('｜');
+  const idxMap: Record<string, number> = {
+    y1s1: 1, y1s2: 2, y2s1: 3, y2s2: 4, y3s1: 5, y3s2: 6, y4: 7, 'grad-end': 8,
+  };
+  const remaining = timeline.slice((idxMap[state.semester] ?? 7) + 1);
+
   return (
     <div className="flex flex-col gap-6">
-      <Typewriter
-        text={api.copy(`s4-line-${sem}`)}
-        onDone={() => setTyped(true)}
-        className="text-[17px]"
-      />
+      <Typewriter text={line} onDone={() => setTyped(true)} className="text-[17px]" />
       {typed && (
         <div className="animate-fade-up">
-          <div className="mb-2 text-xs tracking-widest text-ink-soft">
-            {api.copy('s4-timeline-title')}
-          </div>
-          <ul className="space-y-1.5">
-            {api
-              .copy(`s4-timeline-${sem}`)
-              .split('｜')
-              .map((line) => (
-                <li key={line} className="text-sm text-ink-soft/60">
-                  ○ {line}
-                </li>
-              ))}
-          </ul>
-          {sem === 'y1s2' && (
-            <p className="mt-5 text-[15px] text-ink">{api.copy('s4-demo-end')}</p>
+          {!final && remaining.length > 0 && (
+            <>
+              <div className="mb-2 text-xs tracking-widest text-ink-soft">
+                {api.copy('s4-timeline-title')}
+              </div>
+              <ul className="space-y-1.5">
+                {remaining.map((t) => (
+                  <li key={t} className="text-sm text-ink-soft/60">
+                    ○ {t}
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
+          {final && <p className="text-[15px] text-ink">{api.copy('s4-final-note')}</p>}
           <Button full className="mt-6" onClick={api.advance}>
-            {sem === 'y1s1' && state.semester === 'y1s1'
-              ? api.copy('s4-next-semester')
-              : api.nextLabel}
+            {final || state.semester === 'grad-end'
+              ? api.nextLabel
+              : interpolate(api.copy('s4-next-semester'), {
+                  next: semesterName(nextSemester(state.semester)),
+                })}
           </Button>
         </div>
       )}

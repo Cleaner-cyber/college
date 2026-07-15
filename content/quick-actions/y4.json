@@ -1,0 +1,6 @@
+[
+  { "id": "thesis-work", "label": "泡实验室推进论文", "cost": 1, "deltas": { "academic": 2, "energy": -1 }, "resultText": "实验数据终于齐了。你给每个图都配了能经得起答辩的说明。", "senpaiComment": "论文是四年学术能力的总账。" },
+  { "id": "handover", "label": "给社团做交接文档", "cost": 1, "deltas": { "expression": 2, "energy": -1 }, "resultText": "你把三年的经验写成交接文档，像当年学长把文件夹交给你。", "senpaiComment": "轮到你当「学长」了。" },
+  { "id": "farewell", "label": "打最后一份工", "cost": 1, "deltas": { "cash": 2, "energy": -1 }, "resultText": "毕业旅行的钱凑齐了。这次不用跟家里要。", "senpaiComment": "经济独立，是毕业最体面的行李。" },
+  { "id": "rest", "label": "什么都不做", "cost": 0, "deltas": { "energy": 2 }, "resultText": "你在湖边坐到天黑。四年好像很长，又好像就一下午。" }
+]

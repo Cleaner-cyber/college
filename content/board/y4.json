@@ -1,0 +1,15 @@
+{
+  "id": "y4",
+  "header": "大四 · 秋冬",
+  "mainline": [
+    {
+      "id": "thesis",
+      "label": "毕业论文：边界与红线",
+      "tag": "必修 · 边界",
+      "desc": "四年里 AI 帮了你很多。这一次，先弄清楚它在哪儿不能帮。"
+    }
+  ],
+  "mainlineLockText": "先完成上一个主线任务",
+  "electivesLockText": "先把开题的事定了，行动板再解锁",
+  "quickActionsRef": "y4"
+}

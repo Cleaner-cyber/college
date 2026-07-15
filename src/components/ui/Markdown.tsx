@@ -62,6 +62,26 @@ export function renderMarkdown(md: string): React.ReactNode {
       continue;
     }
 
+    // 代码块 ```
+    if (line.trimStart().startsWith('```')) {
+      const code: string[] = [];
+      i += 1;
+      while (i < lines.length && !lines[i].trimStart().startsWith('```')) {
+        code.push(lines[i]);
+        i += 1;
+      }
+      i += 1; // 跳过结尾 ```
+      blocks.push(
+        <pre
+          key={key++}
+          className="my-3 overflow-x-auto rounded-lg bg-ink/95 p-3 font-mono text-[12px] leading-relaxed text-paper"
+        >
+          {code.join('\n')}
+        </pre>,
+      );
+      continue;
+    }
+
     // 表格
     if (line.trimStart().startsWith('|')) {
       const rows: string[][] = [];

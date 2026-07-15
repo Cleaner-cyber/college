@@ -6,6 +6,15 @@
     "course-map": "docs",
     "prompt-doc-feeding": "prompts",
     "prompt-image-gen": "prompts",
-    "prompt-structured-gen": "prompts"
+    "prompt-structured-gen": "prompts",
+    "coding-fix": "docs",
+    "notes-doc": "docs",
+    "mentor-email": "docs",
+    "dachuang-report": "works",
+    "gig-board": "works",
+    "exam-sheet": "docs",
+    "resume-doc": "works",
+    "interview-review": "docs",
+    "thesis-doc": "works"
   }
 }

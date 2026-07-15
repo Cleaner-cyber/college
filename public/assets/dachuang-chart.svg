@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480">
+  <rect width="900" height="480" fill="#FDFCF9" stroke="#D8D2C4" stroke-width="6"/>
+  <text x="60" y="60" font-family="sans-serif" font-size="22" fill="#1C1B18" font-weight="bold">问卷数据 · 使用频率分布（n=300）</text>
+  <g>
+    <rect x="120" y="260" width="70" height="140" rx="6" fill="#C9A87B"/><rect x="260" y="180" width="70" height="220" rx="6" fill="#C05A32"/><rect x="400" y="100" width="70" height="300" rx="6" fill="#C9A87B"/><rect x="540" y="220" width="70" height="180" rx="6" fill="#C9A87B"/><rect x="680" y="310" width="70" height="90" rx="6" fill="#C9A87B"/>
+    <path d="M90 400 H 840" stroke="#8A8072" stroke-width="3"/>
+  </g>
+  <text x="450" y="455" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#8A8072">[占位] dachuang-chart · 结果图</text>
+</svg>

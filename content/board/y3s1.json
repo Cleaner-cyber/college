@@ -1,0 +1,21 @@
+{
+  "id": "y3s1",
+  "header": "大三上 · 9月",
+  "mainline": [
+    {
+      "id": "resume",
+      "label": "第一份简历",
+      "tag": "交付 · 档案自动填充",
+      "desc": "你的文件夹已经攒了两年。是时候让它变成一页纸了。"
+    },
+    {
+      "id": "examiner",
+      "label": "期末周：AI 当考官",
+      "tag": "教学 · 考官模式",
+      "desc": "保研关键学期的期末。让 AI 考你，而不是替你。"
+    }
+  ],
+  "mainlineLockText": "先完成上一个主线任务",
+  "electivesLockText": "先把简历做出来，行动板再解锁",
+  "quickActionsRef": "y3s1"
+}

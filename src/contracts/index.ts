@@ -7,8 +7,20 @@ import type React from 'react';
 
 // ---------- 1. PlayerState ----------
 
-// v2.1：新增大一下学期。'y1s1-end' 保留用于旧档迁移（水合时自动转为 'y1s2'）
-export type SemesterId = 'prologue' | 'y1s1' | 'y1s1-end' | 'y1s2' | 'y1s2-end';
+// v2.2：覆盖完整四年。'y1s1-end'/'y1s2-end' 仅存于旧档，水合时自动迁移到下一学期。
+// 学期链：y1s1 → y1s2 → y2s1 → y2s2(含大二暑假) → y3s1 → y3s2(含大三暑假) → y4 → grad-end
+export type SemesterId =
+  | 'prologue'
+  | 'y1s1'
+  | 'y1s1-end'
+  | 'y1s2'
+  | 'y1s2-end'
+  | 'y2s1'
+  | 'y2s2'
+  | 'y3s1'
+  | 'y3s2'
+  | 'y4'
+  | 'grad-end';
 
 export type AbilityId =
   | 'doc-feeding' // 投喂长文档（demo：选课关解锁）

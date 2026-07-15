@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="760" viewBox="0 0 480 760">
+  <g>
+    <circle cx="240" cy="196" r="46" fill="#33291F" stroke="#2A241D" stroke-width="5"/>
+    <path d="M104 760 C 106 640, 134 566, 182 538 L 240 522 L 298 538 C 346 566, 374 640, 376 760 Z" fill="#3A3A45" stroke="#2A241D" stroke-width="5"/>
+    <path d="M206 530 L 240 566 L 274 530 L 268 760 L 212 760 Z" fill="#FDFCF9" stroke="#2A241D" stroke-width="4"/>
+    <path d="M146 596 C 126 648, 120 696, 124 748 C 138 758, 158 758, 170 750 C 168 698, 172 654, 180 618" fill="#3A3A45" stroke="#2A241D" stroke-width="5"/>
+    <path d="M322 592 C 344 622, 352 656, 346 686 L 258 686 C 252 670, 252 654, 258 640" fill="#3A3A45" stroke="#2A241D" stroke-width="5"/>
+    <rect x="226" y="636" width="118" height="80" rx="10" fill="#2E2B35" stroke="#2A241D" stroke-width="5" transform="rotate(-5 285 676)"/>
+    <rect x="238" y="648" width="94" height="56" rx="6" fill="#8FA3B8" opacity="0.85" transform="rotate(-5 285 676)"/>
+    <path d="M218 478 L 218 528 C 233 540, 247 540, 262 528 L 262 478 Z" fill="#F6DCC8" stroke="#2A241D" stroke-width="4.5"/>
+    <path d="M164 338 C 160 420, 192 472, 240 476 C 288 472, 320 420, 316 338 C 312 274, 284 234, 240 232 C 196 234, 168 274, 164 338 Z" fill="#F6DCC8" stroke="#2A241D" stroke-width="5"/>
+    <path d="M156 350 C 142 254, 184 192, 240 190 C 296 192, 338 254, 324 350 C 320 310, 310 288, 296 278 C 300 296, 298 312, 292 324 C 284 292, 268 274, 248 268 C 228 270, 200 276, 184 292 C 178 306, 174 326, 174 344 C 166 330, 160 338, 156 350 Z" fill="#33291F"/>
+    <path d="M194 330 C 204 324, 218 323, 228 327 M252 327 C 262 323, 276 324, 286 330" stroke="#2A241D" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M196 356 C 202 348, 220 348, 226 356 C 226 366, 220 372, 211 372 C 202 372, 196 366, 196 356 Z" fill="#2A241D"/>
+    <circle cx="217" cy="356" r="4" fill="#FDFCF9"/>
+    <path d="M254 356 C 260 348, 278 348, 284 356 C 284 366, 278 372, 269 372 C 260 372, 254 366, 254 356 Z" fill="#2A241D"/>
+    <circle cx="275" cy="356" r="4" fill="#FDFCF9"/>
+    <path d="M240 392 C 238 399, 238 404, 241 409" stroke="#2A241D" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M224 432 C 232 437, 248 437, 256 432" stroke="#2A241D" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <circle cx="240" cy="560" r="8" fill="#C05A32"/>
+  </g>
+</svg>

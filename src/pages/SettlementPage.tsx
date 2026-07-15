@@ -1,9 +1,9 @@
 /**
- * 学期结算页：当前学期主线完成后可进入；y1s2-end 可复看结局卡。
+ * 学期结算页：当前学期主线完成后可进入；grad-end 可复看毕业身份卡。
  */
 import React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { useEngine, isMainlineComplete } from '@/engine/store';
+import { useEngine, isMainlineComplete, isPlayingSemester } from '@/engine/store';
 import { levelRegistry } from '@/engine/registry';
 import { getLevelContent } from '@/engine/content';
 
@@ -14,9 +14,8 @@ export const SettlementPage: React.FC = () => {
   const mod = levelRegistry['settlement'];
   const content = getLevelContent('settlement');
 
-  const settling = state.semester === 'y1s1' || state.semester === 'y1s2';
-  const canSettle = settling && isMainlineComplete(state);
-  const isReview = state.semester === 'y1s2-end';
+  const canSettle = isPlayingSemester(state.semester) && isMainlineComplete(state);
+  const isReview = state.semester === 'grad-end';
   if (!canSettle && !isReview) return <Navigate to="/home" replace />;
 
   return (

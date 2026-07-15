@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#F2ECDF"/><stop offset="1" stop-color="#EFE6D4"/></linearGradient></defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect x="0" y="640" width="1600" height="260" fill="#B99B72"/>
+  <rect x="0" y="640" width="1600" height="14" fill="#A5875E"/>
+  <rect x="110" y="120" width="420" height="520" fill="#8A7355" stroke="#6E5A40" stroke-width="8"/>
+  <g fill="#EFE6D4" stroke="#D8D2C4" stroke-width="3">
+    <rect x="140" y="150" width="110" height="90"/><rect x="265" y="150" width="110" height="90"/><rect x="390" y="150" width="110" height="90"/>
+    <rect x="140" y="260" width="110" height="90"/><rect x="265" y="260" width="110" height="90"/><rect x="390" y="260" width="110" height="90"/>
+    <rect x="140" y="370" width="110" height="90"/><rect x="265" y="370" width="110" height="90"/><rect x="390" y="370" width="110" height="90"/>
+  </g>
+  <g stroke="#B08968" stroke-width="6"><path d="M150 165 h90 M150 180 h90 M150 195 h70 M275 170 h90 M275 190 h60 M400 165 h90 M400 185 h80"/></g>
+  <rect x="640" y="200" width="560" height="380" rx="10" fill="#F7F0E4" stroke="#C6B693" stroke-width="8"/>
+  <path d="M920 200 L 920 580 M640 390 L 1200 390" stroke="#C6B693" stroke-width="6"/>
+  <circle cx="1060" cy="300" r="52" fill="#EAC9A8" opacity="0.6"/>
+  <rect x="1280" y="420" width="240" height="220" rx="10" fill="#6E5A40"/>
+  <rect x="1300" y="380" width="200" height="60" rx="8" fill="#FDFCF9" stroke="#D8D2C4" stroke-width="5" transform="rotate(-3 1400 410)"/>
+  <ellipse cx="800" cy="760" rx="420" ry="16" fill="#2A241D" opacity="0.07"/>
+</svg>

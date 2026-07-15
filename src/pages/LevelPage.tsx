@@ -4,7 +4,7 @@
  */
 import React, { useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useEngine } from '@/engine/store';
+import { useEngine, isPlayingSemester } from '@/engine/store';
 import { levelRegistry } from '@/engine/registry';
 import { getLevelContent, getBoard, ui } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
@@ -20,9 +20,8 @@ export const LevelPage: React.FC = () => {
 
   const entry = getBoard(state.semester).mainline.find((m) => m.id === levelId);
   const mod = levelRegistry[levelId];
-  // 非法/已完成/未到 y1s1 → 回主页
-  const inSemester = state.semester === 'y1s1' || state.semester === 'y1s2';
-  if (!entry || !mod || !inSemester || state.completedActions.includes(levelId)) {
+  // 非法/已完成/学期不符 → 回主页
+  if (!entry || !mod || !isPlayingSemester(state.semester) || state.completedActions.includes(levelId)) {
     return <Navigate to="/home" replace />;
   }
   const content = getLevelContent(levelId);

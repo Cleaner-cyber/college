@@ -1,0 +1,72 @@
+{
+  "id": "fork",
+  "title": "分岔口",
+  "presetAssets": {
+    "bg-gate": "/assets/bg-gate.svg",
+    "sprite-senpai": "/assets/sprite-senpai.svg"
+  },
+  "screens": [
+    {
+      "id": "S1",
+      "type": "dialogue",
+      "speaker": "npc",
+      "npcName": "辅导员",
+      "text": "大三下了，开个短会。\n保研的准备夏令营材料，考研的定学校，考公的看职位表，就业的改简历，留学的刷语言——每条路的时间表都贴在群里了。\n别再「都看看」了。选一条，认真走。",
+      "next": "S2",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S2",
+      "type": "dialogue",
+      "speaker": "senpai",
+      "text": "先说透一件事：这五条路，换皮不换骨。\n拼的都是同一套东西——你文件夹里攒的真本事，加上把它讲清楚的能力。所以别怕选错，怕的是不选。",
+      "next": "S3",
+      "effects": { "typewriter": true }
+    },
+    {
+      "id": "S3",
+      "type": "choice",
+      "text": "四年后想要的生活，你入学那天就选过一次。\n现在，用三年攒下的信息再选一次——这条路是：",
+      "choices": [
+        { "id": "baoyan", "label": "保研", "next": "S4", "setVar": { "key": "direction", "value": "baoyan" } },
+        { "id": "kaoyan", "label": "考研", "next": "S4", "setVar": { "key": "direction", "value": "kaoyan" } },
+        { "id": "kaogong", "label": "考公", "next": "S4", "setVar": { "key": "direction", "value": "kaogong" } },
+        { "id": "job", "label": "就业", "next": "S4", "setVar": { "key": "direction", "value": "job" } },
+        { "id": "abroad", "label": "留学", "next": "S4", "setVar": { "key": "direction", "value": "abroad" } }
+      ]
+    },
+    {
+      "id": "S4",
+      "type": "deliver",
+      "text": "",
+      "next": "end"
+    }
+  ],
+  "copy": {
+    "scene-S1": "bg-gate",
+    "scene-S2": "bg-gate",
+    "sprite-S2": "sprite-senpai",
+    "scene-S3": "bg-gate",
+
+    "next-S1": "……知道了",
+    "next-S2": "我想好了",
+
+    "dir-baoyan": "保研",
+    "dir-kaoyan": "考研",
+    "dir-kaogong": "考公",
+    "dir-job": "就业",
+    "dir-abroad": "留学",
+
+    "resp-baoyan": "好选择——你前五个学期的绩点就是为这一天攒的。\n接下来的重点：夏令营材料五月就要投，把大创和你文件夹里的作品整理成研究经历；联系导师的邮件，你大二就写过一封成功的，照那个分寸来。",
+    "resp-kaoyan": "考研是五条路里最公平的一条：分数说话。\n接下来的重点：暑假前定下学校和专业课参考书；让 AI 当考官的那套方法，从现在起每天用——它出题你作答，比刷十遍讲义有用。",
+    "resp-kaogong": "稳，但别把「稳」理解成「轻松」——国考省考的竞争比你想的凶。\n接下来的重点：行测申论从暑假开始每天两小时；你四年练出来的结构化表达，在申论和面试里就是分数。",
+    "resp-job": "就业是最看文件夹的一条路。\n接下来的重点：秋招八月底就开了，比你想的早；简历上周你刚做完，接下来把作品集的链接补上——面试官会点开看的。",
+    "resp-abroad": "留学拼的是提前量。\n接下来的重点：语言成绩越早出分越好；文书别让中介模板化——你文件夹里的真实经历，比任何华丽形容词都打动招生官。",
+
+    "s4-card-title": "我的方向",
+    "s4-footer": "已记入档案 · 面试关会用到这个选择",
+    "next-S4": "开始走这条路",
+
+    "archive-title-prefix": "分岔口 · "
+  }
+}

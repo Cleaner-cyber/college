@@ -67,15 +67,33 @@ function mainlineLabel(levelId: string, semester: string): string {
   return getBoard(semester).mainline.find((m) => m.id === levelId)?.label ?? levelId;
 }
 
-/** 旧档迁移：'y1s1-end'（旧版 demo 终点）→ 开启大一下 */
+/** 学期链：结算后进入下一学期；y4 结算 → 毕业 */
+const SEMESTER_CHAIN = ['y1s1', 'y1s2', 'y2s1', 'y2s2', 'y3s1', 'y3s2', 'y4'] as const;
+
+export function nextSemester(current: string): PlayerState['semester'] {
+  const i = SEMESTER_CHAIN.indexOf(current as (typeof SEMESTER_CHAIN)[number]);
+  if (i >= 0 && i < SEMESTER_CHAIN.length - 1) return SEMESTER_CHAIN[i + 1];
+  return 'grad-end';
+}
+
+export function isPlayingSemester(semester: string): boolean {
+  return (SEMESTER_CHAIN as readonly string[]).includes(semester);
+}
+
+/** 旧档迁移：'*-end'（旧版 demo 终点）→ 开启下一学期 */
 function migrate(state: PlayerState): PlayerState {
-  if ((state.semester as string) !== 'y1s1-end') return state;
+  const legacy: Record<string, PlayerState['semester']> = {
+    'y1s1-end': 'y1s2',
+    'y1s2-end': 'y2s1',
+  };
+  const to = legacy[state.semester as string];
+  if (!to) return state;
   return {
     ...state,
-    semester: 'y1s2',
+    semester: to,
     actionPoints: SEMESTER_ACTION_POINTS,
     completedActions: [],
-    log: [...state.log, logEntry('semester', 'semester-start', { semester: semesterName('y1s2') })],
+    log: [...state.log, logEntry('semester', 'semester-start', { semester: semesterName(to) })],
   };
 }
 
@@ -174,13 +192,14 @@ export const useEngine = create<EngineStore>((set) => ({
           }),
         );
         const energy = next.axes.energy + remaining;
-        if (st.semester === 'y1s1') {
-          log.push(logEntry('semester', 'semester-start', { semester: semesterName('y1s2') }));
+        const to = nextSemester(st.semester);
+        if (to !== 'grad-end') {
+          log.push(logEntry('semester', 'semester-start', { semester: semesterName(to) }));
           next = {
             ...next,
             axes: { ...next.axes, energy },
             actionPoints: SEMESTER_ACTION_POINTS,
-            semester: 'y1s2',
+            semester: to,
             completedActions: [],
           };
         } else {
@@ -188,7 +207,7 @@ export const useEngine = create<EngineStore>((set) => ({
             ...next,
             axes: { ...next.axes, energy },
             actionPoints: 0,
-            semester: 'y1s2-end',
+            semester: 'grad-end',
           };
         }
       } else {

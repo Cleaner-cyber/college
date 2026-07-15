@@ -2,21 +2,37 @@
   "id": "settlement",
   "title": "学期结算",
   "screens": [
-    { "id": "S1", "type": "reveal", "text": "大一上 · 结束", "next": "S2" },
-    { "id": "S2", "type": "reveal", "text": "你的文件夹", "next": "S3" },
-    { "id": "S3", "type": "reveal", "text": "学期小卡", "next": "S4" },
+    {
+      "id": "S1",
+      "type": "reveal",
+      "text": "大一上 · 结束",
+      "next": "S2"
+    },
+    {
+      "id": "S2",
+      "type": "reveal",
+      "text": "你的文件夹",
+      "next": "S3"
+    },
+    {
+      "id": "S3",
+      "type": "reveal",
+      "text": "学期小卡",
+      "next": "S4"
+    },
     {
       "id": "S4",
       "type": "dialogue",
       "speaker": "senpai",
       "text": "这才是第一个学期。",
       "next": "end",
-      "effects": { "typewriter": true }
+      "effects": {
+        "typewriter": true
+      }
     }
   ],
   "copy": {
-    "s1-title-y1s1": "大一上 · 结束",
-    "s1-title-y1s2": "大一下 · 结束",
+    "s1-title": "{semester} · 结束",
     "s1-replay-title": "这学期你做了",
     "next-S1": "看看文件夹",
     "s2-title": "你的文件夹",
@@ -28,7 +44,7 @@
     "s3-flag-city": "城市",
     "s3-flag-work": "工作",
     "s3-flag-time": "下班",
-    "s3-axes-title": "第一学期的形状",
+    "s3-axes-title": "此刻的形状",
     "s3-made-count": "这学期 {total} 件作品里，你自己做了 {own} 件",
     "verdict-academic": "开局最稳的一条路：先把分数握在手里。图书馆的灯记得你。",
     "verdict-portfolio": "你已经开始留下能拿出手的东西了。文件夹比分数诚实。",
@@ -37,13 +53,29 @@
     "verdict-rest": "休整型开局。你把精力留住了——大学是长跑，这不丢人。",
     "verdict-flat": "均衡型开局。每条线都碰了一下，方向感会在下学期长出来。",
     "next-S3": "继续",
-    "s4-line-y1s1": "这才是第一个学期。\n行动点下学期会重新发满——别攒，攒不住的是时间。",
-    "s4-line-y1s2": "这就是你的第一年。\n文件夹里的东西越来越多了——它们都是真的。",
+    "s4-line": "{semester}结束了。\n行动点下学期会重新发满——别攒，攒不住的是时间。",
+    "s4-line-final": "四年，到这里了。\n我毕业那天，把文件夹交给了你。现在轮到你了——去过真的四年吧。",
     "s4-timeline-title": "接下来",
-    "s4-timeline-y1s1": "大一下 · 部门PPT｜大二 · 找导师｜大二暑假 · 第一笔AI收入｜大三 · 简历与面试｜大四 · 毕业论文｜毕业 · 结局",
-    "s4-timeline-y1s2": "大二 · 找导师与文献综述｜大二暑假 · 第一笔AI收入｜大三 · 简历与面试｜大四 · 毕业论文｜毕业 · 结局",
-    "s4-demo-end": "Demo 到这里。想看后面的，告诉学长。",
-    "s4-next-semester": "进入大一下",
-    "next-S4": "完成"
+    "s4-final-note": "游戏到这里。文件夹里的提示词模板都是真的，带走。",
+    "s4-next-semester": "进入{next}",
+    "next-S4": "完成",
+    "grad-card-title": "你的身份卡",
+    "grad-flag-title": "入学那天，你说你想要——",
+    "grad-flag-echo": "现在，带着这张卡去要吧。",
+    "grad-id-academic": "学术选手",
+    "grad-v-academic": "四年绩点没白刷。保研教室的灯，你坐进去了。",
+    "grad-id-portfolio": "作品说话的人",
+    "grad-v-portfolio": "你的文件夹比成绩单厚。offer 是作品自己谈下来的。",
+    "grad-id-expression": "台前的人",
+    "grad-v-expression": "从竞选班委腿抖，到答辩台上不看稿。四年练的是敢开口。",
+    "grad-id-cash": "自己养活自己的人",
+    "grad-v-cash": "从家教到 AI 接单，你毕业时的底气是自己挣来的。",
+    "grad-id-balanced": "六边形毕业生",
+    "grad-v-balanced": "每条线都没落下。稳，是一种被低估的天赋。",
+    "grad-id-rest": "省电模式毕业生",
+    "grad-v-rest": "你按自己的节奏走完了四年。不赶路的人，看到的风景多。",
+    "grad-abilities-title": "四年解锁的 AI 能力",
+    "grad-made": "四年 {total} 件产出里，你自己做的有 {own} 件",
+    "grad-axes-title": "四年的形状"
   }
 }

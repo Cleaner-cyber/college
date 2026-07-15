@@ -1,0 +1,21 @@
+{
+  "id": "y3s2",
+  "header": "大三下 · 3月（暑假收尾）",
+  "mainline": [
+    {
+      "id": "fork",
+      "label": "分岔口",
+      "tag": "必修 · 选择方向",
+      "desc": "保研、考研、考公、就业、留学。总得选一条路认真走。"
+    },
+    {
+      "id": "interview",
+      "label": "那场面试",
+      "tag": "教学 · 角色扮演",
+      "desc": "面试官手里拿着的，是你这三年真实的文件夹。"
+    }
+  ],
+  "mainlineLockText": "先完成上一个主线任务",
+  "electivesLockText": "先在分岔口做出选择，行动板再解锁",
+  "quickActionsRef": "y3s2"
+}

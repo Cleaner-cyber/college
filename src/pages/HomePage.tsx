@@ -151,7 +151,11 @@ const NavColumn: React.FC<{
     ['log', home['nav-log']],
   ];
   const timeline = home['timeline'].split('｜');
-  const currentIdx = state.semester === 'prologue' ? 0 : state.semester.startsWith('y1s2') ? 2 : 1;
+  const TL_IDX: Record<string, number> = {
+    prologue: 0, y1s1: 1, 'y1s1-end': 1, y1s2: 2, 'y1s2-end': 2,
+    y2s1: 3, y2s2: 4, y3s1: 5, y3s2: 6, y4: 7, 'grad-end': 8,
+  };
+  const currentIdx = TL_IDX[state.semester] ?? 1;
   return (
     <div className="flex flex-col gap-6">
       <nav className="flex flex-col gap-1">
@@ -239,7 +243,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const mainlineDone = isMainlineComplete(state);
   const firstMainlineDone = state.completedActions.includes(board.mainline[0]?.id);
 
-  if (state.semester === 'y1s2-end') {
+  if (state.semester === 'grad-end') {
     return <SemesterEnded />;
   }
 

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#3B3540"/>
+  <rect x="0" y="660" width="1600" height="240" fill="#2E2933"/>
+  <circle cx="380" cy="240" r="90" fill="#F2E2C4" opacity="0.9"/>
+  <path d="M380 330 L 340 660 M380 330 L 420 660 M340 460 L 420 460" stroke="#1F1B24" stroke-width="14" stroke-linecap="round"/>
+  <rect x="620" y="200" width="520" height="320" rx="12" fill="#68C08A" stroke="#4E9A6C" stroke-width="10"/>
+  <text x="880" y="380" font-family="sans-serif" font-size="40" text-anchor="middle" fill="#2E5940" opacity="0.7">GREEN SCREEN</text>
+  <rect x="1240" y="420" width="240" height="240" rx="12" fill="#4A4453" stroke="#3B3540" stroke-width="8"/>
+  <circle cx="1360" cy="500" r="44" fill="#1F1B24" stroke="#C05A32" stroke-width="8"/>
+  <path d="M1404 480 L 1460 450 L 1460 560 L 1404 528 Z" fill="#1F1B24" stroke="#C05A32" stroke-width="6"/>
+  <ellipse cx="800" cy="800" rx="430" ry="16" fill="#000" opacity="0.25"/>
+</svg>
