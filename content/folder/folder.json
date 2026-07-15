@@ -1,9 +1,11 @@
 {
   "items": {
     "poster-y1": "works",
+    "ppt-deck": "works",
     "major-card": "docs",
     "course-map": "docs",
     "prompt-doc-feeding": "prompts",
-    "prompt-image-gen": "prompts"
+    "prompt-image-gen": "prompts",
+    "prompt-structured-gen": "prompts"
   }
 }

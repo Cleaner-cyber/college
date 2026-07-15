@@ -1,5 +1,5 @@
 /**
- * 学期结算页：y1s1 主线完成后可进入；y1s1-end 可重复进入复看结局卡。
+ * 学期结算页：当前学期主线完成后可进入；y1s2-end 可复看结局卡。
  */
 import React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -14,8 +14,9 @@ export const SettlementPage: React.FC = () => {
   const mod = levelRegistry['settlement'];
   const content = getLevelContent('settlement');
 
-  const canSettle = state.semester === 'y1s1' && isMainlineComplete(state);
-  const isReview = state.semester === 'y1s1-end';
+  const settling = state.semester === 'y1s1' || state.semester === 'y1s2';
+  const canSettle = settling && isMainlineComplete(state);
+  const isReview = state.semester === 'y1s2-end';
   if (!canSettle && !isReview) return <Navigate to="/home" replace />;
 
   return (

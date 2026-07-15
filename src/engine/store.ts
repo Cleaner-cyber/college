@@ -10,9 +10,9 @@ import {
   persistState,
   flushState,
 } from '@/services/saveAdapter';
-import { boards, getMajor, interpolate, ui } from './content';
+import { getBoard, getMajor, interpolate, semesterName, ui } from './content';
 
-const SEMESTER_ACTION_POINTS = 3; // 大一上行动点（选修用）
+const SEMESTER_ACTION_POINTS = 3; // 每学期行动点（选修用）
 
 function freshState(): PlayerState {
   return {
@@ -54,7 +54,7 @@ export function effectiveCost(
 
 /** 主线是否全部完成（结算学期的前置条件） */
 export function isMainlineComplete(state: Readonly<PlayerState>): boolean {
-  return boards.y1s1.mainline.every((m) => state.completedActions.includes(m.id));
+  return getBoard(state.semester).mainline.every((m) => state.completedActions.includes(m.id));
 }
 
 const tmpl = ui['log-tmpl'] as Record<string, string>;
@@ -63,8 +63,20 @@ function logEntry(type: LogEntry['type'], key: string, vars: Record<string, stri
   return { ts: new Date().toISOString(), type, text: interpolate(tmpl[key] ?? key, vars) };
 }
 
-function mainlineLabel(levelId: string): string {
-  return boards.y1s1.mainline.find((m) => m.id === levelId)?.label ?? levelId;
+function mainlineLabel(levelId: string, semester: string): string {
+  return getBoard(semester).mainline.find((m) => m.id === levelId)?.label ?? levelId;
+}
+
+/** 旧档迁移：'y1s1-end'（旧版 demo 终点）→ 开启大一下 */
+function migrate(state: PlayerState): PlayerState {
+  if ((state.semester as string) !== 'y1s1-end') return state;
+  return {
+    ...state,
+    semester: 'y1s2',
+    actionPoints: SEMESTER_ACTION_POINTS,
+    completedActions: [],
+    log: [...state.log, logEntry('semester', 'semester-start', { semester: semesterName('y1s2') })],
+  };
 }
 
 interface EngineStore {
@@ -95,7 +107,7 @@ export const useEngine = create<EngineStore>((set) => ({
   hydrate: async () => {
     const adapter = getSaveAdapter();
     const loaded = adapter ? await adapter.load() : null;
-    set({ state: loaded ?? freshState(), ready: true });
+    set({ state: loaded ? migrate(loaded) : freshState(), ready: true });
   },
 
   unload: () => set({ state: null, ready: false }),
@@ -145,7 +157,7 @@ export const useEngine = create<EngineStore>((set) => ({
             majorName: getMajor(next.player.majorId).name,
           }),
         );
-        log.push(logEntry('semester', 'semester-start', {}));
+        log.push(logEntry('semester', 'semester-start', { semester: semesterName('y1s1') }));
         next = {
           ...next,
           semester: 'y1s1',
@@ -153,19 +165,36 @@ export const useEngine = create<EngineStore>((set) => ({
           completedActions: [],
         };
       } else if (levelId === 'settlement') {
-        // 学期流转：结算 → 剩余行动点转化为休息
+        // 学期结算：剩余行动点转化为休息 → 进入下一学期或结束
         const remaining = next.actionPoints;
-        log.push(logEntry('semester', 'semester-end', { points: remaining }));
-        next = {
-          ...next,
-          axes: { ...next.axes, energy: next.axes.energy + remaining },
-          actionPoints: 0,
-          semester: 'y1s1-end',
-        };
+        log.push(
+          logEntry('semester', 'semester-end', {
+            semester: semesterName(st.semester),
+            points: remaining,
+          }),
+        );
+        const energy = next.axes.energy + remaining;
+        if (st.semester === 'y1s1') {
+          log.push(logEntry('semester', 'semester-start', { semester: semesterName('y1s2') }));
+          next = {
+            ...next,
+            axes: { ...next.axes, energy },
+            actionPoints: SEMESTER_ACTION_POINTS,
+            semester: 'y1s2',
+            completedActions: [],
+          };
+        } else {
+          next = {
+            ...next,
+            axes: { ...next.axes, energy },
+            actionPoints: 0,
+            semester: 'y1s2-end',
+          };
+        }
       } else {
         log.push(
           logEntry('level', borrowed ? 'level-borrowed' : 'level-complete', {
-            label: mainlineLabel(levelId),
+            label: mainlineLabel(levelId, st.semester),
           }),
         );
       }

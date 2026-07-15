@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { ArchiveItem, PlayerState, QuickAction } from '@/contracts';
 import {
-  boards,
+  getBoard,
   getFolderSection,
   getLevelContent,
   getMajor,
@@ -151,7 +151,7 @@ const NavColumn: React.FC<{
     ['log', home['nav-log']],
   ];
   const timeline = home['timeline'].split('｜');
-  const currentIdx = state.semester === 'prologue' ? 0 : 1; // demo 只到大一上
+  const currentIdx = state.semester === 'prologue' ? 0 : state.semester.startsWith('y1s2') ? 2 : 1;
   return (
     <div className="flex flex-col gap-6">
       <nav className="flex flex-col gap-1">
@@ -234,12 +234,12 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const navigate = useNavigate();
   const runQuickAction = useEngine((s) => s.runQuickAction);
   const [lastQuick, setLastQuick] = useState<QuickAction | null>(null);
-  const board = boards.y1s1;
+  const board = getBoard(state.semester);
   const qas = quickActions[board.quickActionsRef] ?? [];
   const mainlineDone = isMainlineComplete(state);
   const firstMainlineDone = state.completedActions.includes(board.mainline[0]?.id);
 
-  if (state.semester === 'y1s1-end') {
+  if (state.semester === 'y1s2-end') {
     return <SemesterEnded />;
   }
 
@@ -468,7 +468,7 @@ const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, on
   >
     <span className="absolute right-0 top-0 h-0 w-0 border-l-[18px] border-t-[18px] border-l-transparent border-t-line" />
     <div className="text-[14.5px] font-medium">{item.title}</div>
-    <div className="mt-1 text-xs text-ink-soft">{boards.y1s1.header}</div>
+    <div className="mt-1 text-xs text-ink-soft">{getBoard(item.semester).header}</div>
   </button>
 );
 
@@ -597,12 +597,21 @@ const ArchiveDetail: React.FC<{
         </div>
       );
     }
+    // 其余作品（PPT 等）：大图 + 简历措辞
     return item.assetRef ? (
-      <img
-        src={`/assets/${item.assetRef}.svg`}
-        alt=""
-        className="w-full rounded-lg border border-line"
-      />
+      <div className="flex flex-col gap-4">
+        <img
+          src={`/assets/${item.assetRef}.svg`}
+          alt=""
+          className="w-full rounded-lg border border-line"
+        />
+        {item.resumeLine && (
+          <div className="rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px]">
+            <span className="mr-2 font-semibold text-accent">{home['detail-resume-line']}</span>
+            {item.resumeLine}
+          </div>
+        )}
+      </div>
     ) : null;
   };
 
@@ -782,7 +791,7 @@ export const HomePage: React.FC = () => {
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3.5">
           <div className="flex items-baseline gap-4">
             <span className="text-lg font-semibold tracking-widest">{ui['app-title']}</span>
-            <span className="text-sm text-ink-soft">{boards.y1s1.header}</span>
+            <span className="text-sm text-ink-soft">{getBoard(state.semester).header}</span>
           </div>
           <div className="flex items-center gap-4 text-sm">
             {state.semester === 'y1s1' && (

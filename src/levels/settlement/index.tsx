@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import type { LevelModule, LevelProps, PlayerState, QuickAction } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
-import { ui, quickActions, boards, interpolate, getFolderSection } from '@/engine/content';
+import { ui, quickActions, getBoard, interpolate, getFolderSection } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
 
@@ -52,9 +52,14 @@ const AxesBars: React.FC<{ state: Readonly<PlayerState>; animate?: boolean }> = 
   );
 };
 
+/** 结算语境下的学期 key（复看 y1s2-end 时也归到 y1s2） */
+function semesterKey(state: Readonly<PlayerState>): 'y1s1' | 'y1s2' {
+  return state.semester.startsWith('y1s2') ? 'y1s2' : 'y1s1';
+}
+
 /** 本学期行动回放：速结行动取 resultText，关卡取档案条目标题 */
 function replayLines(state: Readonly<PlayerState>): { label: string; text: string }[] {
-  const qas: QuickAction[] = quickActions[boards.y1s1.quickActionsRef] ?? [];
+  const qas: QuickAction[] = quickActions[getBoard(state.semester).quickActionsRef] ?? [];
   return state.completedActions.flatMap((id) => {
     const qa = qas.find((q) => q.id === id);
     if (qa) return [{ label: qa.label, text: qa.resultText }];
@@ -65,7 +70,9 @@ function replayLines(state: Readonly<PlayerState>): { label: string; text: strin
 
 const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => (
   <div className="flex flex-col gap-6">
-    <h1 className="text-2xl font-semibold tracking-wide">{api.copy('s1-title')}</h1>
+    <h1 className="text-2xl font-semibold tracking-wide">
+      {api.copy(`s1-title-${semesterKey(state)}`)}
+    </h1>
     <AxesBars state={state} animate />
     <div>
       <div className="mb-2 text-xs tracking-widest text-ink-soft">
@@ -163,12 +170,13 @@ const EndingCard: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
   );
 };
 
-const Hook: React.FC<{ api: FlowAPI }> = ({ api }) => {
+const Hook: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => {
   const [typed, setTyped] = useState(false);
+  const sem = semesterKey(state);
   return (
     <div className="flex flex-col gap-6">
       <Typewriter
-        text={api.t(api.screen.text ?? '')}
+        text={api.copy(`s4-line-${sem}`)}
         onDone={() => setTyped(true)}
         className="text-[17px]"
       />
@@ -179,7 +187,7 @@ const Hook: React.FC<{ api: FlowAPI }> = ({ api }) => {
           </div>
           <ul className="space-y-1.5">
             {api
-              .copy('s4-timeline')
+              .copy(`s4-timeline-${sem}`)
               .split('｜')
               .map((line) => (
                 <li key={line} className="text-sm text-ink-soft/60">
@@ -187,9 +195,13 @@ const Hook: React.FC<{ api: FlowAPI }> = ({ api }) => {
                 </li>
               ))}
           </ul>
-          <p className="mt-5 text-[15px] text-ink">{api.copy('s4-demo-end')}</p>
+          {sem === 'y1s2' && (
+            <p className="mt-5 text-[15px] text-ink">{api.copy('s4-demo-end')}</p>
+          )}
           <Button full className="mt-6" onClick={api.advance}>
-            {api.nextLabel}
+            {sem === 'y1s1' && state.semester === 'y1s1'
+              ? api.copy('s4-next-semester')
+              : api.nextLabel}
           </Button>
         </div>
       )}
@@ -208,7 +220,7 @@ const SettlementComponent: React.FC<LevelProps> = ({ state, content, onComplete 
         S1: (api) => <Recap api={api} state={state} />,
         S2: (api) => <Folder api={api} state={state} />,
         S3: (api) => <EndingCard api={api} state={state} />,
-        S4: (api) => <Hook api={api} />,
+        S4: (api) => <Hook api={api} state={state} />,
       }}
       onFinish={() => onComplete({ deltas: {}, abilityUnlocks: [], archiveItems: [] })}
     />

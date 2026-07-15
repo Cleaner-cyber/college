@@ -1,0 +1,15 @@
+{
+  "id": "y1s2",
+  "header": "大一下 · 3月",
+  "mainline": [
+    {
+      "id": "ppt",
+      "label": "部门的策划案 PPT",
+      "tag": "教学 · 结构化生成",
+      "desc": "周三例会要用。10 页以内，要预算表和分工。素材很乱。"
+    }
+  ],
+  "mainlineLockText": "先完成上一个主线任务",
+  "electivesLockText": "先把策划案交了，行动板再解锁",
+  "quickActionsRef": "y1s2"
+}

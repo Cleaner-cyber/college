@@ -7,10 +7,13 @@ import type { LevelContent, Major, QuickAction } from '@/contracts';
 import prologueJson from '@content/levels/prologue.json';
 import courseSelectJson from '@content/levels/course-select.json';
 import posterJson from '@content/levels/poster.json';
+import pptJson from '@content/levels/ppt.json';
 import settlementJson from '@content/levels/settlement.json';
 import majorsJson from '@content/majors/majors.json';
 import quickActionsY1s1 from '@content/quick-actions/y1s1.json';
+import quickActionsY1s2 from '@content/quick-actions/y1s2.json';
 import boardY1s1 from '@content/board/y1s1.json';
+import boardY1s2 from '@content/board/y1s2.json';
 import uiJson from '@content/ui/ui.json';
 import folderJson from '@content/folder/folder.json';
 
@@ -18,6 +21,7 @@ const levelContents: Record<string, LevelContent> = {
   prologue: prologueJson as LevelContent,
   'course-select': courseSelectJson as LevelContent,
   poster: posterJson as LevelContent,
+  ppt: pptJson as LevelContent,
   settlement: settlementJson as LevelContent,
 };
 
@@ -44,6 +48,7 @@ export function searchMajors(query: string): Major[] {
 
 export const quickActions: Record<string, QuickAction[]> = {
   y1s1: quickActionsY1s1 as QuickAction[],
+  y1s2: quickActionsY1s2 as QuickAction[],
 };
 
 export interface BoardMainlineEntry {
@@ -64,7 +69,19 @@ export interface BoardConfig {
 
 export const boards: Record<string, BoardConfig> = {
   y1s1: boardY1s1 as BoardConfig,
+  y1s2: boardY1s2 as BoardConfig,
 };
+
+/** 学期 → 行动板配置（*-end 复用本学期配置；prologue 前瞻 y1s1） */
+export function getBoard(semester: string): BoardConfig {
+  if (semester.startsWith('y1s2')) return boards.y1s2;
+  return boards.y1s1;
+}
+
+/** 学期显示名（取 header 的「大一上」部分） */
+export function semesterName(semester: string): string {
+  return getBoard(semester).header.split(' · ')[0];
+}
 
 // 引擎级 UI 文案（HUD、行动板、通用按钮）
 export const ui = uiJson;

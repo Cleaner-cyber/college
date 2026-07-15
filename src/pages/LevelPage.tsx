@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useEngine } from '@/engine/store';
 import { levelRegistry } from '@/engine/registry';
-import { getLevelContent, boards, ui } from '@/engine/content';
+import { getLevelContent, getBoard, ui } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
 
 const copy = ui['level-page'] as Record<string, string>;
@@ -18,10 +18,11 @@ export const LevelPage: React.FC = () => {
   const applyLevelResult = useEngine((s) => s.applyLevelResult);
   const [leaving, setLeaving] = useState(false);
 
-  const entry = boards.y1s1.mainline.find((m) => m.id === levelId);
+  const entry = getBoard(state.semester).mainline.find((m) => m.id === levelId);
   const mod = levelRegistry[levelId];
   // 非法/已完成/未到 y1s1 → 回主页
-  if (!entry || !mod || state.semester !== 'y1s1' || state.completedActions.includes(levelId)) {
+  const inSemester = state.semester === 'y1s1' || state.semester === 'y1s2';
+  if (!entry || !mod || !inSemester || state.completedActions.includes(levelId)) {
     return <Navigate to="/home" replace />;
   }
   const content = getLevelContent(levelId);
