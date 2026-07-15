@@ -206,11 +206,11 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                     e.dataTransfer.effectAllowed = 'copy';
                   }}
                   onDoubleClick={() => feed(f.id)}
-                  className={`select-none rounded-xl border bg-card p-3 transition ${
+                  className={`select-none rounded-xl border bg-card p-3 shadow-soft transition ${
                     isFed
-                      ? 'border-line opacity-50'
+                      ? 'border-line opacity-50 shadow-none'
                       : active
-                        ? 'cursor-grab border-accent shadow-sm hover:-translate-y-0.5 hover:shadow-md'
+                        ? 'cursor-grab border-accent shadow-glow hover:-translate-y-0.5 hover:shadow-lift'
                         : 'cursor-grab border-line'
                   }`}
                 >
@@ -262,13 +262,17 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
           setDragOver(false);
           feed(e.dataTransfer.getData('text/plain'));
         }}
-        className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-card transition-colors ${
+        className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-card shadow-soft transition-colors ${
           dragOver ? 'border-accent bg-accent-soft/40' : waitingFile ? 'border-dashed border-line' : 'border-line'
         }`}
       >
-        <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
-          <span className="h-2 w-2 rounded-full bg-accent" />
-          <span className="text-[13px] font-medium">{api.copy('chat-title')}</span>
+        <div className="flex items-center gap-2 border-b border-line bg-paper/60 px-4 py-2.5">
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-accent" />
+            <span className="h-2 w-2 rounded-full bg-line" />
+            <span className="h-2 w-2 rounded-full bg-line" />
+          </span>
+          <span className="ml-1 text-[13px] font-medium">{api.copy('chat-title')}</span>
           {streaming && (
             <span className="ml-auto text-[11px] text-ink-soft">{api.copy('chat-skip-hint')}</span>
           )}
@@ -330,7 +334,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                     onClick={() => {
                       if (!m.done && streaming) setStreamCount(m.text.length);
                     }}
-                    className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line bg-paper px-4 py-3"
+                    className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line/70 bg-paper px-4 py-3 shadow-soft"
                   >
                     {renderMarkdown(shown)}
                     {m.img && m.done && (

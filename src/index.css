@@ -7,9 +7,18 @@ body {
   @apply bg-paper text-ink;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
-  /* 信纸质感：极淡的点状纹理 */
-  background-image: radial-gradient(rgba(28, 27, 24, 0.045) 0.6px, transparent 0.6px);
-  background-size: 22px 22px;
+  /* 氛围层：信纸点状纹理 + 两个超低饱和的暖色弥散光斑（固定，不动画） */
+  background-image:
+    radial-gradient(rgba(28, 27, 24, 0.045) 0.6px, transparent 0.6px),
+    radial-gradient(ellipse 55% 42% at 12% -6%, rgba(192, 90, 50, 0.07), transparent 70%),
+    radial-gradient(ellipse 48% 38% at 94% 16%, rgba(214, 158, 46, 0.06), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 112%, rgba(192, 90, 50, 0.045), transparent 70%);
+  background-size:
+    22px 22px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  background-attachment: fixed;
 }
 
 ::selection {
@@ -31,4 +40,11 @@ body {
 
 button {
   touch-action: manipulation;
+}
+
+/* 键盘可达性：统一的焦点环（鼠标点击不出现） */
+:focus-visible {
+  outline: 2px solid rgba(192, 90, 50, 0.55);
+  outline-offset: 2px;
+  border-radius: 6px;
 }

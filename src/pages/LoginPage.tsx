@@ -42,7 +42,7 @@ export const LoginPage: React.FC = () => {
         </header>
 
         {!isCloudMode ? (
-          <div className="rounded-2xl border border-line bg-card p-6 text-center">
+          <div className="rounded-2xl border border-line/70 bg-card/90 p-6 text-center shadow-lift backdrop-blur">
             <h2 className="text-[15px] font-semibold">{copy['local-mode-title']}</h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">{copy['local-mode-desc']}</p>
             <Button full className="mt-5" onClick={() => navigate('/home')}>
@@ -50,7 +50,10 @@ export const LoginPage: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <form onSubmit={submit} className="rounded-2xl border border-line bg-card p-6">
+          <form
+            onSubmit={submit}
+            className="rounded-2xl border border-line/70 bg-card/90 p-6 shadow-lift backdrop-blur"
+          >
             <label className="block text-xs tracking-widest text-ink-soft">
               {copy['email-label']}
               <input
@@ -59,7 +62,7 @@ export const LoginPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={copy['email-placeholder']}
-                className="mt-1.5 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-[15px] text-ink outline-none focus:border-accent"
+                className="mt-1.5 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-[15px] text-ink outline-none transition focus:border-accent focus:shadow-glow"
               />
             </label>
             <label className="mt-4 block text-xs tracking-widest text-ink-soft">
@@ -71,7 +74,7 @@ export const LoginPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={copy['password-placeholder']}
-                className="mt-1.5 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-[15px] text-ink outline-none focus:border-accent"
+                className="mt-1.5 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-[15px] text-ink outline-none transition focus:border-accent focus:shadow-glow"
               />
             </label>
 

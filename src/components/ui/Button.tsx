@@ -12,11 +12,12 @@ export const Button: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   const base =
-    'rounded-xl px-5 py-3 text-[15px] font-medium transition active:scale-[0.98] disabled:opacity-40 disabled:active:scale-100';
+    'rounded-xl px-5 py-3 text-[15px] font-medium transition-all duration-200 active:scale-[0.97] disabled:opacity-40 disabled:active:scale-100 disabled:hover:translate-y-0 disabled:hover:shadow-none';
   const styles = {
-    primary: 'bg-ink text-paper',
-    secondary: 'bg-card border border-line text-ink',
-    ghost: 'text-ink-soft underline underline-offset-4',
+    primary: 'bg-ink text-paper shadow-soft hover:-translate-y-0.5 hover:bg-ink/90 hover:shadow-lift',
+    secondary:
+      'bg-card border border-line text-ink shadow-soft hover:-translate-y-0.5 hover:border-ink/30 hover:shadow-lift',
+    ghost: 'text-ink-soft underline underline-offset-4 hover:text-ink',
   }[variant];
   return (
     <button className={`${base} ${styles} ${full ? 'w-full' : ''} ${className}`} {...rest} />

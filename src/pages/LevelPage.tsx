@@ -28,7 +28,7 @@ export const LevelPage: React.FC = () => {
 
   return (
     <div className="min-h-dvh">
-      <header className="sticky top-0 z-10 border-b border-line bg-paper/95 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-line/70 bg-paper/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3">
           <button
             className="text-sm text-ink-soft underline underline-offset-4"
@@ -55,8 +55,8 @@ export const LevelPage: React.FC = () => {
       />
 
       {leaving && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 p-6">
-          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 animate-fade-up">
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
+          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{copy['leave-confirm-title']}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button full onClick={() => navigate('/home')}>

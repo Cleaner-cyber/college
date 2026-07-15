@@ -56,8 +56,10 @@ const StatusRail: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
         {Array.from({ length: 3 }).map((_, i) => (
           <span
             key={i}
-            className={`inline-block h-4 w-4 rounded-full ${
-              i < state.actionPoints ? 'bg-accent' : 'border border-line bg-paper'
+            className={`inline-block h-4 w-4 rounded-full transition-colors ${
+              i < state.actionPoints
+                ? 'bg-accent shadow-glow animate-breathe'
+                : 'border border-line bg-paper'
             }`}
           />
         ))}
@@ -164,7 +166,7 @@ const NavColumn: React.FC<{
             key={key}
             onClick={() => onTab(key)}
             className={`flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-left text-[15px] transition ${
-              tab === key ? 'bg-ink font-medium text-paper' : 'text-ink hover:bg-line/60'
+              tab === key ? 'bg-ink font-medium text-paper shadow-soft' : 'text-ink hover:bg-line/60'
             }`}
           >
             <NavIcon tab={key} />
@@ -179,7 +181,7 @@ const NavColumn: React.FC<{
         <div className="mb-2 px-1 text-[11px] tracking-widest text-ink-soft">
           {home['timeline-title']}
         </div>
-        <ol className="flex flex-col gap-1 px-1">
+        <ol className="relative flex flex-col gap-1 px-1 before:absolute before:bottom-2 before:left-[6.5px] before:top-2 before:w-px before:bg-line">
           {timeline.map((t, i) => (
             <li
               key={t}
@@ -188,8 +190,8 @@ const NavColumn: React.FC<{
               }`}
             >
               <span
-                className={`inline-block h-1.5 w-1.5 rounded-full ${
-                  i === currentIdx ? 'bg-accent' : i < currentIdx ? 'bg-ink' : 'bg-line'
+                className={`relative z-10 inline-block h-1.5 w-1.5 rounded-full ring-2 ring-paper ${
+                  i === currentIdx ? 'bg-accent shadow-glow' : i < currentIdx ? 'bg-ink' : 'bg-line'
                 }`}
               />
               {t}
@@ -205,8 +207,8 @@ const NavColumn: React.FC<{
 // ---------- 本学期 ----------
 
 const QuickResultModal: React.FC<{ qa: QuickAction; onClose: () => void }> = ({ qa, onClose }) => (
-  <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6">
-    <div className="w-full max-w-md rounded-2xl bg-paper p-6 animate-fade-up">
+  <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
+    <div className="w-full max-w-md rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
       <div className="flex flex-wrap gap-2">
         {VISIBLE_AXES.filter((a) => (qa.deltas[a] ?? 0) !== 0).map((a) => (
           <span
@@ -258,13 +260,21 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             return (
               <li
                 key={m.id}
-                className={`flex items-center gap-4 rounded-xl border p-4 ${
-                  done ? 'border-line bg-paper opacity-70' : unlocked ? 'border-accent/50 bg-card' : 'border-line bg-paper opacity-45'
+                className={`flex items-center gap-4 rounded-xl border p-4 transition ${
+                  done
+                    ? 'border-line bg-paper opacity-70'
+                    : unlocked
+                      ? 'border-accent/50 bg-card shadow-soft'
+                      : 'border-line bg-paper opacity-45'
                 }`}
               >
                 <span
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-                    done ? 'bg-ink text-paper' : unlocked ? 'bg-accent text-white' : 'bg-line text-ink-soft'
+                    done
+                      ? 'bg-ink text-paper'
+                      : unlocked
+                        ? 'bg-accent text-white shadow-glow'
+                        : 'bg-line text-ink-soft'
                   }`}
                 >
                   {done ? '✓' : i + 1}
@@ -310,7 +320,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                   runQuickAction(qa);
                   window.setTimeout(() => setLastQuick(qa), 250);
                 }}
-                className={`rounded-xl border border-line bg-card p-4 text-left transition hover:-translate-y-0.5 hover:border-ink/30 hover:shadow-md disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-none ${
+                className={`rounded-xl border border-line bg-card p-4 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
                   done ? 'opacity-55' : unaffordable ? 'opacity-40' : ''
                 }`}
               >
@@ -365,8 +375,8 @@ const SemesterEnded: React.FC = () => {
         </div>
       </div>
       {confirming && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6">
-          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 animate-fade-up">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
+          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{home['restart-confirm']}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button full onClick={() => void reset()}>
@@ -409,7 +419,7 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
   return (
     <button
       onClick={onOpen}
-      className="w-[270px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left shadow-sm transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lg"
+      className="w-[270px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
     >
       <div className="h-[180px] w-full overflow-hidden border-b border-line bg-paper">
         {item.assetRef && imgOk ? (
@@ -444,7 +454,7 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
 const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
   <button
     onClick={onOpen}
-    className="flex w-full items-center gap-3.5 rounded-2xl border border-line bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
+    className="flex w-full items-center gap-3.5 rounded-2xl border border-line bg-card p-4 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
   >
     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
       ⚡
@@ -468,7 +478,7 @@ const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item,
 const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
   <button
     onClick={onOpen}
-    className="relative break-inside-avoid overflow-hidden rounded-xl border border-line bg-card p-4 pr-8 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md"
+    className="relative break-inside-avoid overflow-hidden rounded-xl border border-line bg-card p-4 pr-8 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
   >
     <span className="absolute right-0 top-0 h-0 w-0 border-l-[18px] border-t-[18px] border-l-transparent border-t-line" />
     <div className="text-[14.5px] font-medium">{item.title}</div>
@@ -621,11 +631,11 @@ const ArchiveDetail: React.FC<{
 
   return (
     <div
-      className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6"
+      className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]"
       onClick={onClose}
     >
       <div
-        className="max-h-[88dvh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-paper p-6 animate-fade-up"
+        className="max-h-[88dvh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-paper p-6 shadow-pop animate-pop-in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -791,7 +801,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-dvh">
-      <header className="border-b border-line bg-paper/95">
+      <header className="sticky top-0 z-20 border-b border-line/70 bg-paper/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3.5">
           <div className="flex items-baseline gap-4">
             <span className="text-lg font-semibold tracking-widest">{ui['app-title']}</span>

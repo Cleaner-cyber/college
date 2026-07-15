@@ -9,7 +9,7 @@ interface PanelProps {
 
 /** 桌面端通用面板卡片 */
 export const Panel: React.FC<PanelProps> = ({ title, sub, className = '', children }) => (
-  <section className={`rounded-2xl border border-line bg-card p-5 ${className}`}>
+  <section className={`rounded-2xl border border-line/70 bg-card p-5 shadow-soft ${className}`}>
     {title && (
       <header className="mb-4">
         <h2 className="text-[15px] font-semibold tracking-wide">{title}</h2>

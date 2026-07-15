@@ -305,10 +305,12 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
     return (
       <div
         onClick={handleSceneClick}
-        className="relative h-[min(72dvh,660px)] w-full select-none overflow-hidden rounded-2xl border border-line shadow-sm"
+        className="relative h-[min(72dvh,660px)] w-full select-none overflow-hidden rounded-2xl border border-line shadow-lift"
       >
         {/* 场景 */}
         <img src={sceneSrc} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        {/* 底部渐变压暗：托住对话盒，突出立绘 */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink/25 to-transparent" />
         {/* 新手提示：单击继续 */}
         {showVnHint && screen.type === 'dialogue' && (
           <span className="absolute right-4 top-4 z-10 animate-pulse rounded-full bg-ink/60 px-3.5 py-1.5 text-xs text-paper">
@@ -333,7 +335,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
                 <button
                   key={c.id}
                   style={{ animationDelay: `${i * 70}ms` }}
-                  className="animate-fade-up rounded-xl border border-line bg-paper/95 px-5 py-3 text-[15px] shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
+                  className="animate-fade-up rounded-xl border border-line/70 bg-paper/85 px-5 py-3 text-[15px] shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:border-accent hover:shadow-lift"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (c.setVar) setVar(c.setVar.key, c.setVar.value);
@@ -352,14 +354,14 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
           <div className="mx-auto max-w-3xl">
             {!isSystem && (
               <span
-                className={`relative z-10 -mb-px ml-4 inline-block rounded-t-lg border border-b-0 border-line px-4 py-1.5 text-sm font-semibold ${
+                className={`relative z-10 -mb-px ml-4 inline-block rounded-t-xl border border-b-0 border-line/60 px-4 py-1.5 text-sm font-semibold tracking-wide ${
                   screen.speaker === 'senpai' ? 'bg-accent text-white' : 'bg-ink text-paper'
                 }`}
               >
                 {name}
               </span>
             )}
-            <div className="relative min-h-[104px] rounded-2xl border border-line bg-paper/95 px-6 py-4 shadow-lg backdrop-blur">
+            <div className="relative min-h-[104px] rounded-2xl border border-line/60 bg-paper/90 px-6 py-4 shadow-pop backdrop-blur-md">
               {text &&
                 (useTypewriter && !forceFull ? (
                   <Typewriter
