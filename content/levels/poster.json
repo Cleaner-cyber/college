@@ -37,70 +37,15 @@
       "id": "S2",
       "type": "dialogue",
       "speaker": "senpai",
-      "text": "先别急着跟 AI 说「好看一点」。\n她要的三件事，就是你提示词的三句话。",
+      "text": "先别急着跟 AI 说「好看一点」。\n她要的三件事，就是你提示词的三句话——看着输入框，我带你拼出来。",
       "next": "S3",
       "effects": { "typewriter": true }
     },
     {
       "id": "S3",
       "type": "workbench",
-      "text": "准备喂料",
-      "inputKey": "clubName",
-      "placeholder": "星野动漫社",
-      "next": "S4"
-    },
-    {
-      "id": "S4",
-      "type": "reveal",
-      "next": "S5",
-      "effects": {
-        "fakeLoading": {
-          "ms": 3000,
-          "tips": ["真实出图大概要 20 秒，习惯它", "提示词已带上：上三分之一留白，主体在下"]
-        }
-      }
-    },
-    {
-      "id": "S5",
-      "type": "reveal",
-      "text": "注意，它没完全听你的——主体有点满。\n真实的 AI 就这样。所以才有下一步。",
-      "next": "S6",
-      "effects": { "showAsset": "poster-{style}-34-v1" }
-    },
-    {
-      "id": "S6",
-      "type": "dialogue",
-      "speaker": "npc",
-      "npcName": "学姐",
-      "text": "主体太满了，标题没地方放。\n另外公众号头图还要一版 16:9 的。",
-      "next": "S7",
-      "effects": { "typewriter": true }
-    },
-    {
-      "id": "S7",
-      "type": "choice",
-      "text": "怎么改？",
-      "choices": [
-        { "id": "r1", "label": "主体往下压", "next": "S8", "setVar": { "key": "revision", "value": "down" }, "checkItem": "ck-space" },
-        { "id": "r2", "label": "背景压暗", "next": "S8", "setVar": { "key": "revision", "value": "dark" }, "checkItem": "ck-space" },
-        { "id": "r3", "label": "保持构图再抽一次", "next": "S8", "setVar": { "key": "revision", "value": "reroll" }, "checkItem": "ck-space" }
-      ]
-    },
-    {
-      "id": "S8",
-      "type": "reveal",
-      "next": "S9",
-      "effects": {
-        "fakeLoading": { "ms": 2000, "tips": ["改提示词，不是重新许愿"] },
-        "showAsset": "poster-{style}-34-v2"
-      }
-    },
-    {
-      "id": "S9",
-      "type": "reveal",
-      "text": "同一句提示词，只换一个参数。",
-      "next": "S10",
-      "effects": { "showAsset": "poster-{style}-169" }
+      "text": "AI 生图工作台",
+      "next": "S10"
     },
     {
       "id": "S10",
@@ -120,42 +65,72 @@
     "sprite-S1": "sprite-xuejie",
     "scene-S2": "bg-club",
     "sprite-S2": "sprite-senpai",
-    "scene-S6": "bg-club",
-    "sprite-S6": "sprite-xuejie",
+
     "next-S1": "接下",
     "next-S2": "开始",
-    "s3-steps": "① 社团名可以直接用默认的 → ② 选一种风格 → ③ 选 3:4 尺寸 → ④ 点生成",
+
+    "chat-title": "AI 生图",
+    "s3-steps": "① 社团名可以直接用默认的 → ② 选一种风格 → ③ 尺寸选 3:4 → ④ 点生成，看 AI 怎么执行你的话",
     "s3-club-label": "社团名",
+    "s3-club-default": "星野动漫社",
     "s3-club-hint": "不想打字？直接用默认的",
+    "xuejie-name": "学姐",
     "s3-style-label": "风格",
     "s3-style-jj": "极简",
     "s3-style-sh": "手绘",
     "s3-style-sy": "摄影",
-    "s3-size-label": "尺寸",
+    "s3-size-label": "尺寸（参数）",
     "s3-size-note": "尺寸是参数，不用写进提示词——构图才需要你说话",
     "s3-size-warn": "学姐要的是 3:4，先按需求来",
     "s3-generate": "生成",
-    "next-S5": "交给学姐",
-    "next-S6": "改",
-    "s7-prompt-title": "提示词",
-    "s7-prompt-base": "为「{clubName}」画一张社团招新海报，{styleName}风格，上三分之一留白，主体在画面下方，不要出现文字。",
-    "s7-append-down": "＋ 主体再往下压，占画面更小",
-    "s7-append-dark": "＋ 背景整体压暗，突出留白区",
-    "s7-append-reroll": "＋ 保持构图不变，重新生成一次",
-    "next-S8": "出 16:9 版",
-    "next-S9": "交付",
+    "builder-locked": "首版已生成。接下来在对话里迭代，不用重填",
+
+    "prompt-preview-label": "提示词（正在替你拼）",
+    "p-subject": "为「{clubName}」画一张社团招新海报。",
+    "p-layout": "构图：上三分之一完全留白（后期要压标题字），视觉主体集中在画面下方，不要出现任何文字。",
+    "p-style": "风格：{styleName}，色彩克制，校园氛围。",
+    "p-style-empty": "风格：（选一种风格，这句话会自动补上）",
+    "param-tag": "参数 · 尺寸 {size}",
+
+    "gen-thinking": "正在生成图像…",
+    "gen-tip": "真实出图大概要 20 秒，习惯这个等待",
+
+    "ai-v1": "已按你的提示词生成 3:4 竖版海报（1 张）。构图：顶部预留标题区，主体位于画面中下部；未生成任何文字，社团名以文字层叠加显示。",
+    "senpai-v1": "注意，它没完全听你的——主体还是有点满。真实的 AI 就这样。所以才有下一步：改，而不是重来。",
+    "btn-to-xuejie": "把这版发给学姐",
+
+    "xuejie-msg-app": "消息 · 学姐",
+    "xuejie-reject": "主体太满了，标题没地方放。另外公众号头图还要一版 16:9 的。",
+
+    "revise-title": "别重新许愿——在原提示词末尾追加一句：",
+    "rev-down-label": "主体往下压",
+    "rev-down": "追加：主体再往下压，占画面比例更小。",
+    "rev-dark-label": "背景压暗",
+    "rev-dark": "追加：背景整体压暗，突出顶部留白区。",
+    "rev-reroll-label": "保持构图再抽一次",
+    "rev-reroll": "追加：保持构图不变，重新生成一次。",
+    "user-revise-prefix": "（原提示词不变）",
+
+    "ai-v2": "已在原构图基础上调整完成：主体下移，上三分之一留白更明显，标题区干净。",
+    "chip-169": "提示词不变，尺寸参数改成 16:9",
+    "user-169": "（提示词一字不改）",
+    "ai-169": "同一段提示词，只更换了尺寸参数——16:9 横版已生成，留白区自动调整到左侧，适合公众号头图。",
+    "senpai-169": "看到了吗：内容用话说，尺寸用参数调。这就是「生图与迭代」的全部。",
+    "btn-deliver": "交付双版本",
+
     "s10-npc-line": "学姐：「行，比上届强。」",
     "s10-senpai-line": "学长：「当年这张我改了三遍。你比我快。」",
     "s10-checklist-done": "验收清单 {done}/{total}",
     "s10-show-prompt": "看学长当年的完整提示词",
     "s10-full-prompt": "社团招新海报，竖版 3:4。主题：{clubName}。构图：上三分之一完全留白（后期压标题字），视觉主体集中在画面下方三分之二。风格：{styleName}，色彩克制，校园氛围。画面中不要生成任何文字。输出后追加一版 16:9，同一构图逻辑，留白区改为左侧。",
     "next-S10": "收进文件夹",
-    "s7-regen": "重新生成",
+
     "esc-button": "问学长",
     "esc-confirm-title": "要直接拿学长那版吗？",
     "esc-confirm-yes": "拿学长的版本",
     "esc-confirm-no": "我再试试",
     "next-ESC": "收下学长的海报",
+
     "archive-title": "社团招新海报 · 双版本",
     "archive-resume-line": "独立完成社团宣传物料设计（3:4/16:9双版本）",
     "archive-title-borrowed": "社团招新海报 · 学长版",
