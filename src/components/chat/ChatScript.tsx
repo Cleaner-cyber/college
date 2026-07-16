@@ -316,7 +316,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
               if (m.kind === 'npc') {
                 return (
                   <div key={i} className="mx-auto w-[88%] animate-fade-up">
-                    <div className="rounded-2xl border border-line bg-paper p-3.5 shadow-sm">
+                    <div className="rounded-2xl border border-line bg-paper p-3.5 shadow-soft">
                       <div className="mb-1.5 flex items-center gap-2">
                         <NpcAvatar name={m.name} size={24} />
                         <span className="text-[11px] tracking-widest text-ink-soft">{m.app}</span>
@@ -341,7 +341,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                       <img
                         src={m.img}
                         alt=""
-                        className="w-full max-w-[520px] rounded-lg border border-line shadow-sm"
+                        className="w-full max-w-[520px] rounded-lg border border-line shadow-soft"
                       />
                     )}
                     {!m.done && isLast && <span className="animate-pulse text-accent">▍</span>}
@@ -361,7 +361,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                 if (step.check) api.check(step.check);
                 setTypingText(api.copy(step.promptKey));
               }}
-              className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm animate-fade-up"
+              className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft animate-fade-up"
             >
               {api.copy(step.labelKey)}
             </button>
@@ -380,7 +380,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                       if (step.check) api.check(step.check);
                       setTypingText(api.copy(opt.msgKey));
                     }}
-                    className="rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm"
+                    className="rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft"
                   >
                     {api.copy(opt.labelKey)}
                   </button>

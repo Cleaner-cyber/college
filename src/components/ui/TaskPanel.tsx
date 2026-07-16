@@ -16,7 +16,7 @@ export const TaskPanel: React.FC<TaskPanelProps> = ({ items, checked }) => {
     <div className="fixed right-6 top-20 z-20 text-sm">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="rounded-full border border-line bg-card px-3 py-1.5 shadow-sm"
+        className="rounded-full border border-line bg-card px-3 py-1.5 shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
       >
         {ui.checklist.title}{' '}
         <span className="font-semibold text-accent">
@@ -24,14 +24,14 @@ export const TaskPanel: React.FC<TaskPanelProps> = ({ items, checked }) => {
         </span>
       </button>
       {open && (
-        <ul className="mt-2 w-52 rounded-xl border border-line bg-card p-3 shadow-sm animate-fade-up">
+        <ul className="mt-2 w-52 rounded-xl border border-line/70 bg-card p-3 shadow-lift animate-pop-in">
           {items.map((item) => {
             const isDone = checked.includes(item.id);
             return (
               <li key={item.id} className="flex items-center gap-2 py-1">
                 <span
                   className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
-                    isDone ? 'border-accent bg-accent text-white' : 'border-line bg-paper'
+                    isDone ? 'border-accent bg-accent text-white shadow-glow' : 'border-line bg-paper'
                   }`}
                 >
                   {isDone ? '✓' : ''}

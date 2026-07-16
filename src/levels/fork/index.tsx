@@ -18,7 +18,7 @@ const ForkResponse: React.FC<{ api: FlowAPI; onDone: (direction: string) => void
   const direction = api.vars.direction || 'job';
   return (
     <div className="flex flex-col gap-5">
-      <div className="rounded-2xl border border-accent/40 bg-card p-5 text-center shadow-sm">
+      <div className="rounded-2xl border border-accent/40 bg-card p-5 text-center shadow-lift">
         <div className="text-[11px] tracking-widest text-ink-soft">{api.copy('s4-card-title')}</div>
         <div className="mt-1.5 text-3xl font-semibold text-accent">
           {api.copy(`dir-${direction}`)}

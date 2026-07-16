@@ -143,7 +143,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
       <img
         src={src}
         alt={key}
-        className="mx-auto w-full max-w-[300px] rounded-xl border border-line shadow-sm animate-fade-up"
+        className="mx-auto w-full max-w-[300px] rounded-xl border border-line shadow-soft animate-fade-up"
       />
     );
   };
@@ -178,7 +178,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
             {isSystem ? (
               <div className="py-4 text-center tracking-wide">{body}</div>
             ) : (
-              <div className="ml-[52px] rounded-2xl rounded-tl-md border border-line bg-card p-4 shadow-sm">
+              <div className="ml-[52px] rounded-2xl rounded-tl-md border border-line bg-card p-4 shadow-soft">
                 {body}
               </div>
             )}

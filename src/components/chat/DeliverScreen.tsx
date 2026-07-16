@@ -19,7 +19,7 @@ export const DeliverScreen: React.FC<{
   return (
     <div className="flex flex-col gap-5">
       {img && (
-        <img src={img} alt="" className="w-full rounded-lg border border-line shadow-sm animate-fade-up" />
+        <img src={img} alt="" className="w-full rounded-xl border border-line shadow-soft animate-fade-up" />
       )}
       {!escape && total > 0 && (
         <p className="text-center text-sm font-medium text-accent">
@@ -44,7 +44,7 @@ export const DeliverScreen: React.FC<{
         </button>
       )}
       {showPrompt && (
-        <div className="whitespace-pre-wrap rounded-xl bg-card p-3 text-[13px] leading-relaxed text-ink-soft animate-fade-up">
+        <div className="whitespace-pre-wrap rounded-xl border border-line/70 bg-card p-3.5 text-[13px] leading-relaxed text-ink-soft shadow-soft animate-fade-up">
           {api.copy('s10-full-prompt')}
         </div>
       )}
@@ -66,13 +66,13 @@ export const EscapeOverlay: React.FC<{ api: FlowAPI; screens?: string[] }> = ({
     <>
       <button
         onClick={() => setConfirming(true)}
-        className="fixed bottom-5 right-4 z-20 rounded-full border border-line bg-card px-4 py-2 text-sm text-ink-soft shadow-sm"
+        className="fixed bottom-5 right-4 z-20 rounded-full border border-line bg-card px-4 py-2 text-sm text-ink-soft shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:text-ink hover:shadow-lift"
       >
         {api.copy('esc-button')}
       </button>
       {confirming && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6">
-          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 animate-fade-up">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
+          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{api.copy('esc-confirm-title')}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button

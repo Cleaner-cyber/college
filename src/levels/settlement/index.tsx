@@ -102,7 +102,7 @@ const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, 
       </div>
       <ul className="space-y-3">
         {replayLines(state).map((line, i) => (
-          <li key={i} className="rounded-xl bg-card p-3">
+          <li key={i} className="rounded-xl border border-line/70 bg-card p-3 shadow-soft">
             <div className="text-sm font-medium">{line.label}</div>
             {line.text && (
               <div className="mt-1 text-[13px] leading-relaxed text-ink-soft">{line.text}</div>
@@ -129,7 +129,7 @@ const Folder: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api,
         {state.archive.map((item) => (
           <li
             key={item.id}
-            className="flex items-center justify-between rounded-xl border border-line bg-card px-4 py-3"
+            className="flex items-center justify-between rounded-xl border border-line/70 bg-card px-4 py-3 shadow-soft"
           >
             <span className="text-[15px]">📁 {item.title}</span>
             {item.borrowed && (
@@ -163,7 +163,7 @@ const EndingCard: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-sm">
+      <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-lift">
         <div className="text-xs tracking-widest text-ink-soft">
           {api.copy(final ? 'grad-flag-title' : 's3-flag-title')}
         </div>
@@ -177,7 +177,7 @@ const EndingCard: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
         </div>
 
         {final && (
-          <div className="mt-5 rounded-xl bg-accent-soft/70 p-4 text-center animate-fade-up">
+          <div className="mt-5 rounded-xl bg-accent-soft/70 p-4 text-center shadow-soft animate-pop-in">
             <div className="text-[11px] tracking-widest text-ink-soft">
               {api.copy('grad-card-title')}
             </div>

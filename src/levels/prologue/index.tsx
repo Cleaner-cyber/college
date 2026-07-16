@@ -66,7 +66,7 @@ const MajorCard: React.FC<{ api: FlowAPI; majorId: string }> = ({ api, majorId }
       />
       {typed && (
         <>
-          <div className="mt-5 rounded-2xl border border-accent/40 bg-card p-4 shadow-sm animate-fade-up">
+          <div className="mt-5 rounded-2xl border border-accent/40 bg-card p-4 shadow-soft animate-fade-up">
             <div className="mb-2 flex items-baseline justify-between">
               <span className="text-lg font-semibold">{major.name}</span>
               <span className="text-[11px] text-accent">{ui['app-title']}</span>

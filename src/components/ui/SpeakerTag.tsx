@@ -16,7 +16,7 @@ export const SenpaiAvatar: React.FC<{ size?: number; className?: string }> = ({
     alt=""
     width={size}
     height={size}
-    className={`shrink-0 rounded-full border border-line bg-accent-soft ${className}`}
+    className={`shrink-0 rounded-full border border-accent/30 bg-accent-soft shadow-soft ${className}`}
   />
 );
 

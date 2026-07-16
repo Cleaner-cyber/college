@@ -180,7 +180,7 @@ const StructChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
               fed
                 ? 'border-line opacity-50'
                 : stage === 'need-file'
-                  ? 'cursor-grab border-accent shadow-sm hover:-translate-y-0.5 hover:shadow-md'
+                  ? 'cursor-grab border-accent shadow-glow hover:-translate-y-0.5 hover:shadow-lift'
                   : 'cursor-grab border-line'
             }`}
           >
@@ -278,7 +278,7 @@ const StructChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
                 if (m.kind === 'xuejie') {
                   return (
                     <div key={i} className="mx-auto w-[88%] animate-fade-up">
-                      <div className="rounded-2xl border border-line bg-paper p-3.5 shadow-sm">
+                      <div className="rounded-2xl border border-line bg-paper p-3.5 shadow-soft">
                         <div className="mb-1.5 flex items-center gap-2">
                           <NpcAvatar name={api.copy('xuejie-name')} size={24} />
                           <span className="text-[11px] tracking-widest text-ink-soft">
@@ -306,7 +306,7 @@ const StructChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
                         <img
                           src={m.img}
                           alt=""
-                          className="w-full max-w-[520px] rounded-lg border border-line shadow-sm"
+                          className="w-full max-w-[520px] rounded-lg border border-line shadow-soft"
                         />
                       )}
                       {!m.done && isLast && <span className="animate-pulse text-accent">▍</span>}
@@ -325,7 +325,7 @@ const StructChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
             {stage === 'chip-outline' && (
               <button
                 onClick={() => setStage('typing-outline')}
-                className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm animate-fade-up"
+                className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft animate-fade-up"
               >
                 {api.copy('chip-outline')}
               </button>
@@ -333,7 +333,7 @@ const StructChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
             {stage === 'chip-table' && (
               <button
                 onClick={() => setStage('typing-table')}
-                className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm animate-fade-up"
+                className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft animate-fade-up"
               >
                 {api.copy('chip-table')}
               </button>
@@ -341,7 +341,7 @@ const StructChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
             {stage === 'chip-pages' && (
               <button
                 onClick={() => setStage('typing-pages')}
-                className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm animate-fade-up"
+                className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft animate-fade-up"
               >
                 {api.copy('chip-pages')}
               </button>
@@ -366,7 +366,7 @@ const StructChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
                     setMsgs((m) => [...m, { kind: 'user', text: api.copy('chip-fix') }]);
                     setStage('think-fix');
                   }}
-                  className="rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm"
+                  className="rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft"
                 >
                   {api.copy('chip-fix')}
                 </button>
@@ -416,7 +416,7 @@ const Deliver: React.FC<{
       <img
         src={assets[escape ? 'ppt-senpai' : 'ppt-deck-v2']}
         alt=""
-        className="w-full rounded-lg border border-line shadow-sm animate-fade-up"
+        className="w-full rounded-lg border border-line shadow-soft animate-fade-up"
       />
       {!escape && (
         <p className="text-center text-sm font-medium text-accent">
@@ -459,13 +459,13 @@ const EscapeOverlay: React.FC<{ api: FlowAPI }> = ({ api }) => {
     <>
       <button
         onClick={() => setConfirming(true)}
-        className="fixed bottom-5 right-4 z-20 rounded-full border border-line bg-card px-4 py-2 text-sm text-ink-soft shadow-sm"
+        className="fixed bottom-5 right-4 z-20 rounded-full border border-line bg-card px-4 py-2 text-sm text-ink-soft shadow-soft"
       >
         {api.copy('esc-button')}
       </button>
       {confirming && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6">
-          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 animate-fade-up">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
+          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{api.copy('esc-confirm-title')}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button

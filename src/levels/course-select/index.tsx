@@ -63,8 +63,8 @@ const FileCard: React.FC<{
       fed
         ? 'border-line opacity-50'
         : highlight
-          ? 'cursor-grab border-accent shadow-sm hover:-translate-y-0.5 hover:shadow-md'
-          : 'cursor-grab border-line hover:-translate-y-0.5 hover:shadow-md'
+          ? 'cursor-grab border-accent shadow-glow hover:-translate-y-0.5 hover:shadow-lift'
+          : 'cursor-grab border-line hover:-translate-y-0.5 hover:shadow-lift'
     }`}
   >
     <div className="flex items-start gap-2.5">
@@ -331,7 +331,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
           {chipStage && (
             <button
               onClick={() => setStage(`typing-q${round}` as Stage)}
-              className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm animate-fade-up"
+              className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft animate-fade-up"
             >
               {api.copy(`chip-q${round}`)}
             </button>
@@ -367,7 +367,7 @@ const DeliverList: React.FC<{ api: FlowAPI }> = ({ api }) => {
   const [typed, setTyped] = useState(false);
   return (
     <div>
-      <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-sm">
+      <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-lift">
         <div className="text-base font-semibold">{api.copy('s6-card-title')}</div>
         <ul className="mt-3 space-y-2.5 text-[14px] leading-relaxed">
           {[1, 2, 3, 4, 5]

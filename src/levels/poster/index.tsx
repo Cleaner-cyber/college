@@ -39,7 +39,7 @@ const PosterImage: React.FC<{ src?: string; club?: string; wide?: boolean }> = (
   wide = false,
 }) => (
   <div className={`relative ${wide ? 'w-full max-w-[380px]' : 'w-full max-w-[230px]'}`}>
-    {src && <img src={src} alt="" className="w-full rounded-lg border border-line shadow-sm" />}
+    {src && <img src={src} alt="" className="w-full rounded-lg border border-line shadow-soft" />}
     {club && (
       <span className="absolute bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/55 px-2 py-0.5 text-xs text-white">
         {club}
@@ -298,7 +298,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 if (m.kind === 'xuejie') {
                   return (
                     <div key={i} className="mx-auto w-[88%] animate-fade-up">
-                      <div className="rounded-2xl border border-line bg-paper p-3.5 shadow-sm">
+                      <div className="rounded-2xl border border-line bg-paper p-3.5 shadow-soft">
                         <div className="mb-1.5 flex items-center gap-2">
                           <NpcAvatar name={api.copy('xuejie-name')} size={24} />
                           <span className="text-[11px] tracking-widest text-ink-soft">
@@ -343,7 +343,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                     <button
                       key={key}
                       onClick={() => revise(key)}
-                      className="rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm"
+                      className="rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft"
                     >
                       {api.copy(`rev-${key}-label`)}
                     </button>
@@ -354,7 +354,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
             {stage === 'v2' && (
               <button
                 onClick={to169}
-                className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-sm animate-fade-up"
+                className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft animate-fade-up"
               >
                 {api.copy('chip-169')}
               </button>
@@ -411,8 +411,8 @@ const Deliver: React.FC<{
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-end gap-3 animate-fade-up">
-        <img src={imgA} alt="" className="w-[46%] rounded-lg border border-line shadow-sm" />
-        <img src={imgB} alt="" className="w-1/2 rounded-lg border border-line shadow-sm" />
+        <img src={imgA} alt="" className="w-[46%] rounded-lg border border-line shadow-soft" />
+        <img src={imgB} alt="" className="w-1/2 rounded-lg border border-line shadow-soft" />
       </div>
       {!escape && (
         <p className="text-center text-sm font-medium text-accent">
@@ -459,13 +459,13 @@ const EscapeOverlay: React.FC<{ api: FlowAPI }> = ({ api }) => {
     <>
       <button
         onClick={() => setConfirming(true)}
-        className="fixed bottom-5 right-4 z-20 rounded-full border border-line bg-card px-4 py-2 text-sm text-ink-soft shadow-sm"
+        className="fixed bottom-5 right-4 z-20 rounded-full border border-line bg-card px-4 py-2 text-sm text-ink-soft shadow-soft"
       >
         {api.copy('esc-button')}
       </button>
       {confirming && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-6">
-          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 animate-fade-up">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
+          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{api.copy('esc-confirm-title')}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button

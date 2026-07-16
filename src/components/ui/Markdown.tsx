@@ -97,14 +97,14 @@ export function renderMarkdown(md: string): React.ReactNode {
       }
       const [head, ...body] = rows;
       blocks.push(
-        <div key={key++} className="my-3 overflow-x-auto">
+        <div key={key++} className="my-3 overflow-x-auto rounded-lg border border-line/70">
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr>
                 {head.map((c, j) => (
                   <th
                     key={j}
-                    className="border-b-2 border-line bg-paper px-2.5 py-1.5 text-left font-semibold"
+                    className="border-b-2 border-line bg-accent-soft/40 px-2.5 py-1.5 text-left font-semibold"
                   >
                     {inline(c)}
                   </th>
@@ -113,7 +113,7 @@ export function renderMarkdown(md: string): React.ReactNode {
             </thead>
             <tbody>
               {body.map((r, ri) => (
-                <tr key={ri} className="border-b border-line/70 last:border-b-0">
+                <tr key={ri} className="border-b border-line/70 last:border-b-0 even:bg-paper/60">
                   {r.map((c, j) => (
                     <td key={j} className="px-2.5 py-1.5 align-top leading-relaxed">
                       {inline(c)}

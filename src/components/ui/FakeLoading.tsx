@@ -39,9 +39,9 @@ export const FakeLoading: React.FC<FakeLoadingProps> = ({ ms, tips, onDone }) =>
 
   return (
     <div className="flex flex-col items-center gap-4 py-10 animate-fade-up">
-      <div className="h-1.5 w-48 overflow-hidden rounded-full bg-line">
+      <div className="h-1.5 w-56 overflow-hidden rounded-full bg-line shadow-inner">
         <div
-          className="h-full rounded-full bg-accent transition-[width] duration-100"
+          className="h-full rounded-full bg-accent shadow-glow transition-[width] duration-100"
           style={{ width: `${progress * 100}%` }}
         />
       </div>

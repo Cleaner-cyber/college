@@ -41,7 +41,7 @@ const DevResetButton: React.FC = () => {
         }
         void reset().then(() => navigate('/onboarding', { replace: true }));
       }}
-      className="fixed bottom-3 left-3 z-[70] rounded-full border border-line bg-card/90 px-3 py-1.5 text-[11px] text-ink-soft opacity-50 shadow-sm backdrop-blur transition hover:opacity-100"
+      className="fixed bottom-3 left-3 z-[70] rounded-full border border-line bg-card/90 px-3 py-1.5 text-[11px] text-ink-soft opacity-50 shadow-soft backdrop-blur transition hover:opacity-100"
     >
       ⟲ {dev['reset']} · {dev['reset-tag']}
     </button>
