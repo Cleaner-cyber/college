@@ -10,9 +10,9 @@
     },
     {
       "id": "coding",
-      "label": "编程课的第一个报错",
+      "label": "第一个个人网站",
       "tag": "教学 · AI 编程",
-      "desc": "Segmentation fault。晚上十一点。作业还剩最后一题。"
+      "desc": "编程课自由作业：交一个网页。你不会写代码——正好，现在流行让 AI 写。"
     }
   ],
   "mainlineLockText": "先完成上一个主线任务",

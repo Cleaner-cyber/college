@@ -1,113 +1,208 @@
 {
   "id": "coding",
-  "title": "编程课的第一个报错",
-  "checklist": [
-    { "id": "ck-paste", "label": "报错原样贴给 AI" },
-    { "id": "ck-why", "label": "追问过「为什么」" },
-    { "id": "ck-fix", "label": "程序自己改到跑通" },
-    { "id": "ck-quiz", "label": "让 AI 出题考自己" }
-  ],
-  "presetAssets": {
-    "bg-dorm": "/assets/bg-dorm.svg",
-    "sprite-senpai": "/assets/sprite-senpai.svg"
-  },
+  "title": "第一个个人网站",
   "screens": [
     {
       "id": "S1",
       "type": "dialogue",
       "speaker": "system",
-      "text": "晚上十一点。程序设计专题的作业还剩最后一题。\n你的程序编译过了，一运行——闪退。屏幕上只有一行冷冰冰的 Segmentation fault。",
+      "text": "大一下，程序设计基础课。\n期末自由作业：做一个网页，主题不限，下周交。\n你盯着「网页」两个字——你连代码长什么样都没见过几次。",
       "next": "S2",
-      "effects": { "typewriter": true }
+      "effects": {
+        "typewriter": true
+      }
     },
     {
       "id": "S2",
       "type": "dialogue",
       "speaker": "senpai",
-      "text": "恭喜，人生第一个段错误。\n别瞪着它了——把报错和代码一起丢给 AI。但记住：不是抄答案，是把它当一个不会烦你的助教。",
+      "text": "不会写代码？正好。\n现在写代码的方式已经变了——你说人话，AI 写代码，这叫 vibe coding。\n今天这个作业，咱们顺手把它做成一个真的有用的东西：你自己的个人网站。以后简历上直接放链接。\n先挑个趁手的工具。",
       "next": "S3",
-      "effects": { "typewriter": true }
+      "effects": {
+        "typewriter": true
+      }
     },
     {
       "id": "S3",
       "type": "workbench",
-      "text": "AI 对话 · 修报错",
+      "next": "S4"
+    },
+    {
+      "id": "S4",
+      "type": "workbench",
+      "next": "S5"
+    },
+    {
+      "id": "S5",
+      "type": "workbench",
+      "next": "S6"
+    },
+    {
+      "id": "S6",
+      "type": "workbench",
+      "next": "S7"
+    },
+    {
+      "id": "S7",
+      "type": "workbench",
+      "next": "S8"
+    },
+    {
+      "id": "S8",
+      "type": "workbench",
+      "next": "S9"
+    },
+    {
+      "id": "S9",
+      "type": "workbench",
+      "next": "S9P"
+    },
+    {
+      "id": "S9P",
+      "type": "workbench",
       "next": "S10"
     },
     {
       "id": "S10",
       "type": "deliver",
-      "text": "程序跑通了，而且你知道它为什么跑通。",
+      "text": "作业交了。\n你的第一个网站住进了文件夹——从零行代码到能打开，你用了十几分钟。",
       "next": "end"
     },
     {
       "id": "ESC",
       "type": "deliver",
-      "text": "拿我改好的版本去交吧。\n但下一个报错还会来的——到时候记得：贴报错、问为什么、让它考你。",
+      "text": "拿去，我大一写的模板，改个名字就能交。\n但白屏那一课你没上——下次你的页面白了，记得三步：F12 → Console → 红字原样贴给 AI。",
       "next": "end"
     }
   ],
+  "checklist": [
+    {
+      "id": "ck-tool",
+      "label": "挑好 AI 编程工具"
+    },
+    {
+      "id": "ck-prompt",
+      "label": "需求一次说清（含技术要求）"
+    },
+    {
+      "id": "ck-f12",
+      "label": "F12 找到控制台报错"
+    },
+    {
+      "id": "ck-paste",
+      "label": "报错原样贴给 AI"
+    },
+    {
+      "id": "ck-ship",
+      "label": "网站能打开，收进作品集"
+    }
+  ],
+  "presetAssets": {
+    "bg-dorm": "/assets/bg-dorm.svg",
+    "sprite-senpai": "/assets/sprite-senpai.svg",
+    "icon-trae": "/assets/icon-trae.svg",
+    "icon-cursor": "/assets/icon-cursor.svg",
+    "icon-claude-code": "/assets/icon-claude-code.svg"
+  },
   "copy": {
     "scene-S1": "bg-dorm",
     "scene-S2": "bg-dorm",
     "sprite-S2": "sprite-senpai",
-
-    "next-S1": "……什么是 Segmentation fault？",
-    "next-S2": "开始",
-
-    "chat-title": "AI 对话",
-    "s3-steps": "① 报错+代码原样贴给 AI → ② 追问「为什么」听懂原理 → ③ 自己改到跑通 → ④ 让 AI 出题验证你真的会了",
-    "chat-thinking": "正在分析代码…",
-    "chat-skip-hint": "点击回答可直接看全文",
-    "chat-input-placeholder": "…",
-
-    "chip-diagnose": "① 把报错和代码贴给 AI",
-    "q-diagnose": "我的 C 语言作业运行时报 Segmentation fault，帮我看看哪里错了。要求：先指出出错的行和直接原因，再给修改建议——不要直接给我重写好的完整代码，我想自己改。\n\n```\n#include <stdio.h>\nint main() {\n    int *scores;\n    int n;\n    scanf(\"%d\", &n);\n    for (int i = 0; i <= n; i++) {\n        scanf(\"%d\", &scores[i]);\n    }\n    printf(\"done\\n\");\n    return 0;\n}\n```",
-    "a-diagnose": "看完了，问题很典型，有两处：\n\n### 出错的行和直接原因\n1. **第 3 行：`int *scores;`** —— 你声明了一个指针，但**从来没有给它分配内存**。它现在指向一块随机地址，往里写数据就是 Segmentation fault 的直接来源；\n2. **第 6 行：`i <= n`** —— 就算分配了 n 个元素，下标也只能取 0 到 n-1。`<=` 会多写一个位置，越界。\n\n### 修改方向（不给完整代码，按这个改）\n- 方案 A：把指针换成定长数组，如 `int scores[100];`（作业规模够用，最简单）；\n- 方案 B：用 `malloc(n * sizeof(int))` 动态分配，用完 `free`（更接近题目本意）；\n- 无论哪种：把循环条件改成 `i < n`。\n\n改完再运行试试。如果还报错，把新的报错贴给我。",
-    "senpai-tip-2": "看到没，它没给你完整代码——因为我在提示词里就这么要求的。会抄的人很多，知道自己在抄什么的人很少。改之前，先问一句为什么。",
-
-    "chip-why": "② 追问：为什么没分配内存会段错误？",
-    "q-why": "我大概懂了，但再讲深一点：为什么指针没分配内存，写进去就会 Segmentation fault？操作系统层面发生了什么？用大一新生能听懂的方式讲。",
-    "a-why": "用一个宿舍楼的比喻讲：\n\n- 你的程序能用的内存，就像学校分给你们班的**一层宿舍楼**——哪些房间归你，宿管（操作系统）登记得清清楚楚；\n- `int *scores;` 只是写了一张纸条说「我有一个房间号」，但**这个房间号是随机的**——可能指向别班的楼层，甚至根本不存在的房间；\n- `scanf` 往里写数据 = 你拿着这张随机纸条去开门放行李。宿管一查：这房间不归你 → 直接把你整个人请出楼（**进程被终止**），这就是 Segmentation fault；\n- 而 `malloc` 的意义，就是先去宿管那里**正式登记**一个房间再入住。\n\n顺带一提：`i <= n` 的越界更阴险——如果多写的那个位置恰好也归你的程序管，它**当场不报错**，而是在很久以后让别的变量莫名其妙变值。这种 bug 比段错误难查十倍，所以循环边界要养成 `i < n` 的肌肉记忆。",
-    "senpai-tip-3": "懂原理了就去改。改完回来，让它出题考你——会做别人的题，才算真的会。",
-
-    "chip-fix": "③ 我按方案改完了，运行结果发给你",
-    "q-fix": "我用了 malloc 的方案，循环也改成 i < n 了，现在输入 3 个成绩能正常输出了。帮我确认一下我的理解：段错误的根源是「用了没登记的内存」，对吗？",
-    "a-fix": "对，理解完全正确，而且你选了更好的方案 B。\n\n```\n$ gcc homework.c -o homework\n$ ./homework\n3\n88 92 79\ndone\n```\n\n再送你两条以后一定用得上的：\n1. `malloc` 之后**检查返回值是不是 NULL**（内存可能分配失败）；\n2. `free` 之后把指针设成 NULL，防止「用一个已经退房的房间」（悬垂指针）。\n\n这两条现在可以不做，但期末大作业里它们就是分数。",
-
-    "chip-quiz": "④ 出一道同类题考我",
-    "q-quiz": "出一道和「指针/数组越界」同类型的选择题考我，别马上给答案。",
-    "a-quiz": "好，来：\n\n**下面这段代码有什么问题？**\n\n```\nchar name[5];\nstrcpy(name, \"Hello\");\nprintf(\"%s\", name);\n```\n\nA. 没问题，能正常输出 Hello\nB. `name` 数组太小，字符串放不下，越界\nC. `strcpy` 用法错误，应该用 `=` 赋值\n\n选一个，说说理由。",
-    "quiz-title": "你的答案：",
-    "quiz-a-label": "选 A：没问题",
-    "quiz-a-msg": "选 A，看起来数组有 5 个位置，Hello 正好 5 个字母。",
-    "quiz-b-label": "选 B：越界",
-    "quiz-b-msg": "选 B。Hello 是 5 个字母，但字符串结尾还有一个 '\\0'，一共要 6 个位置，name[5] 放不下，越界了。",
-    "quiz-c-label": "选 C：strcpy 用错了",
-    "quiz-c-msg": "选 C，字符串应该直接用等号赋值吧？",
-    "a-quiz-review": "正确答案是 **B**。\n\n- Hello 确实是 5 个字符，但 C 字符串末尾自动带一个结束符 `\\0`，实际需要 **6 个字节**，`char name[5]` 放不下——这就是刚才说的「阴险型越界」：多数时候它不当场崩溃，而是悄悄踩坏隔壁内存；\n- 选 A 的话，恭喜你踩中了这道题埋的坑：**「正好放下」的直觉在 C 字符串里永远要 +1**；\n- 选 C 不对：数组名不能用 `=` 整体赋值，`strcpy` 本身没用错，错在容器太小。\n\n一句话带走：**看到定长数组 + 字符串，先数 `\\0`。**",
-    "senpai-wrap": "报错 → 贴给 AI → 问为什么 → 自己改 → 让它出题。这一套下来，一个报错顶得上一节习题课。这就是「AI 编程」的正确打开方式：它不是代写，是一个 24 小时在线、永远不嫌你问题蠢的助教。",
-    "btn-deliver": "交作业去",
-
-    "s10-npc-line": "作业系统：「运行结果正确。用时：1 天 23 小时 41 分（截止前 19 分钟）。」",
-    "s10-senpai-line": "学长：「我第一个段错误查了一整晚。你半小时，还顺便学会了内存。」",
+    "tool-title": "挑一个 AI 编程工具",
+    "tool-sub": "它们干的是同一件事：你说人话，它写代码。选一个装上就行。",
+    "tool-install-note": "怎么装：进官网 → 下载安装包 → 一路下一步 → 注册登录。和装微信没区别。",
+    "tool-trae-name": "Trae",
+    "tool-trae-badge": "国内推荐",
+    "tool-trae-desc": "字节跳动出品，中文界面，免费额度大，国内下载不折腾。新手友好度最高。",
+    "tool-trae-site": "官网：trae.com.cn",
+    "tool-cursor-name": "Cursor",
+    "tool-cursor-badge": "国外主流",
+    "tool-cursor-desc": "海外最火的 AI 代码编辑器，学生认证可免费用一年。需要一点网络条件。",
+    "tool-cursor-site": "官网：cursor.com",
+    "tool-cc-name": "Claude Code",
+    "tool-cc-badge": "进阶之选",
+    "tool-cc-desc": "在终端里干活的 AI 编程搭档，能自己改文件、跑命令。上手稍硬核，上限高。",
+    "tool-cc-site": "官网：claude.com",
+    "tool-other-note": "它也很好——不过这关我拿 Trae 演示。流程完全一样：学会一个，等于全会。",
+    "tool-trae-note": "好，就它。装好打开，界面右侧就是 AI 对话框——接下来你只需要会打字。",
+    "tool-confirm": "装好了，开工",
+    "s4-title": "告诉 Trae 你要什么",
+    "s4-sub": "别上来就喊「帮我做个网站」。想清楚三件事：放什么内容、给谁看、有什么硬性要求。提示词的架子我搭好了，你把空填上。",
+    "form-tagline-label": "一句话介绍你自己",
+    "form-tagline-default": "{majorName}大一在读，正在学着用 AI 做东西",
+    "form-hobbies-label": "三个兴趣标签（用 · 隔开）",
+    "form-hobbies-default": "篮球 · 摄影 · 老歌",
+    "form-showcase-label": "拿得出手的一件事",
+    "form-showcase-default": "给社团做过一张招新海报，贴满了整栋宿舍楼",
+    "form-color-label": "网站主色调",
+    "color-a-label": "暖橙",
+    "color-a-value": "#C05A32",
+    "color-b-label": "墨绿",
+    "color-b-value": "#2F5D50",
+    "color-c-label": "靛蓝",
+    "color-c-value": "#34558B",
+    "s4-preview-title": "拼好的提示词（点发送，发出去的就是这段）",
+    "s4-send": "把需求发给 Trae",
+    "chat-title": "Trae · AI 对话",
+    "chat-thinking": "Trae 正在生成…",
+    "chat-skip-hint": "点击输出区可直接看完",
+    "chat-input-placeholder": "输入你的需求…",
+    "senpai-s5-1": "把刚才那段需求原样贴进对话框。注意看它怎么回你——好的 AI 编程工具会先讲结构，再给代码，最后教你怎么用。",
+    "chip-build": "粘贴需求，回车",
+    "q-build": "帮我做一个个人网站。我叫{playerName}，{majorName}专业大一在读。\n\n网站内容：\n1. 首屏大标题是我的名字，下面一句话介绍：{tagline}\n2. 兴趣标签一排：{hobbies}\n3. 一个「拿得出手的一件事」板块，放这个：{showcase}\n4. 页脚写：{playerName} · 这个网站由我和 AI 一起完成\n\n技术要求：\n- 只要一个 index.html 文件，样式和脚本都写在文件里，双击就能打开\n- 手机和电脑上都能正常看（自适应）\n- 配色以{colorName}为主，整体简洁克制，不要花哨动效\n- 右上角加一个夜间模式切换按钮\n\n先给我完整代码，再一步一步告诉我怎么把它保存成文件、怎么打开。",
+    "a-build": "好的，一个单文件的个人网站，我来搭。先给你看结构：\n\n### 页面结构\n| 区块 | 内容 | 说明 |\n|---|---|---|\n| 首屏 | 大标题「{playerName}」+ 一句话介绍 | 第一眼记住你是谁 |\n| 兴趣标签 | {hobbies} | 圆角小胶囊，一排排开 |\n| 作品区 | {showcase} | 卡片式，最抓眼的一块 |\n| 页脚 | 署名 + AI 协作声明 | 低调收尾 |\n| 全局 | 夜间模式按钮（右上角） | 点击整站换深色 |\n\n### 完整代码（index.html）\n```\n<!doctype html>\n<html lang=\"zh-CN\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>{playerName} · 个人网站</title>\n  <style>\n    :root { --accent: {colorName}主色; --bg: #faf8f3; }\n    body { background: var(--bg); font-family: 'PingFang SC', sans-serif; }\n    h1 { font-size: 44px; letter-spacing: .05em; }\n    .tag { border-radius: 999px; padding: 6px 14px; }\n    /* ……（样式共 60 行，已写全）…… */\n  </style>\n</head>\n<body>\n  <script>\n    // 夜间模式切换\n    var btn = document.getElementById('night-btn');\n    btn.addEventListener('click', toggleNight);\n    renderProfile(); // 渲染页面内容\n  </script>\n  <button id=\"night-btn\">☾ 夜间</button>\n  <!-- ……（正文已写全）…… -->\n</body>\n</html>\n```\n\n### 怎么保存成文件（三步）\n1. 点代码块右上角的「应用」，或全选复制\n2. 在桌面新建文本文件，粘贴 → 另存为 **index.html**（注意后缀不是 .txt）\n3. 双击 index.html，浏览器就会打开你的网站\n\n不需要服务器，不需要上传，这个文件在你电脑上就能跑。",
+    "senpai-s5-2": "它写完了。你一行代码都没看懂？没关系——写代码的第一课不是看懂代码，是把它跑起来。按它说的，保存成 index.html，双击打开。",
+    "btn-open-file": "双击 index.html，看看你的网站",
+    "s6-title": "file:///桌面/index.html",
+    "s6-white-line": "……白的。整个页面，什么都没有。",
+    "s6-senpai": "恭喜，人生第一次白屏。这不是失败，这是编程的日常——页面白了 ≈ 程序在半路摔倒了。回去问 AI，但怎么问，有讲究。",
+    "next-S6": "回 Trae 问问",
+    "senpai-s7-1": "先按你的直觉来。页面白了，你会怎么跟 AI 说？",
+    "chip-desc": "「网页打开是全白的，怎么回事」",
+    "q-desc": "网页打开是全白的，什么都没有，怎么回事？",
+    "a-desc": "页面全白，常见原因有这么几种：\n\n1. 文件没保存全，HTML 结构不完整\n2. 文件后缀其实是 .txt，浏览器当纯文本打开了\n3. **JavaScript 报错，页面渲染被中断**（最常见）\n4. 浏览器缓存了旧文件，刷新试试（Ctrl+R）\n5. 代码里引用了不存在的本地文件\n\n光看「全白」两个字，我没法确定是哪一种——我需要**报错信息**。\n\n### 怎么拿到报错（30 秒）\n1. 在白屏的页面上按 **F12**（部分笔记本是 **Fn + F12**），右侧或下方会弹出「开发者工具」\n2. 点顶部的 **Console（控制台）** 标签\n3. 里面**红色的那几行**就是报错，右键复制或选中复制\n4. 原样发给我，一个字都不用改\n\n把红字发我，我马上告诉你哪行出了问题。",
+    "senpai-s7-2": "看到了吗？光描述症状，AI 只能开清单猜。它真正要的是「报错信息」——浏览器早就把摔倒原因写在一个隐藏面板里了。来，按 F12。",
+    "btn-f12": "按 F12，打开开发者工具",
+    "s8-title": "开发者工具",
+    "s8-tab-elements": "Elements",
+    "s8-tab-console": "Console",
+    "s8-tab-network": "Network",
+    "s8-hint": "红色的就是报错。点右边的「复制」，原样带走，一个字都别改。",
+    "s8-error-1": "Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')",
+    "s8-error-2": "    at index.html:42",
+    "s8-copy": "复制报错",
+    "s8-copied": "已复制 ✓",
+    "next-S8": "回到 Trae，粘贴给 AI",
+    "chip-paste": "粘贴控制台报错",
+    "q-paste": "这是控制台的报错：\n\nUncaught TypeError: Cannot read properties of null (reading 'addEventListener')\n    at index.html:42\n\n帮我定位并修好，给我能直接整体替换的完整代码。",
+    "a-fix": "找到了，就是它。给你翻译一下这行报错：\n\n### 报错在说什么\n| 报错片段 | 人话 |\n|---|---|\n| `Uncaught TypeError` | 类型错误，程序当场停止 |\n| `Cannot read properties of null` | 在一个「不存在的东西」上调用了方法 |\n| `reading 'addEventListener'` | 这个方法是「监听点击」 |\n| `at index.html:42` | 案发地点：第 42 行 |\n\n**原因**：第 42 行的脚本去找夜间模式按钮（`#night-btn`）时，按钮还没被浏览器读到——我把 `<script>` 写在了按钮**前面**，脚本抢跑了。它一摔倒，后面负责渲染内容的 `renderProfile()` 也没执行，所以整页空白。\n\n### 修复（两处改动）\n1. 把 `<script>` 挪到 `</body>` 结束标签**之前**——等页面都长出来了脚本再跑\n2. 内容不再用 JS 渲染，直接写进 HTML——就算脚本再出错，页面也不会白\n\n```\n  <button id=\"night-btn\">☾ 夜间</button>\n  <!-- 正文直接写在 HTML 里，不依赖 JS 渲染 -->\n  <script>\n    var btn = document.getElementById('night-btn');\n    btn.addEventListener('click', function () {\n      document.body.classList.toggle('night');\n    });\n  </script>\n</body>\n```\n\n下面是修好的**完整文件**，全选替换 index.html 的内容 → 保存 → 刷新页面即可。\n\n顺便记住这个规律：**一行报错，整页牺牲**——以后页面白了，第一反应永远是 F12 看控制台。",
+    "senpai-s9-1": "记住这条链路：白屏 → F12 → Console 红字 → 原样贴给 AI。以后九成的报错都这么修。这一招，比会写代码还值钱。",
+    "btn-reopen": "整体替换代码，再开 index.html",
+    "s9p-senpai": "亮了。这就是你的网站——内容是你的，颜色是你挑的，bug 是你修的。",
+    "s9p-night-hint": "右上角的「☾ 夜间」是真的能点。",
+    "s9p-download": "下载 index.html 到电脑",
+    "s9p-downloaded": "已下载 ✓ 就在浏览器的「下载」里",
+    "s9p-deliver": "交作业，收进作品集",
+    "site-filename": "{playerName}的个人网站.html",
+    "site-html": "<!doctype html>\n<html lang=\"zh-CN\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>{playerName} · 个人网站</title>\n<style>\n  :root{--accent:{accentColor};--bg:#faf8f3;--ink:#23221e;--soft:#807a6e;--card:#ffffff;--line:#e7e2d7}\n  body.night{--bg:#191817;--ink:#f3f1ea;--soft:#a39d90;--card:#232220;--line:#3a3833}\n  *{box-sizing:border-box;margin:0}\n  body{background:var(--bg);color:var(--ink);font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;transition:background .3s,color .3s}\n  .wrap{max-width:720px;margin:0 auto;padding:56px 24px 40px}\n  #night-btn{position:fixed;top:18px;right:18px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:14px;color:var(--ink)}\n  .kicker{color:var(--accent);letter-spacing:.35em;font-size:12px}\n  h1{font-size:44px;margin:10px 0 12px;letter-spacing:.05em}\n  .tagline{color:var(--soft);font-size:17px;line-height:1.7}\n  .tags{margin:26px 0 34px}\n  .tag{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;margin:0 8px 8px 0;font-size:13.5px}\n  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:0 6px 24px rgba(0,0,0,.05)}\n  .card h2{font-size:15px;color:var(--accent);letter-spacing:.15em;margin-bottom:10px}\n  .card p{font-size:16px;line-height:1.8}\n  footer{margin-top:44px;color:var(--soft);font-size:12.5px;letter-spacing:.08em}\n  @media (max-width:640px){h1{font-size:32px}.wrap{padding-top:40px}}\n</style>\n</head>\n<body>\n<button id=\"night-btn\">☾ 夜间</button>\n<div class=\"wrap\">\n  <div class=\"kicker\">HELLO, I AM</div>\n  <h1>{playerName}</h1>\n  <p class=\"tagline\">{tagline}</p>\n  <div class=\"tags\">{hobbyTags}</div>\n  <div class=\"card\">\n    <h2>拿得出手的一件事</h2>\n    <p>{showcase}</p>\n  </div>\n  <footer>{playerName} · {majorName} · 这个网站由我和 AI 一起完成</footer>\n</div>\n<script>\n  var btn = document.getElementById('night-btn');\n  btn.addEventListener('click', function () { document.body.classList.toggle('night'); });\n</script>\n</body>\n</html>",
+    "site-html-broken": "<!doctype html><html><head><meta charset=\"utf-8\"><title>index.html</title></head><body style=\"background:#ffffff\"></body></html>",
     "s10-checklist-done": "验收清单 {done}/{total}",
-    "s10-show-prompt": "看学长的报错求助心法",
-    "s10-full-prompt": "修报错的固定姿势：①报错信息+相关代码原样贴上（别只贴一句「它报错了」）→ ②要求「指出原因和改法，不要直接给完整代码」→ ③追问原理，讲到你能复述 → ④自己动手改 → ⑤让它出同类题验证。禁止：直接要完整答案然后交上去——期末没有 AI 陪你进考场。",
+    "s10-npc-line": "助教在课程群里说：这次的网页作业，一眼就能看出哪些是 AI 写的——但能自己把 bug 修好再交上来的，我都给了高分。",
+    "s10-senpai-line": "学长：以后有人找你做网页，报价别低于三位数。",
+    "s10-show-prompt": "看看这关沉淀的提示词模板",
+    "s10-full-prompt": "帮我做一个【填：你要做的东西，比如\"个人网站\"】。\n\n内容：\n【填：要放什么，一条一条列清楚】\n\n技术要求：\n- 只要一个 HTML 文件，双击就能打开\n- 手机和电脑上都能正常看\n- 配色以【填：主色】为主，简洁克制\n先给完整代码，再一步一步告诉我怎么保存、怎么打开。\n\n————（页面白屏或报错时）————\n按 F12 打开开发者工具 → Console（控制台）→ 复制红色报错，发：\n\n这是控制台的报错：\n【填：粘贴报错原文，一个字都不改】\n帮我定位并修好，给我能直接整体替换的完整代码。",
     "next-S10": "收进文件夹",
-
     "esc-button": "问学长",
-    "esc-confirm-title": "要直接拿学长改好的代码吗？",
-    "esc-confirm-yes": "拿学长的版本",
-    "esc-confirm-no": "我再试试",
-    "next-ESC": "收下代码",
-
-    "archive-title": "第一次自己修好的报错",
-    "archive-resume-line": "",
-    "archive-title-borrowed": "第一个报错 · 学长代修",
-    "archive-resume-line-borrowed": "",
-    "prompt-item-title": "AI 编程助教",
-    "prompt-usage": "写代码遇到报错、看不懂的概念、想验证自己是否真的学会时用。核心：让 AI 当助教，不当枪手。",
-    "prompt-template": "我的【填：语言，如 C 语言】程序报错：【填：报错信息原样粘贴】。相关代码：【填：贴出出错部分的代码】。\n请：1）指出出错的行和直接原因；2）给修改方向，**不要直接给我重写好的完整代码**，我想自己改；3）用【填：你的水平，如大一新生】能听懂的方式讲清背后的原理。\n（我改完后会把结果发你确认；最后请出一道同类题考我，先不给答案。）"
+    "esc-confirm-title": "让学长把他现成的网站模板给你？（作品会标注「借来的」，白屏调试这课就跳过了）",
+    "esc-confirm-yes": "要模板",
+    "esc-confirm-no": "我自己来",
+    "next-ESC": "收下模板",
+    "archive-title": "个人网站 · 第一版",
+    "archive-resume-line": "用 AI 辅助独立完成响应式个人网站（单文件 HTML，含夜间模式与报错调试）",
+    "archive-title-borrowed": "个人网站 · 学长模板版",
+    "archive-resume-line-borrowed": "基于模板完成个人网站搭建",
+    "prompt-item-title": "AI 编程 · 提示词模板",
+    "prompt-usage": "让 AI 从零做一个能跑的小东西（个人网站/小工具/课程作业），以及页面白屏、程序报错时的自救三步。",
+    "prompt-template": "帮我做一个【填：你要做的东西，比如\"个人网站\"】。\n\n内容：\n【填：要放什么，一条一条列清楚】\n\n技术要求：\n- 只要一个 HTML 文件，双击就能打开\n- 手机和电脑上都能正常看\n- 配色以【填：主色】为主，简洁克制\n先给完整代码，再一步一步告诉我怎么保存、怎么打开。\n\n————（页面白屏或报错时）————\n按 F12 打开开发者工具 → Console（控制台）→ 复制红色报错，发：\n\n这是控制台的报错：\n【填：粘贴报错原文，一个字都不改】\n帮我定位并修好，给我能直接整体替换的完整代码。"
   }
 }

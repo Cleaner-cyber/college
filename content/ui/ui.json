@@ -116,7 +116,8 @@
     "semester-start": "{semester}学期开始了",
     "semester-end": "{semester}学期结束，剩余 {points} 点行动点转化为休息",
     "profile-created": "{playerName} 入学，专业：{majorName}",
-    "ability-unlock": "解锁 AI 能力「{ability}」"
+    "ability-unlock": "解锁 AI 能力「{ability}」",
+    "dev-jump": "【测试】跳转到 {semester} · {label}"
   },
   "board": {
     "completed-tag": "已完成",
@@ -154,7 +155,12 @@
   "dev": {
     "reset": "重置进度",
     "reset-tag": "测试",
-    "reset-confirm": "清空当前存档并回到开局？（开发测试用，正式版会移除此按钮）"
+    "reset-confirm": "清空当前存档并回到开局？（开发测试用，正式版会移除此按钮）",
+    "jump": "跳关",
+    "jump-tag": "测试",
+    "jump-title": "跳到哪一关？",
+    "jump-note": "仅推进学期与主线进度，不补写此前的档案与能力（测试用）",
+    "jump-close": "收起"
   },
   "common": {
     "continue": "继续",

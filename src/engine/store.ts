@@ -68,7 +68,7 @@ function mainlineLabel(levelId: string, semester: string): string {
 }
 
 /** 学期链：结算后进入下一学期；y4 结算 → 毕业 */
-const SEMESTER_CHAIN = ['y1s1', 'y1s2', 'y2s1', 'y2s2', 'y3s1', 'y3s2', 'y4'] as const;
+export const SEMESTER_CHAIN = ['y1s1', 'y1s2', 'y2s1', 'y2s2', 'y3s1', 'y3s2', 'y4'] as const;
 
 export function nextSemester(current: string): PlayerState['semester'] {
   const i = SEMESTER_CHAIN.indexOf(current as (typeof SEMESTER_CHAIN)[number]);
@@ -114,6 +114,8 @@ interface EngineStore {
   applyLevelResult: (levelId: string, result: LevelResult) => void;
   /** 速结行动：扣行动点、数值、入档、记日志 */
   runQuickAction: (qa: QuickAction) => void;
+  /** 开发调试：跳到指定学期的指定主线关前（不补写档案与能力，正式版随调试按钮一起移除） */
+  devJump: (semester: PlayerState['semester'], levelId?: string) => void;
   /** 清档重开 */
   reset: () => Promise<void>;
 }
@@ -153,14 +155,15 @@ export const useEngine = create<EngineStore>((set) => ({
       const newAbilities = result.abilityUnlocks.filter((a) => !st.abilities.includes(a));
       const log: LogEntry[] = [...st.log];
 
+      // 同 id 条目以最新一次为准（开发跳关回放同一关时不产生重复档案）
+      const incoming = result.archiveItems.map((item) => ({ ...item, semester: st.semester }));
+      const incomingIds = new Set(incoming.map((i) => i.id));
+
       let next: PlayerState = {
         ...st,
         axes: mergeDeltas(st.axes, result.deltas),
         abilities: [...st.abilities, ...newAbilities],
-        archive: [
-          ...st.archive,
-          ...result.archiveItems.map((item) => ({ ...item, semester: st.semester })),
-        ],
+        archive: [...st.archive.filter((a) => !incomingIds.has(a.id)), ...incoming],
         completedActions: st.completedActions.includes(levelId)
           ? st.completedActions
           : [...st.completedActions, levelId],
@@ -247,6 +250,31 @@ export const useEngine = create<EngineStore>((set) => ({
         ],
       };
       persistState(next);
+      return { state: next };
+    }),
+
+  devJump: (semester, levelId) =>
+    set((s) => {
+      const st = s.state;
+      if (!st || !isPlayingSemester(semester)) return {};
+      const mainline = getBoard(semester).mainline;
+      const idx = levelId ? mainline.findIndex((m) => m.id === levelId) : 0;
+      const before = mainline.slice(0, Math.max(0, idx)).map((m) => m.id);
+      const target = mainline[Math.max(0, idx)];
+      const next: PlayerState = {
+        ...st,
+        semester,
+        actionPoints: SEMESTER_ACTION_POINTS,
+        completedActions: before,
+        log: [
+          ...st.log,
+          logEntry('system', 'dev-jump', {
+            semester: semesterName(semester),
+            label: target?.label ?? '',
+          }),
+        ],
+      };
+      flushState(next);
       return { state: next };
     }),
 
