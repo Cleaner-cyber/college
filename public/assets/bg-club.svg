@@ -206,9 +206,9 @@
       <rect x="935" y="486" width="22" height="180" rx="11" fill="#C9BC9C"/>
       <ellipse cx="946" cy="488" rx="11" ry="5" fill="#8A7E68"/>
     </g>
-    <g transform="rotate(-5 988 664)">
-      <rect x="977" y="474" width="22" height="192" rx="11" fill="#B9AA88"/>
-      <ellipse cx="988" cy="476" rx="11" ry="5" fill="#7E7258"/>
+    <g transform="rotate(15 992 664)">
+      <rect x="981" y="474" width="22" height="192" rx="11" fill="#B9AA88"/>
+      <ellipse cx="992" cy="476" rx="11" ry="5" fill="#7E7258"/>
     </g>
   </g>
 
