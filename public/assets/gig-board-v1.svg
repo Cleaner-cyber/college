@@ -1,8 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC','Noto Sans CJK SC',sans-serif">
   <defs>
-    <clipPath id="f1"><rect x="38" y="72" width="360" height="196" rx="3"/></clipPath>
-    <clipPath id="f2"><rect x="420" y="72" width="360" height="196" rx="3"/></clipPath>
-    <clipPath id="f3"><rect x="802" y="72" width="360" height="196" rx="3"/></clipPath>
+    <clipPath id="fr"><rect x="0" y="0" width="360" height="196" rx="3"/></clipPath>
   </defs>
 
   <!-- paper -->
@@ -18,7 +16,7 @@
 
   <!-- ═══════ 镜1 · 近景 · 出租屋 ═══════ -->
   <rect x="38" y="72" width="360" height="196" rx="3" fill="#FBF8F1" stroke="#1C1B18" stroke-opacity="0.7" stroke-width="1.4"/>
-  <g clip-path="url(#f1)" transform="translate(38,72)">
+  <g clip-path="url(#fr)" transform="translate(38,72)">
     <rect width="360" height="196" fill="#F3EDE1"/>
     <!-- night corners -->
     <path d="M0,0 L150,0 L0,92 Z" fill="#2B2B35" opacity="0.10"/>
@@ -52,7 +50,7 @@
 
   <!-- ═══════ 镜2 · 中景 · 教室（v1：形象漂移——马尾+校服） ═══════ -->
   <rect x="420" y="72" width="360" height="196" rx="3" fill="#FBF8F1" stroke="#1C1B18" stroke-opacity="0.7" stroke-width="1.4"/>
-  <g clip-path="url(#f2)" transform="translate(420,72)">
+  <g clip-path="url(#fr)" transform="translate(420,72)">
     <rect width="360" height="196" fill="#F2ECDE"/>
     <line x1="0" y1="112" x2="360" y2="112" stroke="#C9C0AD" stroke-width="1"/>
     <!-- blackboard -->
@@ -106,7 +104,7 @@
 
   <!-- ═══════ 镜3 · 特写 · 课桌字迹 ═══════ -->
   <rect x="802" y="72" width="360" height="196" rx="3" fill="#FBF8F1" stroke="#1C1B18" stroke-opacity="0.7" stroke-width="1.4"/>
-  <g clip-path="url(#f3)" transform="translate(802,72)">
+  <g clip-path="url(#fr)" transform="translate(802,72)">
     <rect width="360" height="196" fill="#E9DFC6"/>
     <path d="M0,34 Q120,28 360,40" stroke="#CDBD97" stroke-width="1.4" fill="none" opacity="0.7"/>
     <path d="M0,88 Q180,80 360,92" stroke="#CDBD97" stroke-width="1.2" fill="none" opacity="0.6"/>
