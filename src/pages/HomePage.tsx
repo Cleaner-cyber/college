@@ -21,7 +21,8 @@ import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
-import { PromptText, renderMarkdown } from '@/components/ui/Markdown';
+import { PromptText } from '@/components/ui/Markdown';
+import { DocViewer } from '@/components/ui/DocViewer';
 import { HomeTour, TOUR_KEY } from '@/components/ui/Tour';
 
 const home = ui.home as Record<string, string>;
@@ -30,6 +31,12 @@ const AXIS_MAX = 8;
 
 /** 资产地址：assetRef 自带扩展名则原样用（真图 jpg/webp），否则按占位 SVG 处理 */
 const assetUrl = (ref: string) => (ref.includes('.') ? `/assets/${ref}` : `/assets/${ref}.svg`);
+
+/** AI 长文档型作品：点开直接进文档查看器（标题与正文取自来源关卡的内容 JSON） */
+const DOC_ITEMS: Record<string, { titleKey: string; mdKey: string }> = {
+  'doc-course-rules': { titleKey: 'doc1-title', mdKey: 'a1' },
+  'doc-summer-plan': { titleKey: 'doc2-title', mdKey: 'a2' },
+};
 
 type Tab = 'semester' | 'folder' | 'stats' | 'log';
 
@@ -496,6 +503,7 @@ const ArchiveDetail: React.FC<{
   onClose: () => void;
 }> = ({ item, state, onClose }) => {
   const [copied, setCopied] = useState(false);
+  const [openDoc, setOpenDoc] = useState<1 | 2 | null>(null);
   const section = getFolderSection(item.id);
   const levelCopy = getLevelContent(item.levelId).copy;
 
@@ -548,7 +556,7 @@ const ArchiveDetail: React.FC<{
         </div>
       );
     }
-    // 避坑清单：要点卡 + 三轮完整问答记录
+    // 避坑清单：要点卡 + 两轮对话记录（长文档以卡片入口打开文档查看器）
     if (item.id === 'course-map') {
       return (
         <div className="flex flex-col gap-4">
@@ -572,16 +580,27 @@ const ArchiveDetail: React.FC<{
             {home['detail-full-record']}
           </h4>
           {([1, 2] as const).map((n) => (
-            <div key={n} className="flex flex-col gap-2">
-              <div className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13px] leading-relaxed text-paper">
-                <span className="whitespace-pre-wrap">{levelCopy[`q${n}`]}</span>
+            <div key={n} className="flex flex-col gap-2.5">
+              <div className="ml-auto max-w-[88%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13px] leading-relaxed text-paper">
+                {levelCopy[`q${n}`]}
               </div>
-              <div className="rounded-2xl rounded-tl-md border border-line bg-card px-4 py-3">
-                <div className="mb-2 border-b border-line pb-2 text-[13px] font-semibold">
-                  📄 {levelCopy[`doc${n}-title`]}
-                </div>
-                {renderMarkdown(levelCopy[`a${n}`] ?? '')}
-              </div>
+              <button
+                onClick={() => setOpenDoc(n)}
+                className="flex w-[360px] max-w-full items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-card p-3.5 text-left shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
+                  📄
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[13.5px] font-semibold">
+                    {levelCopy[`doc${n}-title`]}
+                  </span>
+                  <span className="mt-0.5 block text-[11.5px] text-accent">
+                    {(ui.doc as Record<string, string>)['open-hint']}
+                  </span>
+                </span>
+                <span className="shrink-0 text-ink-soft">›</span>
+              </button>
             </div>
           ))}
         </div>
@@ -611,14 +630,15 @@ const ArchiveDetail: React.FC<{
       onClick={onClose}
     >
       <div
-        className="max-h-[88dvh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-paper p-6 shadow-pop animate-pop-in"
+        className="flex max-h-[88dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-paper shadow-pop animate-pop-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h3 className="text-[17px] font-semibold">
+        {/* 固定头部：标题 + 关闭（不随内容滚动） */}
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-line bg-paper/80 px-6 py-3.5">
+          <h3 className="truncate text-[16px] font-semibold">
             {section === 'prompts' ? '⚡' : '📁'} {item.title}
           </h3>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             {item.borrowed && (
               <span className="rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
                 {home['borrowed-tag']}
@@ -626,23 +646,38 @@ const ArchiveDetail: React.FC<{
             )}
             <button
               onClick={onClose}
-              className="rounded-full border border-line bg-card px-2.5 py-1 text-xs text-ink-soft hover:border-ink/40"
+              className="rounded-full border border-line bg-card px-3 py-1 text-xs text-ink-soft transition hover:border-accent/50 hover:text-ink"
             >
-              ✕
+              ✕ {(ui.doc as Record<string, string>)['close']}
             </button>
           </div>
         </div>
-        {renderBody()}
+        <div className="overflow-y-auto p-6">{renderBody()}</div>
       </div>
+
+      {openDoc && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <DocViewer
+            title={levelCopy[`doc${openDoc}-title`] ?? ''}
+            md={levelCopy[`a${openDoc}`] ?? ''}
+            onClose={() => setOpenDoc(null)}
+          />
+        </div>
+      )}
     </div>
   );
 };
 
 const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const [openItem, setOpenItem] = useState<ArchiveItem | null>(null);
+  const [openDocItem, setOpenDocItem] = useState<ArchiveItem | null>(null);
   const works = state.archive.filter((a) => getFolderSection(a.id) === 'works');
   const prompts = state.archive.filter((a) => getFolderSection(a.id) === 'prompts');
   const docs = state.archive.filter((a) => getFolderSection(a.id) === 'docs');
+
+  // AI 长文档型作品 → 文档查看器；其余 → 常规详情弹窗
+  const open = (item: ArchiveItem) =>
+    DOC_ITEMS[item.id] ? setOpenDocItem(item) : setOpenItem(item);
 
   return (
     <Panel title={home['folder-title']} sub={home['folder-sub']}>
@@ -659,7 +694,7 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
       ) : (
         <div className="flex snap-x gap-4 overflow-x-auto pb-2">
           {works.map((item) => (
-            <WorkCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
+            <WorkCard key={item.id} item={item} onOpen={() => open(item)} />
           ))}
         </div>
       )}
@@ -702,6 +737,13 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
 
       {openItem && (
         <ArchiveDetail item={openItem} state={state} onClose={() => setOpenItem(null)} />
+      )}
+      {openDocItem && DOC_ITEMS[openDocItem.id] && (
+        <DocViewer
+          title={getLevelContent(openDocItem.levelId).copy[DOC_ITEMS[openDocItem.id].titleKey] ?? openDocItem.title}
+          md={getLevelContent(openDocItem.levelId).copy[DOC_ITEMS[openDocItem.id].mdKey] ?? ''}
+          onClose={() => setOpenDocItem(null)}
+        />
       )}
     </Panel>
   );

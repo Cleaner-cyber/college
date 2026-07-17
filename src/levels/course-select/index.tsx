@@ -112,6 +112,13 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
   const [streamCount, setStreamCount] = useState(0);
   const [openDoc, setOpenDoc] = useState<1 | 2 | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
+
+  // 提示词打字时输入框自动滚到最新一行，避免长提示词被卡住不可见
+  useEffect(() => {
+    const el = inputRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [inputText]);
 
   const round: 1 | 2 = stage.includes('2') || stage === 'need-handbook' ? 2 : 1;
 
@@ -369,9 +376,10 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
               <Button onClick={api.advance}>{api.copy('to-deliver')}</Button>
             </div>
           )}
-          <div className="flex items-center gap-2">
+          <div className="flex items-end gap-2">
             <div
-              className={`max-h-[110px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
+              ref={inputRef}
+              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
                 inputText ? 'text-ink' : 'text-ink-soft/60'
               }`}
             >
@@ -457,6 +465,23 @@ const CourseSelectComponent: React.FC<LevelProps> = ({ state, content, onComplet
               title: content.copy['archive-title'],
               resumeLine: '',
               borrowed: false,
+            },
+            // 两份 AI 生成的长文档进作品集（点开走文档查看器）
+            {
+              id: 'doc-course-rules',
+              levelId: 'course-select',
+              title: content.copy['doc1-title'],
+              resumeLine: content.copy['archive-doc1-line'],
+              borrowed: false,
+              assetRef: 'ai-doc',
+            },
+            {
+              id: 'doc-summer-plan',
+              levelId: 'course-select',
+              title: content.copy['doc2-title'],
+              resumeLine: content.copy['archive-doc2-line'],
+              borrowed: false,
+              assetRef: 'ai-doc',
             },
             {
               // 学完即沉淀：可复用的提示词模板入库

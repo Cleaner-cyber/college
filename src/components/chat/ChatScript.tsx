@@ -185,6 +185,13 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
   const waitingFile = step?.type === 'file' ? step.id : null;
   const hints = ui.hints as Record<string, string>;
 
+  // 提示词打字时输入框自动滚到最新一行，避免长提示词被卡住不可见
+  const inputRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = inputRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [inputText]);
+
   return (
     <div className={fileSteps.length > 0 ? 'grid grid-cols-[220px_minmax(0,1fr)] gap-5' : ''}>
       {/* 文件面板（有文件步骤才显示） */}
@@ -393,9 +400,10 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
               <Button onClick={advance}>{api.copy(step.labelKey)}</Button>
             </div>
           )}
-          <div className="flex items-center gap-2">
+          <div className="flex items-end gap-2">
             <div
-              className={`min-h-[42px] flex-1 rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
+              ref={inputRef}
+              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
                 inputText ? 'text-ink' : 'text-ink-soft/60'
               }`}
             >
