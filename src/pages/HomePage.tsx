@@ -28,6 +28,9 @@ const home = ui.home as Record<string, string>;
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
 const AXIS_MAX = 8;
 
+/** 资产地址：assetRef 自带扩展名则原样用（真图 jpg/webp），否则按占位 SVG 处理 */
+const assetUrl = (ref: string) => (ref.includes('.') ? `/assets/${ref}` : `/assets/${ref}.svg`);
+
 type Tab = 'semester' | 'folder' | 'stats' | 'log';
 
 // ---------- 右侧状态栏 ----------
@@ -424,7 +427,7 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
       <div className="h-[180px] w-full overflow-hidden border-b border-line bg-paper">
         {item.assetRef && imgOk ? (
           <img
-            src={`/assets/${item.assetRef}.svg`}
+            src={assetUrl(item.assetRef)}
             alt=""
             onError={() => setImgOk(false)}
             className="h-full w-full object-cover"
@@ -581,43 +584,13 @@ const ArchiveDetail: React.FC<{
         </div>
       );
     }
-    // 海报：双图 + 简历措辞
-    if (item.levelId === 'poster' && item.assetRef) {
-      const wideRef = item.assetRef.includes('senpai')
-        ? 'poster-senpai-169'
-        : item.assetRef.replace('-34-v2', '-169');
-      return (
-        <div className="flex flex-col gap-4">
-          <div className="flex items-end gap-3">
-            <img
-              src={`/assets/${item.assetRef}.svg`}
-              alt=""
-              className="w-[42%] rounded-lg border border-line"
-            />
-            <img
-              src={`/assets/${wideRef}.svg`}
-              alt=""
-              className="w-[56%] rounded-lg border border-line"
-            />
-          </div>
-          {item.resumeLine && (
-            <div className="rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px]">
-              <span className="mr-2 font-semibold text-accent">
-                {home['detail-resume-line']}
-              </span>
-              {item.resumeLine}
-            </div>
-          )}
-        </div>
-      );
-    }
-    // 其余作品（PPT 等）：大图 + 简历措辞
+    // 作品（海报/PPT 等）：大图 + 简历措辞
     return item.assetRef ? (
       <div className="flex flex-col gap-4">
         <img
-          src={`/assets/${item.assetRef}.svg`}
+          src={assetUrl(item.assetRef)}
           alt=""
-          className="w-full rounded-lg border border-line"
+          className="mx-auto max-h-[62dvh] w-auto max-w-full rounded-lg border border-line"
         />
         {item.resumeLine && (
           <div className="rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px]">

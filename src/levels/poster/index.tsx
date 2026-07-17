@@ -1,7 +1,8 @@
 /**
- * 海报关：教学「生图与迭代」。主线必修 · 全预设演出。
- * S3 是拟真的 AI 生图对话：左侧喂料面板实时拼装提示词 → 发送出图 →
- * 学姐消息驳回 → 在原提示词末尾追加改动再生成 → 提示词不变换尺寸参数出 16:9。
+ * 海报关 v2：教学「生图与迭代」。主线必修 · 演出素材为真实 AI 生图。
+ * 流程：读学姐需求单 → 照单写提示词（选对比例）→ v1 深色动漫版 → 学姐进阶挑战
+ * （改清新校园插画风 + 拖 logo 参考图）→ v2 → 学姐要二维码 → AI 画码翻车（黑马赛克）
+ * → 剪映后期合成教学（含去水印技巧）→ 终稿交付。
  * 任意时刻可点 [问学长] 跳过，产物入库并标记 borrowed。
  */
 import React, { useEffect, useRef, useState } from 'react';
@@ -12,38 +13,48 @@ import { Button } from '@/components/ui/Button';
 import { TaskPanel } from '@/components/ui/TaskPanel';
 import { SenpaiAvatar, NpcAvatar } from '@/components/ui/SpeakerTag';
 
-const STYLE_KEYS = ['jj', 'sh', 'sy'] as const;
-const SIZES = ['3:4', '16:9', '1:1'] as const;
-const REVISIONS = ['down', 'dark', 'reroll'] as const;
-
 type Stage =
-  | 'build' // 拼提示词
+  | 'build' // 照需求单拼提示词（选比例）
   | 'think1'
   | 'v1' // 首版出图，[发给学姐]
-  | 'reject' // 学姐消息 + 修改选项
+  | 'challenge' // 学姐进阶挑战：改风格 + 拖 logo
   | 'think2'
-  | 'v2' // 修正版，[改 16:9]
-  | 'think3'
-  | 'v169'; // 16:9 出图，[交付]
+  | 'v2' // 清新校园版，[发给学姐]
+  | 'qr' // 学姐要二维码
+  | 'thinkqr'
+  | 'qrfail'; // AI 画码翻车 → [打开剪映]
 
 type Msg =
   | { kind: 'user'; text: string; param?: string; prefix?: string }
-  | { kind: 'ai'; text: string; img?: string; club?: string }
+  | { kind: 'ai'; text: string; img?: string; fakeQr?: boolean; tag?: string }
+  | { kind: 'file'; text: string }
   | { kind: 'senpai'; text: string }
   | { kind: 'xuejie'; text: string };
 
-/** 出图气泡里的海报（社团名以文字层叠加） */
-const PosterImage: React.FC<{ src?: string; club?: string; wide?: boolean }> = ({
+/** 出图气泡；fakeQr 时在左下二维码区叠一块"扫不出来的黑马赛克" */
+const PosterImage: React.FC<{ src?: string; fakeQr?: boolean; tag?: string }> = ({
   src,
-  club,
-  wide = false,
+  fakeQr = false,
+  tag,
 }) => (
-  <div className={`relative ${wide ? 'w-full max-w-[380px]' : 'w-full max-w-[230px]'}`}>
+  <div className="relative w-full max-w-[250px]">
     {src && <img src={src} alt="" className="w-full rounded-lg border border-line shadow-soft" />}
-    {club && (
-      <span className="absolute bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/55 px-2 py-0.5 text-xs text-white">
-        {club}
-      </span>
+    {fakeQr && (
+      <>
+        <span
+          className="absolute bottom-[4.5%] left-[6.5%] h-[13%] w-[24%] rounded-sm border border-black/60"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(0deg,#0a0a0a 0 5px,#2e2e2e 5px 9px,#000 9px 15px),repeating-linear-gradient(90deg,#000 0 6px,#242424 6px 10px,#0f0f0f 10px 17px)',
+            backgroundBlendMode: 'multiply',
+          }}
+        />
+        {tag && (
+          <span className="absolute bottom-[19%] left-[6%] rounded bg-ink/80 px-1.5 py-0.5 text-[10px] text-paper">
+            ⚠ {tag}
+          </span>
+        )}
+      </>
     )}
   </div>
 );
@@ -69,112 +80,106 @@ const Thinking: React.FC<{ label: string; tip: string }> = ({ label, tip }) => (
 const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ api, assets }) => {
   const [stage, setStage] = useState<Stage>('build');
   const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [club, setClub] = useState('');
-  const [style, setStyle] = useState('');
-  const [size, setSize] = useState('');
+  const [ratio, setRatio] = useState<'' | 'portrait' | 'landscape'>('');
+  const [styleAdded, setStyleAdded] = useState(false);
+  const [logoFed, setLogoFed] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const clubName = club.trim() || api.copy('s3-club-default');
-  const styleName = style ? api.copy(`s3-style-${style}`) : '';
   const building = stage === 'build';
+  const challenge = stage === 'challenge';
   const thinking = stage.startsWith('think');
-
-  // 实时拼装的提示词三句话
-  const pSubject = interpolate(api.copy('p-subject'), { clubName });
-  const pLayout = api.copy('p-layout');
-  const pStyle = style
-    ? interpolate(api.copy('p-style'), { styleName })
-    : api.copy('p-style-empty');
-  const fullPrompt = `${pSubject}\n${pLayout}\n${style ? interpolate(api.copy('p-style'), { styleName }) : ''}`;
+  const hints = ui.hints as Record<string, string>;
 
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [msgs, stage]);
+  }, [msgs, stage, styleAdded, logoFed]);
 
   // 思考 → 出图
   useEffect(() => {
     if (!thinking) return;
     const t = window.setTimeout(() => {
       if (stage === 'think1') {
+        api.check('ck-copy');
         setMsgs((m) => [
           ...m,
-          {
-            kind: 'ai',
-            text: api.copy('ai-v1'),
-            img: assets[`poster-${style}-34-v1`],
-            club: clubName,
-          },
+          { kind: 'ai', text: api.copy('ai-v1'), img: assets['poster-acg-v1'] },
           { kind: 'senpai', text: api.copy('senpai-v1') },
         ]);
-        api.check('ck-name');
         setStage('v1');
       } else if (stage === 'think2') {
         setMsgs((m) => [
           ...m,
-          {
-            kind: 'ai',
-            text: api.copy('ai-v2'),
-            img: assets[`poster-${style}-34-v2`],
-            club: clubName,
-          },
+          { kind: 'ai', text: api.copy('ai-v2'), img: assets['poster-acg-v2'] },
         ]);
         setStage('v2');
       } else {
         setMsgs((m) => [
           ...m,
-          { kind: 'ai', text: api.copy('ai-169'), img: assets[`poster-${style}-169`] },
-          { kind: 'senpai', text: api.copy('senpai-169') },
+          {
+            kind: 'ai',
+            text: api.copy('ai-qr'),
+            img: assets['poster-acg-v2'],
+            fakeQr: true,
+            tag: api.copy('qr-fake-tag'),
+          },
+          { kind: 'senpai', text: api.copy('senpai-qr-fail') },
         ]);
-        api.check('ck-169');
-        setStage('v169');
+        setStage('qrfail');
       }
     }, 2600);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
 
-  const generate = () => {
-    api.setVar('clubName', clubName);
-    api.setVar('style', style);
-    api.setVar('styleName', styleName);
+  const generateV1 = () => {
     setMsgs((m) => [
       ...m,
-      { kind: 'user', text: fullPrompt.trim(), param: interpolate(api.copy('param-tag'), { size: '3:4' }) },
+      {
+        kind: 'user',
+        text: api.copy('p-v1'),
+        param: interpolate(api.copy('param-tag'), { size: api.copy('size-portrait') }),
+      },
     ]);
     setStage('think1');
   };
 
   const sendToXuejie = () => {
-    setMsgs((m) => [...m, { kind: 'xuejie', text: api.copy('xuejie-reject') }]);
-    setStage('reject');
+    setMsgs((m) => [...m, { kind: 'xuejie', text: api.copy('xuejie-1') }, { kind: 'senpai', text: api.copy('senpai-challenge') }]);
+    setStage('challenge');
   };
 
-  const revise = (key: (typeof REVISIONS)[number]) => {
-    api.setVar('revision', key);
-    api.check('ck-space');
+  const addStyle = () => {
+    if (styleAdded) return;
+    setStyleAdded(true);
+    api.check('ck-style');
     setMsgs((m) => [
       ...m,
-      {
-        kind: 'user',
-        text: api.copy(`rev-${key}`),
-        prefix: api.copy('user-revise-prefix'),
-        param: interpolate(api.copy('param-tag'), { size: '3:4' }),
-      },
+      { kind: 'user', text: api.copy('rev-style'), prefix: api.copy('user-revise-prefix') },
     ]);
+  };
+
+  const feedLogo = () => {
+    if (!challenge || logoFed) return;
+    setLogoFed(true);
+    api.check('ck-logo');
+    setMsgs((m) => [...m, { kind: 'file', text: api.copy('msg-logo') }]);
+  };
+
+  const generateV2 = () => {
+    if (!styleAdded || !logoFed) return;
     setStage('think2');
   };
 
-  const to169 = () => {
-    setMsgs((m) => [
-      ...m,
-      {
-        kind: 'user',
-        text: api.copy('user-169'),
-        param: interpolate(api.copy('param-tag'), { size: '16:9' }),
-      },
-    ]);
-    setStage('think3');
+  const sendV2 = () => {
+    setMsgs((m) => [...m, { kind: 'xuejie', text: api.copy('xuejie-2') }]);
+    setStage('qr');
+  };
+
+  const tryQr = () => {
+    setMsgs((m) => [...m, { kind: 'user', text: api.copy('q-qr') }]);
+    setStage('thinkqr');
   };
 
   return (
@@ -182,69 +187,45 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
       <p className="rounded-xl bg-accent-soft/60 p-2.5 text-[12px] leading-relaxed text-ink-soft">
         {api.copy('s3-steps')}
       </p>
-      <div className="grid grid-cols-[250px_minmax(0,1fr)] gap-5">
-        {/* 喂料面板 */}
-        <aside className={building ? '' : 'pointer-events-none opacity-45'}>
-          <div className="flex flex-col gap-4 rounded-2xl border border-line bg-card p-4">
-            <div>
-              <div className="mb-1.5 text-[11px] tracking-widest text-ink-soft">
-                {api.copy('s3-club-label')}
-              </div>
-              <input
-                value={club}
-                maxLength={12}
-                onChange={(e) => setClub(e.target.value)}
-                placeholder={api.copy('s3-club-default')}
-                className="w-full rounded-xl border border-line bg-paper px-3 py-2.5 text-[14px] outline-none focus:border-accent"
-              />
-              <p className="mt-1 text-[11px] text-ink-soft">{api.copy('s3-club-hint')}</p>
+      <div className="grid grid-cols-[264px_minmax(0,1fr)] gap-5">
+        {/* 需求单 + 参数面板 */}
+        <aside className="flex flex-col gap-3">
+          <div className="rounded-2xl border border-accent/40 bg-card p-4 shadow-soft">
+            <div className="mb-2 text-[11px] tracking-widest text-accent">
+              📋 {api.copy('req-title')}
             </div>
-            <div>
-              <div className="mb-1.5 text-[11px] tracking-widest text-ink-soft">
-                {api.copy('s3-style-label')}
-              </div>
-              <div className="grid grid-cols-3 gap-1.5">
-                {STYLE_KEYS.map((key) => (
-                  <button
-                    key={key}
-                    onClick={() => setStyle(key)}
-                    className={`rounded-lg border-2 p-1 transition ${
-                      style === key ? 'border-accent' : 'border-line'
-                    }`}
-                  >
-                    <img
-                      src={assets[`poster-${key}-34-v1`]}
-                      alt={api.copy(`s3-style-${key}`)}
-                      className="aspect-[3/4] w-full rounded object-cover"
-                    />
-                    <div className="mt-0.5 text-center text-[11.5px]">
-                      {api.copy(`s3-style-${key}`)}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
+            <ul className="space-y-2 text-[12px] leading-relaxed">
+              {['req-theme', 'req-sub', 'req-ratio', 'req-copy', 'req-qr'].map((k, i) => (
+                <li key={k} className="flex gap-1.5">
+                  <span className="shrink-0 font-semibold text-ink-soft">{i + 1}.</span>
+                  <span>{api.copy(k)}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {building && (
+            <div className="rounded-2xl border border-line bg-card p-4 shadow-soft">
               <div className="mb-1.5 text-[11px] tracking-widest text-ink-soft">
                 {api.copy('s3-size-label')}
               </div>
-              <div className="flex gap-1.5">
-                {SIZES.map((s) => (
+              <div className="flex flex-col gap-1.5">
+                {(['portrait', 'landscape'] as const).map((r) => (
                   <button
-                    key={s}
+                    key={r}
                     onClick={() => {
-                      setSize(s);
-                      if (s === '3:4') api.check('ck-ratio');
+                      setRatio(r);
+                      if (r === 'portrait') api.check('ck-ratio');
                     }}
                     className={`rounded-lg border-2 px-2.5 py-1.5 text-[12.5px] transition ${
-                      size === s ? 'border-accent bg-accent-soft' : 'border-line bg-paper'
+                      ratio === r ? 'border-accent bg-accent-soft' : 'border-line bg-paper'
                     }`}
                   >
-                    {s}
+                    {api.copy(`size-${r}`)}
                   </button>
                 ))}
               </div>
-              {size !== '' && size !== '3:4' && (
+              {ratio === 'landscape' && (
                 <p className="mt-1.5 text-[11px] text-accent animate-fade-up">
                   {api.copy('s3-size-warn')}
                 </p>
@@ -253,19 +234,80 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 {api.copy('s3-size-note')}
               </p>
             </div>
-          </div>
-          {!building && (
-            <p className="mt-2 rounded-xl bg-accent-soft/60 p-2.5 text-[11.5px] leading-relaxed text-ink-soft">
+          )}
+
+          {/* 挑战阶段：logo 参考图文件卡 */}
+          {challenge && !logoFed && (
+            <div className="animate-fade-up">
+              <div
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('text/plain', 'club-logo');
+                  e.dataTransfer.effectAllowed = 'copy';
+                }}
+                onDoubleClick={feedLogo}
+                className="cursor-grab select-none rounded-xl border border-accent bg-card p-3 shadow-glow transition hover:-translate-y-0.5 hover:shadow-lift"
+              >
+                <div className="flex items-start gap-2.5">
+                  <img
+                    src={assets['club-logo']}
+                    alt=""
+                    className="h-11 w-11 shrink-0 rounded-lg border border-line bg-white object-contain"
+                  />
+                  <div className="min-w-0">
+                    <div className="break-all text-[12.5px] font-medium leading-snug">
+                      {api.copy('file-logo-name')}
+                    </div>
+                    <div className="mt-0.5 text-[11px] text-ink-soft">
+                      {api.copy('file-logo-meta')}
+                    </div>
+                    <div className="mt-1 text-[11px] text-accent animate-fade-up">
+                      ← {api.copy('file-logo-hint')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-2 rounded-xl bg-accent-soft/60 p-2.5 text-[11.5px] leading-relaxed text-ink-soft">
+                {hints['files-drag']}
+              </p>
+            </div>
+          )}
+          {!building && !challenge && (
+            <p className="rounded-xl bg-accent-soft/60 p-2.5 text-[11.5px] leading-relaxed text-ink-soft">
               {api.copy('builder-locked')}
             </p>
           )}
         </aside>
 
         {/* AI 生图对话框 */}
-        <div className="flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 border-line bg-card">
-          <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
-            <span className="h-2 w-2 rounded-full bg-accent" />
-            <span className="text-[13px] font-medium">{api.copy('chat-title')}</span>
+        <div
+          onDragOver={(e) => {
+            if (!challenge || logoFed) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            if (e.dataTransfer.getData('text/plain') === 'club-logo') feedLogo();
+          }}
+          className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-card shadow-soft transition-colors ${
+            dragOver
+              ? 'border-accent bg-accent-soft/40'
+              : challenge && !logoFed
+                ? 'border-dashed border-line'
+                : 'border-line'
+          }`}
+        >
+          <div className="flex items-center gap-2 border-b border-line bg-paper/60 px-4 py-2.5">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              <span className="h-2 w-2 rounded-full bg-line" />
+              <span className="h-2 w-2 rounded-full bg-line" />
+            </span>
+            <span className="ml-1 text-[13px] font-medium">{api.copy('chat-title')}</span>
           </div>
 
           {/* 消息区 */}
@@ -287,11 +329,22 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                     </div>
                   );
                 }
+                if (m.kind === 'file') {
+                  return (
+                    <div key={i} className="flex justify-end animate-fade-up">
+                      <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line bg-paper px-3 py-2 text-[12.5px]">
+                        🖼️ <span>{m.text}</span>
+                      </span>
+                    </div>
+                  );
+                }
                 if (m.kind === 'senpai') {
                   return (
                     <div key={i} className="flex items-start gap-2 py-1 animate-fade-up">
                       <SenpaiAvatar size={26} />
-                      <p className="pt-0.5 text-[12.5px] leading-relaxed text-accent">{m.text}</p>
+                      <p className="whitespace-pre-wrap pt-0.5 text-[12.5px] leading-relaxed text-accent">
+                        {m.text}
+                      </p>
                     </div>
                   );
                 }
@@ -305,7 +358,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                             {api.copy('xuejie-msg-app')}
                           </span>
                         </div>
-                        <p className="text-[13.5px] leading-relaxed">{m.text}</p>
+                        <p className="whitespace-pre-wrap text-[13.5px] leading-relaxed">{m.text}</p>
                       </div>
                     </div>
                   );
@@ -314,76 +367,75 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                   <div key={i} className="flex justify-start animate-fade-up">
                     <div className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line bg-paper px-4 py-3">
                       <p className="text-[13px] leading-relaxed">{m.text}</p>
-                      {m.img && (
-                        <PosterImage src={m.img} club={m.club} wide={m.img.includes('169')} />
-                      )}
+                      {m.img && <PosterImage src={m.img} fakeQr={m.fakeQr} tag={m.tag} />}
                     </div>
                   </div>
                 );
               })}
-              {thinking && (
-                <Thinking label={api.copy('gen-thinking')} tip={api.copy('gen-tip')} />
-              )}
+              {thinking && <Thinking label={api.copy('gen-thinking')} tip={api.copy('gen-tip')} />}
             </div>
           </div>
 
-          {/* 输入区 */}
+          {/* 输入区（阶段操作） */}
           <div className="border-t border-line px-4 py-3">
-            {/* 阶段操作 */}
             {stage === 'v1' && (
               <div className="mb-2.5 animate-fade-up">
                 <Button onClick={sendToXuejie}>{api.copy('btn-to-xuejie')}</Button>
               </div>
             )}
-            {stage === 'reject' && (
-              <div className="mb-2.5 animate-fade-up">
-                <p className="mb-2 text-[12.5px] text-ink-soft">{api.copy('revise-title')}</p>
-                <div className="flex flex-wrap gap-2">
-                  {REVISIONS.map((key) => (
-                    <button
-                      key={key}
-                      onClick={() => revise(key)}
-                      className="rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft"
-                    >
-                      {api.copy(`rev-${key}-label`)}
-                    </button>
-                  ))}
-                </div>
+            {challenge && (
+              <div className="mb-2.5 flex flex-wrap items-center gap-2 animate-fade-up">
+                {!styleAdded && (
+                  <button
+                    onClick={addStyle}
+                    className="rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft"
+                  >
+                    {api.copy('chip-style')}
+                  </button>
+                )}
+                {styleAdded && logoFed ? (
+                  <Button onClick={generateV2}>{api.copy('btn-regen')}</Button>
+                ) : (
+                  <span className="text-[11.5px] text-ink-soft">{api.copy('regen-need-both')}</span>
+                )}
               </div>
             )}
             {stage === 'v2' && (
+              <div className="mb-2.5 animate-fade-up">
+                <Button onClick={sendV2}>{api.copy('btn-to-xuejie-2')}</Button>
+              </div>
+            )}
+            {stage === 'qr' && (
               <button
-                onClick={to169}
+                onClick={tryQr}
                 className="mb-2.5 rounded-full border border-accent/60 bg-accent-soft px-3.5 py-1.5 text-[12.5px] text-accent transition hover:-translate-y-0.5 hover:shadow-soft animate-fade-up"
               >
-                {api.copy('chip-169')}
+                {api.copy('chip-qr')}
               </button>
             )}
-            {stage === 'v169' && (
+            {stage === 'qrfail' && (
               <div className="mb-2.5 animate-fade-up">
-                <Button onClick={api.advance}>{api.copy('btn-deliver')}</Button>
+                <Button onClick={api.advance}>{api.copy('btn-jianying')}</Button>
               </div>
             )}
 
-            {/* 提示词输入框：build 阶段实时拼装展示 */}
+            {/* 提示词预览：build 阶段展示待发送的完整提示词 */}
             <div className="flex items-end gap-2">
-              <div className="min-h-[74px] flex-1 rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[12.5px] leading-relaxed">
+              <div className="max-h-[150px] min-h-[64px] flex-1 overflow-y-auto rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[12.5px] leading-relaxed">
                 {building ? (
                   <>
                     <div className="mb-1 text-[10.5px] tracking-widest text-accent">
                       {api.copy('prompt-preview-label')}
                     </div>
-                    <p>{pSubject}</p>
-                    <p>{pLayout}</p>
-                    <p className={style ? '' : 'text-ink-soft/50'}>{pStyle}</p>
+                    <p className="whitespace-pre-wrap">{api.copy('p-v1')}</p>
                   </>
                 ) : (
                   <span className="text-ink-soft/50">…</span>
                 )}
               </div>
               <button
-                disabled={!building || !style || size !== '3:4'}
-                onClick={generate}
+                disabled={!building || ratio !== 'portrait'}
+                onClick={generateV1}
                 className="rounded-xl bg-ink px-4 py-2.5 text-[13px] text-paper transition disabled:opacity-40"
               >
                 {api.copy('s3-generate')}
@@ -391,6 +443,94 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+/** S4：剪映二维码合成教学（步骤逐条完成 → 终稿揭晓） */
+const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({
+  api,
+  assets,
+}) => {
+  const [step, setStep] = useState(0);
+  const STEPS = ['jy-1', 'jy-2', 'jy-3', 'jy-4', 'jy-5', 'jy-6'];
+  const done = step >= STEPS.length;
+
+  const next = () => {
+    const n = step + 1;
+    setStep(n);
+    if (n >= STEPS.length) api.check('ck-qr');
+  };
+
+  return (
+    <div className="mx-auto grid max-w-4xl grid-cols-[minmax(0,1fr)_300px] gap-6">
+      <div className="flex flex-col gap-4">
+        <header>
+          <h1 className="text-xl font-semibold">✂️ {api.copy('jy-title')}</h1>
+          <p className="mt-1 text-[13px] text-ink-soft">{api.copy('jy-sub')}</p>
+        </header>
+        <ol className="flex flex-col gap-2">
+          {STEPS.map((k, i) => {
+            const state = i < step ? 'done' : i === step ? 'now' : 'todo';
+            return (
+              <li
+                key={k}
+                className={`flex items-center gap-3 rounded-xl border p-3 transition ${
+                  state === 'done'
+                    ? 'border-line bg-paper opacity-60'
+                    : state === 'now'
+                      ? 'border-accent/60 bg-card shadow-soft'
+                      : 'border-line bg-paper opacity-40'
+                }`}
+              >
+                <span
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold ${
+                    state === 'done'
+                      ? 'bg-ink text-paper'
+                      : state === 'now'
+                        ? 'bg-accent text-white shadow-glow'
+                        : 'bg-line text-ink-soft'
+                  }`}
+                >
+                  {state === 'done' ? '✓' : i + 1}
+                </span>
+                <span className="flex-1 text-[13.5px] leading-relaxed">{api.copy(k)}</span>
+                {state === 'now' && (
+                  <Button onClick={next} className="shrink-0 !px-3 !py-1.5 text-[12.5px]">
+                    {api.copy('jy-next')}
+                  </Button>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+        <div className="rounded-xl bg-accent-soft/60 p-3.5 text-[12.5px] leading-relaxed">
+          <span className="mr-2 font-semibold text-accent">💧 {api.copy('jy-tip-title')}</span>
+          {api.copy('jy-tip')}
+        </div>
+        {done && (
+          <div className="animate-fade-up">
+            <p className="mb-3 rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px] leading-relaxed">
+              <span className="mr-1.5 rounded bg-accent-soft px-1.5 py-0.5 text-xs font-semibold text-accent">
+                {ui.board['senpai-prefix']}
+              </span>
+              {api.copy('jy-done-line')}
+            </p>
+            <Button full onClick={api.advance}>
+              {api.copy('btn-deliver')}
+            </Button>
+          </div>
+        )}
+      </div>
+      {/* 右侧：合成结果预览（完成后从 v2 换成终稿） */}
+      <div>
+        <img
+          key={done ? 'final' : 'v2'}
+          src={done ? assets['poster-acg-final'] : assets['poster-acg-v2']}
+          alt=""
+          className="w-full rounded-xl border border-line shadow-lift animate-fade-up"
+        />
       </div>
     </div>
   );
@@ -405,26 +545,21 @@ const Deliver: React.FC<{
   onDone: () => void;
 }> = ({ api, assets, total, escape = false, onDone }) => {
   const [showPrompt, setShowPrompt] = useState(false);
-  const imgA = escape ? assets['poster-senpai-34'] : assets[api.t('poster-{style}-34-v2')];
-  const imgB = escape ? assets['poster-senpai-169'] : assets[api.t('poster-{style}-169')];
+  const img = escape ? assets['poster-senpai-34'] : assets['poster-acg-final'];
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-end gap-3 animate-fade-up">
-        <img src={imgA} alt="" className="w-[46%] rounded-lg border border-line shadow-soft" />
-        <img src={imgB} alt="" className="w-1/2 rounded-lg border border-line shadow-soft" />
-      </div>
+      <img
+        src={img}
+        alt=""
+        className="mx-auto w-full max-w-[320px] rounded-lg border border-line shadow-lift animate-fade-up"
+      />
       {!escape && (
         <p className="text-center text-sm font-medium text-accent">
-          {interpolate(api.copy('s10-checklist-done'), {
-            done: api.checked.length,
-            total,
-          })}
+          {interpolate(api.copy('s10-checklist-done'), { done: api.checked.length, total })}
         </p>
       )}
-      <p className="whitespace-pre-wrap text-[16px] leading-relaxed">
-        {api.t(api.screen.text ?? '')}
-      </p>
+      <p className="whitespace-pre-wrap text-[16px] leading-relaxed">{api.t(api.screen.text ?? '')}</p>
       {!escape && (
         <div className="text-[15px] leading-relaxed text-ink-soft">
           <p>{api.copy('s10-npc-line')}</p>
@@ -440,7 +575,7 @@ const Deliver: React.FC<{
         </button>
       )}
       {showPrompt && (
-        <div className="rounded-xl bg-card p-3 text-[13px] leading-relaxed text-ink-soft animate-fade-up">
+        <div className="whitespace-pre-wrap rounded-xl border border-line/70 bg-card p-3.5 text-[13px] leading-relaxed text-ink-soft shadow-soft animate-fade-up">
           {api.copy('s10-full-prompt')}
         </div>
       )}
@@ -454,12 +589,12 @@ const Deliver: React.FC<{
 /** [问学长] 浮动按钮 + 确认弹层 */
 const EscapeOverlay: React.FC<{ api: FlowAPI }> = ({ api }) => {
   const [confirming, setConfirming] = useState(false);
-  if (api.screen.id !== 'S3') return null;
+  if (api.screen.id !== 'S3' && api.screen.id !== 'S4') return null;
   return (
     <>
       <button
         onClick={() => setConfirming(true)}
-        className="fixed bottom-5 right-4 z-20 rounded-full border border-line bg-card px-4 py-2 text-sm text-ink-soft shadow-soft"
+        className="fixed bottom-5 right-4 z-20 rounded-full border border-line bg-card px-4 py-2 text-sm text-ink-soft shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:text-ink hover:shadow-lift"
       >
         {api.copy('esc-button')}
       </button>
@@ -493,7 +628,7 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
   const checklist = content.checklist ?? [];
   const assets = content.presetAssets ?? {};
 
-  const buildResult = (borrowed: boolean, done: number, style?: string): LevelResult => ({
+  const buildResult = (borrowed: boolean, done: number): LevelResult => ({
     deltas: { portfolio: !borrowed && done === checklist.length ? 2 : 1 },
     abilityUnlocks: ['image-gen'],
     checklistScore: { done, total: checklist.length },
@@ -501,14 +636,12 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
       {
         id: 'poster-y1',
         levelId: 'poster',
-        title: borrowed
-          ? content.copy['archive-title-borrowed']
-          : content.copy['archive-title'],
+        title: borrowed ? content.copy['archive-title-borrowed'] : content.copy['archive-title'],
         resumeLine: borrowed
           ? content.copy['archive-resume-line-borrowed']
           : content.copy['archive-resume-line'],
         borrowed,
-        assetRef: borrowed ? 'poster-senpai-34' : style ? `poster-${style}-34-v2` : undefined,
+        assetRef: borrowed ? 'poster-senpai-34' : 'poster-acg-final.jpg',
       },
       {
         // 学完即沉淀：生图提示词模板入库（走[问学长]也给——模板是知识，不打借条）
@@ -529,16 +662,17 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
         globalVars={{ playerName: state.player.name }}
         defaultNextLabel={ui.common.continue}
         senpaiLabel={ui.board['senpai-prefix']}
-        wideScreens={['S3']}
+        wideScreens={['S3', 'S4']}
         onCheckChange={setChecked}
         custom={{
           S3: (api) => <GenChat api={api} assets={assets} />,
+          S4: (api) => <JianyingSteps api={api} assets={assets} />,
           S10: (api) => (
             <Deliver
               api={api}
               assets={assets}
               total={checklist.length}
-              onDone={() => onComplete(buildResult(false, api.checked.length, api.vars.style))}
+              onDone={() => onComplete(buildResult(false, api.checked.length))}
             />
           ),
           ESC: (api) => (
@@ -552,7 +686,7 @@ const PosterComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
           ),
         }}
         overlay={(api) => <EscapeOverlay api={api} />}
-        onFinish={(r) => onComplete(buildResult(false, r.checked.length, r.vars.style))}
+        onFinish={(r) => onComplete(buildResult(false, r.checked.length))}
       />
     </>
   );
