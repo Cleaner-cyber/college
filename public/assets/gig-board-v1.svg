@@ -1,21 +1,160 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
-  <rect width="1200" height="420" fill="#2E2933"/>
-  <text x="40" y="52" font-family="sans-serif" font-size="22" fill="#F3E4DC">短剧《重返 2019》分镜 · 同一角色三格</text>
-  
-    <rect x="60" y="90" width="330" height="250" rx="10" fill="#F6EEDF" stroke="#4A4453" stroke-width="5"/>
-    <circle cx="225" cy="185" r="46" fill="#F6DCC8" stroke="#2A241D" stroke-width="4"/>
-    <path d="M195 150 q 30 -26 60 0" fill="#2A241D"/>
-    <rect x="185" y="230" width="80" height="70" rx="10" fill="#C05A32" stroke="#2A241D" stroke-width="4"/>
-    <text x="225" y="365" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#B9AB94">镜头 1</text>
-    <rect x="440" y="90" width="330" height="250" rx="10" fill="#F6EEDF" stroke="#4A4453" stroke-width="5"/>
-    <circle cx="605" cy="200" r="46" fill="#F6DCC8" stroke="#2A241D" stroke-width="4"/>
-    <path d="M575 165 q 30 -34 60 0" fill="#2A241D"/>
-    <rect x="565" y="245" width="80" height="70" rx="10" fill="#5B6C82" stroke="#2A241D" stroke-width="4"/>
-    <text x="605" y="365" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#B9AB94">镜头 2</text>
-    <rect x="820" y="90" width="330" height="250" rx="10" fill="#F6EEDF" stroke="#4A4453" stroke-width="5"/>
-    <circle cx="985" cy="185" r="46" fill="#F6DCC8" stroke="#2A241D" stroke-width="4"/>
-    <path d="M955 150 q 30 -26 60 0" fill="#2A241D"/>
-    <rect x="945" y="230" width="80" height="70" rx="10" fill="#C05A32" stroke="#2A241D" stroke-width="4"/>
-    <text x="985" y="365" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#B9AB94">镜头 3</text>
-  <text x="600" y="405" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#8A8072">[占位] gig-board-v1</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC','Noto Sans CJK SC',sans-serif">
+  <defs>
+    <clipPath id="f1"><rect x="38" y="72" width="360" height="196" rx="3"/></clipPath>
+    <clipPath id="f2"><rect x="420" y="72" width="360" height="196" rx="3"/></clipPath>
+    <clipPath id="f3"><rect x="802" y="72" width="360" height="196" rx="3"/></clipPath>
+  </defs>
+
+  <!-- paper -->
+  <rect width="1200" height="420" fill="#F7F5F0"/>
+
+  <!-- header -->
+  <rect x="36" y="24" width="10" height="10" fill="#C05A32"/>
+  <text x="56" y="35" font-size="20" font-weight="700" fill="#1C1B18" letter-spacing="1">短剧《重返2019》 AI 分镜板</text>
+  <text x="56" y="52" font-size="11" fill="#8A8375">女主角 2025 → 2019 穿越段落 · 共 3 镜</text>
+  <text x="1164" y="35" text-anchor="end" font-size="11" fill="#6E675C">画幅 16:9 ｜ 时长 15s ｜ 客户：陈制片</text>
+  <text x="1164" y="52" text-anchor="end" font-size="11" font-weight="700" fill="#C05A32">版本 v1 · 交付稿</text>
+  <line x1="36" y1="60" x2="1164" y2="60" stroke="#D9D3C7" stroke-width="1"/>
+
+  <!-- ═══════ 镜1 · 近景 · 出租屋 ═══════ -->
+  <rect x="38" y="72" width="360" height="196" rx="3" fill="#FBF8F1" stroke="#1C1B18" stroke-opacity="0.7" stroke-width="1.4"/>
+  <g clip-path="url(#f1)" transform="translate(38,72)">
+    <rect width="360" height="196" fill="#F3EDE1"/>
+    <!-- night corners -->
+    <path d="M0,0 L150,0 L0,92 Z" fill="#2B2B35" opacity="0.10"/>
+    <path d="M360,0 L360,60 L250,0 Z" fill="#2B2B35" opacity="0.08"/>
+    <!-- desk -->
+    <line x1="0" y1="150" x2="360" y2="144" stroke="#1C1B18" stroke-width="1.4"/>
+    <path d="M0,150 L360,144 L360,196 L0,196 Z" fill="#E2D8C2"/>
+    <!-- lamp -->
+    <line x1="326" y1="144" x2="318" y2="62" stroke="#1C1B18" stroke-width="2"/>
+    <path d="M296,58 L342,58 L328,80 Z" fill="#C05A32" opacity="0.85" stroke="#1C1B18" stroke-width="1.2"/>
+    <polygon points="300,70 338,66 262,146 186,150" fill="#F3D9A6" opacity="0.35"/>
+    <!-- laptop, closed at her side -->
+    <path d="M62,132 L128,128 L132,142 L64,146 Z" fill="#7D766A" stroke="#1C1B18" stroke-width="1.2"/>
+    <!-- phone glowing 2025 -->
+    <ellipse cx="107" cy="120" rx="26" ry="12" fill="#FFE9B8" opacity="0.4"/>
+    <g transform="rotate(-9 104 136)">
+      <rect x="86" y="127" width="36" height="19" rx="3" fill="#22211E" stroke="#1C1B18" stroke-width="1"/>
+      <rect x="89" y="130" width="30" height="13" rx="2" fill="#FFE9B8"/>
+      <text x="104" y="140" text-anchor="middle" font-size="8" font-weight="700" fill="#7A5B2B">2025</text>
+    </g>
+    <!-- girl asleep on folded arms -->
+    <path d="M208,136 Q244,110 268,138 L272,150 L206,150 Z" fill="#EAE3D2" stroke="#1C1B18" stroke-width="1.3"/>
+    <rect x="140" y="134" width="118" height="17" rx="8.5" fill="#EAE3D2" stroke="#1C1B18" stroke-width="1.3"/>
+    <circle cx="192" cy="114" r="24" fill="#F2E4D4" stroke="#1C1B18" stroke-width="1.3"/>
+    <path d="M168,116 Q166,86 193,84 Q219,86 217,112 Q220,130 211,138 Q216,114 206,101 Q192,94 178,104 Q170,115 173,137 Q166,128 168,116" fill="#1C1B18" opacity="0.88"/>
+    <rect x="206" y="100" width="11" height="4" rx="2" transform="rotate(28 206 100)" fill="#B9BEC6"/>
+    <path d="M186,120 q4,3 8,0" stroke="#1C1B18" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  </g>
+  <rect x="38" y="72" width="34" height="21" fill="#1C1B18"/>
+  <text x="55" y="87" text-anchor="middle" font-size="11" font-weight="700" fill="#F7F5F0">镜1</text>
+
+  <!-- ═══════ 镜2 · 中景 · 教室（v1：形象漂移——马尾+校服） ═══════ -->
+  <rect x="420" y="72" width="360" height="196" rx="3" fill="#FBF8F1" stroke="#1C1B18" stroke-opacity="0.7" stroke-width="1.4"/>
+  <g clip-path="url(#f2)" transform="translate(420,72)">
+    <rect width="360" height="196" fill="#F2ECDE"/>
+    <line x1="0" y1="112" x2="360" y2="112" stroke="#C9C0AD" stroke-width="1"/>
+    <!-- blackboard -->
+    <rect x="26" y="16" width="212" height="68" fill="#4A594E" stroke="#8A7B5E" stroke-width="3"/>
+    <line x1="26" y1="88" x2="238" y2="88" stroke="#8A7B5E" stroke-width="2.4"/>
+    <text x="228" y="34" text-anchor="end" font-size="9" fill="#E8E2CE" letter-spacing="0.5">2019·高考倒计时</text>
+    <line x1="152" y1="38" x2="228" y2="38" stroke="#E8E2CE" stroke-width="0.8" opacity="0.7"/>
+    <line x1="40" y1="46" x2="112" y2="46" stroke="#E8E2CE" stroke-width="1" opacity="0.3"/>
+    <line x1="40" y1="58" x2="96" y2="58" stroke="#E8E2CE" stroke-width="1" opacity="0.3"/>
+    <line x1="40" y1="70" x2="120" y2="70" stroke="#E8E2CE" stroke-width="1" opacity="0.3"/>
+    <!-- window -->
+    <rect x="272" y="16" width="66" height="74" fill="#EDF2F0" stroke="#8A8375" stroke-width="1.4"/>
+    <line x1="305" y1="16" x2="305" y2="90" stroke="#8A8375" stroke-width="1.2"/>
+    <line x1="272" y1="53" x2="338" y2="53" stroke="#8A8375" stroke-width="1.2"/>
+    <!-- neighbour desks -->
+    <rect x="34" y="122" width="66" height="9" fill="#D9CDB4" stroke="#1C1B18" stroke-width="0.9"/>
+    <line x1="40" y1="131" x2="40" y2="158" stroke="#1C1B18" stroke-width="0.9"/>
+    <line x1="94" y1="131" x2="94" y2="158" stroke="#1C1B18" stroke-width="0.9"/>
+    <rect x="262" y="122" width="66" height="9" fill="#D9CDB4" stroke="#1C1B18" stroke-width="0.9"/>
+    <line x1="268" y1="131" x2="268" y2="158" stroke="#1C1B18" stroke-width="0.9"/>
+    <line x1="322" y1="131" x2="322" y2="158" stroke="#1C1B18" stroke-width="0.9"/>
+    <!-- startle marks -->
+    <line x1="152" y1="52" x2="144" y2="41" stroke="#1C1B18" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="180" y1="47" x2="180" y2="34" stroke="#1C1B18" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="208" y1="52" x2="216" y2="41" stroke="#1C1B18" stroke-width="1.6" stroke-linecap="round"/>
+    <!-- 漂移的形象：高马尾 + 深蓝白条校服 -->
+    <path d="M163,86 Q162,64 181,62 Q200,64 199,84 Q198,70 181,69 Q166,70 163,86" fill="#1C1B18"/>
+    <path d="M197,67 Q219,56 214,90 Q210,72 195,73 Z" fill="#1C1B18"/>
+    <circle cx="181" cy="86" r="19" fill="#F2E4D4" stroke="#1C1B18" stroke-width="1.3"/>
+    <path d="M164,80 Q170,70 181,69 Q193,70 198,80 Q192,74 181,74 Q170,74 164,80" fill="#1C1B18"/>
+    <circle cx="174" cy="88" r="1.8" fill="#1C1B18"/>
+    <circle cx="189" cy="88" r="1.8" fill="#1C1B18"/>
+    <ellipse cx="181.5" cy="97" rx="2.6" ry="3.4" fill="#1C1B18" opacity="0.85"/>
+    <rect x="153" y="104" width="57" height="38" rx="10" fill="#3D4F6D" stroke="#1C1B18" stroke-width="1.3"/>
+    <path d="M173,104 L181,113 L190,104 Z" fill="#F7F5F0" stroke="#1C1B18" stroke-width="1"/>
+    <line x1="155" y1="117" x2="209" y2="117" stroke="#F7F5F0" stroke-width="2.4"/>
+    <path d="M157,110 Q144,122 141,136" stroke="#1C1B18" stroke-width="9.5" fill="none" stroke-linecap="round"/>
+    <path d="M157,110 Q144,122 141,136" stroke="#3D4F6D" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M206,110 Q219,122 222,136" stroke="#1C1B18" stroke-width="9.5" fill="none" stroke-linecap="round"/>
+    <path d="M206,110 Q219,122 222,136" stroke="#3D4F6D" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <circle cx="141" cy="139" r="4.4" fill="#F2E4D4" stroke="#1C1B18" stroke-width="1"/>
+    <circle cx="222" cy="139" r="4.4" fill="#F2E4D4" stroke="#1C1B18" stroke-width="1"/>
+    <!-- her desk -->
+    <rect x="120" y="140" width="122" height="13" fill="#DECFB2" stroke="#1C1B18" stroke-width="1.2"/>
+    <line x1="128" y1="153" x2="128" y2="190" stroke="#1C1B18" stroke-width="1.2"/>
+    <line x1="234" y1="153" x2="234" y2="190" stroke="#1C1B18" stroke-width="1.2"/>
+    <rect x="146" y="134" width="26" height="6" fill="#FFFFFF" stroke="#1C1B18" stroke-width="0.8"/>
+  </g>
+  <rect x="420" y="72" width="34" height="21" fill="#1C1B18"/>
+  <text x="437" y="87" text-anchor="middle" font-size="11" font-weight="700" fill="#F7F5F0">镜2</text>
+
+  <!-- ═══════ 镜3 · 特写 · 课桌字迹 ═══════ -->
+  <rect x="802" y="72" width="360" height="196" rx="3" fill="#FBF8F1" stroke="#1C1B18" stroke-opacity="0.7" stroke-width="1.4"/>
+  <g clip-path="url(#f3)" transform="translate(802,72)">
+    <rect width="360" height="196" fill="#E9DFC6"/>
+    <path d="M0,34 Q120,28 360,40" stroke="#CDBD97" stroke-width="1.4" fill="none" opacity="0.7"/>
+    <path d="M0,88 Q180,80 360,92" stroke="#CDBD97" stroke-width="1.2" fill="none" opacity="0.6"/>
+    <path d="M0,150 Q140,144 360,156" stroke="#CDBD97" stroke-width="1.4" fill="none" opacity="0.7"/>
+    <path d="M0,0 L360,0 L360,18 Q180,8 0,14 Z" fill="#1C1B18" opacity="0.06"/>
+    <ellipse cx="180" cy="100" rx="200" ry="110" fill="#F3D9A6" opacity="0.18"/>
+    <!-- her old handwriting -->
+    <g transform="rotate(-5 170 92)">
+      <text x="168" y="88" text-anchor="middle" font-size="19" font-weight="700" fill="#5A5346" letter-spacing="2.5">一定要去更大的世界</text>
+      <path d="M78,98 Q168,104 258,96" stroke="#5A5346" stroke-width="1.6" fill="none" opacity="0.8"/>
+      <text x="238" y="120" text-anchor="middle" font-size="12" fill="#6A604C" letter-spacing="1">—— 2019.6.7</text>
+      <path d="M60,66 l3.5,7 7.5,1 -5.5,5.5 1.5,7.5 -7,-4 -7,4 1.5,-7.5 -5.5,-5.5 7.5,-1 Z" fill="#5A5346" opacity="0.55"/>
+    </g>
+    <!-- tear -->
+    <path d="M206,138 q4,-8 0,-12 q-4,4 0,12" fill="#AFC8D2" stroke="#8FA9B5" stroke-width="0.8"/>
+    <ellipse cx="206" cy="140" rx="5" ry="2" fill="#AFC8D2" opacity="0.5"/>
+    <!-- her hand：米白开衫袖口 + 左腕黑色手表（与镜1同一角色） -->
+    <path d="M268,196 C262,172 262,158 252,146 L245,135 C242,129 249,124 253,130 L264,146 C266,139 273,139 274,146 L276,156 C279,151 285,152 286,157 L287,167 C290,163 295,164 296,169 L297,182 C298,191 293,196 290,196 Z" fill="#F2E4D4" stroke="#1C1B18" stroke-width="1.3"/>
+    <rect x="258" y="185" width="44" height="11" rx="4" fill="#22211E"/>
+    <circle cx="280" cy="190" r="6.5" fill="#D8D8D8" stroke="#1C1B18" stroke-width="1"/>
+    <path d="M250,196 L254,190 Q280,182 308,190 L310,196 Z" fill="#EAE3D2" stroke="#1C1B18" stroke-width="1.2"/>
+  </g>
+  <rect x="802" y="72" width="34" height="21" fill="#1C1B18"/>
+  <text x="819" y="87" text-anchor="middle" font-size="11" font-weight="700" fill="#F7F5F0">镜3</text>
+
+  <!-- ═══════ 镜头信息 ═══════ -->
+  <g font-size="11.5">
+    <rect x="38" y="284" width="52" height="21" rx="4" fill="none" stroke="#C05A32" stroke-width="1.2"/>
+    <text x="64" y="299" text-anchor="middle" fill="#C05A32" font-weight="700">近景</text>
+    <text x="100" y="299" fill="#6E675C" font-size="11">0–5s ｜ 情绪：疲惫</text>
+    <text x="38" y="327" fill="#1C1B18">深夜出租屋。林晚伏在工位上睡着，</text>
+    <text x="38" y="345" fill="#1C1B18">手机屏幕还亮着 2025 年的日期。</text>
+
+    <rect x="420" y="284" width="52" height="21" rx="4" fill="none" stroke="#C05A32" stroke-width="1.2"/>
+    <text x="446" y="299" text-anchor="middle" fill="#C05A32" font-weight="700">中景</text>
+    <text x="482" y="299" fill="#6E675C" font-size="11">5–10s ｜ 情绪：错愕</text>
+    <text x="420" y="327" fill="#1C1B18">高中教室课桌前猛然惊醒，黑板角落</text>
+    <text x="420" y="345" fill="#1C1B18">写着「2019·高考倒计时」。</text>
+
+    <rect x="802" y="284" width="52" height="21" rx="4" fill="none" stroke="#C05A32" stroke-width="1.2"/>
+    <text x="828" y="299" text-anchor="middle" fill="#C05A32" font-weight="700">特写</text>
+    <text x="864" y="299" fill="#6E675C" font-size="11">10–15s ｜ 情绪：鼻酸</text>
+    <text x="802" y="327" fill="#1C1B18">看清课桌上自己高中时留下的字迹，</text>
+    <text x="802" y="345" fill="#1C1B18">指尖停在上面，眼眶发红。</text>
+  </g>
+
+  <!-- footer -->
+  <line x1="36" y1="376" x2="1164" y2="376" stroke="#D9D3C7" stroke-width="1"/>
+  <text x="36" y="398" font-size="10.5" fill="#8A8375">主角：林晚（22岁）· 黑色齐肩直发+右侧银色发卡 · 米白针织开衫 · 深蓝直筒牛仔裤 ｜ 光线：暖色低饱和，三格统一</text>
+  <text x="1164" y="398" text-anchor="end" font-size="10.5" fill="#8A8375">AI 生成 · 角色一致性卡随格携带 · 待客户验收</text>
 </svg>
