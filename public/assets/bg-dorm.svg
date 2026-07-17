@@ -67,7 +67,7 @@
     <!-- curtain pulled aside -->
     <path d="M1150 96 C 1130 220, 1160 360, 1136 488 C 1128 520, 1146 520, 1158 496 L 1166 112 Z" fill="#4A4150"/>
     <!-- faint moonlight on floor -->
-    <polygon points="1200,488 1470,488 1560,760 1120,760" fill="#AECBE0" opacity="0.05"/>
+    <polygon points="1200,488 1470,488 1540,740 1140,740" fill="#AECBE0" opacity="0.035"/>
   </g>
 
   <!-- loft bed frame (bed on top, desk below) -->
@@ -164,46 +164,46 @@
     <ellipse cx="585" cy="430" rx="220" ry="130" fill="url(#screenGlow)" opacity="0.5"/>
   </g>
 
-  <!-- cup noodles with chopsticks + steam -->
+  <!-- cup noodles with chopsticks + steam (in lamp light) -->
   <g>
-    <path d="M740 500 L 748 562 L 796 562 L 804 500 Z" fill="#E8E0CE"/>
-    <path d="M740 500 L 804 500 L 800 516 L 744 516 Z" fill="#C0392B" opacity="0.8"/>
-    <ellipse cx="772" cy="500" rx="32" ry="9" fill="#F3E9CF"/>
-    <line x1="794" y1="446" x2="776" y2="504" stroke="#A3814F" stroke-width="5" stroke-linecap="round"/>
-    <line x1="804" y1="450" x2="784" y2="504" stroke="#A3814F" stroke-width="5" stroke-linecap="round"/>
-    <path d="M756 478 q-8 -16 2 -30" stroke="#D8CFBC" stroke-width="4" fill="none" opacity="0.4" stroke-linecap="round"/>
-    <path d="M772 472 q8 -18 -2 -34" stroke="#D8CFBC" stroke-width="4" fill="none" opacity="0.3" stroke-linecap="round"/>
+    <path d="M400 500 L 408 562 L 456 562 L 464 500 Z" fill="#E8E0CE"/>
+    <path d="M400 500 L 464 500 L 460 516 L 404 516 Z" fill="#C0392B" opacity="0.8"/>
+    <ellipse cx="432" cy="500" rx="32" ry="9" fill="#F3E9CF"/>
+    <line x1="454" y1="446" x2="436" y2="504" stroke="#A3814F" stroke-width="5" stroke-linecap="round"/>
+    <line x1="464" y1="450" x2="444" y2="504" stroke="#A3814F" stroke-width="5" stroke-linecap="round"/>
+    <path d="M416 478 q-8 -16 2 -30" stroke="#D8CFBC" stroke-width="4" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <path d="M432 472 q8 -18 -2 -34" stroke="#D8CFBC" stroke-width="4" fill="none" opacity="0.3" stroke-linecap="round"/>
   </g>
 
-  <!-- phone charging on desk + power strip -->
+  <!-- power strip on desk edge + phone charging -->
   <g>
     <rect x="216" y="586" width="120" height="26" rx="8" fill="#DDD5C2"/>
     <rect x="232" y="592" width="18" height="14" rx="3" fill="#A39A85"/>
     <rect x="262" y="592" width="18" height="14" rx="3" fill="#A39A85"/>
     <rect x="292" y="592" width="18" height="14" rx="3" fill="#8A8272"/>
     <circle cx="322" cy="599" r="4" fill="#C05A32"/>
-    <path d="M336 598 C 420 618, 520 596, 600 610 C 660 620, 700 600, 724 604" stroke="#DDD5C2" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <rect x="716" y="588" width="52" height="26" rx="6" fill="#1F1C22" transform="rotate(-4 742 601)"/>
+    <path d="M336 598 C 348 586, 344 572, 354 560" stroke="#DDD5C2" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <rect x="350" y="538" width="64" height="24" rx="7" fill="#1F1C22" transform="rotate(-3 382 550)"/>
     <path d="M216 600 C 180 640, 190 680, 168 700" stroke="#3A3742" stroke-width="6" fill="none" stroke-linecap="round"/>
   </g>
 
-  <!-- chair with jacket -->
+  <!-- chair with jacket (right of laptop) -->
   <g>
-    <ellipse cx="600" cy="712" rx="150" ry="16" fill="#12101A" opacity="0.4"/>
-    <rect x="530" y="430" width="20" height="270" rx="8" fill="#3A3742" transform="rotate(-4 540 565)"/>
-    <rect x="500" y="408" width="150" height="130" rx="26" fill="#454052" transform="rotate(-4 575 473)"/>
+    <ellipse cx="770" cy="712" rx="150" ry="16" fill="#12101A" opacity="0.4"/>
+    <rect x="700" y="430" width="20" height="270" rx="8" fill="#3A3742" transform="rotate(-4 710 565)"/>
+    <rect x="670" y="408" width="150" height="130" rx="26" fill="#3B3844" transform="rotate(-4 745 473)"/>
     <!-- jacket draped over chair back -->
-    <path d="M486 420 C 520 396, 630 392, 664 418 C 676 470, 672 520, 660 548 L 620 540 L 628 462 L 540 466 L 552 552 L 508 556 C 492 516, 482 466, 486 420 Z" fill="#55604B" transform="rotate(-4 575 470)"/>
-    <path d="M652 430 C 676 470, 678 530, 668 574 L 646 570 C 656 528, 656 474, 646 440 Z" fill="#47523E" transform="rotate(-4 660 500)"/>
-    <path d="M540 470 l84 -4" stroke="#47523E" stroke-width="5" transform="rotate(-4 580 468)"/>
+    <path d="M656 420 C 690 396, 800 392, 834 418 C 846 470, 842 520, 830 548 L 790 540 L 798 462 L 710 466 L 722 552 L 678 556 C 662 516, 652 466, 656 420 Z" fill="#55604B" transform="rotate(-4 745 470)"/>
+    <path d="M822 430 C 846 470, 848 530, 838 574 L 816 570 C 826 528, 826 474, 816 440 Z" fill="#47523E" transform="rotate(-4 830 500)"/>
+    <path d="M710 470 l84 -4" stroke="#47523E" stroke-width="5" transform="rotate(-4 750 468)"/>
     <!-- chair legs -->
-    <path d="M560 700 L 600 640 L 640 700 M600 640 L 600 700" stroke="#3A3742" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <path d="M730 700 L 770 640 L 810 700 M770 640 L 770 700" stroke="#3A3742" stroke-width="10" fill="none" stroke-linecap="round"/>
   </g>
 
-  <!-- digital clock on shelf edge -->
+  <!-- digital clock on shelf -->
   <g>
-    <rect x="668" y="524" width="92" height="38" rx="8" fill="#1F1C22"/>
-    <text x="714" y="551" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="24" fill="#9FB58A" letter-spacing="2">23:04</text>
+    <rect x="436" y="328" width="92" height="40" rx="8" fill="#1F1C22"/>
+    <text x="482" y="356" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="24" fill="#9FB58A" letter-spacing="2">23:04</text>
   </g>
 
   <rect width="1600" height="900" fill="url(#vig)"/>
