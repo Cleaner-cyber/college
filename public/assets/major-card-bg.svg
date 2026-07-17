@@ -1,6 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
+  <defs>
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M30,0 L0,0 L0,30" fill="none" stroke="#1C1B18" stroke-width="0.6" opacity="0.045"/>
+    </pattern>
+    <path id="sparkle" d="M0,-5 L1.2,-1.2 L5,0 L1.2,1.2 L0,5 L-1.2,1.2 L-5,0 L-1.2,-1.2 Z"/>
+  </defs>
+
   <rect width="600" height="360" fill="#FDFCF9"/>
-  <rect x="8" y="8" width="584" height="344" fill="none" stroke="#C05A32" stroke-width="2" opacity="0.35"/>
-  <circle cx="540" cy="60" r="90" fill="#C05A32" opacity="0.06"/>
-  <circle cx="80" cy="320" r="120" fill="#1C1B18" opacity="0.04"/>
+  <rect width="600" height="360" fill="url(#grid)"/>
+
+  <!-- 右上：翻开的书页弧线（极淡） -->
+  <g fill="none" stroke="#C05A32" stroke-width="1" opacity="0.08">
+    <path d="M470,-20 Q560,60 620,70"/>
+    <path d="M492,-20 Q574,50 630,56"/>
+    <path d="M516,-20 Q590,38 640,42"/>
+  </g>
+  <circle cx="548" cy="52" r="86" fill="#C05A32" opacity="0.04"/>
+
+  <!-- 左下：同心页角弧线 -->
+  <g fill="none" stroke="#1C1B18" opacity="0.05">
+    <path d="M-20,268 Q80,286 96,380" stroke-width="1"/>
+    <path d="M-20,292 Q62,306 74,380" stroke-width="1"/>
+    <path d="M-20,316 Q44,326 52,380" stroke-width="1"/>
+  </g>
+  <circle cx="66" cy="322" r="104" fill="#1C1B18" opacity="0.028"/>
+
+  <!-- 星点（低不透明度，散布在四周，避开中部文字区） -->
+  <g fill="#1C1B18">
+    <circle cx="118" cy="52" r="1.4" opacity="0.10"/>
+    <circle cx="176" cy="34" r="1" opacity="0.08"/>
+    <circle cx="236" cy="60" r="1.2" opacity="0.07"/>
+    <circle cx="388" cy="38" r="1.2" opacity="0.09"/>
+    <circle cx="70" cy="112" r="1" opacity="0.07"/>
+    <circle cx="530" cy="170" r="1.2" opacity="0.08"/>
+    <circle cx="556" cy="236" r="1" opacity="0.07"/>
+    <circle cx="356" cy="326" r="1.2" opacity="0.08"/>
+    <circle cx="430" cy="306" r="1" opacity="0.07"/>
+    <circle cx="500" cy="330" r="1.4" opacity="0.09"/>
+  </g>
+  <g fill="#C05A32">
+    <circle cx="312" cy="30" r="1.4" opacity="0.12"/>
+    <circle cx="42" cy="188" r="1.2" opacity="0.10"/>
+    <circle cx="574" cy="120" r="1.2" opacity="0.10"/>
+    <circle cx="272" cy="332" r="1.2" opacity="0.10"/>
+  </g>
+  <!-- 星座细线 -->
+  <polyline points="118,52 176,34 236,60" fill="none" stroke="#1C1B18" stroke-width="0.7" opacity="0.05"/>
+  <use href="#sparkle" transform="translate(452,60)" fill="#C05A32" opacity="0.12"/>
+  <use href="#sparkle" transform="translate(84,246) scale(0.75)" fill="#1C1B18" opacity="0.08"/>
+
+  <!-- 内框（极淡赤陶橙） -->
+  <rect x="10" y="10" width="580" height="340" fill="none" stroke="#C05A32" stroke-width="1.4" opacity="0.16"/>
+  <!-- 角标 -->
+  <g stroke="#C05A32" stroke-width="1.6" opacity="0.3" fill="none">
+    <path d="M10,26 L10,10 L26,10"/>
+    <path d="M574,10 L590,10 L590,26"/>
+    <path d="M590,334 L590,350 L574,350"/>
+    <path d="M26,350 L10,350 L10,334"/>
+  </g>
 </svg>
