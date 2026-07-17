@@ -284,30 +284,35 @@
       <rect x="912" y="518" width="30" height="36" fill="#3A372F"/>
       <rect x="884" y="552" width="88" height="10" rx="5" fill="#3A372F"/>
     </g>
-    <path d="M712 556 q10 30 40 34 q-52 8 -30 32" fill="none" stroke="#4A463C" stroke-width="4"/>
-    <path d="M934 556 q-8 28 -44 34 q40 12 24 30" fill="none" stroke="#4A463C" stroke-width="4"/>
-    <g fill="#F4F0E6" stroke="#CFC8B6" stroke-width="2">
-      <rect x="560" y="560" width="120" height="12" transform="rotate(-3 620 566)"/>
-      <rect x="566" y="548" width="116" height="12" transform="rotate(2 624 554)"/>
-      <rect x="562" y="536" width="118" height="12" transform="rotate(-1 621 542)"/>
-    </g>
-    <line x1="580" y1="542" x2="660" y2="541" stroke="#B7AF9C" stroke-width="2"/>
-    <rect x="1052" y="524" width="46" height="48" rx="6" fill="#C05A32"/>
-    <path d="M1098 534 q22 4 0 26" fill="none" stroke="#C05A32" stroke-width="8"/>
-    <path d="M1068 512 q8 -12 0 -22 m18 22 q-8 -12 0 -22" stroke="#D8CFBB" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.9"/>
-    <rect x="1120" y="530" width="34" height="42" rx="4" fill="#6E6A5E"/>
-    <line x1="1130" y1="532" x2="1126" y2="506" stroke="#C05A32" stroke-width="5" stroke-linecap="round"/>
-    <line x1="1142" y1="532" x2="1146" y2="504" stroke="#3E5A6B" stroke-width="5" stroke-linecap="round"/>
-    <rect x="742" y="580" width="170" height="22" rx="5" fill="#DAD3C2" transform="rotate(-1 827 591)"/>
-    <g stroke="#B9B2A0" stroke-width="2" transform="rotate(-1 827 591)">
-      <line x1="756" y1="586" x2="898" y2="586"/>
-      <line x1="756" y1="594" x2="898" y2="594"/>
-    </g>
+    <!-- desk top & legs -->
     <rect x="520" y="556" width="620" height="8" fill="#A6845C"/>
     <rect x="512" y="564" width="636" height="26" fill="url(#deskface)"/>
     <rect x="536" y="590" width="22" height="118" fill="#6E5539"/>
     <rect x="1102" y="590" width="22" height="118" fill="#6E5539"/>
     <rect x="536" y="590" width="588" height="12" fill="#6E5539" opacity="0.6"/>
+    <!-- cable dropping behind desk to a power strip on the floor -->
+    <path d="M980 588 q6 46 -30 60 q60 8 44 44" fill="none" stroke="#4A463C" stroke-width="4"/>
+    <rect x="944" y="690" width="110" height="16" rx="6" fill="#5A554A"/>
+    <!-- items on the desk -->
+    <g fill="#F4F0E6" stroke="#CFC8B6" stroke-width="2">
+      <rect x="560" y="546" width="120" height="11" transform="rotate(-3 620 551)"/>
+      <rect x="566" y="535" width="116" height="11" transform="rotate(2 624 540)"/>
+      <rect x="562" y="524" width="118" height="11" transform="rotate(-1 621 529)"/>
+    </g>
+    <line x1="582" y1="530" x2="660" y2="529" stroke="#B7AF9C" stroke-width="2"/>
+    <rect x="1052" y="512" width="46" height="46" rx="6" fill="#C05A32"/>
+    <path d="M1098 520 q22 4 0 26" fill="none" stroke="#C05A32" stroke-width="8"/>
+    <path d="M1068 500 q8 -12 0 -22 m18 22 q-8 -12 0 -22" stroke="#D8CFBB" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <rect x="1120" y="518" width="34" height="40" rx="4" fill="#6E6A5E"/>
+    <line x1="1130" y1="520" x2="1126" y2="494" stroke="#C05A32" stroke-width="5" stroke-linecap="round"/>
+    <line x1="1142" y1="520" x2="1146" y2="492" stroke="#3E5A6B" stroke-width="5" stroke-linecap="round"/>
+    <!-- keyboard & mouse on desk -->
+    <rect x="742" y="534" width="164" height="20" rx="5" fill="#DAD3C2" transform="rotate(-1 824 544)"/>
+    <g stroke="#B9B2A0" stroke-width="2" transform="rotate(-1 824 544)">
+      <line x1="754" y1="540" x2="892" y2="540"/>
+      <line x1="754" y1="548" x2="892" y2="548"/>
+    </g>
+    <ellipse cx="940" cy="546" rx="14" ry="9" fill="#DAD3C2"/>
   </g>
 
   <!-- floor plant near window -->

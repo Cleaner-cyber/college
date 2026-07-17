@@ -85,12 +85,12 @@
     <use href="#cloud" transform="translate(66,282) scale(0.62)" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4"/>
 
     <!-- speech bubbles -->
-    <g transform="translate(138,340) rotate(-8)">
+    <g transform="translate(104,300) rotate(-8)">
       <ellipse rx="44" ry="32" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5"/>
       <path d="M14,28 L30,52 L34,26" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5" stroke-linejoin="round"/>
       <path d="M0,-16 L0,6 M0,15 L0,17" stroke="#C05A32" stroke-width="7" stroke-linecap="round" fill="none"/>
     </g>
-    <g transform="translate(468,330) rotate(8)">
+    <g transform="translate(506,286) rotate(8)">
       <ellipse rx="42" ry="30" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5"/>
       <path d="M-16,26 L-30,50 L-34,24" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5" stroke-linejoin="round"/>
       <use href="#star" transform="scale(1.15)" fill="#D9A441" stroke="#1C1B18" stroke-width="3"/>
@@ -101,11 +101,11 @@
       <use href="#heart" fill="#C05A32"/>
     </g>
 
-    <!-- main cat (big, center) -->
-    <use href="#cat" transform="translate(300,452) scale(1.5)"/>
+    <!-- main cat (big, center, way too dominant) -->
+    <use href="#cat" transform="translate(300,442) scale(1.82)"/>
 
     <!-- manga speed-lines around cat -->
-    <path d="M158,308 L128,282 M442,308 L472,282 M150,470 L116,470 M450,470 L484,470 M170,560 L140,584 M430,560 L460,584" stroke="#1C1B18" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M136,268 L110,240 M464,268 L490,240 M118,440 L86,440 M300,232 L300,204" stroke="#1C1B18" stroke-width="4" stroke-linecap="round" fill="none"/>
 
     <!-- stars everywhere -->
     <use href="#star" transform="translate(52,196) scale(1.2) rotate(-14)" fill="#C05A32"/>
@@ -118,9 +118,14 @@
     <use href="#star" transform="translate(52,548) scale(1.15) rotate(18)" fill="#C05A32"/>
     <use href="#star" transform="translate(552,548) scale(0.85) rotate(-30)" fill="#D9A441"/>
     <use href="#star" transform="translate(96,470) scale(0.7)" fill="none" stroke="#C05A32" stroke-width="3"/>
-    <use href="#star" transform="translate(504,472) scale(0.7) rotate(22)" fill="none" stroke="#1C1B18" stroke-width="3"/>
     <use href="#star" transform="translate(226,150) scale(0.7) rotate(-18)" fill="#C05A32"/>
     <use href="#star" transform="translate(370,120) scale(0.8) rotate(14)" fill="#D9A441" stroke="#1C1B18" stroke-width="2.4"/>
+    <use href="#star" transform="translate(146,50) scale(0.75) rotate(10)" fill="#8FA37E"/>
+    <use href="#star" transform="translate(388,52) scale(0.7) rotate(-12)" fill="#C05A32"/>
+    <use href="#star" transform="translate(30,626) scale(0.8) rotate(16)" fill="#D9A441"/>
+    <use href="#star" transform="translate(572,672) scale(0.75) rotate(-20)" fill="#C05A32"/>
+    <use href="#star" transform="translate(200,760) scale(0.7) rotate(24)" fill="#8FA37E"/>
+    <use href="#star" transform="translate(404,762) scale(0.7) rotate(-16)" fill="#D9A441"/>
 
     <!-- sparkles & hearts filling gaps -->
     <use href="#spark" transform="translate(120,238)" fill="#C05A32"/>

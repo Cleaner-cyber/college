@@ -1,18 +1,179 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
-  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0" stop-color="#F6EFE0"/><stop offset="1" stop-color="#F3E4DC"/></linearGradient></defs>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E6EDEC"/>
+      <stop offset="0.6" stop-color="#F2EDDC"/>
+      <stop offset="1" stop-color="#F7EFDC"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.24" cy="0.2" r="0.55">
+      <stop offset="0" stop-color="#FBE9C2" stop-opacity="0.75"/>
+      <stop offset="0.45" stop-color="#F8E0AE" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#F8E0AE" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E7DDC6"/>
+      <stop offset="1" stop-color="#DACDB1"/>
+    </linearGradient>
+    <linearGradient id="pillar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E3DCCB"/>
+      <stop offset="0.55" stop-color="#D8D0BC"/>
+      <stop offset="1" stop-color="#C4BAA2"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.46" r="0.85">
+      <stop offset="0.62" stop-color="#3A2E24" stop-opacity="0"/>
+      <stop offset="1" stop-color="#3A2E24" stop-opacity="0.13"/>
+    </radialGradient>
+  </defs>
+
   <rect width="1600" height="900" fill="url(#sky)"/>
-  <circle cx="380" cy="220" r="110" fill="#EAC9A8" opacity="0.7"/>
-  <path d="M0 700 L 1600 700 L 1600 900 L 0 900 Z" fill="#D9CFBA"/>
-  <path d="M0 700 C 300 680, 600 690, 800 700 C 1000 710, 1300 690, 1600 700" stroke="#C9BC9F" stroke-width="8" fill="none"/>
-  <rect x="560" y="330" width="60" height="370" fill="#8A8072" stroke="#6E655A" stroke-width="6"/>
-  <rect x="980" y="330" width="60" height="370" fill="#8A8072" stroke="#6E655A" stroke-width="6"/>
-  <rect x="520" y="280" width="560" height="70" rx="8" fill="#6E655A"/>
-  <rect x="700" y="300" width="200" height="30" rx="6" fill="#F3E4DC"/>
-  <rect x="545" y="296" width="90" height="38" rx="6" fill="#C05A32" opacity="0.9"/>
-  <path d="M120 700 C 118 560, 150 480, 210 470 C 180 420, 210 360, 265 355 C 260 300, 320 270, 370 300 C 400 260, 470 280, 480 330 C 540 340, 560 410, 520 460 C 570 480, 580 560, 540 600 C 520 660, 480 690, 430 700 Z" fill="#A8B08C" opacity="0.85"/>
-  <path d="M300 700 L 300 560 M300 600 L 250 540 M300 620 L 350 570" stroke="#6E655A" stroke-width="12" stroke-linecap="round"/>
-  <path d="M1140 700 C 1138 590, 1165 520, 1215 512 C 1195 470, 1220 420, 1265 418 C 1268 372, 1325 355, 1360 390 C 1410 380, 1450 430, 1430 480 C 1470 505, 1470 570, 1430 605 C 1420 660, 1385 692, 1340 700 Z" fill="#B8BE9C" opacity="0.8"/>
-  <path d="M1290 700 L 1290 580 M1290 620 L 1245 565" stroke="#6E655A" stroke-width="11" stroke-linecap="round"/>
-  <ellipse cx="800" cy="742" rx="360" ry="18" fill="#2A241D" opacity="0.07"/>
+  <circle cx="380" cy="180" r="70" fill="#F8E2AC" opacity="0.9"/>
+
+  <!-- distant campus silhouettes -->
+  <g fill="#DED4BE" opacity="0.85">
+    <rect x="560" y="420" width="140" height="180"/>
+    <rect x="700" y="380" width="90" height="220"/>
+    <path d="M700 380 L 745 348 L 790 380 Z"/>
+    <rect x="820" y="430" width="180" height="170"/>
+    <rect x="1000" y="460" width="110" height="140"/>
+  </g>
+  <g fill="#CEC2A6" opacity="0.7">
+    <rect x="596" y="452" width="18" height="24"/><rect x="630" y="452" width="18" height="24"/><rect x="664" y="452" width="18" height="24"/>
+    <rect x="596" y="494" width="18" height="24"/><rect x="630" y="494" width="18" height="24"/><rect x="664" y="494" width="18" height="24"/>
+    <rect x="852" y="462" width="20" height="26"/><rect x="892" y="462" width="20" height="26"/><rect x="932" y="462" width="20" height="26"/>
+    <rect x="852" y="508" width="20" height="26"/><rect x="892" y="508" width="20" height="26"/><rect x="932" y="508" width="20" height="26"/>
+  </g>
+
+  <!-- birds -->
+  <g stroke="#8A7E68" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7">
+    <path d="M950 160 q14 -14 28 0 q14 -14 28 0"/>
+    <path d="M1050 220 q11 -11 22 0 q11 -11 22 0"/>
+    <path d="M880 250 q9 -9 18 0 q9 -9 18 0"/>
+  </g>
+
+  <!-- ground -->
+  <rect x="0" y="640" width="1600" height="260" fill="url(#ground)"/>
+  <rect x="0" y="640" width="1600" height="10" fill="#C9BB9C"/>
+  <!-- paving joints -->
+  <g stroke="#CBBD9E" stroke-width="4" opacity="0.8">
+    <path d="M120 700 L 340 700 M520 690 L 780 690 M980 704 L 1260 704 M1380 692 L 1580 692"/>
+    <path d="M300 760 L 620 760 M840 770 L 1140 770"/>
+  </g>
+
+  <!-- gate beam -->
+  <rect x="404" y="196" width="792" height="26" fill="#2E2A24"/>
+  <rect x="428" y="222" width="744" height="74" fill="#3A362E"/>
+  <rect x="428" y="296" width="744" height="12" fill="#2A241D"/>
+  <!-- emblem on beam -->
+  <circle cx="800" cy="259" r="26" fill="#C05A32"/>
+  <circle cx="800" cy="259" r="18" fill="none" stroke="#F3E4C8" stroke-width="3"/>
+  <circle cx="800" cy="259" r="7" fill="#F3E4C8"/>
+
+  <!-- pillars -->
+  <g>
+    <rect x="452" y="296" width="118" height="368" fill="url(#pillar)"/>
+    <rect x="440" y="296" width="142" height="26" fill="#C9BFA6"/>
+    <rect x="436" y="640" width="150" height="34" fill="#B8AC90"/>
+    <rect x="1030" y="296" width="118" height="368" fill="url(#pillar)"/>
+    <rect x="1018" y="296" width="142" height="26" fill="#C9BFA6"/>
+    <rect x="1014" y="640" width="150" height="34" fill="#B8AC90"/>
+    <!-- name plaque (abstract, no text) -->
+    <rect x="478" y="352" width="66" height="216" rx="4" fill="#FDFCF9" stroke="#B8AC90" stroke-width="4"/>
+    <g fill="#8A7E68" opacity="0.55">
+      <rect x="496" y="376" width="30" height="30" rx="4"/>
+      <rect x="496" y="422" width="30" height="30" rx="4"/>
+      <rect x="496" y="468" width="30" height="30" rx="4"/>
+      <rect x="496" y="514" width="30" height="30" rx="4"/>
+    </g>
+  </g>
+  <!-- pillar shadows on ground -->
+  <ellipse cx="530" cy="682" rx="130" ry="16" fill="#3A2E24" opacity="0.12"/>
+  <ellipse cx="1108" cy="682" rx="130" ry="16" fill="#3A2E24" opacity="0.12"/>
+
+  <!-- banner -->
+  <g>
+    <path d="M560 318 C 700 348, 900 348, 1040 318 L 1040 386 C 900 416, 700 416, 560 386 Z" fill="#C05A32"/>
+    <path d="M560 318 C 700 348, 900 348, 1040 318 L 1040 330 C 900 360, 700 360, 560 330 Z" fill="#CE6B42" opacity="0.7"/>
+    <line x1="566" y1="326" x2="516" y2="302" stroke="#8A7E68" stroke-width="4"/>
+    <line x1="1034" y1="326" x2="1084" y2="302" stroke="#8A7E68" stroke-width="4"/>
+    <text x="800" y="384" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif" font-size="52" letter-spacing="14" fill="#F7EFD8" font-weight="600">欢迎新同学</text>
+  </g>
+
+  <!-- left tree: plane tree, early autumn -->
+  <g>
+    <path d="M218 664 C 210 540, 196 440, 172 360 M218 664 C 232 560, 252 470, 286 396" stroke="#5C4A38" stroke-width="26" fill="none" stroke-linecap="round"/>
+    <ellipse cx="150" cy="310" rx="130" ry="96" fill="#A8B478"/>
+    <ellipse cx="300" cy="330" rx="140" ry="104" fill="#96A465"/>
+    <ellipse cx="220" cy="230" rx="150" ry="100" fill="#B0BC80"/>
+    <ellipse cx="90" cy="220" rx="90" ry="70" fill="#C7B96A"/>
+    <ellipse cx="330" cy="226" rx="86" ry="64" fill="#D3BE66"/>
+    <ellipse cx="222" cy="682" rx="170" ry="18" fill="#3A2E24" opacity="0.12"/>
+  </g>
+
+  <!-- right tree: ginkgo -->
+  <g>
+    <path d="M1400 664 C 1404 540, 1412 440, 1428 372 M1400 664 C 1390 560, 1372 480, 1344 410" stroke="#5C4A38" stroke-width="24" fill="none" stroke-linecap="round"/>
+    <ellipse cx="1450" cy="300" rx="140" ry="104" fill="#D9B45C"/>
+    <ellipse cx="1330" cy="330" rx="110" ry="86" fill="#CBA84E"/>
+    <ellipse cx="1420" cy="212" rx="120" ry="84" fill="#E2C26C"/>
+    <ellipse cx="1540" cy="250" rx="80" ry="64" fill="#D3AE50"/>
+    <ellipse cx="1404" cy="682" rx="160" ry="18" fill="#3A2E24" opacity="0.12"/>
+  </g>
+
+  <!-- falling ginkgo leaves -->
+  <g fill="#D9B45C" opacity="0.9">
+    <path d="M1240 430 a10 10 0 0 1 20 0 l-10 14 Z"/>
+    <path d="M1290 540 a9 9 0 0 1 18 0 l-9 12 Z" opacity="0.8"/>
+    <path d="M1200 610 a8 8 0 0 1 16 0 l-8 11 Z" opacity="0.7"/>
+    <path d="M420 500 a9 9 0 0 1 18 0 l-9 12 Z" fill="#C7B96A"/>
+  </g>
+
+  <!-- freshmen silhouettes with suitcases -->
+  <g fill="#3A362E">
+    <!-- figure 1: walking, pulling suitcase -->
+    <g>
+      <circle cx="640" cy="500" r="20"/>
+      <path d="M624 522 C 616 560, 618 600, 622 634 L 640 634 L 644 574 L 656 634 L 674 634 C 674 596, 670 552, 658 522 Z"/>
+      <path d="M628 530 L 606 574 L 612 580 L 636 544 Z"/>
+      <path d="M656 530 L 690 566 L 700 560" stroke="#3A362E" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <rect x="618" y="512" width="44" height="34" rx="10"/>
+      <rect x="610" y="524" width="16" height="40" rx="8" fill="#2A241D"/>
+      <g transform="rotate(-12 724 600)">
+        <rect x="700" y="548" width="52" height="86" rx="10" fill="#4A4438"/>
+        <line x1="726" y1="552" x2="726" y2="630" stroke="#3A362E" stroke-width="4"/>
+        <rect x="716" y="516" width="8" height="36" fill="#3A362E"/>
+        <rect x="706" y="508" width="28" height="10" rx="5" fill="#3A362E"/>
+        <circle cx="710" cy="638" r="7" fill="#2A241D"/>
+        <circle cx="742" cy="638" r="7" fill="#2A241D"/>
+      </g>
+    </g>
+    <!-- figure 2: smaller, further, ponytail -->
+    <g opacity="0.85">
+      <circle cx="830" cy="524" r="16"/>
+      <path d="M842 514 q16 4 14 24 l-8 2 q0 -14 -8 -20 Z"/>
+      <path d="M818 542 C 812 572, 813 600, 816 626 L 830 626 L 833 580 L 840 626 L 854 626 C 854 596, 850 564, 843 542 Z"/>
+      <rect x="812" y="534" width="38" height="26" rx="9"/>
+      <path d="M846 548 L 868 580 L 876 576" stroke="#3A362E" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.85"/>
+      <g transform="rotate(-10 892 606)">
+        <rect x="874" y="566" width="40" height="66" rx="8" fill="#55503F"/>
+        <rect x="888" y="542" width="7" height="28" fill="#3A362E"/>
+        <rect x="880" y="536" width="22" height="8" rx="4" fill="#3A362E"/>
+        <circle cx="882" cy="636" r="6" fill="#2A241D"/>
+        <circle cx="906" cy="636" r="6" fill="#2A241D"/>
+      </g>
+    </g>
+    <!-- figure 3: standing, phone in hand, looking at gate -->
+    <g opacity="0.9">
+      <circle cx="368" cy="530" r="17"/>
+      <path d="M354 550 C 349 580, 350 606, 353 630 L 367 630 L 369 584 L 375 630 L 389 630 C 389 602, 385 570, 379 550 Z"/>
+      <rect x="349" y="542" width="40" height="28" rx="9"/>
+      <path d="M382 556 L 398 540 L 404 546" stroke="#3A362E" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <rect x="398" y="528" width="12" height="20" rx="3"/>
+    </g>
+  </g>
+  <ellipse cx="660" cy="648" rx="110" ry="12" fill="#3A2E24" opacity="0.12"/>
+  <ellipse cx="850" cy="642" rx="86" ry="10" fill="#3A2E24" opacity="0.10"/>
+  <ellipse cx="372" cy="644" rx="60" ry="9" fill="#3A2E24" opacity="0.10"/>
+
+  <rect width="1600" height="900" fill="url(#sun)"/>
+  <rect width="1600" height="900" fill="url(#vig)"/>
 </svg>
