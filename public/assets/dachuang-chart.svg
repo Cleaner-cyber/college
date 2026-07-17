@@ -1,9 +1,101 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480">
-  <rect width="900" height="480" fill="#FDFCF9" stroke="#D8D2C4" stroke-width="6"/>
-  <text x="60" y="60" font-family="sans-serif" font-size="22" fill="#1C1B18" font-weight="bold">问卷数据 · 使用频率分布（n=300）</text>
-  <g>
-    <rect x="120" y="260" width="70" height="140" rx="6" fill="#C9A87B"/><rect x="260" y="180" width="70" height="220" rx="6" fill="#C05A32"/><rect x="400" y="100" width="70" height="300" rx="6" fill="#C9A87B"/><rect x="540" y="220" width="70" height="180" rx="6" fill="#C9A87B"/><rect x="680" y="310" width="70" height="90" rx="6" fill="#C9A87B"/>
-    <path d="M90 400 H 840" stroke="#8A8072" stroke-width="3"/>
+  <!-- dachuang-chart: AI data analysis report (短视频使用 × 课堂专注度, n=300) -->
+  <rect width="900" height="480" fill="#FDFCF9"/>
+  <rect x="1" y="1" width="898" height="478" fill="none" stroke="#E3DDCE" stroke-width="2"/>
+
+  <g font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif">
+    <!-- header -->
+    <rect x="48" y="30" width="100" height="22" rx="11" fill="#C05A32"/>
+    <text x="98" y="45" text-anchor="middle" font-size="11.5" fill="#FDFCF9">AI 数据分析</text>
+    <text x="852" y="40" text-anchor="end" font-size="12" fill="#8A8578">回收问卷 n = 300</text>
+    <text x="852" y="58" text-anchor="end" font-size="12" fill="#8A8578">有效样本 N = 287（95.7%）</text>
+    <text x="48" y="86" font-size="18" font-weight="bold" fill="#1C1B18">大学生短视频使用与课堂专注度的关系研究 · 中期数据报告</text>
+    <line x1="48" y1="102" x2="852" y2="102" stroke="#E3DDCE" stroke-width="1"/>
+
+    <!-- ===== bar chart ===== -->
+    <text x="48" y="130" font-size="13" font-weight="bold" fill="#1C1B18">「上课容易走神」占比（%）· 按日均短视频时长分组</text>
+
+    <!-- gridlines -->
+    <g stroke="#EFEAD9" stroke-width="1">
+      <line x1="88" y1="150" x2="488" y2="150"/>
+      <line x1="88" y1="201.5" x2="488" y2="201.5"/>
+      <line x1="88" y1="253" x2="488" y2="253"/>
+      <line x1="88" y1="304.5" x2="488" y2="304.5"/>
+    </g>
+    <g font-size="10.5" fill="#8A8578" text-anchor="end">
+      <text x="80" y="154">80</text>
+      <text x="80" y="205.5">60</text>
+      <text x="80" y="257">40</text>
+      <text x="80" y="308.5">20</text>
+      <text x="80" y="360">0</text>
+    </g>
+
+    <!-- bars (sequential ramp, rounded top 4px, anchored to baseline) -->
+    <path d="M111,356 V303.4 Q111,299.4 115,299.4 H161 Q165,299.4 165,303.4 V356 Z" fill="#EFCDB3"/>
+    <path d="M211,356 V254.4 Q211,250.4 215,250.4 H261 Q265,250.4 265,254.4 V356 Z" fill="#D8894E"/>
+    <path d="M311,356 V197.8 Q311,193.8 315,193.8 H361 Q365,193.8 365,197.8 V356 Z" fill="#C05A32"/>
+    <path d="M411,356 V156.6 Q411,152.6 415,152.6 H461 Q465,152.6 465,156.6 V356 Z" fill="#7A3013"/>
+    <line x1="88" y1="356" x2="488" y2="356" stroke="#D8D2C4" stroke-width="1.5"/>
+
+    <!-- value labels -->
+    <g font-size="12.5" font-weight="bold" fill="#1C1B18" text-anchor="middle">
+      <text x="138" y="291">22%</text>
+      <text x="238" y="242">41%</text>
+      <text x="338" y="185">63%</text>
+      <text x="438" y="144">79%</text>
+    </g>
+    <!-- x labels -->
+    <g font-size="11.5" fill="#1C1B18" text-anchor="middle">
+      <text x="138" y="378">&lt;1 小时</text>
+      <text x="238" y="378">1–3 小时</text>
+      <text x="338" y="378">3–5 小时</text>
+      <text x="438" y="378">&gt;5 小时</text>
+    </g>
+    <g font-size="10.5" fill="#8A8578" text-anchor="middle">
+      <text x="138" y="394">n=41</text>
+      <text x="238" y="394">n=132</text>
+      <text x="338" y="394">n=86</text>
+      <text x="438" y="394">n=28</text>
+    </g>
+
+    <!-- ===== pie chart ===== -->
+    <text x="540" y="130" font-size="13" font-weight="bold" fill="#1C1B18">有效样本构成 · 日均短视频时长（N=287）</text>
+
+    <g stroke="#FDFCF9" stroke-width="2">
+      <path d="M630,262 L630,174 A88,88 0 0 1 698.85,207.19 Z" fill="#EFCDB3"/>
+      <path d="M630,262 L698.85,207.19 A88,88 0 0 1 576.94,332.21 Z" fill="#D8894E"/>
+      <path d="M630,262 L576.94,332.21 A88,88 0 0 1 579.63,189.85 Z" fill="#C05A32"/>
+      <path d="M630,262 L579.63,189.85 A88,88 0 0 1 630,174 Z" fill="#7A3013"/>
+    </g>
+    <!-- direct labels on the two largest slices -->
+    <text x="669" y="305" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#4A2410">46.0%</text>
+    <text x="588" y="266" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#FDFCF9">30.0%</text>
+
+    <!-- legend -->
+    <g>
+      <rect x="748" y="186" width="12" height="12" rx="3" fill="#EFCDB3"/>
+      <text x="768" y="196" font-size="12" fill="#1C1B18">&lt;1 小时</text>
+      <text x="768" y="211" font-size="10.5" fill="#8A8578">41 人 · 14.3%</text>
+
+      <rect x="748" y="226" width="12" height="12" rx="3" fill="#D8894E"/>
+      <text x="768" y="236" font-size="12" fill="#1C1B18">1–3 小时</text>
+      <text x="768" y="251" font-size="10.5" fill="#8A8578">132 人 · 46.0%</text>
+
+      <rect x="748" y="266" width="12" height="12" rx="3" fill="#C05A32"/>
+      <text x="768" y="276" font-size="12" fill="#1C1B18">3–5 小时</text>
+      <text x="768" y="291" font-size="10.5" fill="#8A8578">86 人 · 30.0%</text>
+
+      <rect x="748" y="306" width="12" height="12" rx="3" fill="#7A3013"/>
+      <text x="768" y="316" font-size="12" fill="#1C1B18">&gt;5 小时</text>
+      <text x="768" y="331" font-size="10.5" fill="#8A8578">28 人 · 9.7%</text>
+    </g>
+    <text x="748" y="358" font-size="10" fill="#B0AA9C">百分比合计 = 100.0%</text>
+
+    <!-- conclusion -->
+    <rect x="48" y="410" width="804" height="38" rx="6" fill="#F5E7DE"/>
+    <rect x="48" y="410" width="4" height="38" fill="#C05A32"/>
+    <text x="64" y="434" font-size="13" fill="#1C1B18"><tspan font-weight="bold">结论：</tspan>日均时长与课堂专注度呈显著负相关（Spearman ρ ≈ −0.42）：&gt;5 小时组走神占比 79%，为 &lt;1 小时组（22%）的 3.6 倍。</text>
+
+    <text x="48" y="468" font-size="10.5" fill="#8A8578">注：横断面自报数据，仅表明相关，不能推断因果 · 数据来源：问卷星导出（回收 300 份，剔除无效 13 份）</text>
   </g>
-  <text x="450" y="455" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#8A8072">[占位] dachuang-chart · 结果图</text>
 </svg>

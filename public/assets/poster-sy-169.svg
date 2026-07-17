@@ -1,12 +1,150 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <rect width="1280" height="720" fill="#23262B"/>
-  <rect x="60" y="60" width="380" height="600" fill="none" stroke="#9FB4C7" stroke-width="2" stroke-dasharray="8 8" opacity="0.6"/>
-  <text x="250" y="360" font-family="sans-serif" font-size="18" text-anchor="middle" fill="#9FB4C7" opacity="0.8">标题留白区</text>
-  <rect x="500" y="90" width="700" height="540" rx="18" fill="#4A5560" opacity="0.88"/>
-  <circle cx="850" cy="360" r="110" fill="#9FB4C7" opacity="0.85"/>
-  
-  <g font-family="sans-serif" text-anchor="middle" fill="#FFFFFF" opacity="0.55">
-    <text x="50%" y="46%" font-size="26" font-weight="bold">[占位] poster-sy-169</text>
-    <text x="50%" y="52%" font-size="18">16:9 摄影 公众号头图版</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F8E7CB"/>
+      <stop offset="0.4" stop-color="#F3C287"/>
+      <stop offset="0.75" stop-color="#E48F52"/>
+      <stop offset="1" stop-color="#C05A32"/>
+    </linearGradient>
+    <radialGradient id="sunGlow3" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF4DF" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#F7D3A0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#F7D3A0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bldg3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4C2F24"/>
+      <stop offset="0.55" stop-color="#33211A"/>
+      <stop offset="1" stop-color="#241813"/>
+    </linearGradient>
+    <linearGradient id="treeInk3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26160F"/>
+      <stop offset="1" stop-color="#140C07"/>
+    </linearGradient>
+    <linearGradient id="ground3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#33200F"/>
+      <stop offset="0.3" stop-color="#2A1A0F"/>
+      <stop offset="1" stop-color="#150E08"/>
+    </linearGradient>
+    <radialGradient id="vign3" cx="0.5" cy="0.45" r="0.75">
+      <stop offset="0.68" stop-color="#1A0F08" stop-opacity="0"/>
+      <stop offset="1" stop-color="#1A0F08" stop-opacity="0.22"/>
+    </radialGradient>
+    <radialGradient id="bokeh3" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F6D3A2" stop-opacity="0.8"/>
+      <stop offset="0.75" stop-color="#F0B87E" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#F0B87E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lampGlow3" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFE9C2" stop-opacity="0.9"/>
+      <stop offset="0.4" stop-color="#F2B268" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#F2B268" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft3" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+    <filter id="grain3">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.9  0 0 0 0 0.8  0 0 0 0 0.65  0 0 0 0.05 0"/>
+    </filter>
+  </defs>
+
+  <!-- 天空 -->
+  <rect width="1280" height="720" fill="url(#sky3)"/>
+
+  <!-- 落日：位于文字区与主体之间 -->
+  <ellipse cx="620" cy="430" rx="260" ry="130" fill="url(#sunGlow3)"/>
+  <circle cx="620" cy="412" r="30" fill="#FFF6E2"/>
+  <circle cx="620" cy="412" r="42" fill="url(#sunGlow3)"/>
+
+  <!-- 薄云 -->
+  <ellipse cx="900" cy="150" rx="170" ry="10" fill="#F6DCB8" opacity="0.5" filter="url(#soft3)"/>
+  <ellipse cx="480" cy="200" rx="120" ry="8" fill="#F6DCB8" opacity="0.4" filter="url(#soft3)"/>
+  <ellipse cx="1100" cy="260" rx="130" ry="8" fill="#F6DCB8" opacity="0.35" filter="url(#soft3)"/>
+
+  <!-- 左三分之一：留白 + 标语（社团名由游戏文字层叠加） -->
+  <g font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif">
+    <text x="118" y="316" font-size="66" font-weight="600" letter-spacing="16" fill="#4A2C1D">秋季招新</text>
+    <rect x="122" y="348" width="104" height="3" rx="1.5" fill="#C05A32" opacity="0.85"/>
+    <text x="122" y="396" font-size="21" letter-spacing="3" fill="#7A4A30">9月12日—14日 · 大学生活动中心前</text>
   </g>
+
+  <!-- 主楼剪影：右侧主体（与 3:4 版同一建筑） -->
+  <g transform="translate(880,500) scale(1.25) translate(-300,-470)">
+    <g fill="url(#bldg3)">
+      <path d="M300 296 L304 301 L304 312 L322 312 L322 334 L332 334 L332 346 L268 346 L268 334 L278 334 L278 312 L296 312 L296 301 Z"/>
+      <path d="M262 346 L338 346 L338 370 L344 370 L344 470 L256 470 L256 370 L262 370 Z"/>
+      <path d="M256 394 L256 470 L118 470 L118 412 L126 412 L126 400 L250 400 L250 394 Z"/>
+      <path d="M344 394 L344 470 L482 470 L482 412 L474 412 L474 400 L350 400 L350 394 Z"/>
+      <path d="M282 470 L282 442 Q300 430 318 442 L318 470 Z"/>
+    </g>
+    <g stroke="#F2B071" stroke-width="1.8" fill="none" opacity="0.75" stroke-linecap="round">
+      <path d="M268 346 L268 334 L278 334 L278 312 L296 312 L296 301 L300 296 L304 301 L304 312 L322 312 L322 334 L332 334 L332 346"/>
+      <path d="M118 412 L126 412 L126 400 L250 400 M350 400 L474 400 L474 412 L482 412"/>
+    </g>
+    <circle cx="300" cy="327" r="8" fill="#EFC694" opacity="0.9"/>
+    <circle cx="300" cy="327" r="8" fill="none" stroke="#33211A" stroke-width="1.6"/>
+    <path d="M300 327 L300 321.5 M300 327 L303.5 329" stroke="#33211A" stroke-width="1.6" stroke-linecap="round"/>
+    <g fill="#E89B5A">
+      <g opacity="0.85">
+        <rect x="140" y="418" width="10" height="15"/><rect x="168" y="418" width="10" height="15" opacity="0.5"/><rect x="196" y="418" width="10" height="15"/><rect x="224" y="418" width="10" height="15" opacity="0.4"/>
+        <rect x="140" y="446" width="10" height="15" opacity="0.45"/><rect x="168" y="446" width="10" height="15"/><rect x="224" y="446" width="10" height="15"/>
+      </g>
+      <g opacity="0.85">
+        <rect x="366" y="418" width="10" height="15" opacity="0.5"/><rect x="394" y="418" width="10" height="15"/><rect x="422" y="418" width="10" height="15"/><rect x="450" y="418" width="10" height="15" opacity="0.4"/>
+        <rect x="366" y="446" width="10" height="15"/><rect x="394" y="446" width="10" height="15" opacity="0.45"/><rect x="450" y="446" width="10" height="15"/>
+      </g>
+      <g opacity="0.9">
+        <rect x="272" y="378" width="11" height="16"/><rect x="317" y="378" width="11" height="16" opacity="0.55"/>
+        <rect x="272" y="410" width="11" height="16" opacity="0.5"/><rect x="317" y="410" width="11" height="16"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- 右缘与楼侧的梧桐剪影 -->
+  <g fill="url(#treeInk3)">
+    <path d="M1300 640 L1300 400 Q1258 374 1222 400 Q1174 374 1156 416 Q1126 404 1118 438 Q1144 476 1134 516 Q1164 552 1154 590 L1178 590 L1178 640 Z"/>
+  </g>
+
+  <!-- 远处矮树线（左侧地平线，压低不抢留白） -->
+  <path d="M0 500 Q60 482 130 494 Q200 480 270 494 Q330 484 400 496 L400 520 L0 520 Z" fill="#241610" opacity="0.9"/>
+
+  <!-- 地面 -->
+  <rect x="0" y="500" width="1280" height="220" fill="url(#ground3)"/>
+  <path d="M0 500 L1280 500 L1280 510 Q640 522 0 510 Z" fill="#4A2C18" opacity="0.6"/>
+  <ellipse cx="860" cy="530" rx="300" ry="10" fill="#D98A54" opacity="0.14" filter="url(#soft3)"/>
+
+  <!-- 归途学生剪影 -->
+  <g fill="#160D08">
+    <circle cx="742" cy="540" r="5"/>
+    <path d="M737 546 q5 -3 10 0 l1.6 18 l-2.8 0 l-1 13 l-3.2 0 l-0.9 -12 l-0.9 12 l-3.2 0 l-1 -13 l-2.8 0 Z"/>
+    <circle cx="762" cy="538" r="4.6" opacity="0.92"/>
+    <path d="M757.5 544 q4.5 -3 9 0 l1.6 17 l-2.6 0 l-1 12 l-3 0 l-0.8 -11 l-0.8 11 l-3 0 l-1 -12 l-2.6 0 Z" opacity="0.92"/>
+  </g>
+
+  <!-- 路灯与光斑 -->
+  <g>
+    <rect x="1046" y="528" width="4" height="86" fill="#1E1410"/>
+    <circle cx="1048" cy="522" r="6.5" fill="#FBE3B8"/>
+    <circle cx="1048" cy="522" r="26" fill="url(#lampGlow3)"/>
+  </g>
+  <g opacity="0.85">
+    <circle cx="1180" cy="330" r="15" fill="url(#bokeh3)"/>
+    <circle cx="1230" cy="480" r="11" fill="url(#bokeh3)"/>
+    <circle cx="560" cy="560" r="16" fill="url(#bokeh3)"/>
+    <circle cx="960" cy="580" r="13" fill="url(#bokeh3)"/>
+    <circle cx="700" cy="250" r="9" fill="url(#bokeh3)"/>
+    <circle cx="1120" cy="180" r="10" fill="url(#bokeh3)"/>
+    <circle cx="180" cy="560" r="12" fill="url(#bokeh3)"/>
+  </g>
+
+  <!-- 归鸟 -->
+  <g stroke="#4A2C1D" stroke-width="2.4" stroke-linecap="round" fill="none" opacity="0.85">
+    <path d="M760 160 q8 -7 15 0 q7 -7 15 0"/>
+    <path d="M812 138 q6 -6 12 0 q6 -6 12 0"/>
+    <path d="M700 190 q6 -5 11 0 q5 -5 11 0"/>
+  </g>
+
+  <!-- 暗角与胶片颗粒 -->
+  <rect width="1280" height="720" fill="url(#vign3)"/>
+  <rect width="1280" height="720" filter="url(#grain3)" opacity="0.5"/>
 </svg>

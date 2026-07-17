@@ -1,12 +1,116 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
-  <rect width="600" height="800" fill="#F6EBD9"/>
-  <rect x="40" y="40" width="520" height="210" fill="none" stroke="#D08C3F" stroke-width="2" stroke-dasharray="8 8" opacity="0.6"/>
-  <text x="300" y="150" font-family="sans-serif" font-size="18" text-anchor="middle" fill="#D08C3F" opacity="0.8">标题留白区</text>
-  <rect x="60" y="300" width="480" height="450" rx="18" fill="#8A5A3B" opacity="0.88"/>
-  <circle cx="300" cy="489" r="86" fill="#D08C3F" opacity="0.85"/>
-  
-  <g font-family="sans-serif" text-anchor="middle" fill="#1C1B18" opacity="0.55">
-    <text x="50%" y="46%" font-size="26" font-weight="bold">[占位] poster-sh-34-v2</text>
-    <text x="50%" y="52%" font-size="18">3:4 手绘 修正版·上1/3留白</text>
+  <defs>
+    <filter id="wob" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.016" numOctaves="2" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+    </filter>
+    <filter id="wobText" x="-6%" y="-6%" width="112%" height="112%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.11  0 0 0 0 0.106  0 0 0 0 0.094  0 0 0 0.5 0"/>
+    </filter>
+
+    <path id="star" d="M0,-14 L4,-4 L14,-3 L6,4 L9,14 L0,8 L-9,14 L-6,4 L-14,-3 L-4,-4 Z"/>
+    <path id="spark" d="M0,-11 C1,-4 4,-1 11,0 C4,1 1,4 0,11 C-1,4 -4,1 -11,0 C-4,-1 -1,-4 0,-11 Z"/>
+    <path id="heart" d="M0,10 C-12,0 -14,-8 -8,-12 C-4,-14 0,-11 0,-7 C0,-11 4,-14 8,-12 C14,-8 12,0 0,10 Z"/>
+    <g id="flower">
+      <circle cx="0" cy="-8" r="5.5"/><circle cx="7.6" cy="-2.5" r="5.5"/><circle cx="4.7" cy="6.5" r="5.5"/>
+      <circle cx="-4.7" cy="6.5" r="5.5"/><circle cx="-7.6" cy="-2.5" r="5.5"/>
+      <circle cx="0" cy="0" r="3.6" fill="#D9A441"/>
+    </g>
+    <g id="cloud">
+      <path d="M-34,8 C-46,8 -46,-6 -34,-8 C-33,-18 -18,-21 -12,-14 C-6,-24 12,-23 16,-13 C28,-16 36,-4 28,4 C24,10 -26,11 -34,8 Z"/>
+    </g>
+    <g id="note">
+      <path d="M2,-16 L4,6" stroke-width="3.6" fill="none"/>
+      <ellipse cx="0" cy="7" rx="5.4" ry="4.2"/>
+      <path d="M3,-15 q9,2 9,9" stroke-width="3.6" fill="none"/>
+    </g>
+    <g id="tape">
+      <path d="M-46,-13 L-40,-9 L-46,-4 L-40,0 L-46,5 L-41,9 L-46,13 L46,13 L41,9 L46,4 L40,0 L46,-5 L41,-9 L46,-13 Z" opacity="0.72"/>
+      <path d="M-38,-6 L38,-6 M-38,3 L38,3" stroke="#FFFFFF" stroke-width="2.4" opacity="0.5" fill="none"/>
+    </g>
+
+    <g id="cat">
+      <path d="M92,52 q58,-4 50,-54 q-3,-22 -26,-16 q-16,5 -12,26" fill="none" stroke="#1C1B18" stroke-width="14" stroke-linecap="round"/>
+      <path d="M92,52 q58,-4 50,-54 q-3,-22 -26,-16 q-16,5 -12,26" fill="none" stroke="#FDFBF6" stroke-width="7" stroke-linecap="round"/>
+      <path d="M-70,95 C-96,58 -90,4 -60,-26 C-76,-46 -79,-70 -70,-89 C-51,-87 -37,-75 -29,-62 C-19,-66 -9,-68 0,-68 C9,-68 19,-66 29,-62 C37,-75 51,-87 70,-89 C79,-70 76,-46 60,-26 C90,4 96,58 70,95 C40,111 -40,111 -70,95 Z"
+            fill="#FDFBF6" stroke="#1C1B18" stroke-width="5.5" stroke-linejoin="round"/>
+      <path d="M-62,-77 C-52,-74 -45,-68 -41,-61 C-48,-58 -55,-56 -60,-57 C-63,-63 -64,-70 -62,-77 Z" fill="#EFB7A4"/>
+      <path d="M62,-77 C52,-74 45,-68 41,-61 C48,-58 55,-56 60,-57 C63,-63 64,-70 62,-77 Z" fill="#EFB7A4"/>
+      <ellipse cx="-26" cy="-18" rx="7.5" ry="10"/>
+      <ellipse cx="26" cy="-18" rx="7.5" ry="10"/>
+      <circle cx="-23.4" cy="-21.5" r="2.6" fill="#FFFFFF"/>
+      <circle cx="28.6" cy="-21.5" r="2.6" fill="#FFFFFF"/>
+      <path d="M-3.6,-4 L3.6,-4 L0,0.6 Z" fill="#C05A32"/>
+      <path d="M-8,4 q4,6.5 8,0.5 q4,6 8,-0.5" fill="none" stroke="#1C1B18" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="-46" cy="0" r="9" fill="#EFB7A4" opacity="0.85"/>
+      <circle cx="46" cy="0" r="9" fill="#EFB7A4" opacity="0.85"/>
+      <path d="M-58,-10 L-82,-16 M-58,-2 L-84,-2 M58,-10 L82,-16 M58,-2 L84,-2" stroke="#1C1B18" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+      <path d="M-52,30 C-20,44 20,44 52,30 L54,44 C20,58 -20,58 -54,44 Z" fill="#C05A32" stroke="#1C1B18" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M30,46 L40,74 L20,72 Z" fill="#C05A32" stroke="#1C1B18" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M0,52 C-15,44 -40,44 -54,50 L-54,88 C-40,82 -15,82 0,90 C15,82 40,82 54,88 L54,50 C40,44 15,44 0,52 Z"
+            fill="#FFFDF8" stroke="#1C1B18" stroke-width="4.5" stroke-linejoin="round"/>
+      <path d="M0,52 L0,90" stroke="#1C1B18" stroke-width="3.2"/>
+      <path d="M-44,58 L-12,56 M-44,66 L-12,64 M-44,74 L-12,72 M12,56 L44,58 M12,64 L44,66 M12,72 L44,74" stroke="#B9AE9C" stroke-width="2.4" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <rect width="600" height="800" fill="#F6F1E4"/>
+  <rect width="600" height="800" filter="url(#grain)" opacity="0.16"/>
+
+  <!-- ===== top 1/3 : clean title zone with hand-lettered slogan ===== -->
+  <g filter="url(#wob)">
+    <use href="#tape" transform="translate(62,32) rotate(-32) scale(0.8)" fill="#8FA37E"/>
+    <use href="#tape" transform="translate(538,32) rotate(32) scale(0.8)" fill="#C05A32"/>
+  </g>
+  <g filter="url(#wobText)" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif" text-anchor="middle">
+    <text x="300" y="172" font-size="80" font-weight="700" fill="#1C1B18" letter-spacing="10" rotate="-3 3 -2 3">秋季招新</text>
+    <text x="300" y="234" font-size="22" fill="#6F675A" letter-spacing="3">9.12 周五 18:30 · 大学生活动中心</text>
+  </g>
+  <g filter="url(#wob)">
+    <path d="M136,194 q20,-10 40,0 q20,10 40,0 q20,-10 40,0 q20,10 40,0 q20,-10 40,0 q20,10 40,0 q20,-10 40,0" fill="none" stroke="#C05A32" stroke-width="4.5" stroke-linecap="round"/>
+    <use href="#spark" transform="translate(486,110) scale(0.9)" fill="#D9A441"/>
+    <use href="#star" transform="translate(112,96) scale(0.7) rotate(-14)" fill="#C05A32"/>
+  </g>
+
+  <!-- ===== lower 2/3 : the same cat, pulled down, with room to breathe ===== -->
+  <g filter="url(#wob)">
+    <use href="#cloud" transform="translate(108,332) scale(0.8)" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4"/>
+    <use href="#cloud" transform="translate(494,318) scale(0.68)" fill="#EFE6D2" stroke="#1C1B18" stroke-width="4"/>
+
+    <use href="#cat" transform="translate(300,478) scale(1.08)"/>
+
+    <g transform="translate(452,368) rotate(8)">
+      <ellipse rx="34" ry="25" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4"/>
+      <path d="M-14,21 L-26,42 L-28,19" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4" stroke-linejoin="round"/>
+      <use href="#note" transform="scale(0.95)" fill="#C05A32" stroke="#C05A32"/>
+    </g>
+
+    <use href="#star" transform="translate(82,428) scale(0.95) rotate(-12)" fill="#D9A441"/>
+    <use href="#star" transform="translate(522,446) scale(0.85) rotate(16)" fill="#C05A32"/>
+    <use href="#star" transform="translate(150,588) scale(0.75) rotate(20)" fill="#8FA37E"/>
+    <use href="#star" transform="translate(452,586) scale(0.7) rotate(-18)" fill="none" stroke="#C05A32" stroke-width="3"/>
+    <use href="#spark" transform="translate(196,338) scale(0.8)" fill="#C05A32"/>
+    <use href="#spark" transform="translate(404,326) scale(0.7)" fill="#8FA37E"/>
+    <use href="#heart" transform="translate(92,516) scale(0.9) rotate(-10)" fill="#C05A32"/>
+    <use href="#heart" transform="translate(510,530) scale(0.85) rotate(10)" fill="#EFB7A4" stroke="#1C1B18" stroke-width="2.4"/>
+
+    <!-- ground -->
+    <path d="M-6,648 Q30,628 66,648 Q102,628 138,648 Q174,628 210,648 Q246,628 282,648 Q318,628 354,648 Q390,628 426,648 Q462,628 498,648 Q534,628 570,648 Q590,638 606,648"
+          fill="none" stroke="#8FA37E" stroke-width="5" stroke-linecap="round"/>
+    <use href="#flower" transform="translate(76,672) scale(0.8)" fill="#C05A32"/>
+    <use href="#flower" transform="translate(524,672) scale(0.8)" fill="#EFB7A4"/>
+    <path d="M160,668 q4,-14 10,0 M436,668 q4,-14 10,0" fill="none" stroke="#8FA37E" stroke-width="3.4" stroke-linecap="round"/>
+  </g>
+
+  <!-- hand-written aside pointing at the cat -->
+  <g filter="url(#wobText)">
+    <text x="497" y="598" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif" font-size="21" fill="#C05A32" text-anchor="middle" transform="rotate(-7 497 598)" rotate="-2 3 -2 2">等你来玩！</text>
+    <path d="M470,552 Q452,528 432,516" fill="none" stroke="#C05A32" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M440,528 L432,516 L446,514" fill="none" stroke="#C05A32" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>

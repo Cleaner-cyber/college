@@ -1,7 +1,120 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+  <!-- notes-doc: AI structured lecture notes (数据结构 · 第7讲 树与平衡二叉树) -->
   <rect width="900" height="560" fill="#F3EFE6"/>
-  <rect x="230" y="40" width="440" height="480" rx="12" fill="#FDFCF9" stroke="#2A241D" stroke-width="6"/>
-  <rect x="270" y="80" width="240" height="22" rx="6" fill="#C05A32" opacity="0.85"/>
-  <rect x="270" y="130" width="300" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="174" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="218" width="220" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="262" width="300" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="306" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="350" width="220" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="394" width="300" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="438" width="260" height="12" rx="5" fill="#D8D2C4"/>
-  <text x="450" y="545" font-family="sans-serif" font-size="16" text-anchor="middle" fill="#8A8072">[占位] notes-doc · 结构化课堂笔记</text>
+  <rect x="48" y="40" width="820" height="496" rx="10" fill="#E2DBC9"/>
+  <rect x="40" y="30" width="820" height="498" rx="8" fill="#FDFCF9" stroke="#E3DDCE" stroke-width="1"/>
+
+  <g font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif">
+    <!-- header -->
+    <rect x="72" y="54" width="104" height="24" rx="12" fill="#C05A32"/>
+    <text x="124" y="70" text-anchor="middle" font-size="12" fill="#FDFCF9">AI 结构化笔记</text>
+    <text x="828" y="66" text-anchor="end" font-size="11" fill="#8A8578">来源：课堂录音 45:00 · 62 MB</text>
+    <text x="828" y="84" text-anchor="end" font-size="11" fill="#8A8578">自动转写整理 · 含 2 处 [听不清] 待核对</text>
+    <text x="72" y="112" font-size="22" font-weight="bold" fill="#1C1B18">数据结构 · 第 7 讲　树与平衡二叉树</text>
+    <line x1="72" y1="130" x2="828" y2="130" stroke="#E3DDCE" stroke-width="1"/>
+
+    <!-- ===== left column ===== -->
+    <!-- 核心概念 -->
+    <rect x="72" y="146" width="4" height="16" fill="#C05A32"/>
+    <text x="86" y="160" font-size="15" font-weight="bold" fill="#1C1B18">核心概念</text>
+    <text x="76" y="188" font-size="13" fill="#1C1B18">· 二叉搜索树（BST）：左子树 &lt; 根 &lt; 右子树</text>
+    <text x="76" y="212" font-size="13" fill="#1C1B18">· 平衡因子 BF = 左子树高 − 右子树高</text>
+    <rect x="72" y="223" width="322" height="19" rx="3" fill="#F1DE9E" opacity="0.6"/>
+    <text x="76" y="238" font-size="13" fill="#1C1B18">· AVL 树：任一结点 |BF| ≤ 1，高度保持 O(log n)</text>
+    <text x="76" y="262" font-size="13" fill="#1C1B18">· 失衡四型：LL 右旋 / RR 左旋 / LR、RL 双旋</text>
+
+    <!-- 三种遍历 -->
+    <rect x="72" y="288" width="4" height="16" fill="#C05A32"/>
+    <text x="86" y="302" font-size="15" font-weight="bold" fill="#1C1B18">三种遍历</text>
+    <text x="76" y="330" font-size="13" fill="#1C1B18">· 前序 Preorder　：根 → 左 → 右</text>
+    <rect x="72" y="341" width="310" height="19" rx="3" fill="#F1DE9E" opacity="0.6"/>
+    <text x="76" y="356" font-size="13" fill="#1C1B18">· 中序 Inorder　 ：左 → 根 → 右（BST 得有序序列）</text>
+    <text x="76" y="382" font-size="13" fill="#1C1B18">· 后序 Postorder ：左 → 右 → 根</text>
+
+    <!-- 易错点 -->
+    <rect x="72" y="408" width="4" height="16" fill="#C05A32"/>
+    <text x="86" y="422" font-size="15" font-weight="bold" fill="#1C1B18">易错点</text>
+    <circle cx="146" cy="416" r="8" fill="#C05A32"/>
+    <text x="146" y="421" text-anchor="middle" font-size="12" font-weight="bold" fill="#FDFCF9">!</text>
+    <text x="76" y="450" font-size="13" fill="#1C1B18">① 升序 / 降序插入 ⇒ BST 退化成链表，查找 O(n)</text>
+    <text x="76" y="474" font-size="13" fill="#1C1B18">② 插入后最多 1 次旋转；删除可能多次（对照课本）</text>
+    <rect x="72" y="485" width="238" height="19" rx="3" fill="#F1DE9E" opacity="0.6"/>
+    <text x="76" y="500" font-size="13" fill="#1C1B18">③ 旋转只换根结点，不改变中序序列</text>
+
+    <!-- ===== right column ===== -->
+    <!-- 旋转示意 -->
+    <rect x="500" y="146" width="4" height="16" fill="#C05A32"/>
+    <text x="514" y="160" font-size="15" font-weight="bold" fill="#1C1B18">旋转示意 · LL 型右旋</text>
+    <rect x="500" y="174" width="328" height="146" rx="6" fill="#F6F3EA" stroke="#E3DDCE" stroke-width="1"/>
+
+    <!-- before: chain 3-2-1 -->
+    <g stroke="#8A8578" stroke-width="1.5">
+      <line x1="576" y1="202" x2="546" y2="240"/>
+      <line x1="546" y1="240" x2="516" y2="278"/>
+    </g>
+    <g fill="#FDFCF9" stroke="#1C1B18" stroke-width="1.5">
+      <circle cx="576" cy="202" r="13"/>
+      <circle cx="546" cy="240" r="13"/>
+      <circle cx="516" cy="278" r="13"/>
+    </g>
+    <g font-size="12" font-weight="bold" fill="#1C1B18" text-anchor="middle">
+      <text x="576" y="206">3</text>
+      <text x="546" y="244">2</text>
+      <text x="516" y="282">1</text>
+    </g>
+    <text x="546" y="308" text-anchor="middle" font-size="10.5" fill="#8A8578">LL 型失衡（BF=2）</text>
+
+    <!-- arrow -->
+    <line x1="614" y1="240" x2="656" y2="240" stroke="#C05A32" stroke-width="2"/>
+    <polygon points="656,235 666,240 656,245" fill="#C05A32"/>
+    <text x="638" y="228" text-anchor="middle" font-size="11" font-weight="bold" fill="#C05A32">右旋</text>
+
+    <!-- after: balanced 2 (1,3) -->
+    <g stroke="#8A8578" stroke-width="1.5">
+      <line x1="744" y1="216" x2="708" y2="262"/>
+      <line x1="744" y1="216" x2="780" y2="262"/>
+    </g>
+    <g fill="#FDFCF9" stroke="#C05A32" stroke-width="1.5">
+      <circle cx="744" cy="216" r="13"/>
+      <circle cx="708" cy="262" r="13"/>
+      <circle cx="780" cy="262" r="13"/>
+    </g>
+    <g font-size="12" font-weight="bold" fill="#1C1B18" text-anchor="middle">
+      <text x="744" y="220">2</text>
+      <text x="708" y="266">1</text>
+      <text x="780" y="266">3</text>
+    </g>
+    <text x="744" y="308" text-anchor="middle" font-size="10.5" fill="#8A8578">恢复平衡（|BF| ≤ 1）</text>
+
+    <text x="500" y="340" font-size="11.5" fill="#57534A">中间结点 2 升为新根 · 中序序列 1 2 3 保持不变</text>
+
+    <!-- 复杂度对比 -->
+    <rect x="500" y="360" width="4" height="16" fill="#C05A32"/>
+    <text x="514" y="374" font-size="15" font-weight="bold" fill="#1C1B18">复杂度对比</text>
+
+    <g>
+      <rect x="500" y="386" width="328" height="26" fill="#EFEAD9"/>
+      <rect x="500" y="438" width="328" height="26" fill="#FAF8F2"/>
+      <rect x="500" y="386" width="328" height="104" fill="none" stroke="#D8D2C4" stroke-width="1"/>
+      <line x1="500" y1="412" x2="828" y2="412" stroke="#D8D2C4" stroke-width="1"/>
+      <line x1="500" y1="438" x2="828" y2="438" stroke="#E3DDCE" stroke-width="1"/>
+      <line x1="500" y1="464" x2="828" y2="464" stroke="#E3DDCE" stroke-width="1"/>
+      <line x1="564" y1="386" x2="564" y2="490" stroke="#D8D2C4" stroke-width="1"/>
+      <line x1="652" y1="386" x2="652" y2="490" stroke="#E3DDCE" stroke-width="1"/>
+      <line x1="740" y1="386" x2="740" y2="490" stroke="#E3DDCE" stroke-width="1"/>
+    </g>
+    <g font-size="12" font-weight="bold" fill="#1C1B18" text-anchor="middle">
+      <text x="532" y="404">操作</text>
+      <text x="608" y="404">BST 平均</text>
+      <text x="696" y="404">BST 最坏</text>
+      <text x="784" y="404">AVL</text>
+    </g>
+    <g font-size="12" fill="#1C1B18" text-anchor="middle">
+      <text x="532" y="430">查找</text><text x="608" y="430">O(log n)</text><text x="696" y="430" fill="#C05A32">O(n)</text><text x="784" y="430">O(log n)</text>
+      <text x="532" y="456">插入</text><text x="608" y="456">O(log n)</text><text x="696" y="456" fill="#C05A32">O(n)</text><text x="784" y="456">O(log n)</text>
+      <text x="532" y="482">删除</text><text x="608" y="482">O(log n)</text><text x="696" y="482" fill="#C05A32">O(n)</text><text x="784" y="482">O(log n)</text>
+    </g>
+
+    <text x="500" y="512" font-size="11" fill="#8A8578">[听不清 22:41–23:05] LR 型旋转细节，请对照课本 6.3 节确认</text>
+  </g>
 </svg>

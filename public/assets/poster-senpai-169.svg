@@ -1,11 +1,115 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <rect width="1280" height="720" fill="#E8E4DA"/>
-  <rect x="128" y="129.6" width="1024" height="475.20000000000005" rx="18" fill="#3A3630" opacity="0.9"/>
-  <text x="50%" y="360" font-family="serif" font-size="60" font-weight="bold" text-anchor="middle" fill="#1C1B18" transform="translate(-380 0)">秋季招新</text>
-  <text x="50%" y="417.59999999999997" font-family="sans-serif" font-size="26" text-anchor="middle" fill="#6B675E" transform="translate(-380 0)">星野动漫社 · 每周五晚</text>
-  
-  <g font-family="sans-serif" text-anchor="middle" fill="#1C1B18" opacity="0.55">
-    <text x="50%" y="46%" font-size="26" font-weight="bold">[占位] poster-senpai-169</text>
-    <text x="50%" y="52%" font-size="18">16:9 学长成品（含完成态排版）</text>
+  <defs>
+    <linearGradient id="sky169" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B2620"/>
+      <stop offset="1" stop-color="#1F1B15"/>
+    </linearGradient>
+    <clipPath id="panel169"><rect x="520" y="56" width="688" height="592" rx="18"/></clipPath>
+    <clipPath id="planet169"><circle cx="920" cy="400" r="104"/></clipPath>
+    <path id="spark169" d="M0,-6 L1.5,-1.5 L6,0 L1.5,1.5 L0,6 L-1.5,1.5 L-6,0 L-1.5,-1.5 Z"/>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F7F5F0"/>
+  <rect x="22" y="22" width="1236" height="676" fill="none" stroke="#1C1B18" stroke-width="1" opacity="0.16"/>
+
+  <!-- 左侧信息区 -->
+  <g font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif">
+    <text x="72" y="96" font-size="11" letter-spacing="4" fill="#8A8578">AUTUMN RECRUITMENT · 2026</text>
+    <text x="72" y="182" font-size="64" font-weight="700" letter-spacing="9" fill="#1C1B18">秋季招新</text>
+    <text x="72" y="226" font-size="15" letter-spacing="4" fill="#6B675E">万物皆可热爱，星空自有回音</text>
+  </g>
+  <rect x="72" y="252" width="36" height="3" fill="#C05A32"/>
+
+  <g font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif">
+    <text x="72" y="322" font-size="11" letter-spacing="4" fill="#C05A32">时间</text>
+    <text x="72" y="350" font-size="18" fill="#1C1B18">9 月 12 日 · 周五 19:00</text>
+    <text x="72" y="398" font-size="11" letter-spacing="4" fill="#C05A32">地点</text>
+    <text x="72" y="426" font-size="18" fill="#1C1B18">大学生活动中心 · 一层大厅</text>
+    <text x="196" y="530" font-size="12" letter-spacing="2" fill="#6B675E">扫码进群</text>
+    <text x="196" y="552" font-size="11" letter-spacing="1" fill="#8A8578">面向全体大一新生开放</text>
+  </g>
+
+  <!-- 抽象二维码 -->
+  <g transform="translate(72,478)">
+    <rect width="96" height="96" rx="8" fill="#1C1B18"/>
+    <g fill="#F7F5F0">
+      <rect x="10" y="10" width="20" height="20" rx="2"/>
+      <rect x="66" y="10" width="20" height="20" rx="2"/>
+      <rect x="10" y="66" width="20" height="20" rx="2"/>
+      <rect x="38" y="12" width="6" height="6"/><rect x="50" y="18" width="6" height="6"/>
+      <rect x="38" y="30" width="6" height="6"/><rect x="56" y="34" width="6" height="6"/>
+      <rect x="12" y="38" width="6" height="6"/><rect x="24" y="44" width="6" height="6"/>
+      <rect x="36" y="44" width="10" height="10"/><rect x="54" y="48" width="6" height="6"/>
+      <rect x="68" y="40" width="6" height="6"/><rect x="80" y="46" width="6" height="6"/>
+      <rect x="14" y="54" width="6" height="6"/><rect x="70" y="56" width="10" height="6"/>
+      <rect x="40" y="62" width="6" height="6"/><rect x="52" y="68" width="6" height="6"/>
+      <rect x="40" y="78" width="6" height="6"/><rect x="66" y="72" width="6" height="6"/>
+      <rect x="78" y="80" width="6" height="6"/>
+    </g>
+    <g fill="#1C1B18">
+      <rect x="15" y="15" width="10" height="10" rx="1"/>
+      <rect x="71" y="15" width="10" height="10" rx="1"/>
+      <rect x="15" y="71" width="10" height="10" rx="1"/>
+    </g>
+    <g fill="#C05A32">
+      <rect x="18" y="18" width="4" height="4"/>
+      <rect x="74" y="18" width="4" height="4"/>
+      <rect x="18" y="74" width="4" height="4"/>
+    </g>
+  </g>
+
+  <!-- 右侧主视觉：星空 -->
+  <rect x="520" y="56" width="688" height="592" rx="18" fill="url(#sky169)"/>
+  <g clip-path="url(#panel169)">
+    <g fill="#EFE7D6">
+      <circle cx="566" cy="110" r="1.6"/><circle cx="628" cy="152" r="1.2"/><circle cx="690" cy="98" r="1.8"/>
+      <circle cx="748" cy="146" r="1.1"/><circle cx="812" cy="104" r="1.5"/><circle cx="884" cy="140" r="1.2"/>
+      <circle cx="948" cy="100" r="1.7"/><circle cx="1012" cy="150" r="1.1"/><circle cx="1076" cy="108" r="1.4"/>
+      <circle cx="1140" cy="152" r="1.7"/><circle cx="1186" cy="98" r="1.2"/><circle cx="1168" cy="220" r="1.5"/>
+      <circle cx="556" cy="222" r="1.3"/><circle cx="612" cy="278" r="1.7"/><circle cx="700" cy="230" r="1.1"/>
+      <circle cx="768" cy="286" r="1.5"/><circle cx="836" cy="222" r="1.2"/><circle cx="902" cy="252" r="1.0"/>
+      <circle cx="1120" cy="300" r="1.4"/><circle cx="572" cy="360" r="1.5"/><circle cx="668" cy="336" r="1.1"/>
+      <circle cx="726" cy="382" r="1.3"/><circle cx="786" cy="340" r="1.6"/><circle cx="1188" cy="380" r="1.2"/>
+      <circle cx="548" cy="446" r="1.2"/><circle cx="1144" cy="470" r="1.3"/><circle cx="640" cy="470" r="1.4"/>
+      <circle cx="1064" cy="200" r="1.2"/><circle cx="978" cy="212" r="1.4"/>
+    </g>
+    <g fill="#C05A32" opacity="0.85">
+      <circle cx="656" cy="196" r="1.6"/><circle cx="1104" cy="132" r="1.4"/><circle cx="716" cy="474" r="1.5"/>
+    </g>
+    <!-- 星座连线 -->
+    <polyline points="566,110 628,152 690,98 812,104 748,146" fill="none" stroke="#EDE4D2" stroke-width="1" opacity="0.28"/>
+    <g fill="#EFE7D6" opacity="0.9">
+      <use href="#spark169" transform="translate(1140,152) scale(0.9)"/>
+      <use href="#spark169" transform="translate(812,104) scale(0.7)"/>
+      <use href="#spark169" transform="translate(612,278) scale(0.6)"/>
+    </g>
+    <!-- 流星 -->
+    <line x1="1076" y1="248" x2="1156" y2="206" stroke="#EFE7D6" stroke-width="1.4" opacity="0.6" stroke-linecap="round"/>
+    <circle cx="1076" cy="248" r="2" fill="#EFE7D6" opacity="0.85"/>
+    <!-- 月牙 -->
+    <path d="M604,182 a28,28 0 1 0 22,45 a22,22 0 1 1 -22,-45 Z" fill="#EFE7D6" opacity="0.92"/>
+    <!-- 大行星（带环） -->
+    <circle cx="920" cy="400" r="104" fill="#C05A32"/>
+    <g clip-path="url(#planet169)">
+      <circle cx="952" cy="430" r="104" fill="#A84A22" opacity="0.5"/>
+      <ellipse cx="884" cy="366" rx="18" ry="11" fill="#D3784F" opacity="0.7"/>
+      <ellipse cx="930" cy="340" rx="11" ry="7" fill="#D3784F" opacity="0.55"/>
+      <ellipse cx="866" cy="424" rx="12" ry="8" fill="#D3784F" opacity="0.45"/>
+    </g>
+    <ellipse cx="920" cy="400" rx="160" ry="37" transform="rotate(-14 920 400)" fill="none" stroke="#EDE4D2" stroke-width="5.5" opacity="0.88"/>
+    <ellipse cx="920" cy="400" rx="178" ry="45" transform="rotate(-14 920 400)" fill="none" stroke="#EDE4D2" stroke-width="1.4" opacity="0.4"/>
+    <!-- 小行星 -->
+    <circle cx="640" cy="418" r="16" fill="#E7DFCC"/>
+    <ellipse cx="640" cy="418" rx="26" ry="7" transform="rotate(-18 640 418)" fill="none" stroke="#C05A32" stroke-width="2" opacity="0.8"/>
+    <!-- 山丘 -->
+    <path d="M520,648 L520,586 Q650,532 780,580 Q920,630 1050,584 Q1140,552 1208,578 L1208,648 Z" fill="#38321F"/>
+    <path d="M520,648 L520,604 Q690,564 860,604 Q1040,644 1208,600 L1208,648 Z" fill="#443C26"/>
+    <!-- 望远镜剪影 -->
+    <g stroke="#EFE7D6" stroke-width="3.4" stroke-linecap="round" opacity="0.9">
+      <line x1="712" y1="572" x2="746" y2="550"/>
+      <line x1="726" y1="565" x2="716" y2="598"/>
+      <line x1="726" y1="565" x2="738" y2="598"/>
+      <line x1="726" y1="567" x2="727" y2="598"/>
+    </g>
   </g>
 </svg>

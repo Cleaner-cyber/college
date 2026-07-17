@@ -85,7 +85,7 @@
     <use href="#cloud" transform="translate(66,282) scale(0.62)" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4"/>
 
     <!-- speech bubbles -->
-    <g transform="translate(104,300) rotate(-8)">
+    <g transform="translate(86,272) rotate(-8) scale(0.92)">
       <ellipse rx="44" ry="32" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5"/>
       <path d="M14,28 L30,52 L34,26" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5" stroke-linejoin="round"/>
       <path d="M0,-16 L0,6 M0,15 L0,17" stroke="#C05A32" stroke-width="7" stroke-linecap="round" fill="none"/>
@@ -105,7 +105,7 @@
     <use href="#cat" transform="translate(300,442) scale(1.82)"/>
 
     <!-- manga speed-lines around cat -->
-    <path d="M136,268 L110,240 M464,268 L490,240 M118,440 L86,440 M300,232 L300,204" stroke="#1C1B18" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M150,258 L128,232 M452,254 L474,228 M300,232 L300,204" stroke="#1C1B18" stroke-width="4" stroke-linecap="round" fill="none"/>
 
     <!-- stars everywhere -->
     <use href="#star" transform="translate(52,196) scale(1.2) rotate(-14)" fill="#C05A32"/>
@@ -141,8 +141,15 @@
     <use href="#heart" transform="translate(420,168) rotate(12)" fill="#EFB7A4" stroke="#1C1B18" stroke-width="2.6"/>
     <use href="#heart" transform="translate(66,614) rotate(-14)" fill="#C05A32"/>
     <use href="#heart" transform="translate(534,606) scale(1.2) rotate(10)" fill="#EFB7A4" stroke="#1C1B18" stroke-width="2.6"/>
-    <use href="#heart" transform="translate(240,660) scale(0.9)" fill="#C05A32"/>
-    <use href="#heart" transform="translate(364,662) scale(0.9) rotate(8)" fill="#D9A441"/>
+    <use href="#heart" transform="translate(244,684) scale(0.9)" fill="#C05A32"/>
+    <use href="#heart" transform="translate(360,686) scale(0.9) rotate(8)" fill="#D9A441"/>
+    <use href="#heart" transform="translate(30,180) scale(0.8) rotate(-8)" fill="#D9A441"/>
+    <use href="#heart" transform="translate(568,220) scale(0.85) rotate(12)" fill="#C05A32"/>
+    <use href="#spark" transform="translate(36,66) scale(0.9)" fill="#C05A32"/>
+    <use href="#spark" transform="translate(300,746) scale(0.8)" fill="#8FA37E"/>
+    <use href="#spark" transform="translate(140,700) scale(0.8)" fill="#C05A32"/>
+    <use href="#spark" transform="translate(462,700) scale(0.8)" fill="#D9A441"/>
+    <use href="#spark" transform="translate(566,120) scale(0.8)" fill="#8FA37E"/>
 
     <!-- music notes -->
     <use href="#note" transform="translate(500,240) rotate(10)" fill="#1C1B18" stroke="#1C1B18"/>
