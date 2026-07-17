@@ -1,22 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="480" height="760" viewBox="0 0 480 760">
-  <g>
-    <path d="M100 760 C 102 636, 130 560, 178 532 L 240 516 L 302 532 C 350 560, 378 636, 380 760 Z" fill="#5B6C82" stroke="#2A241D" stroke-width="5"/>
-    <path d="M208 526 L 240 556 L 272 526 L 272 760 L 208 760 Z" fill="#FDFCF9" stroke="#2A241D" stroke-width="4"/>
-    <path d="M236 570 L 244 570 L 246 640 L 240 656 L 234 640 Z" fill="#8A4A3A" stroke="#2A241D" stroke-width="3"/>
-    <path d="M142 590 C 122 642, 116 692, 120 744 C 134 754, 154 754, 166 746 C 164 694, 168 650, 176 614" fill="#5B6C82" stroke="#2A241D" stroke-width="5"/>
-    <path d="M326 588 C 348 618, 356 652, 350 682 L 262 682 C 256 666, 256 650, 262 636" fill="#5B6C82" stroke="#2A241D" stroke-width="5"/>
-    <rect x="228" y="640" width="120" height="34" rx="17" fill="#F3EDE0" stroke="#2A241D" stroke-width="5" transform="rotate(-6 288 657)"/>
-    <path d="M348 652 L 356 652" stroke="#2A241D" stroke-width="4"/>
-    <path d="M216 474 L 216 524 C 232 536, 248 536, 264 524 L 264 474 Z" fill="#F6DCC8" stroke="#2A241D" stroke-width="4.5"/>
-    <path d="M160 334 C 156 418, 190 470, 240 474 C 290 470, 324 418, 320 334 C 316 268, 286 228, 240 226 C 194 228, 164 268, 160 334 Z" fill="#F6DCC8" stroke="#2A241D" stroke-width="5"/>
-    <path d="M152 346 C 138 250, 180 188, 240 186 C 300 188, 342 250, 328 346 C 324 306, 314 284, 300 274 C 304 292, 302 308, 296 320 C 288 288, 272 270, 252 264 C 232 266, 204 272, 188 288 C 182 302, 178 322, 178 340 C 168 326, 158 334, 152 346 Z" fill="#4A4034"/>
-    <path d="M196 214 C 212 204, 268 204, 284 214" stroke="#4A4034" stroke-width="6" stroke-linecap="round" fill="none"/>
-    <rect x="186" y="336" width="46" height="34" rx="7" fill="none" stroke="#2A241D" stroke-width="4.5"/>
-    <rect x="248" y="336" width="46" height="34" rx="7" fill="none" stroke="#2A241D" stroke-width="4.5"/>
-    <path d="M232 350 L 248 350 M186 348 L 176 342 M294 348 L 304 342" stroke="#2A241D" stroke-width="4"/>
-    <path d="M196 326 C 206 320, 220 319, 230 323 M250 323 C 260 319, 274 320, 284 326" stroke="#2A241D" stroke-width="5" stroke-linecap="round" fill="none"/>
-    <path d="M202 352 C 208 348, 216 348, 220 352 M260 352 C 266 348, 274 348, 278 352" stroke="#2A241D" stroke-width="4.5" stroke-linecap="round" fill="none"/>
-    <path d="M240 386 C 238 394, 238 400, 241 406" stroke="#2A241D" stroke-width="4" stroke-linecap="round" fill="none"/>
-    <path d="M220 430 C 230 438, 250 438, 260 430" stroke="#2A241D" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- 导师立绘 · 正式版 -->
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <!-- 后发 -->
+    <path d="M150 318 C 140 224, 184 172, 240 170 C 296 172, 340 224, 330 318 C 327 340, 320 350, 314 354 L 166 354 C 160 350, 153 340, 150 318 Z" fill="#453E34" stroke="#1C1B18" stroke-width="5"/>
+    <!-- 身体：衬衫 -->
+    <path d="M104 760 C 106 640, 134 560, 184 522 C 202 505, 220 498, 240 498 C 260 498, 278 505, 296 522 C 346 560, 374 640, 376 760 Z" fill="#F6F2E7" stroke="#1C1B18" stroke-width="5"/>
+    <path d="M240 522 L 240 760" stroke="#DED5C2" stroke-width="4"/>
+    <circle cx="240" cy="560" r="3.5" fill="#1C1B18"/>
+    <circle cx="240" cy="610" r="3.5" fill="#1C1B18"/>
+    <!-- 针织开衫两襟 -->
+    <path d="M104 760 C 106 640, 134 560, 184 522 C 194 514, 204 508, 214 505 L 206 760 Z" fill="#918A76" stroke="#1C1B18" stroke-width="5"/>
+    <path d="M376 760 C 374 640, 346 560, 296 522 C 286 514, 276 508, 266 505 L 274 760 Z" fill="#918A76" stroke="#1C1B18" stroke-width="5"/>
+    <!-- 左臂：自然垂下 -->
+    <path d="M158 540 C 134 580, 122 630, 126 678 C 128 700, 140 712, 156 714 C 170 715, 182 708, 186 698 C 180 660, 180 620, 188 586 C 182 562, 172 538, 158 540 Z" fill="#918A76" stroke="#1C1B18" stroke-width="5"/>
+    <!-- 左手 -->
+    <path d="M146 708 C 142 728, 150 742, 164 743 C 176 744, 184 735, 183 722 L 181 706 C 170 712, 156 712, 146 708 Z" fill="#F3D9C0" stroke="#1C1B18" stroke-width="4.5"/>
+    <path d="M158 714 L 158 736 M170 714 L 170 738" stroke="#1C1B18" stroke-width="3" fill="none"/>
+    <!-- 右臂：端着马克杯 -->
+    <path d="M298 532 C 334 550, 358 578, 366 608 C 370 626, 368 640, 360 650 L 322 642 C 326 626, 322 608, 314 594 C 304 578, 290 564, 278 554 C 284 542, 290 534, 298 532 Z" fill="#918A76" stroke="#1C1B18" stroke-width="5"/>
+    <!-- 热气 -->
+    <path d="M312 566 C 308 556, 314 548, 310 538 M332 568 C 328 558, 334 550, 330 540" stroke="#B9AF9C" stroke-width="4" fill="none" opacity="0.85"/>
+    <!-- 马克杯（强调色） -->
+    <path d="M292 590 L 352 590 L 348 652 C 347 661, 340 667, 331 667 L 313 667 C 304 667, 297 661, 296 652 Z" fill="#C05A32" stroke="#1C1B18" stroke-width="5"/>
+    <path d="M292 604 L 351 604" stroke="#A34724" stroke-width="4"/>
+    <!-- 右手握杯 -->
+    <path d="M348 612 C 362 604, 376 612, 376 628 C 376 644, 364 654, 350 650 L 344 646 L 345 616 Z" fill="#F3D9C0" stroke="#1C1B18" stroke-width="4.5"/>
+    <path d="M356 618 L 357 644 M366 620 L 366 642" stroke="#1C1B18" stroke-width="3" fill="none"/>
+    <!-- 脖子 -->
+    <path d="M220 402 L 220 470 C 231 480, 249 480, 260 470 L 260 402 Z" fill="#F3D9C0" stroke="#1C1B18" stroke-width="4.5"/>
+    <path d="M221 410 C 230 424, 250 424, 259 410 L 259 424 C 249 434, 231 434, 221 424 Z" fill="#E4BC9C"/>
+    <!-- 衬衫领子 -->
+    <path d="M218 494 L 240 516 L 226 524 L 206 507 Z" fill="#F6F2E7" stroke="#1C1B18" stroke-width="4.5"/>
+    <path d="M262 494 L 240 516 L 254 524 L 274 507 Z" fill="#F6F2E7" stroke="#1C1B18" stroke-width="4.5"/>
+    <!-- 脸 -->
+    <path d="M158 308 C 154 372, 178 420, 240 428 C 302 420, 326 372, 322 308 C 318 250, 288 218, 240 218 C 192 218, 162 250, 158 308 Z" fill="#F3D9C0" stroke="#1C1B18" stroke-width="5"/>
+    <!-- 前发：三七分，露出额头 -->
+    <path d="M154 322 C 144 230, 186 180, 240 178 C 294 180, 336 230, 326 322 C 323 296, 316 278, 307 268 C 310 288, 308 304, 302 314 C 297 280, 287 258, 272 248 C 274 268, 271 284, 263 294 C 254 266, 240 252, 224 250 C 228 266, 226 282, 218 292 C 208 272, 196 266, 187 270 C 182 284, 180 300, 181 316 C 172 300, 160 306, 154 322 Z" fill="#453E34"/>
+    <!-- 鬓角 -->
+    <path d="M154 322 C 152 342, 154 356, 161 366 C 167 359, 170 346, 168 332 Z" fill="#453E34"/>
+    <path d="M326 322 C 328 342, 326 356, 319 366 C 313 359, 310 346, 312 332 Z" fill="#453E34"/>
+    <!-- 眉毛 -->
+    <path d="M190 318 C 200 311, 213 310, 222 314" stroke="#1C1B18" stroke-width="5.5" fill="none"/>
+    <path d="M258 314 C 267 310, 280 311, 290 318" stroke="#1C1B18" stroke-width="5.5" fill="none"/>
+    <!-- 眼睛 -->
+    <path d="M192 345 C 196 336, 215 336, 219 345 C 219 356, 213 363, 205.5 363 C 198 363, 192 356, 192 345 Z" fill="#1C1B18"/>
+    <circle cx="211" cy="343" r="4" fill="#FDFCF9"/>
+    <path d="M261 345 C 265 336, 284 336, 288 345 C 288 356, 282 363, 274.5 363 C 267 363, 261 356, 261 345 Z" fill="#1C1B18"/>
+    <circle cx="280" cy="343" r="4" fill="#FDFCF9"/>
+    <!-- 眼镜 -->
+    <rect x="182" y="328" width="50" height="38" rx="12" fill="none" stroke="#1C1B18" stroke-width="4.5"/>
+    <rect x="248" y="328" width="50" height="38" rx="12" fill="none" stroke="#1C1B18" stroke-width="4.5"/>
+    <path d="M232 344 C 236 340, 244 340, 248 344 M182 342 L 163 336 M298 342 L 317 336" stroke="#1C1B18" stroke-width="4.5" fill="none"/>
+    <!-- 腮红（很淡） -->
+    <ellipse cx="185" cy="386" rx="12" ry="6" fill="#EBAF8E" opacity="0.3"/>
+    <ellipse cx="295" cy="386" rx="12" ry="6" fill="#EBAF8E" opacity="0.3"/>
+    <!-- 鼻子 + 温和微笑 -->
+    <path d="M240 372 C 238 380, 238 386, 241 391" stroke="#1C1B18" stroke-width="4" fill="none"/>
+    <path d="M225 403 C 234 410, 246 410, 255 403" stroke="#1C1B18" stroke-width="5" fill="none"/>
   </g>
 </svg>
