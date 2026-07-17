@@ -187,19 +187,29 @@
     <rect x="768" y="588" width="74" height="8" fill="#E4D9C2"/>
   </g>
 
-  <!-- KT board leaning against table -->
-  <g transform="rotate(10 120 640)">
-    <rect x="20" y="470" width="220" height="290" fill="#EFE9DA"/>
-    <rect x="20" y="470" width="220" height="290" fill="none" stroke="#D8CFBC" stroke-width="6"/>
-    <rect x="52" y="510" width="156 " height="18" rx="6" fill="#C05A32" opacity="0.75"/>
-    <circle cx="130" cy="620" r="46" fill="#D8CFBC" opacity="0.7"/>
+  <!-- KT board leaning against table end -->
+  <g>
+    <ellipse cx="140" cy="742" rx="120" ry="14" fill="#241B14" opacity="0.35"/>
+    <g transform="rotate(8 145 738)">
+      <rect x="50" y="486" width="190" height="252" fill="#DDD3BE"/>
+      <rect x="50" y="486" width="190" height="252" fill="none" stroke="#B8AC90" stroke-width="6"/>
+      <rect x="76" y="520" width="138" height="16" rx="6" fill="#C05A32" opacity="0.7"/>
+      <circle cx="145" cy="620" r="42" fill="#C2B698" opacity="0.7"/>
+      <rect x="76" y="686" width="98" height="10" rx="4" fill="#C2B698" opacity="0.8"/>
+    </g>
   </g>
 
-  <!-- rolled posters in corner -->
+  <!-- rolled posters leaning on wall -->
   <g>
-    <rect x="940" y="500" width="20" height="170" rx="10" fill="#E4D9C2" transform="rotate(12 950 585)"/>
-    <rect x="964" y="490" width="20" height="180" rx="10" fill="#D3C4A4" transform="rotate(4 974 580)"/>
-    <ellipse cx="966" cy="676" rx="52" ry="10" fill="#241B14" opacity="0.3"/>
+    <ellipse cx="966" cy="672" rx="56" ry="10" fill="#241B14" opacity="0.3"/>
+    <g transform="rotate(9 946 664)">
+      <rect x="935" y="486" width="22" height="180" rx="11" fill="#C9BC9C"/>
+      <ellipse cx="946" cy="488" rx="11" ry="5" fill="#8A7E68"/>
+    </g>
+    <g transform="rotate(-5 988 664)">
+      <rect x="977" y="474" width="22" height="192" rx="11" fill="#B9AA88"/>
+      <ellipse cx="988" cy="476" rx="11" ry="5" fill="#7E7258"/>
+    </g>
   </g>
 
   <!-- power strip on floor with charging cable -->
