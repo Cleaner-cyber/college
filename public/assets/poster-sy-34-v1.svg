@@ -1,11 +1,137 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
-  <rect width="600" height="800" fill="#23262B"/>
-  
-  <rect x="60" y="90" width="480" height="660" rx="18" fill="#4A5560" opacity="0.88"/>
-  <circle cx="300" cy="367.2" r="86" fill="#9FB4C7" opacity="0.85"/>
-  
-  <g font-family="sans-serif" text-anchor="middle" fill="#FFFFFF" opacity="0.55">
-    <text x="50%" y="46%" font-size="26" font-weight="bold">[占位] poster-sy-34-v1</text>
-    <text x="50%" y="52%" font-size="18">3:4 摄影 首版·主体偏满</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F3E0C8"/>
+      <stop offset="0.45" stop-color="#EDBE8C"/>
+      <stop offset="0.8" stop-color="#DE9260"/>
+      <stop offset="1" stop-color="#C86A3E"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF4DF" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#F7D3A0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#F7D3A0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bldg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4C2F24"/>
+      <stop offset="0.55" stop-color="#33211A"/>
+      <stop offset="1" stop-color="#241813"/>
+    </linearGradient>
+    <linearGradient id="treeInk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3C261E"/>
+      <stop offset="1" stop-color="#20150F"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E1D15"/>
+      <stop offset="1" stop-color="#171009"/>
+    </linearGradient>
+    <radialGradient id="vign" cx="0.5" cy="0.42" r="0.75">
+      <stop offset="0.62" stop-color="#1A0F08" stop-opacity="0"/>
+      <stop offset="1" stop-color="#1A0F08" stop-opacity="0.38"/>
+    </radialGradient>
+    <radialGradient id="bokeh" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F6D3A2" stop-opacity="0.8"/>
+      <stop offset="0.75" stop-color="#F0B87E" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#F0B87E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lampGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFE9C2" stop-opacity="0.9"/>
+      <stop offset="0.4" stop-color="#F2B268" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#F2B268" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.9  0 0 0 0 0.8  0 0 0 0 0.65  0 0 0 0.05 0"/>
+    </filter>
+  </defs>
+
+  <!-- 天空：地平线极高，仅剩一线黄昏 -->
+  <rect width="600" height="800" fill="url(#sky)"/>
+  <ellipse cx="150" cy="96" rx="220" ry="120" fill="url(#sunGlow)"/>
+  <circle cx="150" cy="86" r="26" fill="#FBE7C6"/>
+  <circle cx="150" cy="86" r="26" fill="url(#sunGlow)"/>
+
+  <!-- 远景薄云 -->
+  <ellipse cx="430" cy="52" rx="130" ry="9" fill="#F6DCB8" opacity="0.5" filter="url(#soft)"/>
+  <ellipse cx="240" cy="30" rx="90" ry="6" fill="#F6DCB8" opacity="0.4" filter="url(#soft)"/>
+
+  <!-- 主楼剪影：巨大、几乎撑满整个画面（构图刻意过满） -->
+  <g fill="url(#bldg)">
+    <!-- 钟楼 -->
+    <path d="M300 22 L306 30 L306 46 L332 46 L332 78 L346 78 L346 96 L254 96 L254 78 L268 78 L268 46 L294 46 L294 30 Z"/>
+    <path d="M244 96 L356 96 L356 132 L364 132 L364 640 L236 640 L236 132 L244 132 Z"/>
+    <!-- 左翼 -->
+    <path d="M236 168 L236 640 L18 640 L18 196 L30 196 L30 176 L226 176 L226 168 Z"/>
+    <!-- 右翼 -->
+    <path d="M364 168 L364 640 L582 640 L582 196 L570 196 L570 176 L374 176 L374 168 Z"/>
+    <!-- 门廊 -->
+    <path d="M252 640 L252 560 Q300 528 348 560 L348 640 Z"/>
   </g>
+  <!-- 钟面 -->
+  <circle cx="300" cy="66" r="12" fill="#EFC694" opacity="0.9"/>
+  <circle cx="300" cy="66" r="12" fill="none" stroke="#33211A" stroke-width="2"/>
+  <path d="M300 66 L300 58 M300 66 L305 69" stroke="#33211A" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- 暮色中亮起的窗 -->
+  <g fill="#E89B5A">
+    <g opacity="0.85">
+      <rect x="48" y="220" width="16" height="24"/><rect x="92" y="220" width="16" height="24"/><rect x="136" y="220" width="16" height="24"/><rect x="180" y="220" width="16" height="24"/>
+      <rect x="48" y="292" width="16" height="24" opacity="0.5"/><rect x="92" y="292" width="16" height="24"/><rect x="136" y="292" width="16" height="24" opacity="0.35"/><rect x="180" y="292" width="16" height="24"/>
+      <rect x="48" y="364" width="16" height="24"/><rect x="92" y="364" width="16" height="24" opacity="0.4"/><rect x="136" y="364" width="16" height="24"/><rect x="180" y="364" width="16" height="24" opacity="0.55"/>
+      <rect x="48" y="436" width="16" height="24" opacity="0.45"/><rect x="92" y="436" width="16" height="24"/><rect x="136" y="436" width="16" height="24"/>
+    </g>
+    <g opacity="0.85">
+      <rect x="404" y="220" width="16" height="24"/><rect x="448" y="220" width="16" height="24" opacity="0.5"/><rect x="492" y="220" width="16" height="24"/><rect x="536" y="220" width="16" height="24"/>
+      <rect x="404" y="292" width="16" height="24" opacity="0.4"/><rect x="448" y="292" width="16" height="24"/><rect x="492" y="292" width="16" height="24"/><rect x="536" y="292" width="16" height="24" opacity="0.55"/>
+      <rect x="404" y="364" width="16" height="24"/><rect x="448" y="364" width="16" height="24" opacity="0.55"/><rect x="492" y="364" width="16" height="24" opacity="0.35"/><rect x="536" y="364" width="16" height="24"/>
+      <rect x="404" y="436" width="16" height="24"/><rect x="448" y="436" width="16" height="24"/><rect x="536" y="436" width="16" height="24" opacity="0.45"/>
+    </g>
+    <g opacity="0.9">
+      <rect x="262" y="170" width="18" height="28"/><rect x="320" y="170" width="18" height="28" opacity="0.55"/>
+      <rect x="262" y="250" width="18" height="28" opacity="0.5"/><rect x="320" y="250" width="18" height="28"/>
+      <rect x="262" y="330" width="18" height="28"/><rect x="320" y="330" width="18" height="28"/>
+      <rect x="262" y="410" width="18" height="28" opacity="0.6"/><rect x="320" y="410" width="18" height="28" opacity="0.4"/>
+    </g>
+  </g>
+
+  <!-- 前景梧桐剪影，进一步挤压画面 -->
+  <g fill="url(#treeInk)">
+    <path d="M-30 760 L-30 430 Q10 400 40 424 Q86 396 108 436 Q140 420 148 460 Q120 500 128 548 Q96 588 104 640 L84 640 L84 760 Z"/>
+    <path d="M630 760 L630 410 Q590 384 556 412 Q510 388 492 432 Q460 418 452 456 Q482 498 472 546 Q506 586 496 640 L518 640 L518 760 Z"/>
+    <path d="M60 640 Q30 560 62 500 Q34 470 66 432 Q98 408 122 444 Q152 468 130 512 Q158 560 122 612 L112 640 L118 760 L74 760 L82 640 Z"/>
+  </g>
+
+  <!-- 地面（占比过大） -->
+  <rect x="0" y="640" width="600" height="160" fill="url(#ground)"/>
+  <path d="M0 640 L600 640 L600 652 Q300 664 0 652 Z" fill="#3A2417" opacity="0.7"/>
+  <!-- 路面反光 -->
+  <ellipse cx="300" cy="700" rx="180" ry="10" fill="#C97E4C" opacity="0.12" filter="url(#soft)"/>
+
+  <!-- 路灯与光斑 -->
+  <g>
+    <rect x="212" y="576" width="5" height="90" fill="#1E1410"/>
+    <circle cx="214" cy="570" r="7" fill="#FBE3B8"/>
+    <circle cx="214" cy="570" r="26" fill="url(#lampGlow)"/>
+  </g>
+  <g opacity="0.85">
+    <circle cx="66" cy="150" r="14" fill="url(#bokeh)"/>
+    <circle cx="520" cy="120" r="18" fill="url(#bokeh)"/>
+    <circle cx="558" cy="330" r="12" fill="url(#bokeh)"/>
+    <circle cx="42" cy="356" r="10" fill="url(#bokeh)"/>
+    <circle cx="470" cy="560" r="20" fill="url(#bokeh)"/>
+    <circle cx="130" cy="600" r="15" fill="url(#bokeh)"/>
+    <circle cx="380" cy="86" r="9" fill="url(#bokeh)"/>
+  </g>
+
+  <!-- 归鸟 -->
+  <g stroke="#241813" stroke-width="2.4" stroke-linecap="round" fill="none" opacity="0.9">
+    <path d="M96 60 q8 -7 15 0 q7 -7 15 0"/>
+    <path d="M140 42 q6 -6 12 0 q6 -6 12 0"/>
+  </g>
+
+  <!-- 暗角与胶片颗粒 -->
+  <rect width="600" height="800" fill="url(#vign)"/>
+  <rect width="600" height="800" filter="url(#grain)" opacity="0.5"/>
 </svg>
