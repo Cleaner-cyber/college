@@ -28,6 +28,7 @@ type Msg =
   | { kind: 'user'; text: string; param?: string; prefix?: string }
   | { kind: 'ai'; text: string; img?: string; fakeQr?: boolean; tag?: string }
   | { kind: 'file'; text: string }
+  | { kind: 'qrfile' } // 学姐发来的真实报名二维码
   | { kind: 'senpai'; text: string }
   | { kind: 'xuejie'; text: string };
 
@@ -173,7 +174,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
   };
 
   const sendV2 = () => {
-    setMsgs((m) => [...m, { kind: 'xuejie', text: api.copy('xuejie-2') }]);
+    setMsgs((m) => [...m, { kind: 'xuejie', text: api.copy('xuejie-2') }, { kind: 'qrfile' }]);
     setStage('qr');
   };
 
@@ -338,6 +339,25 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                     </div>
                   );
                 }
+                if (m.kind === 'qrfile') {
+                  return (
+                    <div key={i} className="mx-auto w-[88%] animate-fade-up">
+                      <div className="flex items-center gap-3 rounded-2xl border border-line bg-paper p-3 shadow-soft">
+                        <img
+                          src={assets['qr-signup']}
+                          alt=""
+                          className="h-16 w-16 shrink-0 rounded-lg border border-line bg-white object-contain"
+                        />
+                        <div className="min-w-0">
+                          <div className="text-[12.5px] font-medium">{api.copy('qr-file-name')}</div>
+                          <div className="mt-0.5 text-[11px] text-ink-soft">
+                            {api.copy('qr-file-meta')}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
                 if (m.kind === 'senpai') {
                   return (
                     <div key={i} className="flex items-start gap-2 py-1 animate-fade-up">
@@ -448,19 +468,29 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
   );
 };
 
-/** S4：剪映二维码合成教学（步骤逐条完成 → 终稿揭晓） */
+/** S4：剪映二维码合成教学。第 5 步是真操作：把学姐发的真二维码拖进海报虚线框。 */
 const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({
   api,
   assets,
 }) => {
   const [step, setStep] = useState(0);
+  const [dropOver, setDropOver] = useState(false);
   const STEPS = ['jy-1', 'jy-2', 'jy-3', 'jy-4', 'jy-5', 'jy-6'];
+  const DRAG_STEP = 4; // jy-5：拖二维码
   const done = step >= STEPS.length;
+  const qrPlaced = step > DRAG_STEP;
 
   const next = () => {
     const n = step + 1;
     setStep(n);
     if (n >= STEPS.length) api.check('ck-qr');
+  };
+
+  const placeQr = () => {
+    if (step === DRAG_STEP) {
+      setDropOver(false);
+      next();
+    }
   };
 
   return (
@@ -496,7 +526,7 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
                   {state === 'done' ? '✓' : i + 1}
                 </span>
                 <span className="flex-1 text-[13.5px] leading-relaxed">{api.copy(k)}</span>
-                {state === 'now' && (
+                {state === 'now' && i !== DRAG_STEP && (
                   <Button onClick={next} className="shrink-0 !px-3 !py-1.5 text-[12.5px]">
                     {api.copy('jy-next')}
                   </Button>
@@ -505,6 +535,28 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
             );
           })}
         </ol>
+        {/* 第 5 步的素材：学姐发的真二维码（拖进右侧海报虚线框） */}
+        {step === DRAG_STEP && (
+          <div className="flex items-center gap-4 rounded-2xl border border-accent bg-card p-3.5 shadow-glow animate-fade-up">
+            <img
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('text/plain', 'qr-signup');
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+              onDoubleClick={placeQr}
+              src={assets['qr-signup']}
+              alt=""
+              className="h-20 w-20 shrink-0 cursor-grab rounded-lg border border-line bg-white object-contain"
+            />
+            <div className="min-w-0">
+              <div className="text-[13px] font-semibold">{api.copy('jy-qr-title')}</div>
+              <div className="mt-1 text-[12px] text-accent animate-fade-up">
+                → {api.copy('jy-qr-hint')}
+              </div>
+            </div>
+          </div>
+        )}
         <div className="rounded-xl bg-accent-soft/60 p-3.5 text-[12.5px] leading-relaxed">
           <span className="mr-2 font-semibold text-accent">💧 {api.copy('jy-tip-title')}</span>
           {api.copy('jy-tip')}
@@ -523,14 +575,34 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
           </div>
         )}
       </div>
-      {/* 右侧：合成结果预览（完成后从 v2 换成终稿） */}
-      <div>
+      {/* 右侧：合成预览。第 5 步时左下虚线框是投放区；放入后切换为带真码的终稿 */}
+      <div
+        className="relative self-start"
+        onDragOver={(e) => {
+          if (step !== DRAG_STEP) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'copy';
+          setDropOver(true);
+        }}
+        onDragLeave={() => setDropOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          if (e.dataTransfer.getData('text/plain') === 'qr-signup') placeQr();
+        }}
+      >
         <img
-          key={done ? 'final' : 'v2'}
-          src={done ? assets['poster-acg-final'] : assets['poster-acg-v2']}
+          key={qrPlaced ? 'final' : 'v2'}
+          src={qrPlaced ? assets['poster-acg-final'] : assets['poster-acg-v2']}
           alt=""
           className="w-full rounded-xl border border-line shadow-lift animate-fade-up"
         />
+        {step === DRAG_STEP && (
+          <span
+            className={`absolute bottom-[4%] left-[5%] h-[14%] w-[26%] rounded-md border-2 border-dashed transition ${
+              dropOver ? 'border-accent bg-accent-soft/50 shadow-glow' : 'border-accent/70'
+            } animate-breathe`}
+          />
+        )}
       </div>
     </div>
   );
