@@ -48,6 +48,18 @@ export const PromptText: React.FC<{ text: string; className?: string }> = ({
   );
 };
 
+/** 提取文档目录：## 为一级，### 为二级；顺序与 renderMarkdown 产出的 [data-md-heading] 元素一一对应 */
+export function extractToc(md: string): { level: 1 | 2; text: string }[] {
+  return md
+    .split('\n')
+    .filter((l) => l.startsWith('## ') || l.startsWith('### '))
+    .map((l) =>
+      l.startsWith('### ')
+        ? ({ level: 2, text: l.slice(4).replace(/\*\*/g, '') } as const)
+        : ({ level: 1, text: l.slice(3).replace(/\*\*/g, '') } as const),
+    );
+}
+
 export function renderMarkdown(md: string): React.ReactNode {
   const lines = md.split('\n');
   const blocks: React.ReactNode[] = [];
@@ -128,10 +140,27 @@ export function renderMarkdown(md: string): React.ReactNode {
       continue;
     }
 
-    // 标题
+    // 标题（## 一级 / ### 二级，data-md-heading 供文档目录定位）
+    if (line.startsWith('## ') && !line.startsWith('### ')) {
+      blocks.push(
+        <h3
+          key={key++}
+          data-md-heading
+          className="mb-2 mt-6 border-b border-line pb-1.5 text-[16px] font-semibold tracking-wide first:mt-0"
+        >
+          {inline(line.slice(3))}
+        </h3>,
+      );
+      i += 1;
+      continue;
+    }
     if (line.startsWith('### ')) {
       blocks.push(
-        <h4 key={key++} className="mb-1.5 mt-4 text-[14px] font-semibold tracking-wide first:mt-0">
+        <h4
+          key={key++}
+          data-md-heading
+          className="mb-1.5 mt-4 text-[14px] font-semibold tracking-wide first:mt-0"
+        >
           {inline(line.slice(4))}
         </h4>,
       );

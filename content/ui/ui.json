@@ -167,5 +167,13 @@
     "confirm": "确认",
     "cancel": "取消",
     "loading": "加载中…"
+  },
+  "doc": {
+    "toc": "目录",
+    "close": "关闭",
+    "stats": "约 {chars} 字 · {sections} 个章节 · 可保存对照",
+    "ai-tag": "AI 生成的文档",
+    "open-hint": "点击打开全文",
+    "card-stats": "约 {chars} 字 · {sections} 章"
   }
 }

@@ -571,12 +571,15 @@ const ArchiveDetail: React.FC<{
           <h4 className="text-[13px] font-semibold tracking-widest text-ink-soft">
             {home['detail-full-record']}
           </h4>
-          {([1, 2, 3] as const).map((n) => (
+          {([1, 2] as const).map((n) => (
             <div key={n} className="flex flex-col gap-2">
               <div className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13px] leading-relaxed text-paper">
                 <span className="whitespace-pre-wrap">{levelCopy[`q${n}`]}</span>
               </div>
               <div className="rounded-2xl rounded-tl-md border border-line bg-card px-4 py-3">
+                <div className="mb-2 border-b border-line pb-2 text-[13px] font-semibold">
+                  📄 {levelCopy[`doc${n}-title`]}
+                </div>
                 {renderMarkdown(levelCopy[`a${n}`] ?? '')}
               </div>
             </div>

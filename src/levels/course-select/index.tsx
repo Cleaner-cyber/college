@@ -7,10 +7,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { LevelModule, LevelProps } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
-import { ui } from '@/engine/content';
+import { interpolate, ui } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
 import { renderMarkdown } from '@/components/ui/Markdown';
+import { DocViewer } from '@/components/ui/DocViewer';
 import { SenpaiAvatar } from '@/components/ui/SpeakerTag';
 
 type FileId = 'plan' | 'handbook';
@@ -19,6 +20,7 @@ type Msg =
   | { kind: 'file'; file: FileId }
   | { kind: 'user'; text: string }
   | { kind: 'ai'; text: string; done: boolean }
+  | { kind: 'doc'; n: 1 | 2 }
   | { kind: 'senpai'; text: string };
 
 type Stage =
@@ -32,16 +34,12 @@ type Stage =
   | 'typing-q2'
   | 'thinking-2'
   | 'stream-a2'
-  | 'chip-q3'
-  | 'typing-q3'
-  | 'thinking-3'
-  | 'stream-a3'
   | 'wrap';
 
-const QA: Record<1 | 2 | 3, { q: string; a: string }> = {
-  1: { q: 'q1', a: 'a1' },
-  2: { q: 'q2', a: 'a2' },
-  3: { q: 'q3', a: 'a3' },
+// 每问：q=完整提示词；a=对话内简短交付语；doc=完整长文档（文档查看器展示）
+const QA: Record<1 | 2, { q: string; a: string; doc: string; title: string }> = {
+  1: { q: 'q1', a: 'a1-chat', doc: 'a1', title: 'doc1-title' },
+  2: { q: 'q2', a: 'a2-chat', doc: 'a2', title: 'doc2-title' },
 };
 
 /** 文件卡片（HTML5 拖拽源） */
@@ -112,17 +110,10 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
   const [inputText, setInputText] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const [streamCount, setStreamCount] = useState(0);
+  const [openDoc, setOpenDoc] = useState<1 | 2 | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const round: 1 | 2 | 3 = stage.includes('1')
-    ? 1
-    : stage.includes('2')
-      ? 2
-      : stage.includes('3')
-        ? 3
-        : stage === 'need-handbook'
-          ? 2
-          : 1;
+  const round: 1 | 2 = stage.includes('2') || stage === 'need-handbook' ? 2 : 1;
 
   // 自动滚到底部
   useEffect(() => {
@@ -179,13 +170,18 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
   const finishStream = () => {
     setMsgs((m) => m.map((msg) => (msg.kind === 'ai' ? { ...msg, done: true } : msg)));
     if (stage === 'stream-a1') {
-      setMsgs((m) => [...m, { kind: 'senpai', text: api.copy('senpai-tip-2') }]);
+      setMsgs((m) => [
+        ...m,
+        { kind: 'doc', n: 1 },
+        { kind: 'senpai', text: api.copy('senpai-tip-2') },
+      ]);
       setStage('need-handbook');
     } else if (stage === 'stream-a2') {
-      setMsgs((m) => [...m, { kind: 'senpai', text: api.copy('senpai-tip-3') }]);
-      setStage('chip-q3');
-    } else if (stage === 'stream-a3') {
-      setMsgs((m) => [...m, { kind: 'senpai', text: api.copy('senpai-wrap') }]);
+      setMsgs((m) => [
+        ...m,
+        { kind: 'doc', n: 2 },
+        { kind: 'senpai', text: api.copy('senpai-wrap') },
+      ]);
       setStage('wrap');
     }
   };
@@ -207,7 +203,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
     }
   };
 
-  const chipStage = stage === 'chip-q1' || stage === 'chip-q2' || stage === 'chip-q3';
+  const chipStage = stage === 'chip-q1' || stage === 'chip-q2';
   const streaming = stage.startsWith('stream-');
   const thinking = stage.startsWith('thinking-');
   const needFile: FileId | null =
@@ -305,6 +301,38 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
                   </div>
                 );
               }
+              if (m.kind === 'doc') {
+                const md = api.copy(QA[m.n].doc);
+                const sections = md.split('\n').filter((l) => l.startsWith('## ')).length;
+                return (
+                  <div key={i} className="flex justify-start animate-fade-up">
+                    <button
+                      onClick={() => setOpenDoc(m.n)}
+                      className="flex w-[340px] max-w-[92%] items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-card p-3.5 text-left shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
+                    >
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
+                        📄
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[13.5px] font-semibold">
+                          {api.copy(QA[m.n].title)}
+                        </span>
+                        <span className="mt-0.5 block text-[11.5px] text-ink-soft">
+                          {interpolate((ui.doc as Record<string, string>)['card-stats'], {
+                            chars: md.replace(/[\s|#*-]/g, '').length.toLocaleString('zh-CN'),
+                            sections,
+                          })}
+                          {' · '}
+                          <span className="text-accent">
+                            {(ui.doc as Record<string, string>)['open-hint']}
+                          </span>
+                        </span>
+                      </span>
+                      <span className="shrink-0 text-ink-soft">›</span>
+                    </button>
+                  </div>
+                );
+              }
               // ai
               const isLast = i === msgs.length - 1;
               const shown = !m.done && isLast && streaming ? m.text.slice(0, streamCount) : m.text;
@@ -343,7 +371,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
           )}
           <div className="flex items-center gap-2">
             <div
-              className={`min-h-[42px] flex-1 rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
+              className={`max-h-[110px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
                 inputText ? 'text-ink' : 'text-ink-soft/60'
               }`}
             >
@@ -359,6 +387,14 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
           </div>
         </div>
       </div>
+
+      {openDoc && (
+        <DocViewer
+          title={api.copy(QA[openDoc].title)}
+          md={api.copy(QA[openDoc].doc)}
+          onClose={() => setOpenDoc(null)}
+        />
+      )}
     </div>
   );
 };
