@@ -1,11 +1,179 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
-  <rect width="600" height="800" fill="#F6EBD9"/>
-  
-  <rect x="60" y="90" width="480" height="660" rx="18" fill="#8A5A3B" opacity="0.88"/>
-  <circle cx="300" cy="367.2" r="86" fill="#D08C3F" opacity="0.85"/>
-  
-  <g font-family="sans-serif" text-anchor="middle" fill="#1C1B18" opacity="0.55">
-    <text x="50%" y="46%" font-size="26" font-weight="bold">[占位] poster-sh-34-v1</text>
-    <text x="50%" y="52%" font-size="18">3:4 手绘 首版·主体偏满</text>
+  <defs>
+    <filter id="wob" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.016" numOctaves="2" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.11  0 0 0 0 0.106  0 0 0 0 0.094  0 0 0 0.5 0"/>
+    </filter>
+
+    <path id="star" d="M0,-14 L4,-4 L14,-3 L6,4 L9,14 L0,8 L-9,14 L-6,4 L-14,-3 L-4,-4 Z"/>
+    <path id="spark" d="M0,-11 C1,-4 4,-1 11,0 C4,1 1,4 0,11 C-1,4 -4,1 -11,0 C-4,-1 -1,-4 0,-11 Z"/>
+    <path id="heart" d="M0,10 C-12,0 -14,-8 -8,-12 C-4,-14 0,-11 0,-7 C0,-11 4,-14 8,-12 C14,-8 12,0 0,10 Z"/>
+    <g id="flower">
+      <circle cx="0" cy="-8" r="5.5"/><circle cx="7.6" cy="-2.5" r="5.5"/><circle cx="4.7" cy="6.5" r="5.5"/>
+      <circle cx="-4.7" cy="6.5" r="5.5"/><circle cx="-7.6" cy="-2.5" r="5.5"/>
+      <circle cx="0" cy="0" r="3.6" fill="#D9A441"/>
+    </g>
+    <g id="cloud">
+      <path d="M-34,8 C-46,8 -46,-6 -34,-8 C-33,-18 -18,-21 -12,-14 C-6,-24 12,-23 16,-13 C28,-16 36,-4 28,4 C24,10 -26,11 -34,8 Z"/>
+    </g>
+    <g id="note">
+      <path d="M2,-16 L4,6" stroke-width="3.6" fill="none"/>
+      <ellipse cx="0" cy="7" rx="5.4" ry="4.2"/>
+      <path d="M3,-15 q9,2 9,9" stroke-width="3.6" fill="none"/>
+    </g>
+    <g id="tape">
+      <path d="M-46,-13 L-40,-9 L-46,-4 L-40,0 L-46,5 L-41,9 L-46,13 L46,13 L41,9 L46,4 L40,0 L46,-5 L41,-9 L46,-13 Z" opacity="0.72"/>
+      <path d="M-38,-6 L38,-6 M-38,3 L38,3" stroke="#FFFFFF" stroke-width="2.4" opacity="0.5" fill="none"/>
+    </g>
+
+    <g id="cat">
+      <path d="M92,52 q58,-4 50,-54 q-3,-22 -26,-16 q-16,5 -12,26" fill="none" stroke="#1C1B18" stroke-width="14" stroke-linecap="round"/>
+      <path d="M92,52 q58,-4 50,-54 q-3,-22 -26,-16 q-16,5 -12,26" fill="none" stroke="#FDFBF6" stroke-width="7" stroke-linecap="round"/>
+      <path d="M-70,95 C-96,58 -90,4 -60,-26 C-76,-46 -79,-70 -70,-89 C-51,-87 -37,-75 -29,-62 C-19,-66 -9,-68 0,-68 C9,-68 19,-66 29,-62 C37,-75 51,-87 70,-89 C79,-70 76,-46 60,-26 C90,4 96,58 70,95 C40,111 -40,111 -70,95 Z"
+            fill="#FDFBF6" stroke="#1C1B18" stroke-width="5.5" stroke-linejoin="round"/>
+      <path d="M-62,-77 C-52,-74 -45,-68 -41,-61 C-48,-58 -55,-56 -60,-57 C-63,-63 -64,-70 -62,-77 Z" fill="#EFB7A4"/>
+      <path d="M62,-77 C52,-74 45,-68 41,-61 C48,-58 55,-56 60,-57 C63,-63 64,-70 62,-77 Z" fill="#EFB7A4"/>
+      <ellipse cx="-26" cy="-18" rx="7.5" ry="10"/>
+      <ellipse cx="26" cy="-18" rx="7.5" ry="10"/>
+      <circle cx="-23.4" cy="-21.5" r="2.6" fill="#FFFFFF"/>
+      <circle cx="28.6" cy="-21.5" r="2.6" fill="#FFFFFF"/>
+      <path d="M-3.6,-4 L3.6,-4 L0,0.6 Z" fill="#C05A32"/>
+      <path d="M-8,4 q4,6.5 8,0.5 q4,6 8,-0.5" fill="none" stroke="#1C1B18" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="-46" cy="0" r="9" fill="#EFB7A4" opacity="0.85"/>
+      <circle cx="46" cy="0" r="9" fill="#EFB7A4" opacity="0.85"/>
+      <path d="M-58,-10 L-82,-16 M-58,-2 L-84,-2 M58,-10 L82,-16 M58,-2 L84,-2" stroke="#1C1B18" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+      <path d="M-52,30 C-20,44 20,44 52,30 L54,44 C20,58 -20,58 -54,44 Z" fill="#C05A32" stroke="#1C1B18" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M30,46 L40,74 L20,72 Z" fill="#C05A32" stroke="#1C1B18" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M0,52 C-15,44 -40,44 -54,50 L-54,88 C-40,82 -15,82 0,90 C15,82 40,82 54,88 L54,50 C40,44 15,44 0,52 Z"
+            fill="#FFFDF8" stroke="#1C1B18" stroke-width="4.5" stroke-linejoin="round"/>
+      <path d="M0,52 L0,90" stroke="#1C1B18" stroke-width="3.2"/>
+      <path d="M-44,58 L-12,56 M-44,66 L-12,64 M-44,74 L-12,72 M12,56 L44,58 M12,64 L44,66 M12,72 L44,74" stroke="#B9AE9C" stroke-width="2.4" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <rect width="600" height="800" fill="#F6F1E4"/>
+  <rect width="600" height="800" filter="url(#grain)" opacity="0.16"/>
+
+  <g filter="url(#wob)">
+    <!-- corner washi tapes -->
+    <use href="#tape" transform="translate(58,44) rotate(-38)" fill="#8FA37E"/>
+    <use href="#tape" transform="translate(542,44) rotate(38)" fill="#C05A32"/>
+    <use href="#tape" transform="translate(46,760) rotate(32)" fill="#D9A441"/>
+    <use href="#tape" transform="translate(554,758) rotate(-30)" fill="#8FA37E"/>
+
+    <!-- sun & rainbow -->
+    <g transform="translate(84,96)">
+      <circle r="34" fill="#D9A441" stroke="#1C1B18" stroke-width="4.5"/>
+      <path d="M0,-48 L0,-62 M34,-34 L44,-44 M48,0 L62,0 M34,34 L44,44 M0,48 L0,62 M-34,34 L-44,44 M-48,0 L-62,0 M-34,-34 L-44,-44" stroke="#1C1B18" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+      <path d="M-10,-4 q3,4 7,0 M4,-4 q3,4 7,0" stroke="#1C1B18" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M-4,6 q4,5 9,0" stroke="#1C1B18" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(508,66)" fill="none" stroke-linecap="round">
+      <path d="M-66,44 A66,66 0 0 1 66,44" stroke="#C05A32" stroke-width="11"/>
+      <path d="M-50,44 A50,50 0 0 1 50,44" stroke="#D9A441" stroke-width="11"/>
+      <path d="M-34,44 A34,34 0 0 1 34,44" stroke="#8FA37E" stroke-width="11"/>
+    </g>
+
+    <!-- clouds -->
+    <use href="#cloud" transform="translate(268,58)" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4"/>
+    <use href="#cloud" transform="translate(160,168) scale(0.8)" fill="#EFE6D2" stroke="#1C1B18" stroke-width="4"/>
+    <use href="#cloud" transform="translate(452,190) scale(0.72)" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4"/>
+    <use href="#cloud" transform="translate(66,282) scale(0.62)" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4"/>
+
+    <!-- speech bubbles -->
+    <g transform="translate(138,340) rotate(-8)">
+      <ellipse rx="44" ry="32" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5"/>
+      <path d="M14,28 L30,52 L34,26" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5" stroke-linejoin="round"/>
+      <path d="M0,-16 L0,6 M0,15 L0,17" stroke="#C05A32" stroke-width="7" stroke-linecap="round" fill="none"/>
+    </g>
+    <g transform="translate(468,330) rotate(8)">
+      <ellipse rx="42" ry="30" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5"/>
+      <path d="M-16,26 L-30,50 L-34,24" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4.5" stroke-linejoin="round"/>
+      <use href="#star" transform="scale(1.15)" fill="#D9A441" stroke="#1C1B18" stroke-width="3"/>
+    </g>
+    <g transform="translate(300,180) rotate(3)">
+      <ellipse rx="40" ry="28" fill="#EFE6D2" stroke="#1C1B18" stroke-width="4.5"/>
+      <path d="M-12,24 L-20,46 L-28,22" fill="#EFE6D2" stroke="#1C1B18" stroke-width="4.5" stroke-linejoin="round"/>
+      <use href="#heart" fill="#C05A32"/>
+    </g>
+
+    <!-- main cat (big, center) -->
+    <use href="#cat" transform="translate(300,452) scale(1.5)"/>
+
+    <!-- manga speed-lines around cat -->
+    <path d="M158,308 L128,282 M442,308 L472,282 M150,470 L116,470 M450,470 L484,470 M170,560 L140,584 M430,560 L460,584" stroke="#1C1B18" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+    <!-- stars everywhere -->
+    <use href="#star" transform="translate(52,196) scale(1.2) rotate(-14)" fill="#C05A32"/>
+    <use href="#star" transform="translate(548,150) rotate(20)" fill="#D9A441" stroke="#1C1B18" stroke-width="2.6"/>
+    <use href="#star" transform="translate(206,236) scale(0.85) rotate(30)" fill="#8FA37E"/>
+    <use href="#star" transform="translate(392,232) scale(0.9) rotate(-24)" fill="#C05A32"/>
+    <use href="#star" transform="translate(556,262) scale(0.8)" fill="none" stroke="#1C1B18" stroke-width="3"/>
+    <use href="#star" transform="translate(40,392) scale(0.9) rotate(12)" fill="#D9A441"/>
+    <use href="#star" transform="translate(560,404) scale(1.1) rotate(-8)" fill="#8FA37E" stroke="#1C1B18" stroke-width="2.6"/>
+    <use href="#star" transform="translate(52,548) scale(1.15) rotate(18)" fill="#C05A32"/>
+    <use href="#star" transform="translate(552,548) scale(0.85) rotate(-30)" fill="#D9A441"/>
+    <use href="#star" transform="translate(96,470) scale(0.7)" fill="none" stroke="#C05A32" stroke-width="3"/>
+    <use href="#star" transform="translate(504,472) scale(0.7) rotate(22)" fill="none" stroke="#1C1B18" stroke-width="3"/>
+    <use href="#star" transform="translate(226,150) scale(0.7) rotate(-18)" fill="#C05A32"/>
+    <use href="#star" transform="translate(370,120) scale(0.8) rotate(14)" fill="#D9A441" stroke="#1C1B18" stroke-width="2.4"/>
+
+    <!-- sparkles & hearts filling gaps -->
+    <use href="#spark" transform="translate(120,238)" fill="#C05A32"/>
+    <use href="#spark" transform="translate(486,120) scale(1.2)" fill="#D9A441"/>
+    <use href="#spark" transform="translate(38,330) scale(0.8)" fill="#8FA37E"/>
+    <use href="#spark" transform="translate(566,332) scale(0.9)" fill="#C05A32"/>
+    <use href="#spark" transform="translate(232,308) scale(0.7)" fill="#D9A441"/>
+    <use href="#spark" transform="translate(374,306) scale(0.7)" fill="#8FA37E"/>
+    <use href="#spark" transform="translate(96,640) scale(1.1)" fill="#D9A441"/>
+    <use href="#spark" transform="translate(508,636)" fill="#C05A32"/>
+    <use href="#spark" transform="translate(300,110) scale(0.8)" fill="#C05A32"/>
+    <use href="#heart" transform="translate(172,120) scale(1.2) rotate(-10)" fill="#C05A32"/>
+    <use href="#heart" transform="translate(420,168) rotate(12)" fill="#EFB7A4" stroke="#1C1B18" stroke-width="2.6"/>
+    <use href="#heart" transform="translate(66,614) rotate(-14)" fill="#C05A32"/>
+    <use href="#heart" transform="translate(534,606) scale(1.2) rotate(10)" fill="#EFB7A4" stroke="#1C1B18" stroke-width="2.6"/>
+    <use href="#heart" transform="translate(240,660) scale(0.9)" fill="#C05A32"/>
+    <use href="#heart" transform="translate(364,662) scale(0.9) rotate(8)" fill="#D9A441"/>
+
+    <!-- music notes -->
+    <use href="#note" transform="translate(500,240) rotate(10)" fill="#1C1B18" stroke="#1C1B18"/>
+    <use href="#note" transform="translate(88,176) rotate(-12) scale(0.9)" fill="#C05A32" stroke="#C05A32"/>
+    <use href="#note" transform="translate(148,606) rotate(8) scale(0.9)" fill="#1C1B18" stroke="#1C1B18"/>
+    <use href="#note" transform="translate(452,610) rotate(-10)" fill="#C05A32" stroke="#C05A32"/>
+
+    <!-- onigiri + dango snacks -->
+    <g transform="translate(196,700) rotate(-6)">
+      <path d="M0,-26 C10,-26 26,-4 22,10 C20,20 -20,20 -22,10 C-26,-4 -10,-26 0,-26 Z" fill="#FDFBF6" stroke="#1C1B18" stroke-width="4"/>
+      <rect x="-9" y="0" width="18" height="16" rx="3" fill="#4C544A"/>
+    </g>
+    <g transform="translate(404,702) rotate(6)">
+      <path d="M-26,18 L30,-22" stroke="#8A5A3B" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <circle cx="-14" cy="10" r="11" fill="#EFB7A4" stroke="#1C1B18" stroke-width="3.4"/>
+      <circle cx="2" cy="-2" r="11" fill="#FDFBF6" stroke="#1C1B18" stroke-width="3.4"/>
+      <circle cx="18" cy="-14" r="11" fill="#8FA37E" stroke="#1C1B18" stroke-width="3.4"/>
+    </g>
+
+    <!-- squiggles wedged into leftover gaps -->
+    <path d="M226,106 q10,-12 20,0 q10,12 20,0" fill="none" stroke="#8FA37E" stroke-width="4" stroke-linecap="round"/>
+    <path d="M330,254 q10,-12 20,0 q10,12 20,0" fill="none" stroke="#C05A32" stroke-width="4" stroke-linecap="round"/>
+    <path d="M180,262 q10,-12 20,0" fill="none" stroke="#D9A441" stroke-width="4" stroke-linecap="round"/>
+    <path d="M34,258 q8,-10 16,0 q8,10 16,0" fill="none" stroke="#C05A32" stroke-width="4" stroke-linecap="round"/>
+    <path d="M528,196 q8,-10 16,0 q8,10 16,0" fill="none" stroke="#8FA37E" stroke-width="4" stroke-linecap="round"/>
+    <path d="M60,676 q8,-10 16,0 q8,10 16,0" fill="none" stroke="#D9A441" stroke-width="4" stroke-linecap="round"/>
+    <path d="M496,678 q8,-10 16,0 q8,10 16,0" fill="none" stroke="#8FA37E" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- ground: scalloped grass + flowers spanning full width -->
+    <path d="M-6,712 Q30,690 66,712 Q102,690 138,712 Q174,690 210,712 Q246,690 282,712 Q318,690 354,712 Q390,690 426,712 Q462,690 498,712 Q534,690 570,712 Q590,700 606,712"
+          fill="none" stroke="#8FA37E" stroke-width="5" stroke-linecap="round"/>
+    <use href="#flower" transform="translate(60,748) scale(0.9)" fill="#C05A32"/>
+    <use href="#flower" transform="translate(160,756) scale(0.75)" fill="#EFB7A4"/>
+    <use href="#flower" transform="translate(300,752) scale(0.7)" fill="#D9A441"/>
+    <use href="#flower" transform="translate(440,756) scale(0.75)" fill="#EFB7A4"/>
+    <use href="#flower" transform="translate(540,748) scale(0.9)" fill="#C05A32"/>
+    <path d="M110,762 q4,-14 10,0 M226,764 q4,-14 10,0 M368,764 q4,-14 10,0 M492,762 q4,-14 10,0" fill="none" stroke="#8FA37E" stroke-width="3.6" stroke-linecap="round"/>
   </g>
 </svg>

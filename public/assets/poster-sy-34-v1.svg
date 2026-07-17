@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#F3E0C8"/>
-      <stop offset="0.45" stop-color="#EDBE8C"/>
-      <stop offset="0.8" stop-color="#DE9260"/>
-      <stop offset="1" stop-color="#C86A3E"/>
+      <stop offset="0" stop-color="#F8E7CB"/>
+      <stop offset="0.4" stop-color="#F3C287"/>
+      <stop offset="0.75" stop-color="#E48F52"/>
+      <stop offset="1" stop-color="#C05A32"/>
     </linearGradient>
     <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
       <stop offset="0" stop-color="#FFF4DF" stop-opacity="0.95"/>
@@ -17,16 +17,16 @@
       <stop offset="1" stop-color="#241813"/>
     </linearGradient>
     <linearGradient id="treeInk" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3C261E"/>
-      <stop offset="1" stop-color="#20150F"/>
+      <stop offset="0" stop-color="#26160F"/>
+      <stop offset="1" stop-color="#140C07"/>
     </linearGradient>
     <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#2E1D15"/>
       <stop offset="1" stop-color="#171009"/>
     </linearGradient>
     <radialGradient id="vign" cx="0.5" cy="0.42" r="0.75">
-      <stop offset="0.62" stop-color="#1A0F08" stop-opacity="0"/>
-      <stop offset="1" stop-color="#1A0F08" stop-opacity="0.38"/>
+      <stop offset="0.68" stop-color="#1A0F08" stop-opacity="0"/>
+      <stop offset="1" stop-color="#1A0F08" stop-opacity="0.26"/>
     </radialGradient>
     <radialGradient id="bokeh" cx="0.5" cy="0.5" r="0.5">
       <stop offset="0" stop-color="#F6D3A2" stop-opacity="0.8"/>
@@ -49,9 +49,9 @@
 
   <!-- 天空：地平线极高，仅剩一线黄昏 -->
   <rect width="600" height="800" fill="url(#sky)"/>
-  <ellipse cx="150" cy="96" rx="220" ry="120" fill="url(#sunGlow)"/>
-  <circle cx="150" cy="86" r="26" fill="#FBE7C6"/>
-  <circle cx="150" cy="86" r="26" fill="url(#sunGlow)"/>
+  <ellipse cx="150" cy="96" rx="240" ry="130" fill="url(#sunGlow)"/>
+  <circle cx="150" cy="88" r="30" fill="#FFF6E2"/>
+  <circle cx="150" cy="88" r="40" fill="url(#sunGlow)"/>
 
   <!-- 远景薄云 -->
   <ellipse cx="430" cy="52" rx="130" ry="9" fill="#F6DCB8" opacity="0.5" filter="url(#soft)"/>
@@ -68,6 +68,12 @@
     <path d="M364 168 L364 640 L582 640 L582 196 L570 196 L570 176 L374 176 L374 168 Z"/>
     <!-- 门廊 -->
     <path d="M252 640 L252 560 Q300 528 348 560 L348 640 Z"/>
+  </g>
+  <!-- 屋顶轮廓的夕照勾边 -->
+  <g stroke="#F2B071" stroke-width="2.5" fill="none" opacity="0.75" stroke-linecap="round">
+    <path d="M254 96 L254 78 L268 78 L268 46 L294 46 L294 30 L300 22 L306 30 L306 46 L332 46 L332 78 L346 78 L346 96"/>
+    <path d="M244 96 L244 132 L236 132 M356 96 L356 132 L364 132"/>
+    <path d="M18 196 L30 196 L30 176 L226 176 M374 176 L570 176 L570 196 L582 196"/>
   </g>
   <!-- 钟面 -->
   <circle cx="300" cy="66" r="12" fill="#EFC694" opacity="0.9"/>
@@ -118,11 +124,11 @@
   <g opacity="0.85">
     <circle cx="66" cy="150" r="14" fill="url(#bokeh)"/>
     <circle cx="520" cy="120" r="18" fill="url(#bokeh)"/>
-    <circle cx="558" cy="330" r="12" fill="url(#bokeh)"/>
-    <circle cx="42" cy="356" r="10" fill="url(#bokeh)"/>
-    <circle cx="470" cy="560" r="20" fill="url(#bokeh)"/>
-    <circle cx="130" cy="600" r="15" fill="url(#bokeh)"/>
+    <circle cx="470" cy="560" r="22" fill="url(#bokeh)"/>
+    <circle cx="130" cy="600" r="16" fill="url(#bokeh)"/>
+    <circle cx="330" cy="676" r="12" fill="url(#bokeh)"/>
     <circle cx="380" cy="86" r="9" fill="url(#bokeh)"/>
+    <circle cx="248" cy="118" r="7" fill="url(#bokeh)"/>
   </g>
 
   <!-- 归鸟 -->

@@ -1,7 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
-  <rect width="96" height="96" rx="22" fill="#C05A32"/>
-  <g transform="translate(48 44)" fill="#F7F5F0">
-    <path d="M-3-26h6l2 18 12-14 4 4-14 12 18 2v6l-18 2 14 12-4 4-12-14-2 18h-6l-2-18-12 14-4-4 14-12-18-2v-6l18-2-14-12 4-4 12 14z"/>
+  <defs>
+    <linearGradient id="ccBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C9633B"/>
+      <stop offset="1" stop-color="#B3502B"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="22" fill="url(#ccBg)"/>
+  <rect x="0.75" y="0.75" width="94.5" height="94.5" rx="21.25" fill="none" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1.5"/>
+  <!-- starburst: 12 tapered rays -->
+  <g transform="translate(48 48)" fill="#F9F6F0">
+    <g id="rayL">
+      <path d="M-2.8 0L0 -26 2.8 0z"/>
+    </g>
+    <g id="rayS">
+      <path d="M-2.4 0L0 -16.5 2.4 0z" transform="rotate(22.5)"/>
+    </g>
+    <use href="#rayL" transform="rotate(45)"/>
+    <use href="#rayL" transform="rotate(90)"/>
+    <use href="#rayL" transform="rotate(135)"/>
+    <use href="#rayL" transform="rotate(180)"/>
+    <use href="#rayL" transform="rotate(225)"/>
+    <use href="#rayL" transform="rotate(270)"/>
+    <use href="#rayL" transform="rotate(315)"/>
+    <use href="#rayS" transform="rotate(45)"/>
+    <use href="#rayS" transform="rotate(90)"/>
+    <use href="#rayS" transform="rotate(135)"/>
+    <use href="#rayS" transform="rotate(180)"/>
+    <use href="#rayS" transform="rotate(225)"/>
+    <use href="#rayS" transform="rotate(270)"/>
+    <use href="#rayS" transform="rotate(315)"/>
+    <circle r="6"/>
   </g>
-  <text x="48" y="90" font-size="7" fill="#F7F5F0" text-anchor="middle" font-family="sans-serif">[占位] icon-claude-code</text>
 </svg>

@@ -1,6 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
-  <rect width="96" height="96" rx="22" fill="#FFFFFF" stroke="#E4E0D6" stroke-width="2"/>
-  <path d="M48 18l26 15v30L48 78 22 63V33z" fill="none" stroke="#1C1B18" stroke-width="4" stroke-linejoin="round"/>
-  <path d="M48 18v30m0 0l26-15M48 48L22 33" stroke="#1C1B18" stroke-width="3"/>
-  <text x="48" y="90" font-size="7" fill="#6B675E" text-anchor="middle" font-family="sans-serif">[占位] icon-cursor</text>
+  <defs>
+    <linearGradient id="curFaceR" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3A3833"/>
+      <stop offset="1" stop-color="#1C1B18"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="94" height="94" rx="22" fill="#FFFFFF" stroke="#E4E0D6" stroke-width="2"/>
+  <!-- isometric prism: top + left faces outlined, right face filled -->
+  <g stroke-linejoin="round">
+    <path d="M48 20L72 33.5v27L48 74 24 60.5v-27z" fill="#FFFFFF" stroke="#1C1B18" stroke-width="2.5"/>
+    <path d="M48 47L72 33.5v27L48 74z" fill="url(#curFaceR)"/>
+    <path d="M48 20L72 33.5 48 47 24 33.5z" fill="#F4F2EC" stroke="#1C1B18" stroke-width="2.5"/>
+    <path d="M48 47v27M24 33.5L48 47" fill="none" stroke="#1C1B18" stroke-width="2.5"/>
+    <path d="M48 47L72 33.5v27L48 74z" fill="none" stroke="#1C1B18" stroke-width="2.5"/>
+  </g>
 </svg>

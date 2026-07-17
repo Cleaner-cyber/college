@@ -65,10 +65,10 @@
     </g>
   </g>
 
-  <!-- paper plane clipped near the top edge -->
-  <path d="M470,150 C400,80 300,52 208,66" fill="none" stroke="#C05A32" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 11"/>
-  <g transform="translate(500,166) rotate(38)">
-    <path d="M40,0 L-8,-14 L2,2 Z" fill="#FBF8F1"/>
-    <path d="M40,0 L2,2 L-4,12 Z" fill="#E7DCC6"/>
+  <!-- paper plane crossing the upper-left, crowded against the frame -->
+  <path d="M420,88 C330,52 230,58 152,108" fill="none" stroke="#C05A32" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 11"/>
+  <g transform="translate(124,128) rotate(210)">
+    <path d="M44,0 L-9,-15 L2.5,2 Z" fill="#FBF8F1"/>
+    <path d="M44,0 L2.5,2 L-4.5,13 Z" fill="#D9CBAD"/>
   </g>
 </svg>
