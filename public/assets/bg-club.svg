@@ -87,7 +87,9 @@
       <rect x="762" y="250" width="120" height="14" rx="5" fill="#F3E9CF" opacity="0.9"/>
       <rect x="762" y="278" width="90" height="10" rx="4" fill="#F3E9CF" opacity="0.6"/>
       <circle cx="822" cy="360" r="44" fill="#F3E9CF" opacity="0.85"/>
-      <path d="M806 344 l32 32 M838 344 l-32 32" stroke="#8E9C77" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="806" cy="350" r="6" fill="#8E9C77"/>
+      <circle cx="838" cy="350" r="6" fill="#8E9C77"/>
+      <path d="M802 372 q20 18 40 0" stroke="#8E9C77" stroke-width="7" fill="none" stroke-linecap="round"/>
       <rect x="768" y="424" width="108" height="10" rx="4" fill="#F3E9CF" opacity="0.6"/>
     </g>
     <circle cx="756" cy="232" r="7" fill="#C0392B"/>

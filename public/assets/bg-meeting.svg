@@ -1,14 +1,223 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
-  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0" stop-color="#EFEDE8"/><stop offset="1" stop-color="#E6E2DA"/></linearGradient></defs>
-  <rect width="1600" height="900" fill="url(#sky)"/>
-  <rect x="0" y="600" width="1600" height="300" fill="#B9AB94"/>
-  <rect x="0" y="600" width="1600" height="14" fill="#A5977F"/>
-  <rect x="180" y="140" width="1240" height="360" rx="14" fill="#FDFCF9" stroke="#D8D2C4" stroke-width="10"/>
-  <path d="M260 220 h420 M260 280 h360 M260 340 h300" stroke="#D8D2C4" stroke-width="10" stroke-linecap="round"/>
-  <rect x="900" y="200" width="440" height="240" rx="10" fill="#F3E4DC" stroke="#D8D2C4" stroke-width="6"/>
-  <path d="M960 260 h320 M960 310 h240 M960 360 h280" stroke="#C97B5A" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
-  <ellipse cx="800" cy="700" rx="520" ry="60" fill="#8A7355" opacity="0.9"/>
-  <ellipse cx="800" cy="690" rx="520" ry="55" fill="#A08560"/>
-  <ellipse cx="800" cy="820" rx="430" ry="16" fill="#2A241D" opacity="0.1"/>
+  <defs>
+    <linearGradient id="wallM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E9E4D7"/>
+      <stop offset="1" stop-color="#F1ECDF"/>
+    </linearGradient>
+    <linearGradient id="skyM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#CFE0E4"/>
+      <stop offset="0.6" stop-color="#E3E9E0"/>
+      <stop offset="1" stop-color="#F2ECD8"/>
+    </linearGradient>
+    <linearGradient id="floorM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C6BCA8"/>
+      <stop offset="1" stop-color="#B7AC96"/>
+    </linearGradient>
+    <linearGradient id="tableTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#CBAB7E"/>
+      <stop offset="1" stop-color="#BC9A6C"/>
+    </linearGradient>
+    <radialGradient id="mornGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FBEECB" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#FBEECB" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignM" cx="0.5" cy="0.42" r="0.9">
+      <stop offset="0.6" stop-color="#1C1B18" stop-opacity="0"/>
+      <stop offset="1" stop-color="#1C1B18" stop-opacity="0.10"/>
+    </radialGradient>
+  </defs>
+
+  <!-- walls & floor -->
+  <rect width="1600" height="900" fill="url(#wallM)"/>
+  <rect x="0" y="640" width="1600" height="260" fill="url(#floorM)"/>
+  <rect x="0" y="640" width="1600" height="8" fill="#A79B82"/>
+
+  <!-- ===== floor-to-ceiling window with skyline (right 2/3) ===== -->
+  <g>
+    <rect x="540" y="36" width="1030" height="604" fill="#B7AE99"/>
+    <rect x="552" y="48" width="1006" height="580" fill="url(#skyM)"/>
+    <!-- morning sun glow -->
+    <circle cx="1370" cy="150" r="60" fill="#FBEECB"/>
+    <circle cx="1370" cy="150" r="38" fill="#FDF6E0"/>
+    <ellipse cx="1300" cy="220" rx="360" ry="220" fill="url(#mornGlow)"/>
+    <!-- far skyline -->
+    <g fill="#C2CCC9">
+      <rect x="580" y="300" width="70" height="328"/>
+      <rect x="700" y="250" width="56" height="378"/>
+      <rect x="900" y="290" width="80" height="338"/>
+      <rect x="1120" y="320" width="66" height="308"/>
+      <rect x="1300" y="280" width="58" height="348"/>
+      <rect x="1470" y="330" width="72" height="298"/>
+      <polygon points="756,628 756,300 800,268 800,628"/>
+    </g>
+    <!-- near skyline -->
+    <g fill="#A8B5B4">
+      <rect x="620" y="380" width="96" height="248"/>
+      <rect x="820" y="340" width="72" height="288"/>
+      <rect x="984" y="360" width="110" height="268"/>
+      <rect x="1180" y="400" width="90" height="228"/>
+      <rect x="1360" y="370" width="86" height="258"/>
+      <polygon points="1094,628 1094,360 1130,388 1130,628"/>
+    </g>
+    <!-- tiny windows on near buildings -->
+    <g fill="#93A1A0">
+      <rect x="634" y="398" width="12" height="12"/><rect x="656" y="398" width="12" height="12"/><rect x="678" y="398" width="12" height="12"/>
+      <rect x="634" y="424" width="12" height="12"/><rect x="656" y="424" width="12" height="12"/><rect x="678" y="424" width="12" height="12"/>
+      <rect x="834" y="356" width="11" height="11"/><rect x="854" y="356" width="11" height="11"/><rect x="874" y="356" width="11" height="11"/>
+      <rect x="834" y="380" width="11" height="11"/><rect x="854" y="380" width="11" height="11"/>
+      <rect x="1000" y="376" width="12" height="12"/><rect x="1022" y="376" width="12" height="12"/><rect x="1044" y="376" width="12" height="12"/><rect x="1066" y="376" width="12" height="12"/>
+      <rect x="1000" y="402" width="12" height="12"/><rect x="1022" y="402" width="12" height="12"/><rect x="1066" y="402" width="12" height="12"/>
+      <rect x="1194" y="416" width="11" height="11"/><rect x="1214" y="416" width="11" height="11"/><rect x="1234" y="416" width="11" height="11"/>
+      <rect x="1374" y="386" width="11" height="11"/><rect x="1394" y="386" width="11" height="11"/><rect x="1414" y="386" width="11" height="11"/>
+      <rect x="1374" y="410" width="11" height="11"/><rect x="1414" y="410" width="11" height="11"/>
+    </g>
+    <!-- a bird pair -->
+    <g stroke="#8A9598" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M760 150 q10 -10 20 0 q10 -10 20 0"/>
+      <path d="M830 190 q8 -8 16 0 q8 -8 16 0"/>
+    </g>
+    <!-- mullions -->
+    <g fill="#B7AE99">
+      <rect x="800" y="48" width="14" height="580"/>
+      <rect x="1052" y="48" width="14" height="580"/>
+      <rect x="1304" y="48" width="14" height="580"/>
+      <rect x="552" y="332" width="1006" height="12"/>
+    </g>
+    <!-- light reflection stripe -->
+    <polygon points="880,48 960,48 700,628 620,628" fill="#FFFFFF" opacity="0.14"/>
+  </g>
+
+  <!-- warm morning light pooling on floor -->
+  <polygon points="700,648 1250,648 1360,780 810,780" fill="#EFD9A6" opacity="0.30"/>
+
+  <!-- ===== wall TV (left) ===== -->
+  <g>
+    <rect x="96" y="110" width="380" height="240" rx="10" fill="#2B2925"/>
+    <rect x="112" y="126" width="348" height="208" fill="#3B4750"/>
+    <!-- slide on screen -->
+    <rect x="136" y="150" width="150" height="14" rx="6" fill="#E7E1D0"/>
+    <g stroke="#9AA7AD" stroke-width="5" stroke-linecap="round">
+      <line x1="136" y1="190" x2="300" y2="190"/>
+      <line x1="136" y1="214" x2="268" y2="214"/>
+      <line x1="136" y1="238" x2="288" y2="238"/>
+    </g>
+    <!-- small pie chart -->
+    <circle cx="392" cy="240" r="44" fill="#8FA8B8"/>
+    <path d="M392 240 L392 196 A44 44 0 0 1 431 262 z" fill="#C97B4E"/>
+    <path d="M392 240 L431 262 A44 44 0 0 1 392 284 z" fill="#E7E1D0"/>
+    <rect x="136" y="286" width="90" height="10" rx="5" fill="#C97B4E" opacity="0.9"/>
+    <!-- wall mount shadow -->
+    <rect x="120" y="356" width="332" height="10" rx="5" fill="#1C1B18" opacity="0.08"/>
+  </g>
+  <!-- small wall clock -->
+  <circle cx="512" cy="150" r="26" fill="#F7F3E8" stroke="#8A8272" stroke-width="5"/>
+  <line x1="512" y1="150" x2="512" y2="134" stroke="#5A5548" stroke-width="4" stroke-linecap="round"/>
+  <line x1="512" y1="150" x2="524" y2="156" stroke="#5A5548" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- ===== ergonomic chairs behind the table ===== -->
+  <g>
+    <!-- chair silhouettes (backs + headrests), left to right -->
+    <!-- headrests with visible neck gap -->
+    <g fill="#57534A">
+      <rect x="384" y="336" width="72" height="30" rx="11"/>
+      <rect x="410" y="364" width="20" height="18"/>
+      <rect x="360" y="380" width="120" height="140" rx="18"/>
+      <rect x="726" y="330" width="72" height="30" rx="11"/>
+      <rect x="752" y="358" width="20" height="18"/>
+      <rect x="700" y="374" width="124" height="146" rx="18"/>
+      <rect x="1074" y="336" width="72" height="30" rx="11"/>
+      <rect x="1100" y="364" width="20" height="18"/>
+      <rect x="1050" y="380" width="120" height="140" rx="18"/>
+      <rect x="1372" y="342" width="70" height="30" rx="11"/>
+      <rect x="1398" y="370" width="20" height="18"/>
+      <rect x="1350" y="386" width="116" height="134" rx="18"/>
+    </g>
+    <g fill="#66625A">
+      <rect x="374" y="396" width="92" height="110" rx="12"/>
+      <rect x="714" y="390" width="96" height="114" rx="12"/>
+      <rect x="1064" y="396" width="92" height="110" rx="12"/>
+      <rect x="1362" y="402" width="90" height="106" rx="12"/>
+    </g>
+    <!-- lumbar seam -->
+    <g stroke="#57534A" stroke-width="4" opacity="0.8">
+      <line x1="384" y1="452" x2="456" y2="452"/>
+      <line x1="724" y1="448" x2="800" y2="448"/>
+      <line x1="1074" y1="452" x2="1146" y2="452"/>
+      <line x1="1372" y1="456" x2="1442" y2="456"/>
+    </g>
+  </g>
+
+  <!-- ===== long conference table ===== -->
+  <g>
+    <!-- top -->
+    <polygon points="240,500 1560,500 1600,560 200,560" fill="url(#tableTop)"/>
+    <rect x="200" y="560" width="1400" height="26" fill="#9A7C54"/>
+    <!-- legs -->
+    <rect x="330" y="586" width="24" height="118" fill="#7C633F"/>
+    <rect x="1430" y="586" width="24" height="118" fill="#7C633F"/>
+    <rect x="860" y="586" width="24" height="118" fill="#7C633F"/>
+    <!-- soft shadow under table -->
+    <ellipse cx="900" cy="720" rx="620" ry="26" fill="#1C1B18" opacity="0.08"/>
+
+    <!-- items on table -->
+    <!-- water bottles -->
+    <g>
+      <g fill="#D8E2E4" stroke="#AEBBC0" stroke-width="2">
+        <rect x="470" y="452" width="24" height="52" rx="7"/>
+        <rect x="790" y="446" width="24" height="52" rx="7"/>
+        <rect x="1140" y="452" width="24" height="52" rx="7"/>
+        <rect x="1394" y="458" width="24" height="52" rx="7"/>
+      </g>
+      <g fill="#7FA3B4">
+        <rect x="474" y="444" width="16" height="10" rx="3"/>
+        <rect x="794" y="438" width="16" height="10" rx="3"/>
+        <rect x="1144" y="444" width="16" height="10" rx="3"/>
+        <rect x="1398" y="450" width="16" height="10" rx="3"/>
+      </g>
+      <g fill="#B9CBD2">
+        <rect x="472" y="470" width="20" height="14"/>
+        <rect x="792" y="464" width="20" height="14"/>
+        <rect x="1142" y="470" width="20" height="14"/>
+        <rect x="1396" y="476" width="20" height="14"/>
+      </g>
+    </g>
+    <!-- blank name tents -->
+    <g>
+      <!-- standing tent cards: lit front face + shaded top ridge -->
+      <polygon points="538,508 604,508 598,472 544,472" fill="#FBF8F0"/>
+      <polygon points="544,472 598,472 590,464 552,464" fill="#E3DCC9"/>
+      <line x1="538" y1="508" x2="604" y2="508" stroke="#C9BFA8" stroke-width="3"/>
+      <polygon points="848,502 914,502 908,466 854,466" fill="#FBF8F0"/>
+      <polygon points="854,466 908,466 900,458 862,458" fill="#E3DCC9"/>
+      <line x1="848" y1="502" x2="914" y2="502" stroke="#C9BFA8" stroke-width="3"/>
+      <polygon points="1198,508 1264,508 1258,472 1204,472" fill="#FBF8F0"/>
+      <polygon points="1204,472 1258,472 1250,464 1212,464" fill="#E3DCC9"/>
+      <line x1="1198" y1="508" x2="1264" y2="508" stroke="#C9BFA8" stroke-width="3"/>
+    </g>
+    <!-- notepads + pens -->
+    <g>
+      <rect x="640" y="474" width="86" height="30" rx="3" fill="#F4F0E4" transform="rotate(-3 683 489)"/>
+      <line x1="652" y1="482" x2="712" y2="479" stroke="#C9C2B0" stroke-width="3" transform="rotate(-3 683 489)"/>
+      <line x1="652" y1="492" x2="700" y2="489" stroke="#C9C2B0" stroke-width="3" transform="rotate(-3 683 489)"/>
+      <line x1="960" y1="488" x2="1010" y2="480" stroke="#C05A32" stroke-width="6" stroke-linecap="round"/>
+      <rect x="1010" y="468" width="86" height="30" rx="3" fill="#F4F0E4" transform="rotate(2 1053 483)"/>
+      <line x1="1022" y1="478" x2="1082" y2="480" stroke="#C9C2B0" stroke-width="3" transform="rotate(2 1053 483)"/>
+    </g>
+    <!-- carafe -->
+    <path d="M300 452 h44 l-6 52 h-32 z" fill="#D8E2E4" stroke="#AEBBC0" stroke-width="2"/>
+    <rect x="308" y="442" width="28" height="12" rx="4" fill="#8A9598"/>
+  </g>
+
+  <!-- potted plant far left corner -->
+  <g>
+    <path d="M120 700 h84 l-12 -72 h-60 z" fill="#B0563A"/>
+    <g fill="#7E8F6C">
+      <path d="M162 632 q-44 -40 -38 -110 q38 44 44 108 z"/>
+      <path d="M164 632 q46 -34 42 -102 q-38 40 -50 100 z" fill="#6C7D5B"/>
+    </g>
+    <ellipse cx="162" cy="712" rx="66" ry="12" fill="#1C1B18" opacity="0.10"/>
+  </g>
+
+  <!-- vignette -->
+  <rect width="1600" height="900" fill="url(#vignM)"/>
 </svg>

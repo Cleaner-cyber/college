@@ -91,9 +91,12 @@
   <g>
     <path d="M560 470 L 780 470 L 764 640 L 576 640 Z" fill="#B8935F"/>
     <path d="M560 470 L 780 470 L 776 496 L 564 496 Z" fill="#C9A87B"/>
-    <rect x="600" y="452" width="120" height="24" rx="4" fill="#8A8272" transform="rotate(-3 660 464)"/>
-    <rect x="606" y="440" width="108" height="14" rx="3" fill="#5C564A" transform="rotate(-3 660 447)"/>
-    <path d="M728 470 q10 -26 2 -44" stroke="#5C564A" stroke-width="5" fill="none"/>
+    <g transform="rotate(-3 660 440)">
+      <rect x="606" y="396" width="112" height="72" rx="6" fill="#5C564A"/>
+      <rect x="614" y="404" width="96" height="56" rx="4" fill="#6E685A"/>
+      <circle cx="662" cy="432" r="9" fill="#8A8272"/>
+      <rect x="598" y="464" width="128" height="10" rx="4" fill="#8A8272"/>
+    </g>
     <rect x="736" y="452" width="20" height="34" rx="8" fill="#7FA3B8"/>
     <ellipse cx="670" cy="656" rx="130" ry="14" fill="#3A2E24" opacity="0.14"/>
   </g>
@@ -134,7 +137,7 @@
     </g>
     <g opacity="0.95">
       <circle cx="452" cy="548" r="24"/>
-      <path d="M444 526 q-20 -14 -16 -40 l10 -2 q0 20 14 30 Z"/>
+      <circle cx="474" cy="530" r="11"/>
       <path d="M414 604 C 416 570, 430 558, 452 558 C 474 558, 488 570, 490 604 Z"/>
     </g>
     <g>

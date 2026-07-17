@@ -1,7 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
-  <rect width="900" height="560" fill="#F3EFE6"/>
-  <rect x="230" y="40" width="440" height="480" rx="12" fill="#FDFCF9" stroke="#2A241D" stroke-width="6"/>
-  <rect x="270" y="80" width="240" height="22" rx="6" fill="#C05A32" opacity="0.85"/>
-  <rect x="270" y="130" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="174" width="260" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="218" width="220" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="262" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="306" width="260" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="350" width="220" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="394" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="438" width="260" height="12" rx="5" fill="#D8D2C4"/>
-  <text x="450" y="545" font-family="sans-serif" font-size="16" text-anchor="middle" fill="#8A8072">[占位] resume-doc · 一页纸简历</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC','Noto Sans CJK SC',sans-serif">
+  <!-- desk -->
+  <rect width="900" height="560" fill="#EDE9E0"/>
+  <!-- sheet shadow + sheet -->
+  <rect x="233" y="20" width="444" height="532" rx="2" fill="#1C1B18" opacity="0.10"/>
+  <rect x="228" y="14" width="444" height="532" rx="2" fill="#FEFDFA" stroke="#DDD6C8" stroke-width="1"/>
+
+  <!-- ── 页眉：姓名（灰条，不写具体人名）+ 求职意向 ── -->
+  <rect x="264" y="46" width="148" height="26" rx="4" fill="#C9C4B9"/>
+  <text x="636" y="58" text-anchor="end" font-size="11" fill="#6E675C">求职意向：前端开发实习生</text>
+  <text x="636" y="74" text-anchor="end" font-size="10" fill="#8A8375">可实习时间：每周 4 天 · 3 个月以上</text>
+  <!-- 联系方式（灰条） -->
+  <rect x="264" y="84" width="86" height="9" rx="3" fill="#DED9CD"/>
+  <rect x="360" y="84" width="118" height="9" rx="3" fill="#DED9CD"/>
+  <rect x="488" y="84" width="74" height="9" rx="3" fill="#DED9CD"/>
+  <line x1="264" y1="106" x2="636" y2="106" stroke="#C05A32" stroke-width="1.8"/>
+
+  <!-- ── 教育背景 ── -->
+  <rect x="264" y="120" width="3.5" height="13" fill="#C05A32"/>
+  <text x="275" y="131" font-size="13" font-weight="700" fill="#1C1B18" letter-spacing="2">教育背景</text>
+  <line x1="336" y1="127" x2="636" y2="127" stroke="#E4DFD3" stroke-width="1"/>
+  <text x="264" y="152" font-size="11" font-weight="700" fill="#1C1B18">浙江大学</text>
+  <rect x="322" y="143" width="76" height="10" rx="3" fill="#DED9CD"/>
+  <text x="636" y="152" text-anchor="end" font-size="10.5" fill="#6E675C">本科 · 大三在读</text>
+  <text x="264" y="169" font-size="10" fill="#555046">主修课程成绩优良，系统学习程序设计、数据分析与项目实践类课程</text>
+
+  <!-- ── 项目经历 ── -->
+  <rect x="264" y="186" width="3.5" height="13" fill="#C05A32"/>
+  <text x="275" y="197" font-size="13" font-weight="700" fill="#1C1B18" letter-spacing="2">项目经历</text>
+  <line x1="336" y1="193" x2="636" y2="193" stroke="#E4DFD3" stroke-width="1"/>
+
+  <text x="264" y="216" font-size="11" font-weight="700" fill="#1C1B18">商业短剧 AI 分镜 · 外包交付</text>
+  <text x="636" y="216" text-anchor="end" font-size="10" fill="#8A8375">大二暑期</text>
+  <text x="272" y="231" font-size="10" fill="#555046">· 为 15 秒短剧独立完成三格分镜，以角色一致性卡控制多图形象统一，一次迭代通过验收</text>
+  <text x="272" y="245" font-size="10" fill="#555046">· 交付前完成合作协议条款审查，推动修订不利条款后签约结算</text>
+
+  <text x="264" y="266" font-size="11" font-weight="700" fill="#1C1B18">社团招新视觉物料 · AI 生图</text>
+  <text x="636" y="266" text-anchor="end" font-size="10" fill="#8A8375">大一上</text>
+  <text x="272" y="281" font-size="10" fill="#555046">· 独立完成 3:4 宣传栏海报与 16:9 公众号头图双版本，经一轮需求迭代按时交付</text>
+  <text x="272" y="295" font-size="10" fill="#555046">· 模板被社团沿用至次年招新</text>
+
+  <text x="264" y="316" font-size="11" font-weight="700" fill="#1C1B18">活动策划案 PPT · 从需求到成稿</text>
+  <text x="636" y="316" text-anchor="end" font-size="10" fill="#8A8375">大一上</text>
+  <text x="272" y="331" font-size="10" fill="#555046">· 用 AI 辅助完成 10 页活动策划案（流程、分工、预算），负责人一次通过</text>
+
+  <text x="264" y="352" font-size="11" font-weight="700" fill="#1C1B18">大学生创新创业训练项目 · 校级立项</text>
+  <text x="636" y="352" text-anchor="end" font-size="10" fill="#8A8375">大二</text>
+  <text x="272" y="367" font-size="10" fill="#555046">· 负责 300 份问卷的数据清洗与统计分析，产出调研图表并写入中期报告</text>
+
+  <text x="264" y="388" font-size="11" font-weight="700" fill="#1C1B18">个人作品集网站 · 独立搭建上线</text>
+  <text x="636" y="388" text-anchor="end" font-size="10" fill="#8A8375">大二</text>
+  <text x="272" y="403" font-size="10" fill="#555046">· 用 AI 辅助编程从零搭建并上线个人主页，持续沉淀两年全部产出</text>
+
+  <!-- ── 技能 ── -->
+  <rect x="264" y="422" width="3.5" height="13" fill="#C05A32"/>
+  <text x="275" y="433" font-size="13" font-weight="700" fill="#1C1B18" letter-spacing="2">技能</text>
+  <line x1="312" y1="429" x2="636" y2="429" stroke="#E4DFD3" stroke-width="1"/>
+  <text x="264" y="452" font-size="10" fill="#555046">· AI 工具链：文生图迭代 / 长文档投喂与摘要 / 数据清洗 / 提示词工程（均有真实产出佐证）</text>
+  <text x="264" y="466" font-size="10" fill="#555046">· 编程基础：能独立定位并修复常见报错，完成课程项目开发与部署</text>
+
+  <!-- ── 获奖 ── -->
+  <rect x="264" y="484" width="3.5" height="13" fill="#C05A32"/>
+  <text x="275" y="495" font-size="13" font-weight="700" fill="#1C1B18" letter-spacing="2">获奖</text>
+  <line x1="312" y1="491" x2="636" y2="491" stroke="#E4DFD3" stroke-width="1"/>
+  <text x="264" y="514" font-size="10" fill="#555046">· 校级大学生创新创业训练项目立项（项目成员）</text>
+  <text x="264" y="528" font-size="10" fill="#555046">· 社团学年评优 · 宣传贡献奖</text>
+
+  <text x="636" y="536" text-anchor="end" font-size="8.5" fill="#B4AEA1">第 1 页 / 共 1 页</text>
 </svg>

@@ -1,7 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
-  <rect width="900" height="560" fill="#F3EFE6"/>
-  <rect x="230" y="40" width="440" height="480" rx="12" fill="#F7F3EA" stroke="#2A241D" stroke-width="6"/>
-  <rect x="270" y="80" width="240" height="22" rx="6" fill="#C05A32" opacity="0.85"/>
-  <rect x="270" y="130" width="300" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="174" width="260" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="218" width="360" height="12" rx="5" fill="#C97B5A"/><rect x="270" y="262" width="300" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="306" width="260" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="350" width="220" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="394" width="300" height="12" rx="5" fill="#D8D2C4"/><rect x="270" y="438" width="360" height="12" rx="5" fill="#C97B5A"/>
-  <text x="450" y="545" font-family="sans-serif" font-size="16" text-anchor="middle" fill="#8A8072">[占位] thesis-doc · 毕业论文（含AI使用声明）</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC','Noto Sans CJK SC',sans-serif">
+  <!-- desk -->
+  <rect width="900" height="560" fill="#EDE9E0"/>
+  <!-- sheet shadow + sheet -->
+  <rect x="240" y="18" width="430" height="536" rx="2" fill="#1C1B18" opacity="0.10"/>
+  <rect x="235" y="12" width="430" height="536" rx="2" fill="#FFFEFB" stroke="#DDD6C8" stroke-width="1"/>
+  <!-- inner frame -->
+  <rect x="255" y="32" width="390" height="496" fill="none" stroke="#1C1B18" stroke-width="1" opacity="0.35"/>
+  <rect x="259" y="36" width="382" height="488" fill="none" stroke="#1C1B18" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- 校名 -->
+  <text x="450" y="96" text-anchor="middle" font-size="32" font-weight="700" fill="#1C1B18" letter-spacing="10">××大学</text>
+
+  <!-- 论文类别 -->
+  <line x1="330" y1="140" x2="570" y2="140" stroke="#C05A32" stroke-width="1.2"/>
+  <text x="450" y="186" text-anchor="middle" font-size="30" font-weight="700" fill="#1C1B18" letter-spacing="14">本科毕业论文</text>
+  <line x1="330" y1="206" x2="570" y2="206" stroke="#C05A32" stroke-width="1.2"/>
+  <text x="450" y="232" text-anchor="middle" font-size="10.5" fill="#8A8375" letter-spacing="3">（ 含 AI 使 用 声 明 ）</text>
+
+  <!-- 题目区 -->
+  <g font-size="14" fill="#1C1B18">
+    <text x="300" y="288" letter-spacing="4">题　目：</text>
+    <line x1="362" y1="292" x2="608" y2="292" stroke="#1C1B18" stroke-width="1"/>
+    <line x1="300" y1="322" x2="608" y2="322" stroke="#1C1B18" stroke-width="1"/>
+  </g>
+
+  <!-- 信息栏 -->
+  <g font-size="13" fill="#1C1B18">
+    <text x="318" y="370" letter-spacing="1">学　　院</text>
+    <line x1="392" y1="374" x2="582" y2="374" stroke="#1C1B18" stroke-width="0.9"/>
+    <text x="318" y="398" letter-spacing="1">专　　业</text>
+    <line x1="392" y1="402" x2="582" y2="402" stroke="#1C1B18" stroke-width="0.9"/>
+    <text x="318" y="426" letter-spacing="1">姓　　名</text>
+    <line x1="392" y1="430" x2="582" y2="430" stroke="#1C1B18" stroke-width="0.9"/>
+    <text x="318" y="454" letter-spacing="1">学　　号</text>
+    <line x1="392" y1="458" x2="582" y2="458" stroke="#1C1B18" stroke-width="0.9"/>
+    <text x="318" y="482" letter-spacing="1">指导教师</text>
+    <line x1="392" y1="486" x2="582" y2="486" stroke="#1C1B18" stroke-width="0.9"/>
+  </g>
+
+  <!-- 日期 -->
+  <text x="450" y="514" text-anchor="middle" font-size="13" fill="#1C1B18" letter-spacing="4">二〇三〇年五月</text>
 </svg>
