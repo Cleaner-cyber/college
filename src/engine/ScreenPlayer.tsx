@@ -176,7 +176,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
               />
             )}
             {isSystem ? (
-              <div className="py-4 text-center tracking-wide">{body}</div>
+              <div className="py-4 text-left">{body}</div>
             ) : (
               <div className="ml-[52px] rounded-2xl rounded-tl-md border border-line bg-card p-4 shadow-soft">
                 {body}
@@ -361,22 +361,22 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
                 {name}
               </span>
             )}
-            <div className="relative min-h-[104px] rounded-2xl border border-line/60 bg-paper/90 px-6 py-4 shadow-pop backdrop-blur-md">
+            <div className="relative min-h-[104px] rounded-2xl border border-line/60 bg-paper/90 px-7 py-5 shadow-pop backdrop-blur-md">
               {text &&
                 (useTypewriter && !forceFull ? (
                   <Typewriter
                     text={text}
                     onDone={() => setTypingDone(true)}
-                    className={`text-[16px] ${isSystem ? 'text-center tracking-wide' : ''}`}
+                    className="text-left text-[16px] leading-[1.9]"
                   />
                 ) : (
-                  <p
-                    className={`whitespace-pre-wrap text-[16px] leading-relaxed ${
-                      isSystem ? 'text-center tracking-wide' : ''
-                    }`}
-                  >
-                    {text}
-                  </p>
+                  <div className="flex flex-col gap-2.5">
+                    {text.split('\n').map((line, i) => (
+                      <p key={i} className="text-left text-[16px] leading-[1.8]">
+                        {line}
+                      </p>
+                    ))}
+                  </div>
                 ))}
               {screen.type === 'input' && (
                 <div className="mt-3 flex gap-2" onClick={(e) => e.stopPropagation()}>

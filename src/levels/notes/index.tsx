@@ -1,6 +1,6 @@
 /**
  * 专业课救命笔记关：教学「语音笔记」。大二上主线必修 · 全预设演出。
- * 喂录音 → 转结构化笔记 → 费曼式追问 → 生成自测卡。
+ * 喂录音 → 转结构化笔记 → 费曼式追问 → 自测卡 → 出卷模考 → 薄弱点诊断（期末连招）。
  */
 import React, { useState } from 'react';
 import type { LevelModule, LevelProps, LevelResult } from '@/contracts';
@@ -21,6 +21,19 @@ const STEPS: ChatStep[] = [
   { type: 'senpai', key: 'senpai-tip-3' },
   { type: 'chip', labelKey: 'chip-cards', promptKey: 'q-cards', check: 'ck-cards' },
   { type: 'ai', key: 'a-cards' },
+  { type: 'senpai', key: 'senpai-tip-4' },
+  { type: 'chip', labelKey: 'chip-exam', promptKey: 'q-exam', check: 'ck-exam' },
+  { type: 'ai', key: 'a-exam' },
+  {
+    type: 'chips',
+    titleKey: 'exam-title',
+    options: [
+      { labelKey: 'exam-a-label', msgKey: 'exam-a-msg' },
+      { labelKey: 'exam-b-label', msgKey: 'exam-b-msg' },
+      { labelKey: 'exam-c-label', msgKey: 'exam-c-msg' },
+    ],
+  },
+  { type: 'ai', key: 'a-review', check: 'ck-review' },
   { type: 'senpai', key: 'senpai-wrap' },
   { type: 'button', labelKey: 'btn-deliver' },
 ];

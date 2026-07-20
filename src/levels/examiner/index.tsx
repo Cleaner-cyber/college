@@ -1,6 +1,6 @@
 /**
- * 期末周考官关：教学「考官模式」。大三上主线必修 · 全预设演出。
- * 喂讲义 → 让 AI 出卷 → 认真作答 → 拿薄弱点诊断 → 变式再测 → 考前一页纸。
+ * 雅思口语陪练关：教学「口语陪练」。大三上主线必修 · 全预设演出。
+ * 设定考官角色 → Part 1-3 全真模拟（不打断不纠错）→ 切教练要结构化点评 → 30 天陪练计划。
  */
 import React, { useState } from 'react';
 import type { LevelModule, LevelProps, LevelResult } from '@/contracts';
@@ -11,29 +11,29 @@ import { ChatScript, type ChatStep } from '@/components/chat/ChatScript';
 import { DeliverScreen, EscapeOverlay } from '@/components/chat/DeliverScreen';
 
 const STEPS: ChatStep[] = [
-  { type: 'file', id: 'mat', nameKey: 'file-mat-name', metaKey: 'file-mat-meta' },
   { type: 'senpai', key: 'senpai-tip-1' },
-  { type: 'chip', labelKey: 'chip-exam', promptKey: 'q-exam', check: 'ck-feed' },
-  { type: 'ai', key: 'a-exam' },
+  { type: 'chip', labelKey: 'chip-setup', promptKey: 'q-setup', check: 'ck-role' },
+  { type: 'ai', key: 'a-setup' },
   { type: 'senpai', key: 'senpai-tip-2' },
   {
     type: 'chips',
-    titleKey: 'exam-title',
+    titleKey: 'part1-title',
     options: [
-      { labelKey: 'exam-a-label', msgKey: 'exam-a-msg' },
-      { labelKey: 'exam-b-label', msgKey: 'exam-b-msg' },
-      { labelKey: 'exam-c-label', msgKey: 'exam-c-msg' },
+      { labelKey: 'part1-a-label', msgKey: 'part1-a-msg' },
+      { labelKey: 'part1-b-label', msgKey: 'part1-b-msg' },
+      { labelKey: 'part1-c-label', msgKey: 'part1-c-msg' },
     ],
-    check: 'ck-exam',
+    check: 'ck-part1',
   },
-  { type: 'ai', key: 'a-review', check: 'ck-diagnose' },
+  { type: 'ai', key: 'a-part1' },
   { type: 'senpai', key: 'senpai-tip-3' },
-  { type: 'chip', labelKey: 'chip-variant', promptKey: 'q-variant' },
-  { type: 'ai', key: 'a-variant' },
-  { type: 'chip', labelKey: 'chip-variant-answer', promptKey: 'q-variant-answer' },
-  { type: 'ai', key: 'a-variant-review' },
-  { type: 'chip', labelKey: 'chip-sheet', promptKey: 'q-sheet', check: 'ck-sheet' },
-  { type: 'ai', key: 'a-sheet' },
+  { type: 'chip', labelKey: 'chip-part2', promptKey: 'q-part2' },
+  { type: 'ai', key: 'a-part3' },
+  { type: 'chip', labelKey: 'chip-feedback', promptKey: 'q-feedback', check: 'ck-feedback' },
+  { type: 'ai', key: 'a-feedback' },
+  { type: 'senpai', key: 'senpai-tip-4' },
+  { type: 'chip', labelKey: 'chip-plan', promptKey: 'q-plan', check: 'ck-plan' },
+  { type: 'ai', key: 'a-plan' },
   { type: 'senpai', key: 'senpai-wrap' },
   { type: 'button', labelKey: 'btn-deliver' },
 ];
@@ -44,12 +44,12 @@ const ExaminerComponent: React.FC<LevelProps> = ({ state, content, onComplete, o
   const assets = content.presetAssets ?? {};
 
   const buildResult = (borrowed: boolean, done: number): LevelResult => ({
-    deltas: { academic: !borrowed && done === checklist.length ? 2 : 1 },
+    deltas: { expression: !borrowed && done === checklist.length ? 2 : 1 },
     abilityUnlocks: ['examiner'],
     checklistScore: { done, total: checklist.length },
     archiveItems: [
       {
-        id: 'exam-sheet',
+        id: 'ielts-speaking',
         levelId: 'examiner',
         title: borrowed ? content.copy['archive-title-borrowed'] : content.copy['archive-title'],
         resumeLine: borrowed
