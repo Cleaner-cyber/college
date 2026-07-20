@@ -180,7 +180,12 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
     if (streamCount >= full.length) {
       setMsgs((m) => {
         const done: Msg[] = m.map((msg) => (msg.kind === 'ai' ? { ...msg, done: true } : msg));
-        if (step.deck) done.push({ kind: 'deck', id: step.deck, titleKey: DECK_CHAT_TITLE[step.deck] });
+        if (step.deck)
+          done.push({
+            kind: 'deck',
+            id: step.deck,
+            titleKey: DECK_CHAT_TITLE[step.deck] ?? `deck-${step.deck}-name`,
+          });
         if (step.doc) done.push({ kind: 'doc' });
         return done;
       });
@@ -346,7 +351,7 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
 
       {viewer && (
         <SlideViewer
-          title={api.copy(DECK_CHAT_TITLE[viewer])}
+          title={api.copy(DECK_CHAT_TITLE[viewer] ?? `deck-${viewer}-name`)}
           pages={deckPages(assets, viewer)}
           labels={viewerLabels(api)}
           onClose={() => setViewer(null)}
@@ -417,7 +422,7 @@ const Arena: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ api
                   {t.name}
                   {hasDeck(t.name) && (
                     <span className="ml-1.5 rounded bg-accent-soft px-1 py-0.5 text-[10px] font-normal text-accent">
-                      成品↓
+                      {api.copy('deck-badge')}
                     </span>
                   )}
                 </td>
@@ -425,7 +430,7 @@ const Arena: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ api
                 <td className="px-3 py-2">{t.pro}</td>
                 <td className="px-3 py-2 text-ink-soft">{t.con}</td>
                 <td className="whitespace-nowrap px-2 py-2">
-                  <span className={t.net === '直接可用' ? 'text-accent' : 'text-ink-soft'}>
+                  <span className={t.net === api.copy('net-ok-label') ? 'text-accent' : 'text-ink-soft'}>
                     {t.net}
                   </span>
                 </td>

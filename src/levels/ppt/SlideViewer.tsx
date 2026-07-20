@@ -4,17 +4,12 @@
  */
 import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { interpolate } from '@/engine/content';
 
 export interface SlideViewerLabels {
   close: string;
   counter: string; // 形如 "{n} / {total}"
   hint: string;
-}
-
-function interp(tmpl: string, vars: Record<string, string | number>): string {
-  return tmpl.replace(/\{(\w+)\}/g, (raw, k: string) =>
-    vars[k] === undefined ? raw : String(vars[k]),
-  );
 }
 
 export const SlideViewer: React.FC<{
@@ -27,7 +22,7 @@ export const SlideViewer: React.FC<{
   const [n, setN] = useState(0);
 
   const step = useCallback(
-    (d: number) => setN((v) => Math.min(pages.length - 1, Math.max(0, v + d))),
+    (d: number) => setN((v) => Math.min(Math.max(pages.length - 1, 0), Math.max(0, v + d))),
     [pages.length],
   );
 
@@ -58,7 +53,7 @@ export const SlideViewer: React.FC<{
             {note && <p className="truncate text-[11px] text-ink-soft">{note}</p>}
           </div>
           <span className="rounded bg-accent-soft px-2 py-0.5 text-[12px] font-medium tabular-nums text-accent">
-            {interp(labels.counter, { n: n + 1, total: pages.length })}
+            {interpolate(labels.counter, { n: n + 1, total: pages.length })}
           </span>
           <button
             onClick={onClose}
@@ -95,7 +90,9 @@ export const SlideViewer: React.FC<{
 
         {/* 底部：缩略图条 + 提示 */}
         <footer className="border-t border-line bg-paper/60 px-4 py-2.5">
-          <div className="flex items-center justify-center gap-1.5 overflow-x-auto">
+          {/* 内层 w-max + mx-auto：能放下时居中，放不下时可从头横向滚动（justify-center 会把首张推出可滚区） */}
+          <div className="overflow-x-auto">
+            <div className="mx-auto flex w-max items-center gap-1.5">
             {pages.map((p, i) => (
               <button
                 key={i}
@@ -107,6 +104,7 @@ export const SlideViewer: React.FC<{
                 <img src={p} alt="" loading="lazy" className="h-full w-auto" />
               </button>
             ))}
+            </div>
           </div>
           <p className="mt-1.5 text-center text-[11px] text-ink-soft">{labels.hint}</p>
         </footer>
