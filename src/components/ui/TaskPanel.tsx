@@ -5,10 +5,11 @@ import { ui, interpolate } from '@/engine/content';
 interface TaskPanelProps {
   items: ChecklistItem[];
   checked: string[];
+  title?: string; // 覆盖默认标题（默认「学姐的要求」，按关卡的派活人改）
 }
 
 /** 验收清单（任务面板）：折叠角标 + 展开列表 */
-export const TaskPanel: React.FC<TaskPanelProps> = ({ items, checked }) => {
+export const TaskPanel: React.FC<TaskPanelProps> = ({ items, checked, title }) => {
   const [open, setOpen] = useState(false);
   const done = items.filter((i) => checked.includes(i.id)).length;
 
@@ -18,7 +19,7 @@ export const TaskPanel: React.FC<TaskPanelProps> = ({ items, checked }) => {
         onClick={() => setOpen((o) => !o)}
         className="rounded-full border border-line bg-card px-3 py-1.5 shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
       >
-        {ui.checklist.title}{' '}
+        {title || ui.checklist.title}{' '}
         <span className="font-semibold text-accent">
           {interpolate(ui.checklist.progress, { done, total: items.length })}
         </span>

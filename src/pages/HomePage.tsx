@@ -36,6 +36,8 @@ const assetUrl = (ref: string) => (ref.includes('.') ? `/assets/${ref}` : `/asse
 const DOC_ITEMS: Record<string, { titleKey: string; mdKey: string }> = {
   'doc-course-rules': { titleKey: 'doc1-title', mdKey: 'a1' },
   'doc-summer-plan': { titleKey: 'doc2-title', mdKey: 'a2' },
+  'doc-ppt-outline': { titleKey: 'outline-doc-title', mdKey: 'outline-doc-md' },
+  'doc-ppt-tools': { titleKey: 'tools-doc-title', mdKey: 'tools-doc-md' },
 };
 
 type Tab = 'semester' | 'folder' | 'stats' | 'log';
