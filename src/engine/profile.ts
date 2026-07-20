@@ -9,6 +9,7 @@ export interface ProfileService {
   setName: (name: string) => void;
   setMajor: (majorId: string) => void;
   setFlag: (patch: Partial<PlayerState['flag']>) => void;
+  setTraits: (traitIds: string[]) => void; // 入学特质（v2.1 模拟层）
 }
 
 export const ProfileContext = createContext<ProfileService | null>(null);

@@ -4,13 +4,22 @@
  * 经济模型 v2：主线教学关不耗行动点且必须全部完成才能结算；行动点只用于选修速结行动。
  */
 import { create } from 'zustand';
-import type { LevelResult, LogEntry, PlayerState, QuickAction } from '@/contracts';
+import type {
+  LevelResult,
+  LogEntry,
+  PlayerState,
+  QuickAction,
+  SimEvent,
+  SimOutcome,
+  TagDef,
+} from '@/contracts';
 import {
   getSaveAdapter,
   persistState,
   flushState,
 } from '@/services/saveAdapter';
-import { getBoard, getMajor, interpolate, semesterName, ui } from './content';
+import { getBoard, getMajor, getTrait, interpolate, semesterName, tagDefs, ui } from './content';
+import { awakenedTagIds, checkRate, drawEvent } from './sim';
 
 const SEMESTER_ACTION_POINTS = 3; // 每学期行动点（选修用）
 
@@ -27,6 +36,22 @@ function freshState(): PlayerState {
     archive: [],
     completedActions: [],
     log: [],
+    traits: [],
+    tags: {},
+    axesPeak: { academic: 0, portfolio: 0, expression: 0, cash: 0, energy: 0 },
+    eventHistory: [],
+    pendingEvents: [],
+  };
+}
+
+/** 各轴历史最高值（结算总评用，lifeRestart 式） */
+function mergePeak(peak: PlayerState['axes'], axes: PlayerState['axes']): PlayerState['axes'] {
+  return {
+    academic: Math.max(peak.academic, axes.academic),
+    portfolio: Math.max(peak.portfolio, axes.portfolio),
+    expression: Math.max(peak.expression, axes.expression),
+    cash: Math.max(peak.cash, axes.cash),
+    energy: Math.max(peak.energy, axes.energy),
   };
 }
 
@@ -80,36 +105,66 @@ export function isPlayingSemester(semester: string): boolean {
   return (SEMESTER_CHAIN as readonly string[]).includes(semester);
 }
 
-/** 旧档迁移：'*-end'（旧版 demo 终点）→ 开启下一学期 */
+/** 旧档迁移：'*-end'（旧版 demo 终点）→ 开启下一学期；v2.1 模拟层字段补默认值 */
 function migrate(state: PlayerState): PlayerState {
+  let next: PlayerState = {
+    ...state,
+    traits: state.traits ?? [],
+    tags: state.tags ?? {},
+    axesPeak: state.axesPeak ?? { ...state.axes },
+    eventHistory: state.eventHistory ?? [],
+    pendingEvents: state.pendingEvents ?? [],
+  };
   const legacy: Record<string, PlayerState['semester']> = {
     'y1s1-end': 'y1s2',
     'y1s2-end': 'y2s1',
   };
-  const to = legacy[state.semester as string];
-  if (!to) return state;
-  return {
-    ...state,
-    semester: to,
-    actionPoints: SEMESTER_ACTION_POINTS,
-    completedActions: [],
-    log: [...state.log, logEntry('semester', 'semester-start', { semester: semesterName(to) })],
-  };
+  const to = legacy[next.semester as string];
+  if (to) {
+    next = {
+      ...next,
+      semester: to,
+      actionPoints: SEMESTER_ACTION_POINTS,
+      completedActions: [],
+      log: [...next.log, logEntry('semester', 'semester-start', { semester: semesterName(to) })],
+    };
+  }
+  return next;
+}
+
+/** 事件结算的瞬态结果（弹窗展示用，不入存档） */
+export interface SimResolution {
+  optionIndex: number;
+  success: boolean | null; // null = 无检定
+  rate?: number; // 检定成功率（展示）
+  outcome: SimOutcome;
+  awakened: TagDef[]; // 本次新觉醒的标签
 }
 
 interface EngineStore {
   state: PlayerState | null; // null = 尚未从存档水合
   ready: boolean;
+  /** 当前弹出的模拟事件卡（瞬态，不入档） */
+  simEvent: SimEvent | null;
+  /** 当前事件的结算结果（瞬态） */
+  simResolution: SimResolution | null;
   /** 从当前 SaveAdapter 读档；无档则新建 */
   hydrate: () => Promise<void>;
   /** 卸载状态（登出时用） */
   unload: () => void;
-  /** 序章建档（引擎职责）：姓名 / 专业 / flag 局部合并 */
+  /** 序章建档（引擎职责）：姓名 / 专业 / flag 局部合并 / 入学特质（一次性生效轴修正） */
   setProfile: (patch: {
     name?: string;
     majorId?: string;
     flag?: Partial<PlayerState['flag']>;
+    traits?: string[];
   }) => void;
+  /** 过日子：扣 1 行动点抽一张事件卡（进 simEvent 等待抉择） */
+  drawSimEvent: () => void;
+  /** 事件抉择：检定、结算数值/标签/连锁，产出 simResolution */
+  resolveSimEvent: (optionIndex: number) => void;
+  /** 关闭事件弹窗（清瞬态） */
+  closeSimEvent: () => void;
   /** 关卡结束（onComplete/onEscape 共用）：合并结果、记日志、学期流转、落盘 */
   applyLevelResult: (levelId: string, result: LevelResult) => void;
   /** 速结行动：扣行动点、数值、入档、记日志 */
@@ -123,6 +178,8 @@ interface EngineStore {
 export const useEngine = create<EngineStore>((set) => ({
   state: null,
   ready: false,
+  simEvent: null,
+  simResolution: null,
 
   hydrate: async () => {
     const adapter = getSaveAdapter();
@@ -135,6 +192,16 @@ export const useEngine = create<EngineStore>((set) => ({
   setProfile: (patch) =>
     set((s) => {
       if (!s.state) return {};
+      // 入学特质：记录 id 并一次性应用轴修正（只在未设置过时生效，防重复叠加）
+      let axes = s.state.axes;
+      let traits = s.state.traits;
+      if (patch.traits && s.state.traits.length === 0) {
+        traits = patch.traits;
+        for (const id of patch.traits) {
+          const t = getTrait(id);
+          if (t?.deltas) axes = mergeDeltas(axes, t.deltas);
+        }
+      }
       const next: PlayerState = {
         ...s.state,
         player: {
@@ -142,10 +209,81 @@ export const useEngine = create<EngineStore>((set) => ({
           majorId: patch.majorId ?? s.state.player.majorId,
         },
         flag: { ...s.state.flag, ...patch.flag },
+        traits,
+        axes,
+        axesPeak: mergePeak(s.state.axesPeak, axes),
       };
       persistState(next);
       return { state: next };
     }),
+
+  drawSimEvent: () =>
+    set((s) => {
+      const st = s.state;
+      if (!st || s.simEvent || st.actionPoints < 1) return {};
+      const ev = drawEvent(st);
+      if (!ev) return {};
+      const next: PlayerState = { ...st, actionPoints: st.actionPoints - 1 };
+      persistState(next);
+      return { state: next, simEvent: ev, simResolution: null };
+    }),
+
+  resolveSimEvent: (optionIndex) =>
+    set((s) => {
+      const st = s.state;
+      const ev = s.simEvent;
+      if (!st || !ev || s.simResolution) return {};
+      const opt = ev.options[optionIndex];
+      if (!opt) return {};
+      // 检定：轴值 vs 难度 → 成败两分支
+      let success: boolean | null = null;
+      let rate: number | undefined;
+      let outcome: SimOutcome | undefined;
+      if (opt.check) {
+        rate = checkRate(st.axes[opt.check.axis], opt.check.dc);
+        success = Math.random() < rate;
+        outcome = success ? opt.success : opt.fail;
+      } else {
+        outcome = opt.result;
+      }
+      if (!outcome) return {};
+
+      const axes = outcome.deltas ? mergeDeltas(st.axes, outcome.deltas) : st.axes;
+      const beforeAwakened = awakenedTagIds(st.tags);
+      const tags = { ...st.tags };
+      if (outcome.tags) {
+        for (const [t, n] of Object.entries(outcome.tags)) tags[t] = (tags[t] ?? 0) + n;
+      }
+      const awakened = awakenedTagIds(tags)
+        .filter((id) => !beforeAwakened.includes(id))
+        .map((id) => tagDefs.find((t) => t.id === id)!)
+        .filter(Boolean);
+
+      const pendingEvents = st.pendingEvents.filter((id) => id !== ev.id);
+      if (outcome.next && !st.eventHistory.includes(outcome.next) && !pendingEvents.includes(outcome.next)) {
+        pendingEvents.push(outcome.next);
+      }
+
+      const next: PlayerState = {
+        ...st,
+        axes,
+        axesPeak: mergePeak(st.axesPeak, axes),
+        tags,
+        eventHistory: [...st.eventHistory, ev.id],
+        pendingEvents,
+        log: [
+          ...st.log,
+          logEntry('quick', 'sim-event', { label: opt.label, result: outcome.text }),
+        ],
+      };
+      persistState(next);
+      return {
+        state: next,
+        simResolution: { optionIndex, success, rate, outcome, awakened },
+      };
+    }),
+
+  closeSimEvent: () => set({ simEvent: null, simResolution: null }),
 
   applyLevelResult: (levelId, result) =>
     set((s) => {
@@ -159,9 +297,11 @@ export const useEngine = create<EngineStore>((set) => ({
       const incoming = result.archiveItems.map((item) => ({ ...item, semester: st.semester }));
       const incomingIds = new Set(incoming.map((i) => i.id));
 
+      const mergedAxes = mergeDeltas(st.axes, result.deltas);
       let next: PlayerState = {
         ...st,
-        axes: mergeDeltas(st.axes, result.deltas),
+        axes: mergedAxes,
+        axesPeak: mergePeak(st.axesPeak, mergedAxes),
         abilities: [...st.abilities, ...newAbilities],
         archive: [...st.archive.filter((a) => !incomingIds.has(a.id)), ...incoming],
         completedActions: st.completedActions.includes(levelId)
@@ -196,11 +336,13 @@ export const useEngine = create<EngineStore>((set) => ({
         );
         const energy = next.axes.energy + remaining;
         const to = nextSemester(st.semester);
+        const rested = { ...next.axes, energy };
         if (to !== 'grad-end') {
           log.push(logEntry('semester', 'semester-start', { semester: semesterName(to) }));
           next = {
             ...next,
-            axes: { ...next.axes, energy },
+            axes: rested,
+            axesPeak: mergePeak(next.axesPeak, rested),
             actionPoints: SEMESTER_ACTION_POINTS,
             semester: to,
             completedActions: [],
@@ -208,7 +350,8 @@ export const useEngine = create<EngineStore>((set) => ({
         } else {
           next = {
             ...next,
-            axes: { ...next.axes, energy },
+            axes: rested,
+            axesPeak: mergePeak(next.axesPeak, rested),
             actionPoints: 0,
             semester: 'grad-end',
           };
@@ -236,9 +379,11 @@ export const useEngine = create<EngineStore>((set) => ({
       if (st.completedActions.includes(qa.id)) return {};
       const cost = effectiveCost(qa.cost, qa.costWithAbility, st.abilities);
       if (cost > st.actionPoints) return {};
+      const qaAxes = mergeDeltas(st.axes, qa.deltas);
       const next: PlayerState = {
         ...st,
-        axes: mergeDeltas(st.axes, qa.deltas),
+        axes: qaAxes,
+        axesPeak: mergePeak(st.axesPeak, qaAxes),
         actionPoints: st.actionPoints - cost,
         archive: qa.archiveItem
           ? [...st.archive, { ...qa.archiveItem, semester: st.semester, borrowed: false }]

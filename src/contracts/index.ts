@@ -2,6 +2,8 @@
  * 类型契约 —— 与 docs/02_数据契约.md 一一对应。
  * 【冻结件】改动需项目负责人确认，禁止自行扩展。
  * v2：桌面端 + 云存档版。新增行动日志 log；行动点只用于选修，教学关为主线必修。
+ * v2.1：模拟层扩展（docs/08 方案 P0，已确认）——入学特质 / 学期事件流 / 标签；
+ *       PlayerState 新增 traits / tags / axesPeak / eventHistory / pendingEvents。
  */
 import type React from 'react';
 
@@ -78,6 +80,12 @@ export interface PlayerState {
   archive: ArchiveItem[]; // 档案（驱动简历/结局个性化）
   completedActions: string[]; // 本学期已执行的行动 id（含关卡与速结）
   log: LogEntry[]; // 全程行动记录
+  // ---- v2.1 模拟层（旧档水合时补默认值）----
+  traits: string[]; // 入学特质 id（序章抽取）
+  tags: Record<string, number>; // 标签计数（选择累积，达阈值「觉醒」）
+  axesPeak: PlayerState['axes']; // 各轴历史最高值（结算总评用）
+  eventHistory: string[]; // 已经历的模拟事件 id（事件默认不重复；供条件/结局引用）
+  pendingEvents: string[]; // 连锁事件队列（事件 next 入队，抽卡时优先弹出）
 }
 
 // ---------- 2. 关卡插件接口 ----------
@@ -171,6 +179,64 @@ export interface QuickAction {
   resultText: string; // 结算一句话
   archiveItem?: Omit<ArchiveItem, 'semester' | 'borrowed'>;
   senpaiComment?: string; // 学长点评（可空）
+}
+
+// ---------- 3.5 模拟层：入学特质 / 学期事件 / 标签（v2.1，docs/08 P0）----------
+
+/** 结构化条件：全部字段同时满足（AND）；数组内任一命中即满足该字段（OR） */
+export interface SimCondition {
+  minAxes?: Partial<PlayerState['axes']>; // 各轴下限
+  maxAxes?: Partial<PlayerState['axes']>; // 各轴上限（低精力事件等）
+  traits?: string[]; // 含任一特质
+  notTraits?: string[]; // 不含任何列出特质
+  minTags?: Record<string, number>; // 标签计数下限
+  notTags?: string[]; // 未沾任何列出标签（计数为 0）
+  events?: string[]; // 已历任一事件
+  notEvents?: string[]; // 未历任何列出事件
+}
+
+export interface SimOutcome {
+  text: string; // 结果文案
+  deltas?: Partial<PlayerState['axes']>;
+  tags?: Record<string, number>; // 标签增量
+  next?: string; // 连锁：目标事件入 pendingEvents，后续抽卡优先弹出
+}
+
+export interface SimEventOption {
+  label: string;
+  require?: SimCondition; // 选项门槛：不满足则灰显（数值被读取的第一现场）
+  check?: { axis: keyof PlayerState['axes']; dc: number }; // 轴值检定，成败两分支
+  result?: SimOutcome; // 无检定的直接结果
+  success?: SimOutcome; // 检定成功
+  fail?: SimOutcome; // 检定失败
+}
+
+/** 学期事件卡。weight=0 的事件不进随机池，只能被 next 连锁触发 */
+export interface SimEvent {
+  id: string;
+  weight: number;
+  include?: SimCondition; // 必须满足才入池
+  exclude?: SimCondition; // 满足则出池
+  traitWeights?: Record<string, number>; // 特质 → 权重乘数
+  tagWeights?: Record<string, number>; // 已觉醒标签 → 权重乘数（Reigns 卡袋挤占）
+  text: string;
+  options: SimEventOption[];
+}
+
+/** 入学特质（序章展示 N 张抽 2）。deltas 在选定时一次性生效 */
+export interface Trait {
+  id: string;
+  name: string;
+  desc: string; // 面向玩家的效果描述
+  deltas?: Partial<PlayerState['axes']>;
+}
+
+/** 标签定义：计数达 threshold 触发「觉醒」弹卡并重编事件卡袋 */
+export interface TagDef {
+  id: string;
+  name: string;
+  threshold: number;
+  awakenText: string; // 「你正在成为：××」
 }
 
 // ---------- 4. 存档 ----------

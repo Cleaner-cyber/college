@@ -1,0 +1,10 @@
+[
+  { "id": "voice", "name": "敢开口", "threshold": 3, "awakenText": "你正在成为：敢在人前说话的人。有些机会，从此只属于你。" },
+  { "id": "nice", "name": "老好人", "threshold": 3, "awakenText": "你正在成为：谁的忙都帮的人。大家都喜欢你——大家也都来找你。" },
+  { "id": "lone", "name": "独行侠", "threshold": 3, "awakenText": "你正在成为：一个人也行的人。安静高效，但有些事只发生在人群里。" },
+  { "id": "grind", "name": "卷王", "threshold": 3, "awakenText": "你正在成为：不肯输的人。绩点会记住你，身体也会。" },
+  { "id": "night", "name": "夜行者", "threshold": 3, "awakenText": "你正在成为：深夜里最清醒的人。夜里有灵感，也有黑眼圈。" },
+  { "id": "social", "name": "场子熟", "threshold": 3, "awakenText": "你正在成为：哪儿都有熟人的人。消息比别人早半步。" },
+  { "id": "thrift", "name": "会过日子", "threshold": 3, "awakenText": "你正在成为：把钱算明白的人。钱包稳了，底气就稳了。" },
+  { "id": "maker", "name": "折腾家", "threshold": 3, "awakenText": "你正在成为：闲不住的人。总在做点什么，档案夹越来越厚。" }
+]

@@ -2,15 +2,84 @@
  * 序章：通知书 → 姓名 → 选专业 → 立 flag → 绑定学长 → 专业卡片 → 文件夹引入。
  * 建档写入（姓名/专业/flag）经引擎 ProfileContext，关卡不触碰 store。
  */
-import React, { useState } from 'react';
-import type { LevelModule, LevelProps, Major } from '@/contracts';
+import React, { useMemo, useState } from 'react';
+import type { LevelModule, LevelProps, Major, Trait } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
-import { searchMajors, getMajor, majors, ui } from '@/engine/content';
+import { searchMajors, getMajor, majors, traits as allTraits, interpolate, ui } from '@/engine/content';
 import { useProfile } from '@/engine/profile';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
 
 const FLAG_KEYS = ['salaryBand', 'city', 'workStyle', 'offTime'] as const;
+const TRAIT_SHOW = 8; // 每局随机亮出的特质数
+const TRAIT_PICK = 2; // 可选数量
+
+/** 入学特质抽卡：随机亮 8 张选 2（build 起点，docs/08 C1） */
+const TraitDraw: React.FC<{ api: FlowAPI; onConfirm: (ids: string[]) => void }> = ({
+  api,
+  onConfirm,
+}) => {
+  const shown = useMemo<Trait[]>(
+    () => [...allTraits].sort(() => Math.random() - 0.5).slice(0, TRAIT_SHOW),
+    [],
+  );
+  const [picked, setPicked] = useState<string[]>([]);
+
+  const toggle = (id: string) =>
+    setPicked((p) =>
+      p.includes(id) ? p.filter((x) => x !== id) : p.length < TRAIT_PICK ? [...p, id] : p,
+    );
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div>
+        <p className="whitespace-pre-wrap text-[16px] leading-relaxed">{api.t(api.screen.text ?? '')}</p>
+        <h2 className="mt-4 text-xl font-semibold">{api.copy('trait-title')}</h2>
+        <p className="mt-1 text-[13px] text-ink-soft">{api.copy('trait-sub')}</p>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {shown.map((t) => {
+          const on = picked.includes(t.id);
+          return (
+            <button
+              key={t.id}
+              onClick={() => toggle(t.id)}
+              className={`rounded-xl border p-3.5 text-left transition ${
+                on
+                  ? 'border-accent bg-accent-soft shadow-glow'
+                  : 'border-line bg-card shadow-soft hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[15px] font-semibold">{t.name}</span>
+                {on && (
+                  <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] text-white">
+                    {api.copy('trait-picked-tag')}
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-[12px] leading-relaxed text-ink-soft">{t.desc}</p>
+            </button>
+          );
+        })}
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-sm tabular-nums text-ink-soft">
+          {interpolate(api.copy('trait-count'), { n: picked.length })}
+        </span>
+        <Button
+          disabled={picked.length !== TRAIT_PICK}
+          onClick={() => {
+            onConfirm(picked);
+            api.advance();
+          }}
+        >
+          {api.copy('trait-confirm')}
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const MajorSelect: React.FC<{ api: FlowAPI; onSelect: (m: Major) => void }> = ({
   api,
@@ -116,6 +185,7 @@ const PrologueComponent: React.FC<LevelProps> = ({ state, content, onComplete })
             }}
           />
         ),
+        ST: (api) => <TraitDraw api={api} onConfirm={(ids) => profile.setTraits(ids)} />,
         S6: (api) => <MajorCard api={api} majorId={state.player.majorId} />,
       }}
       overlay={(api) =>

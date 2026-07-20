@@ -2,7 +2,7 @@
  * 内容加载器：所有面向用户的文案均来自 /content 下的 JSON。
  * 引擎负责加载并注入关卡（关卡不自行 import 内容）。
  */
-import type { LevelContent, Major, QuickAction } from '@/contracts';
+import type { LevelContent, Major, QuickAction, SimEvent, TagDef, Trait } from '@/contracts';
 
 import prologueJson from '@content/levels/prologue.json';
 import courseSelectJson from '@content/levels/course-select.json';
@@ -36,6 +36,9 @@ import boardY3s2 from '@content/board/y3s2.json';
 import boardY4 from '@content/board/y4.json';
 import uiJson from '@content/ui/ui.json';
 import folderJson from '@content/folder/folder.json';
+import traitsJson from '@content/sim/traits.json';
+import tagsJson from '@content/sim/tags.json';
+import simEventsY1s1 from '@content/sim/events-y1s1.json';
 
 const levelContents: Record<string, LevelContent> = {
   prologue: prologueJson as LevelContent,
@@ -59,6 +62,22 @@ export function getLevelContent(id: string): LevelContent {
   const c = levelContents[id];
   if (!c) throw new Error(`Missing level content: ${id}`);
   return c;
+}
+
+// ---- 模拟层内容（docs/08 P0）----
+export const traits: Trait[] = traitsJson as Trait[];
+export const tagDefs: TagDef[] = tagsJson as TagDef[];
+
+export function getTrait(id: string): Trait | undefined {
+  return traits.find((t) => t.id === id);
+}
+
+const simEvents: Record<string, SimEvent[]> = {
+  y1s1: simEventsY1s1 as SimEvent[],
+};
+
+export function getSimEvents(semester: string): SimEvent[] {
+  return simEvents[semester] ?? [];
 }
 
 export const majors: Major[] = majorsJson as Major[];

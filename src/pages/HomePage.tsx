@@ -12,11 +12,15 @@ import {
   getFolderSection,
   getLevelContent,
   getMajor,
+  getSimEvents,
+  getTrait,
   interpolate,
   quickActions,
+  tagDefs,
   ui,
 } from '@/engine/content';
 import { useEngine, effectiveCost, isMainlineComplete } from '@/engine/store';
+import { checkRate, conditionLabel, drawableCount, evalCondition } from '@/engine/sim';
 import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
@@ -24,6 +28,7 @@ import { Panel } from '@/components/ui/Panel';
 import { PromptText } from '@/components/ui/Markdown';
 import { DocViewer } from '@/components/ui/DocViewer';
 import { HomeTour, TOUR_KEY } from '@/components/ui/Tour';
+import { EventModal, simCopy, type EventOptionView } from '@/components/sim/EventModal';
 
 const home = ui.home as Record<string, string>;
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
@@ -251,11 +256,32 @@ const QuickResultModal: React.FC<{ qa: QuickAction; onClose: () => void }> = ({ 
 const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const navigate = useNavigate();
   const runQuickAction = useEngine((s) => s.runQuickAction);
+  const drawSimEvent = useEngine((s) => s.drawSimEvent);
+  const resolveSimEvent = useEngine((s) => s.resolveSimEvent);
+  const closeSimEvent = useEngine((s) => s.closeSimEvent);
+  const simEvent = useEngine((s) => s.simEvent);
+  const simResolution = useEngine((s) => s.simResolution);
   const [lastQuick, setLastQuick] = useState<QuickAction | null>(null);
   const board = getBoard(state.semester);
   const qas = quickActions[board.quickActionsRef] ?? [];
   const mainlineDone = isMainlineComplete(state);
   const firstMainlineDone = state.completedActions.includes(board.mainline[0]?.id);
+  // 过日子：本学期事件池余量（含连锁）
+  const drawable = drawableCount(state);
+  const canDraw = drawable > 0 && state.actionPoints >= 1;
+  const simOptionViews: EventOptionView[] = (simEvent?.options ?? []).map((o) => ({
+    label: o.label,
+    disabled: o.require ? !evalCondition(state, o.require) : false,
+    requireHint: o.require
+      ? simCopy('require-hint', { cond: conditionLabel(o.require) })
+      : undefined,
+    checkHint: o.check
+      ? simCopy('check-hint', {
+          axis: ui.axes[o.check.axis],
+          rate: Math.round(checkRate(state.axes[o.check.axis], o.check.dc) * 100),
+        })
+      : undefined,
+  }));
 
   if (state.semester === 'grad-end') {
     return <SemesterEnded />;
@@ -319,6 +345,31 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         {!firstMainlineDone && (
           <p className="mb-3 text-sm text-accent">{board.electivesLockText}</p>
         )}
+        {/* 过日子：抽学期事件卡（模拟层 P0，仅配置了事件池的学期显示） */}
+        {getSimEvents(state.semester).length > 0 && (
+          <div
+            className={`mb-3 flex items-center gap-4 rounded-xl border border-dashed p-4 transition ${
+              firstMainlineDone && canDraw
+                ? 'border-accent/60 bg-accent-soft/40'
+                : 'border-line bg-paper opacity-70'
+            } ${firstMainlineDone ? '' : 'pointer-events-none'}`}
+          >
+            <span className="text-2xl">🎲</span>
+            <div className="min-w-0 flex-1">
+              <div className="text-[15px] font-medium">{simCopy('live-title')}</div>
+              <p className="mt-0.5 text-[12.5px] leading-relaxed text-ink-soft">
+                {simCopy('live-sub')}
+              </p>
+            </div>
+            <Button disabled={!canDraw} onClick={() => drawSimEvent()}>
+              {state.actionPoints < 1
+                ? simCopy('no-points')
+                : drawable === 0
+                  ? simCopy('pool-empty')
+                  : simCopy('draw-btn')}
+            </Button>
+          </div>
+        )}
         <div className={`grid grid-cols-2 gap-3 ${firstMainlineDone ? '' : 'pointer-events-none opacity-40'}`}>
           {qas.map((qa) => {
             const cost = effectiveCost(qa.cost, qa.costWithAbility, state.abilities);
@@ -366,6 +417,15 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
       </div>
 
       {lastQuick && <QuickResultModal qa={lastQuick} onClose={() => setLastQuick(null)} />}
+      {simEvent && (
+        <EventModal
+          event={simEvent}
+          options={simOptionViews}
+          resolution={simResolution}
+          onPick={resolveSimEvent}
+          onClose={closeSimEvent}
+        />
+      )}
     </div>
   );
 };
@@ -762,6 +822,53 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
         <AxisBar label={ui.axes.energy} value={state.axes.energy} strong />
         <p className="text-xs text-ink-soft">{home['stats-energy-note']}</p>
       </div>
+    </Panel>
+    {state.traits.length > 0 && (
+      <Panel title={home['stats-traits-title']}>
+        <div className="flex flex-col gap-2.5">
+          {state.traits.map((id) => {
+            const t = getTrait(id);
+            if (!t) return null;
+            return (
+              <div key={id} className="rounded-xl border border-line bg-card px-3.5 py-2.5">
+                <span className="text-sm font-semibold">{t.name}</span>
+                <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">{t.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </Panel>
+    )}
+    <Panel title={home['stats-tags-title']}>
+      {Object.keys(state.tags).length === 0 ? (
+        <p className="text-sm text-ink-soft">{home['stats-tags-empty']}</p>
+      ) : (
+        <div className="flex flex-col gap-2.5">
+          {tagDefs
+            .filter((t) => (state.tags[t.id] ?? 0) > 0)
+            .sort((a, b) => (state.tags[b.id] ?? 0) - (state.tags[a.id] ?? 0))
+            .map((t) => {
+              const n = state.tags[t.id] ?? 0;
+              const awakened = n >= t.threshold;
+              return (
+                <div key={t.id} className="flex items-center gap-3">
+                  <span className={`w-16 shrink-0 text-sm ${awakened ? 'font-semibold text-accent' : ''}`}>
+                    {t.name}
+                  </span>
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+                    <div
+                      className={`h-full rounded-full transition-[width] duration-500 ${awakened ? 'bg-accent' : 'bg-ink/60'}`}
+                      style={{ width: `${Math.min(100, (n / t.threshold) * 100)}%` }}
+                    />
+                  </div>
+                  <span className="w-14 shrink-0 text-right text-xs tabular-nums text-ink-soft">
+                    {awakened ? `✦ ${home['stats-tags-awakened']}` : `${n}/${t.threshold}`}
+                  </span>
+                </div>
+              );
+            })}
+        </div>
+      )}
     </Panel>
     <Panel title={home['stats-abilities-title']}>
       {state.abilities.length === 0 ? (

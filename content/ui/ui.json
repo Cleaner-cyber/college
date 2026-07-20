@@ -101,7 +101,11 @@
     "restart-confirm": "会清空这份存档，重新入学。确定吗？",
     "restart-yes": "确定重开",
     "restart-no": "再想想",
-    "greeting": "{playerName} · {majorName}"
+    "greeting": "{playerName} · {majorName}",
+    "stats-traits-title": "入学人设",
+    "stats-tags-title": "人设轨迹",
+    "stats-tags-empty": "你的选择会在这里留下痕迹",
+    "stats-tags-awakened": "已觉醒"
   },
   "level-page": {
     "back": "返回主页",
@@ -117,7 +121,8 @@
     "semester-end": "{semester}学期结束，剩余 {points} 点行动点转化为休息",
     "profile-created": "{playerName} 入学，专业：{majorName}",
     "ability-unlock": "解锁 AI 能力「{ability}」",
-    "dev-jump": "【测试】跳转到 {semester} · {label}"
+    "dev-jump": "【测试】跳转到 {semester} · {label}",
+    "sim-event": "「{label}」——{result}"
   },
   "board": {
     "completed-tag": "已完成",
@@ -175,5 +180,21 @@
     "ai-tag": "AI 生成的文档",
     "open-hint": "点击打开全文",
     "card-stats": "约 {chars} 字 · {sections} 章"
+  },
+  "sim": {
+    "live-title": "过日子",
+    "live-sub": "花 1 点行动点，抽一张这学期的事件卡——日子不全由你安排",
+    "draw-btn": "抽一张事件卡",
+    "no-points": "行动点用完了",
+    "pool-empty": "这学期的日子过完了",
+    "modal-tag": "学期事件",
+    "check-hint": "检定：{axis} · 成功率 {rate}%",
+    "check-success": "检定成功",
+    "check-fail": "检定失败",
+    "require-hint": "需要 {cond}",
+    "tags-gain": "人设",
+    "awaken-title": "人设觉醒",
+    "close": "继续过日子",
+    "roll-rolling": "命运骰子…"
   }
 }

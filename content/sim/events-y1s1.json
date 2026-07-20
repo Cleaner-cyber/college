@@ -1,0 +1,153 @@
+[
+  {
+    "id": "mil-training",
+    "weight": 12,
+    "text": "军训第九天，正午。教官问：谁愿意当方阵旗手？操场安静得能听见蝉叫。",
+    "traitWeights": { "athlete": 1.5 },
+    "options": [
+      {
+        "label": "举手",
+        "check": { "axis": "expression", "dc": 2 },
+        "success": { "text": "你举了手。三千人的会操上，旗是你扛的。晒脱一层皮，但检阅台上的教官记住了你的名字。", "deltas": { "expression": 2, "energy": -1 }, "tags": { "voice": 1 } },
+        "fail": { "text": "你举了手，但慢了半秒——旗手是隔壁班那个一米九。你站回队列，心跳了很久。至少，你举了。", "deltas": { "expression": 1 }, "tags": { "voice": 1 } }
+      },
+      { "label": "眼神躲开", "result": { "text": "你盯着自己的鞋尖。旗手另有其人，你安全地流完了汗。", "deltas": { "energy": -1 }, "tags": { "lone": 1 } } },
+      { "label": "推荐室友上", "result": { "text": "你把室友推了出去，他回头瞪你，然后真当上了。他记你一功，全排跟着沾光提前收操。", "deltas": { "energy": 1 }, "tags": { "social": 1 } } }
+    ]
+  },
+  {
+    "id": "roommate-gaming",
+    "weight": 12,
+    "text": "室友连着一周半夜开黑到两点，你明天有早八。此刻是凌晨 1:40，耳机里的枪声漏出来。",
+    "options": [
+      { "label": "戴上耳塞忍了", "result": { "text": "你翻了个身。忍是忍住了，觉是没睡好。", "deltas": { "energy": -1 }, "tags": { "nice": 1 } } },
+      {
+        "label": "开口谈规则",
+        "check": { "axis": "expression", "dc": 3 },
+        "success": { "text": "你坐起来，开灯，认真谈了十分钟。最后宿舍立了规矩：工作日十二点后戴耳机、静音。他还请你喝了瓶可乐。", "deltas": { "expression": 1 }, "tags": { "voice": 1 } },
+        "fail": { "text": "你开了口，但话说重了。接下来一周宿舍气氛很怪，谁也不先说话。", "deltas": { "energy": -1 }, "tags": { "lone": 1 } }
+      },
+      { "label": "白天去图书馆，晚上早睡", "result": { "text": "惹不起，躲得起。你把生活重心搬去了图书馆三楼靠窗的位置。", "deltas": { "academic": 1, "energy": -1 }, "next": "library-regular" } }
+    ]
+  },
+  {
+    "id": "library-regular",
+    "weight": 0,
+    "text": "你成了图书馆三楼的常客。管理员阿姨开始对你点头，邻座那个总带保温杯的同学也眼熟了。",
+    "options": [
+      { "label": "搭话，组个晨读小队", "result": { "text": "保温杯同学叫老周，来自晨读失败过三次的宿舍。你们约了每天七点半，互相盯着。第一周，谁都没缺席。", "deltas": { "academic": 1 }, "tags": { "social": 1, "grind": 1 } } },
+      { "label": "继续一个人刷题", "result": { "text": "你和邻座保持着最舒服的距离：点头，不说话。这学期的高数练习册，你刷完了两本。", "deltas": { "academic": 2 }, "tags": { "lone": 1 } } }
+    ]
+  },
+  {
+    "id": "club-fair",
+    "weight": 12,
+    "text": "百团大战。整条主干道摆满社团摊位，动漫社在放歌，辩论队在拉人，你手里被塞了七张传单。",
+    "traitWeights": { "shy": 0.6, "social-king": 1.5 },
+    "options": [
+      { "label": "报动漫社", "result": { "text": "面试就问了一句：最近在追什么番。你答完，学姐直接把你拉进了群。群里 99+，全在聊下周活动。", "deltas": { "portfolio": 1 }, "tags": { "social": 1 } } },
+      {
+        "label": "报辩论队",
+        "check": { "axis": "expression", "dc": 3 },
+        "success": { "text": "即兴陈述九十秒，你手心全是汗，但说完了。名单公示那天，你的名字在第七个。", "deltas": { "expression": 2 }, "tags": { "voice": 1 } },
+        "fail": { "text": "即兴陈述九十秒，你在第四十秒卡住了。名单上没有你。学姐说明年欢迎再来——你记下了这句话。", "deltas": { "energy": -1 }, "tags": { "grind": 1 } }
+      },
+      { "label": "一个都不报，捏着传单回宿舍", "result": { "text": "你把七张传单垫了泡面。社团不是必需品——但热闹是别人的了。", "deltas": { "energy": 1 }, "tags": { "lone": 1 } } }
+    ]
+  },
+  {
+    "id": "morning-class",
+    "weight": 10,
+    "text": "周三早八，高数。闹钟响第三遍，现在出门刚好赶上，再赖五分钟就是全楼冲刺。",
+    "traitWeights": { "night-owl": 1.6 },
+    "tagWeights": { "night": 1.6 },
+    "options": [
+      { "label": "立刻起", "result": { "text": "你到教室时前三排还有座。老师今天讲的洛必达，期末必考。", "deltas": { "academic": 1, "energy": -1 }, "tags": { "grind": 1 } } },
+      {
+        "label": "再眯五分钟",
+        "check": { "axis": "energy", "dc": 2 },
+        "success": { "text": "五分钟后你弹射起床，抓了个包子边跑边啃，踩着铃声进门。教授看了你一眼，没说话。", "deltas": { "academic": 1 } },
+        "fail": { "text": "再睁眼是 8:40。你溜进后门时，正好撞上点名。「这位同学，很精神啊。」全场笑了。", "deltas": { "academic": -1, "expression": 1 }, "tags": { "night": 1 } }
+      },
+      { "label": "翘了，补觉要紧", "result": { "text": "你睡到十一点，神清气爽。晚上找同学借笔记，发现这节课讲了下周小测的全部内容。", "deltas": { "energy": 2, "academic": -1 }, "tags": { "night": 1 } } }
+    ]
+  },
+  {
+    "id": "family-call",
+    "weight": 10,
+    "text": "晚上九点，妈妈打来视频。问了食堂、问了室友，绕了十分钟，终于问到：钱还够不够花？",
+    "traitWeights": { "homesick": 1.5 },
+    "options": [
+      { "label": "「够，别担心」", "result": { "text": "其实这个月有点紧。挂了电话你看了眼余额，决定这周不点外卖了。报喜不报忧，是你上大学学会的第一件事。", "tags": { "nice": 1, "thrift": 1 } } },
+      { "label": "说实话：不太够", "result": { "text": "妈妈立刻转了五百，又数落了爸爸半天「就说不够吧」。你有点脸热，但也松了口气——跟家里说实话，不丢人。", "deltas": { "cash": 1 }, "tags": { "voice": 1 } } },
+      { "label": "反过来问他们过得怎么样", "result": { "text": "妈妈愣了一下，然后聊了四十分钟：爸爸的腰、楼下的猫、小区新开的超市。挂电话时她说：你长大了。", "deltas": { "energy": 1 }, "tags": { "nice": 1 } } }
+    ]
+  },
+  {
+    "id": "flyer-job",
+    "weight": 10,
+    "text": "校门口奶茶店招周末发传单的，一天八十。你算了算，两天就是一百六——但周末也没了。",
+    "traitWeights": { "well-off": 0.5, "pragmatic": 1.5 },
+    "options": [
+      { "label": "接了", "result": { "text": "两天，一千二百张传单，你学会了在三秒内判断谁会伸手。周日晚上数钱的时候，手指有油墨味。", "deltas": { "cash": 2, "energy": -1 }, "tags": { "thrift": 1 } } },
+      {
+        "label": "跟老板谈：一天一百我就干",
+        "check": { "axis": "expression", "dc": 4 },
+        "success": { "text": "老板打量了你三秒：「行，但你得把二维码关注量做到五十。」你做到了七十三。谈判这回事，原来真的可以。", "deltas": { "cash": 2, "expression": 1 }, "tags": { "voice": 1, "thrift": 1 } },
+        "fail": { "text": "老板笑了：「小同学，排队想干的人多着呢。」你没接，也没谈成，白跑一趟。", "deltas": { "energy": -1 }, "tags": { "voice": 1 } }
+      },
+      { "label": "不接，周末泡图书馆", "result": { "text": "你把周末花在了高数和一本闲书上。钱以后能挣，这两天的安静挣不回来——你是这么安慰自己的。", "deltas": { "academic": 1 }, "tags": { "grind": 1 } } }
+    ]
+  },
+  {
+    "id": "class-group",
+    "weight": 8,
+    "text": "班级群里，学习委员发了个志愿活动接龙，配了三个感叹号。十分钟过去，接龙人数：0。",
+    "options": [
+      { "label": "第一个接龙", "result": { "text": "你接了。两分钟后第二个人出现，然后是第三个。散场时学习委员专门找你说了声谢谢。有些事，就差一个开头。", "tags": { "nice": 1, "social": 1 } } },
+      { "label": "潜水", "result": { "text": "你看着群消息停在那里，退出了聊天界面。晚上再点开，接龙到了十一个人，没有你。", "tags": { "lone": 1 } } },
+      { "label": "私聊学习委员：需要帮忙吆喝吗", "result": { "text": "学习委员秒回了三个「呜呜呜」。你帮着在各个小群转发，接龙很快满了。你们从此说话不打官腔。", "deltas": { "expression": 1 }, "tags": { "social": 1, "nice": 1 } } }
+    ]
+  },
+  {
+    "id": "midnight-talk",
+    "weight": 8,
+    "text": "熄灯后的宿舍夜谈会。从「食堂哪个窗口好吃」聊到「你以后想干嘛」，忽然全宿舍都安静下来等你接话。",
+    "tagWeights": { "night": 1.5 },
+    "options": [
+      { "label": "认真说说自己的打算", "result": { "text": "你说了那个没跟别人讲过的计划。黑暗里没人笑你，反而有人接：「那你带带我。」那晚你们聊到两点半。", "deltas": { "expression": 1, "energy": -1 }, "tags": { "voice": 1, "night": 1 } } },
+      { "label": "「睡了睡了，明天早八」", "result": { "text": "你翻身面向墙。他们又聊了一小时，你在枪声般的笑声里睡着了。有些话，你还没准备好说。", "deltas": { "energy": 1 }, "tags": { "lone": 1 } } },
+      { "label": "反问：「你们真想过吗？」", "result": { "text": "这个问题让夜谈会变成了辩论会。没有结论，但你记住了每个人当时的答案——四年后再看，会很有意思。", "tags": { "social": 1, "night": 1 } } }
+    ]
+  },
+  {
+    "id": "lake-walk",
+    "weight": 24,
+    "include": { "maxAxes": { "energy": 1 } },
+    "text": "你已经连续两周没有睡过整觉。周五傍晚路过湖边，夕阳正好，长椅空着。",
+    "options": [
+      { "label": "坐下来，什么都不干", "result": { "text": "你坐了四十分钟，看鸭子游过去又游回来。手机在兜里震了两次，你没掏。起身时，肩膀轻了很多。", "deltas": { "energy": 2 } } },
+      { "label": "边散步边背单词", "result": { "text": "湖绕了两圈，单词过了一个 List。休息和努力硬是被你排进了同一个时段——很你的风格。", "deltas": { "academic": 1 }, "tags": { "grind": 1 } } },
+      { "label": "拍下来，配文发朋友圈", "result": { "text": "「今日份免费的橘色。」点赞五十七，高中同桌评论：看来过得不错。你想了想，回了个「还行」。", "deltas": { "portfolio": 1, "energy": 1 }, "tags": { "social": 1 } } }
+    ]
+  },
+  {
+    "id": "secondhand-books",
+    "weight": 8,
+    "text": "毕业季，操场边摆满毕业生的地摊。一个学长在卖专业课教材，书上写满批注，五块一本。",
+    "options": [
+      { "label": "全收了", "result": { "text": "四本书二十块。翻开高数那本，重点全被荧光笔标好了，扉页写着一行小字：「期末只考批注里的。」", "deltas": { "cash": -1, "academic": 1 }, "tags": { "thrift": 1 } } },
+      { "label": "蹲下来跟学长聊聊", "result": { "text": "你问他四年下来最后悔什么。他想了很久，说：「大一觉得来日方长的事，后来都没干。」他把书送了你一本。", "deltas": { "energy": 1 }, "tags": { "social": 1 }, "next": "senior-words" } },
+      { "label": "拍张照就走", "result": { "text": "你拍下了这个摊位。四年后你也会坐在马路牙子上卖掉自己的四年吗？这个念头一闪而过。", "deltas": { "portfolio": 1 } } }
+    ]
+  },
+  {
+    "id": "senior-words",
+    "weight": 0,
+    "text": "回宿舍的路上，你翻开学长送的那本书。扉页夹着一张便签，像是写给下一个人的：「别攒着劲儿等大三，没有大三。」",
+    "options": [
+      { "label": "把便签贴在书桌前", "result": { "text": "从此你每天抬头都能看见这句话。有几个深夜，它确实管了用。", "deltas": { "academic": 1 }, "tags": { "grind": 1 } } },
+      { "label": "拍照发给高中好友", "result": { "text": "好友秒回：「妈的，写得真好。」你们约好，寒假见面时互相汇报——大一到底干了点什么。", "deltas": { "expression": 1 }, "tags": { "social": 1 } } }
+    ]
+  }
+]
