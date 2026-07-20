@@ -201,19 +201,19 @@ S3 两条路对话 → S4 工具横评擂台 → S10 交付 / ESC
 ### S3 两条路对话（教学主张：内容决定权在提示词里）
 | 步 | 交互 | 内容要点 |
 |---|---|---|
-| ① 一句话生成 | chip → 长提示词（任务背景+英文原文+老师要求原样丢过去） | 30 秒出真实成品（ppt-cmp-e，通义千问一句话流 9 页，翻页灯箱）；学长点评：标题/词汇/结构全是 AI 定的，互动设计没有——快，但内容失控 |
+| ① 一句话生成 | chip → 长提示词（任务背景+英文原文+老师要求原样丢过去） | AI 只文字汇报"已生成 9 页"，**不展示成品**；学长点评：词汇挑了哪几个/长难句拆哪两句/互动怎么设计你全不知道——只能听它汇报，内容失控 |
 | ② AI 写逐页大纲 | chip | AI 输出《The Weight of Choices · 逐页 PPT 大纲》（总大纲表 + 逐页精细，文档查看器），展示人/日期留白——大纲=内容控制权 |
-| ③ 按大纲精准生成 | chip「严格按大纲、一字不差、不增删不改页数」 | 真实成品（ppt-cmp-a，Claude 大纲流 9 页）：封面四栏/句子编号①~⑤/人体晴雨表逐页对得上；学长对比收尾 |
+| ③ 按大纲精准生成 | chip「严格按大纲、一字不差、不增删不改页数」 | 亮出最终成品（ppt-cmp-claude，Claude 9 页）：封面四栏/句子编号①~⑤/人体晴雨表逐页对得上；学长收尾：第二条路=第一条路的升级，只多给一份大纲 |
 
 ### S4 工具横评擂台
 - 10 款工具星级横评表（Claude/Gamma/NotebookLM/Gemini/Kimi/GPT/Manus/通义千问/豆包/灵犀PPT），学长主观打分+出彩/短板/是否外网/官网
-- 真实成品陈列：deck 槽位 a~e（工具归属由 ppt.json 的 deck-{id}-name 决定，后续补充只加资产+文案），点开进翻页灯箱
+- 真实成品陈列：十款工具全员到齐（槽位名=压缩包文件名=工具名），点开进翻页灯箱；页数不一（Gamma 6 / Manus 10 / 其余 9），由资产表逐页扫描得出
 
 ### 验收清单 / 结果
 - ck-flash 体验一句话生成 / ck-outline AI 写出逐页大纲 / ck-control 大纲精准控制一版 / ck-arena 看完工具横评（S4 到场即勾）
 - deltas：4/4 → **expression+2**（PPT 属表达型产出），否则 +1；ESC → +1
 - abilityUnlocks: ['structured-gen']；档案：`ppt-deck`（作品集，assetRef ppt-cmp-a-1.jpg）+ `doc-ppt-outline`（逐页大纲，文档查看器）+ `doc-ppt-tools`（横评表，文档查看器）+ `prompt-structured-gen`（两条路提示词模板）
-- 资产：`ppt-cmp-{a..e}-{1..9}.jpg`（五套真实成品逐页图：a=Claude / b=NotebookLM / c=灵犀PPT / d=Manus / e=通义千问，同名替换即可换归属或补充）
+- 资产：`ppt-cmp-{tool}-{n}.jpg`（十款工具真实成品逐页图，tool ∈ claude/gamma/notebooklm/gemini/kimi/gpt/manus/qianwen/doubao/lingxi，来自用户压缩包，同名替换即可更新）
 
 ## E. 学期结算 settlement
 

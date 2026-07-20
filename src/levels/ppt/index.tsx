@@ -18,14 +18,28 @@ import { SenpaiAvatar } from '@/components/ui/SpeakerTag';
 import { DeliverScreen, EscapeOverlay } from '@/components/chat/DeliverScreen';
 import { SlideViewer, type SlideViewerLabels } from './SlideViewer';
 
-/** 成品档位：资产槽位 a~e（工具归属由内容 JSON 的 deck-{id}-name 决定，可随时改） */
-const DECK_IDS = ['a', 'b', 'c', 'd', 'e'] as const;
+/** 成品档位：槽位名=工具名（来自用户上传压缩包的文件名），展示名/注释由 deck-{id}-name/note 决定 */
+const DECK_IDS = [
+  'claude',
+  'gamma',
+  'notebooklm',
+  'gemini',
+  'kimi',
+  'gpt',
+  'manus',
+  'qianwen',
+  'doubao',
+  'lingxi',
+] as const;
 type DeckId = (typeof DECK_IDS)[number];
-const DECK_PAGES = 9;
 const TOOL_COUNT = 10;
 
-const deckPages = (assets: Record<string, string>, id: DeckId): string[] =>
-  Array.from({ length: DECK_PAGES }, (_, i) => assets[`cmp-${id}-${i + 1}`]).filter(Boolean);
+/** 逐页扫描资产表取页图（各工具页数不同：Gamma 6 页 / Manus 10 页 / 其余 9 页） */
+const deckPages = (assets: Record<string, string>, id: DeckId): string[] => {
+  const pages: string[] = [];
+  for (let i = 1; assets[`cmp-${id}-${i}`]; i++) pages.push(assets[`cmp-${id}-${i}`]);
+  return pages;
+};
 
 const viewerLabels = (api: FlowAPI): SlideViewerLabels => ({
   close: api.copy('viewer-close'),
@@ -41,17 +55,18 @@ type Step =
   | { k: 'ai'; key: string; deck?: DeckId; doc?: boolean }
   | { k: 'button'; key: string };
 
+// 第一关只汇报不展示成品（学长点评"听它汇报"即失控），最终成品在第二关按大纲生成后亮出
 const STEPS: Step[] = [
   { k: 'senpai', key: 'senpai-tip-1' },
   { k: 'chip', label: 'chip-flash', prompt: 'q-flash', check: 'ck-flash' },
-  { k: 'ai', key: 'a-flash', deck: 'e' },
+  { k: 'ai', key: 'a-flash' },
   { k: 'senpai', key: 'senpai-tip-2' },
   { k: 'senpai', key: 'senpai-tip-3' },
   { k: 'chip', label: 'chip-outline', prompt: 'q-outline', check: 'ck-outline' },
   { k: 'ai', key: 'a-outline', doc: true },
   { k: 'senpai', key: 'senpai-tip-4' },
   { k: 'chip', label: 'chip-feed', prompt: 'q-feed', check: 'ck-control' },
-  { k: 'ai', key: 'a-control', deck: 'a' },
+  { k: 'ai', key: 'a-control', deck: 'claude' },
   { k: 'senpai', key: 'senpai-wrap' },
   { k: 'button', key: 'btn-arena' },
 ];
@@ -64,8 +79,7 @@ type Msg =
   | { kind: 'doc' };
 
 const DECK_CHAT_TITLE: Record<string, string> = {
-  e: 'deck-flash-card-title',
-  a: 'deck-control-card-title',
+  claude: 'deck-control-card-title',
 };
 
 const Thinking: React.FC<{ label: string }> = ({ label }) => (
@@ -250,7 +264,9 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
                     key={i}
                     icon="📽️"
                     title={api.copy(m.titleKey)}
-                    meta={`${api.copy('deck-pages-tag')} · ${api.copy('deck-open-hint')}`}
+                    meta={`${interpolate(api.copy('deck-pages-tpl'), {
+                      n: deckPages(assets, m.id).length,
+                    })} · ${api.copy('deck-open-hint')}`}
                     onOpen={() => setViewer(m.id)}
                   />
                 );
@@ -459,7 +475,8 @@ const Arena: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ api
                   {d.note}
                 </p>
                 <p className="mt-1 text-[10.5px] text-accent">
-                  {api.copy('deck-pages-tag')} · {api.copy('deck-open-hint')} ›
+                  {interpolate(api.copy('deck-pages-tpl'), { n: deckPages(assets, d.id).length })}{' '}
+                  · {api.copy('deck-open-hint')} ›
                 </p>
               </div>
             </button>
@@ -512,7 +529,7 @@ const PptComponent: React.FC<LevelProps> = ({ state, content, onComplete, onEsca
           ? content.copy['archive-resume-line-borrowed']
           : content.copy['archive-resume-line'],
         borrowed,
-        assetRef: 'ppt-cmp-a-1.jpg',
+        assetRef: 'ppt-cmp-claude-1.jpg',
       },
       {
         // AI 写的逐页大纲进作品集（点开走文档查看器）
@@ -560,7 +577,7 @@ const PptComponent: React.FC<LevelProps> = ({ state, content, onComplete, onEsca
             <DeliverScreen
               api={api}
               total={checklist.length}
-              img={assets['cmp-a-1']}
+              img={assets['cmp-claude-1']}
               onDone={() => onComplete(buildResult(false, api.checked.length))}
             />
           ),
@@ -568,7 +585,7 @@ const PptComponent: React.FC<LevelProps> = ({ state, content, onComplete, onEsca
             <DeliverScreen
               api={api}
               total={checklist.length}
-              img={assets['cmp-a-1']}
+              img={assets['cmp-claude-1']}
               escape
               onDone={() => onEscape(buildResult(true, api.checked.length))}
             />
