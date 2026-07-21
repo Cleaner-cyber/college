@@ -3,12 +3,11 @@
  * 全学期通用；大四结算渲染毕业「身份卡」（#20 结局：flag 对照 + 四轴形状 + N/M + 能力回顾）。
  */
 import React, { useEffect, useState } from 'react';
-import type { LevelModule, LevelProps, PlayerState, QuickAction } from '@/contracts';
+import type { LevelModule, LevelProps, PlayerState } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
 import {
   ui,
-  quickActions,
-  getBoard,
+  getSimAction,
   interpolate,
   getFolderSection,
   semesterName,
@@ -79,12 +78,16 @@ const AxesBars: React.FC<{ state: Readonly<PlayerState>; animate?: boolean; max?
   );
 };
 
-/** 本学期行动回放 */
+/** 本学期行动回放（行动板行动的结果文案从日志里取——同一行动的结果分支因人而异） */
 function replayLines(state: Readonly<PlayerState>): { label: string; text: string }[] {
-  const qas: QuickAction[] = quickActions[getBoard(state.semester).quickActionsRef] ?? [];
   return state.completedActions.flatMap((id) => {
-    const qa = qas.find((q) => q.id === id);
-    if (qa) return [{ label: qa.label, text: qa.resultText }];
+    const action = getSimAction(id);
+    if (action) {
+      const logLine = [...state.log]
+        .reverse()
+        .find((l) => l.type === 'quick' && l.text.startsWith(`${action.label}：`));
+      return [{ label: action.label, text: logLine ? logLine.text.slice(action.label.length + 1) : '' }];
+    }
     const item = state.archive.find((a) => a.levelId === id);
     return item ? [{ label: item.title, text: '' }] : [];
   });

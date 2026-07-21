@@ -1,6 +1,0 @@
-[
-  { "id": "contest", "label": "组队打程序设计竞赛", "cost": 1, "deltas": { "portfolio": 2, "energy": -1 }, "resultText": "省赛拿了三等奖。奖状不大，但队友都靠谱，约好下学期再来。", "senpaiComment": "竞赛最值钱的不是奖，是队友。" },
-  { "id": "gpa", "label": "死磕数据结构", "cost": 1, "deltas": { "academic": 2, "energy": -1 }, "resultText": "链表、树、图，一个一个啃。期中那道大题全班没几个人做出来，你是其中之一。", "senpaiComment": "专业课的绩点权重更高，这分刷得值。" },
-  { "id": "assist", "label": "给大一新生当助教", "cost": 1, "deltas": { "expression": 2, "energy": -1 }, "resultText": "你给新生讲 C 语言习题课。讲台上的你，比去年台下的你稳多了。", "senpaiComment": "能讲明白，才是真的懂了。" },
-  { "id": "rest", "label": "什么都不做", "cost": 0, "deltas": { "energy": 2 }, "resultText": "你把周末还给了自己。图书馆的位置空着，也挺好。" }
-]

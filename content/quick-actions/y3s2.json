@@ -1,6 +1,0 @@
-[
-  { "id": "prep", "label": "按方向做针对准备", "cost": 1, "deltas": { "academic": 2, "energy": -1 }, "resultText": "刷题、背书、改材料——你选的那条路，开始认真铺了。", "senpaiComment": "方向定了以后，努力才有复利。" },
-  { "id": "project", "label": "收尾一个拿得出手的项目", "cost": 1, "deltas": { "portfolio": 2, "energy": -1 }, "resultText": "你把大创项目打磨成了能演示的版本。这是简历上最亮的一行。", "senpaiComment": "能跑起来的东西，比任何形容词有说服力。" },
-  { "id": "network", "label": "找三个学长学姐聊去向", "cost": 1, "deltas": { "expression": 2, "energy": -1 }, "resultText": "三杯奶茶换来三条真实路径。信息差被你一点点填平。", "senpaiComment": "这招你入学那天就该会了——问过来人。" },
-  { "id": "rest", "label": "什么都不做", "cost": 0, "deltas": { "energy": 2 }, "resultText": "大考之前，你允许自己发了两天呆。" }
-]

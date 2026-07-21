@@ -8,7 +8,7 @@ import type {
   LevelResult,
   LogEntry,
   PlayerState,
-  QuickAction,
+  SimAction,
   SimEvent,
   SimOutcome,
   TagDef,
@@ -19,7 +19,7 @@ import {
   flushState,
 } from '@/services/saveAdapter';
 import { getBoard, getMajor, getTrait, interpolate, semesterName, tagDefs, ui } from './content';
-import { awakenedTagIds, checkRate, drawEvent } from './sim';
+import { awakenedTagIds, checkRate, drawEvent, evalCondition, pickBranch } from './sim';
 
 const SEMESTER_ACTION_POINTS = 3; // 每学期行动点（选修用）
 
@@ -41,6 +41,7 @@ function freshState(): PlayerState {
     axesPeak: { academic: 0, portfolio: 0, expression: 0, cash: 0, energy: 0 },
     eventHistory: [],
     pendingEvents: [],
+    actionHistory: {},
   };
 }
 
@@ -68,7 +69,7 @@ function mergeDeltas(
 
 export function effectiveCost(
   base: number,
-  costWithAbility: QuickAction['costWithAbility'],
+  costWithAbility: SimAction['costWithAbility'],
   abilities: PlayerState['abilities'],
 ): number {
   if (costWithAbility && abilities.includes(costWithAbility.ability)) {
@@ -114,6 +115,7 @@ function migrate(state: PlayerState): PlayerState {
     axesPeak: state.axesPeak ?? { ...state.axes },
     eventHistory: state.eventHistory ?? [],
     pendingEvents: state.pendingEvents ?? [],
+    actionHistory: state.actionHistory ?? {},
   };
   const legacy: Record<string, PlayerState['semester']> = {
     'y1s1-end': 'y1s2',
@@ -141,6 +143,37 @@ export interface SimResolution {
   awakened: TagDef[]; // 本次新觉醒的标签
 }
 
+/** 行动结算的瞬态结果（行动板结果弹窗用） */
+export interface ActionResolution {
+  action: SimAction;
+  success: boolean | null; // null = 无检定
+  rate?: number;
+  outcome: SimOutcome;
+  awakened: TagDef[];
+}
+
+/** 结果应用的公共段：数值/峰值/标签/觉醒/连锁事件 */
+function applyOutcome(
+  st: PlayerState,
+  outcome: SimOutcome,
+): { axes: PlayerState['axes']; tags: Record<string, number>; awakened: TagDef[]; pendingEvents: string[] } {
+  const axes = outcome.deltas ? mergeDeltas(st.axes, outcome.deltas) : st.axes;
+  const beforeAwakened = awakenedTagIds(st.tags);
+  const tags = { ...st.tags };
+  if (outcome.tags) {
+    for (const [t, n] of Object.entries(outcome.tags)) tags[t] = (tags[t] ?? 0) + n;
+  }
+  const awakened = awakenedTagIds(tags)
+    .filter((id) => !beforeAwakened.includes(id))
+    .map((id) => tagDefs.find((t) => t.id === id)!)
+    .filter(Boolean);
+  const pendingEvents = [...st.pendingEvents];
+  if (outcome.next && !st.eventHistory.includes(outcome.next) && !pendingEvents.includes(outcome.next)) {
+    pendingEvents.push(outcome.next);
+  }
+  return { axes, tags, awakened, pendingEvents };
+}
+
 interface EngineStore {
   state: PlayerState | null; // null = 尚未从存档水合
   ready: boolean;
@@ -148,6 +181,8 @@ interface EngineStore {
   simEvent: SimEvent | null;
   /** 当前事件的结算结果（瞬态） */
   simResolution: SimResolution | null;
+  /** 当前行动的结算结果（瞬态） */
+  actionResult: ActionResolution | null;
   /** 从当前 SaveAdapter 读档；无档则新建 */
   hydrate: () => Promise<void>;
   /** 卸载状态（登出时用） */
@@ -167,8 +202,10 @@ interface EngineStore {
   closeSimEvent: () => void;
   /** 关卡结束（onComplete/onEscape 共用）：合并结果、记日志、学期流转、落盘 */
   applyLevelResult: (levelId: string, result: LevelResult) => void;
-  /** 速结行动：扣行动点、数值、入档、记日志 */
-  runQuickAction: (qa: QuickAction) => void;
+  /** 行动板行动：扣点 → 适配分支（可含检定）→ 数值/标签/累计/入档/连锁 */
+  runSimAction: (action: SimAction) => void;
+  /** 关闭行动结果弹窗 */
+  closeActionResult: () => void;
   /** 开发调试：跳到指定学期的指定主线关前（不补写档案与能力，正式版随调试按钮一起移除） */
   devJump: (semester: PlayerState['semester'], levelId?: string) => void;
   /** 清档重开 */
@@ -180,6 +217,7 @@ export const useEngine = create<EngineStore>((set) => ({
   ready: false,
   simEvent: null,
   simResolution: null,
+  actionResult: null,
 
   hydrate: async () => {
     const adapter = getSaveAdapter();
@@ -248,29 +286,14 @@ export const useEngine = create<EngineStore>((set) => ({
       }
       if (!outcome) return {};
 
-      const axes = outcome.deltas ? mergeDeltas(st.axes, outcome.deltas) : st.axes;
-      const beforeAwakened = awakenedTagIds(st.tags);
-      const tags = { ...st.tags };
-      if (outcome.tags) {
-        for (const [t, n] of Object.entries(outcome.tags)) tags[t] = (tags[t] ?? 0) + n;
-      }
-      const awakened = awakenedTagIds(tags)
-        .filter((id) => !beforeAwakened.includes(id))
-        .map((id) => tagDefs.find((t) => t.id === id)!)
-        .filter(Boolean);
-
-      const pendingEvents = st.pendingEvents.filter((id) => id !== ev.id);
-      if (outcome.next && !st.eventHistory.includes(outcome.next) && !pendingEvents.includes(outcome.next)) {
-        pendingEvents.push(outcome.next);
-      }
-
+      const applied = applyOutcome(st, outcome);
       const next: PlayerState = {
         ...st,
-        axes,
-        axesPeak: mergePeak(st.axesPeak, axes),
-        tags,
+        axes: applied.axes,
+        axesPeak: mergePeak(st.axesPeak, applied.axes),
+        tags: applied.tags,
         eventHistory: [...st.eventHistory, ev.id],
-        pendingEvents,
+        pendingEvents: applied.pendingEvents.filter((id) => id !== ev.id),
         log: [
           ...st.log,
           logEntry('quick', 'sim-event', { label: opt.label, result: outcome.text }),
@@ -279,11 +302,73 @@ export const useEngine = create<EngineStore>((set) => ({
       persistState(next);
       return {
         state: next,
-        simResolution: { optionIndex, success, rate, outcome, awakened },
+        simResolution: { optionIndex, success, rate, outcome, awakened: applied.awakened },
       };
     }),
 
   closeSimEvent: () => set({ simEvent: null, simResolution: null }),
+
+  runSimAction: (action) =>
+    set((s) => {
+      const st = s.state;
+      if (!st || s.actionResult) return {};
+      if (st.completedActions.includes(action.id)) return {};
+      if (!evalCondition(st, action.requires)) return {};
+      const cost = effectiveCost(action.cost, action.costWithAbility, st.abilities);
+      if (cost > st.actionPoints) return {};
+
+      // 适配分支：第一个 when 命中者；可选检定出成败
+      const branch = pickBranch(st, action);
+      let success: boolean | null = null;
+      let rate: number | undefined;
+      let outcome: SimOutcome | undefined;
+      if (branch.check) {
+        rate = checkRate(st.axes[branch.check.axis], branch.check.dc);
+        success = Math.random() < rate;
+        outcome = success ? branch.success : branch.fail;
+      } else {
+        outcome = branch.result;
+      }
+      if (!outcome) return {};
+
+      const applied = applyOutcome(st, outcome);
+      const next: PlayerState = {
+        ...st,
+        axes: applied.axes,
+        axesPeak: mergePeak(st.axesPeak, applied.axes),
+        tags: applied.tags,
+        pendingEvents: applied.pendingEvents,
+        actionPoints: st.actionPoints - cost,
+        completedActions: [...st.completedActions, action.id],
+        actionHistory: {
+          ...st.actionHistory,
+          [action.id]: (st.actionHistory[action.id] ?? 0) + 1,
+        },
+        archive: outcome.archive
+          ? [
+              // 同 id 产出（如四六级证书）以最新为准
+              ...st.archive.filter((a) => a.id !== outcome.archive!.id),
+              {
+                ...outcome.archive,
+                levelId: `action:${action.id}`,
+                semester: st.semester,
+                borrowed: false,
+              },
+            ]
+          : st.archive,
+        log: [
+          ...st.log,
+          logEntry('quick', 'quick', { label: action.label, result: outcome.text }),
+        ],
+      };
+      persistState(next);
+      return {
+        state: next,
+        actionResult: { action, success, rate, outcome, awakened: applied.awakened },
+      };
+    }),
+
+  closeActionResult: () => set({ actionResult: null }),
 
   applyLevelResult: (levelId, result) =>
     set((s) => {
@@ -369,32 +454,6 @@ export const useEngine = create<EngineStore>((set) => ({
       );
 
       flushState(next); // 关键节点：立即落盘
-      return { state: next };
-    }),
-
-  runQuickAction: (qa) =>
-    set((s) => {
-      const st = s.state;
-      if (!st) return {};
-      if (st.completedActions.includes(qa.id)) return {};
-      const cost = effectiveCost(qa.cost, qa.costWithAbility, st.abilities);
-      if (cost > st.actionPoints) return {};
-      const qaAxes = mergeDeltas(st.axes, qa.deltas);
-      const next: PlayerState = {
-        ...st,
-        axes: qaAxes,
-        axesPeak: mergePeak(st.axesPeak, qaAxes),
-        actionPoints: st.actionPoints - cost,
-        archive: qa.archiveItem
-          ? [...st.archive, { ...qa.archiveItem, semester: st.semester, borrowed: false }]
-          : st.archive,
-        completedActions: [...st.completedActions, qa.id],
-        log: [
-          ...st.log,
-          logEntry('quick', 'quick', { label: qa.label, result: qa.resultText }),
-        ],
-      };
-      persistState(next);
       return { state: next };
     }),
 

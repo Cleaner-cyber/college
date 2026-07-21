@@ -2,7 +2,7 @@
  * 内容加载器：所有面向用户的文案均来自 /content 下的 JSON。
  * 引擎负责加载并注入关卡（关卡不自行 import 内容）。
  */
-import type { LevelContent, Major, QuickAction, SimEvent, TagDef, Trait } from '@/contracts';
+import type { LevelContent, Major, SimAction, SimEvent, TagDef, Trait } from '@/contracts';
 
 import prologueJson from '@content/levels/prologue.json';
 import courseSelectJson from '@content/levels/course-select.json';
@@ -20,13 +20,7 @@ import interviewJson from '@content/levels/interview.json';
 import thesisJson from '@content/levels/thesis.json';
 import settlementJson from '@content/levels/settlement.json';
 import majorsJson from '@content/majors/majors.json';
-import quickActionsY1s1 from '@content/quick-actions/y1s1.json';
-import quickActionsY1s2 from '@content/quick-actions/y1s2.json';
-import quickActionsY2s1 from '@content/quick-actions/y2s1.json';
-import quickActionsY2s2 from '@content/quick-actions/y2s2.json';
-import quickActionsY3s1 from '@content/quick-actions/y3s1.json';
-import quickActionsY3s2 from '@content/quick-actions/y3s2.json';
-import quickActionsY4 from '@content/quick-actions/y4.json';
+import actionsJson from '@content/sim/actions.json';
 import boardY1s1 from '@content/board/y1s1.json';
 import boardY1s2 from '@content/board/y1s2.json';
 import boardY2s1 from '@content/board/y2s1.json';
@@ -95,15 +89,12 @@ export function searchMajors(query: string): Major[] {
   );
 }
 
-export const quickActions: Record<string, QuickAction[]> = {
-  y1s1: quickActionsY1s1 as QuickAction[],
-  y1s2: quickActionsY1s2 as QuickAction[],
-  y2s1: quickActionsY2s1 as QuickAction[],
-  y2s2: quickActionsY2s2 as QuickAction[],
-  y3s1: quickActionsY3s1 as QuickAction[],
-  y3s2: quickActionsY3s2 as QuickAction[],
-  y4: quickActionsY4 as QuickAction[],
-};
+// 行动板（v2.2：全学期统一池，专业/窗口/进阶链过滤见 engine/sim.ts）
+export const simActions: SimAction[] = actionsJson as SimAction[];
+
+export function getSimAction(id: string): SimAction | undefined {
+  return simActions.find((a) => a.id === id);
+}
 
 export interface BoardMainlineEntry {
   id: string; // 关卡 id
@@ -118,7 +109,6 @@ export interface BoardConfig {
   mainline: BoardMainlineEntry[]; // 主线必修（教学关）：不耗行动点，顺序解锁，全部完成才能结算
   mainlineLockText: string;
   electivesLockText: string;
-  quickActionsRef: string;
 }
 
 export const boards: Record<string, BoardConfig> = {

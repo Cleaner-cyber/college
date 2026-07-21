@@ -1,11 +1,19 @@
 /**
- * 模拟层引擎（docs/08 P0）：条件评估 → 卡袋加权（特质/觉醒标签乘数）→ 抽卡（连锁优先）→ 检定。
+ * 模拟层引擎（docs/08 P0/P1）：条件评估 → 卡袋加权（特质/觉醒标签乘数）→ 抽卡（连锁优先）→ 检定；
+ * 行动板（v2.2）：专业大类过滤 / 学期窗口 / 进阶链 / 适配分支选择。
  * 参照 lifeRestart 三层事件引擎（过滤→加权随机）与 Reigns 动态卡袋。
  */
-import type { PlayerState, SimCondition, SimEvent, TagDef } from '@/contracts';
-import { tagDefs, getSimEvents, getTrait, ui } from './content';
+import type { PlayerState, SimAction, SimActionBranch, SimCondition, SimEvent, TagDef } from '@/contracts';
+import { tagDefs, getMajor, getSimEvents, getTrait, simActions, ui } from './content';
 
 type Axes = PlayerState['axes'];
+
+/** 学期序号（1=大一上 … 7=大四）；与 store.SEMESTER_CHAIN 保持同序（store 依赖本模块，不能反向引用） */
+const SEMESTER_ORDER = ['y1s1', 'y1s2', 'y2s1', 'y2s2', 'y3s1', 'y3s2', 'y4'] as const;
+
+export function semesterIndex(semester: string): number {
+  return SEMESTER_ORDER.indexOf(semester as (typeof SEMESTER_ORDER)[number]) + 1; // 0 = 非在读学期
+}
 
 export function evalCondition(state: Readonly<PlayerState>, c?: SimCondition): boolean {
   if (!c) return true;
@@ -17,7 +25,52 @@ export function evalCondition(state: Readonly<PlayerState>, c?: SimCondition): b
   if (c.notTags && c.notTags.some((t) => (state.tags[t] ?? 0) > 0)) return false;
   if (c.events && !c.events.some((e) => state.eventHistory.includes(e))) return false;
   if (c.notEvents && c.notEvents.some((e) => state.eventHistory.includes(e))) return false;
+  if (c.abilities && !c.abilities.every((a) => state.abilities.includes(a))) return false;
+  if (c.minActions && Object.entries(c.minActions).some(([id, n]) => (state.actionHistory[id] ?? 0) < n)) return false;
+  const si = semesterIndex(state.semester);
+  if (c.semesterMin !== undefined && si < c.semesterMin) return false;
+  if (c.semesterMax !== undefined && si > c.semesterMax) return false;
   return true;
+}
+
+// ---------------- 行动板（v2.2） ----------------
+
+/** 玩家专业大类（'any' 类玩家可见全部专业向行动） */
+export function playerCategory(state: Readonly<PlayerState>): string {
+  return getMajor(state.player.majorId).category ?? 'any';
+}
+
+export interface ActionView {
+  action: SimAction;
+  locked: boolean; // requires 未满足但有 lockedHint（展示进阶路径）
+  done: boolean; // 本学期已做
+  times: number; // 跨学期累计次数
+}
+
+/** 当前学期行动板可见条目（含锁定项）；专业不匹配/窗口外/一次性已做/无提示未达前置 → 隐藏 */
+export function visibleActions(state: Readonly<PlayerState>): ActionView[] {
+  const cat = playerCategory(state);
+  return simActions.flatMap((a) => {
+    if (a.majors && cat !== 'any' && !a.majors.includes(cat)) return [];
+    if (a.semesters && !a.semesters.includes(state.semester)) return [];
+    const times = state.actionHistory[a.id] ?? 0;
+    if (a.once && times > 0) return [];
+    const ok = evalCondition(state, a.requires);
+    if (!ok && !a.lockedHint) return [];
+    return [
+      {
+        action: a,
+        locked: !ok,
+        done: state.completedActions.includes(a.id),
+        times,
+      },
+    ];
+  });
+}
+
+/** 取第一个 when 命中的分支（末项无 when 作默认；理论上内容表保证必有兜底） */
+export function pickBranch(state: Readonly<PlayerState>, action: SimAction): SimActionBranch {
+  return action.branches.find((b) => evalCondition(state, b.when)) ?? action.branches[action.branches.length - 1];
 }
 
 /** 已觉醒标签（计数达阈值） */

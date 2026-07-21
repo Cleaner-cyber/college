@@ -1,6 +1,0 @@
-[
-  { "id": "paper", "label": "跟导师改小论文", "cost": 1, "deltas": { "academic": 2, "energy": -1 }, "resultText": "改到第七稿，导师说「可以投了」。你盯着邮箱刷新了一整晚。", "senpaiComment": "第一篇论文的意义，是让你不再怕第二篇。" },
-  { "id": "intern", "label": "投秋季日常实习", "cost": 1, "deltas": { "cash": 2, "energy": -1 }, "resultText": "投了 40 份，面了 5 家，拿了 1 个 offer。工位很小，工牌很新。", "senpaiComment": "第一份实习不用完美，要紧的是进场。" },
-  { "id": "talk", "label": "在社团做经验分享", "cost": 1, "deltas": { "expression": 2, "energy": -1 }, "resultText": "你给学弟学妹讲「大一别踩的坑」。台下有人认真做了笔记，像三年前的你。", "senpaiComment": "把路讲清楚的人，自己也就看清了路。" },
-  { "id": "rest", "label": "什么都不做", "cost": 0, "deltas": { "energy": 2 }, "resultText": "保研季前最后的平静。你去操场跑了十圈，什么也没想。" }
-]

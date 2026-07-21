@@ -6,7 +6,7 @@
  */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { ArchiveItem, PlayerState, QuickAction } from '@/contracts';
+import type { ArchiveItem, PlayerState } from '@/contracts';
 import {
   getBoard,
   getFolderSection,
@@ -15,12 +15,11 @@ import {
   getSimEvents,
   getTrait,
   interpolate,
-  quickActions,
   tagDefs,
   ui,
 } from '@/engine/content';
 import { useEngine, effectiveCost, isMainlineComplete } from '@/engine/store';
-import { checkRate, conditionLabel, drawableCount, evalCondition } from '@/engine/sim';
+import { checkRate, conditionLabel, drawableCount, evalCondition, visibleActions } from '@/engine/sim';
 import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
@@ -28,7 +27,7 @@ import { Panel } from '@/components/ui/Panel';
 import { PromptText } from '@/components/ui/Markdown';
 import { DocViewer } from '@/components/ui/DocViewer';
 import { HomeTour, TOUR_KEY } from '@/components/ui/Tour';
-import { EventModal, simCopy, type EventOptionView } from '@/components/sim/EventModal';
+import { ActionResultModal, EventModal, simCopy, type EventOptionView } from '@/components/sim/EventModal';
 
 const home = ui.home as Record<string, string>;
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
@@ -223,47 +222,18 @@ const NavColumn: React.FC<{
 
 // ---------- 本学期 ----------
 
-const QuickResultModal: React.FC<{ qa: QuickAction; onClose: () => void }> = ({ qa, onClose }) => (
-  <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
-    <div className="w-full max-w-md rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
-      <div className="flex flex-wrap gap-2">
-        {VISIBLE_AXES.filter((a) => (qa.deltas[a] ?? 0) !== 0).map((a) => (
-          <span
-            key={a}
-            className="animate-num-pop rounded-lg bg-accent-soft px-2.5 py-1 text-sm font-semibold text-accent"
-          >
-            {ui.axes[a]} {qa.deltas[a]! > 0 ? '+' : ''}
-            {qa.deltas[a]}
-          </span>
-        ))}
-      </div>
-      <p className="mt-4 text-[16px] leading-relaxed">{qa.resultText}</p>
-      {qa.senpaiComment && (
-        <p className="mt-3 text-sm text-ink-soft">
-          <span className="mr-1.5 rounded bg-accent-soft px-1.5 py-0.5 text-xs font-semibold text-accent">
-            {ui.board['senpai-prefix']}
-          </span>
-          {qa.senpaiComment}
-        </p>
-      )}
-      <Button full className="mt-6" onClick={onClose}>
-        {ui.common.continue}
-      </Button>
-    </div>
-  </div>
-);
-
 const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const navigate = useNavigate();
-  const runQuickAction = useEngine((s) => s.runQuickAction);
+  const runSimAction = useEngine((s) => s.runSimAction);
+  const closeActionResult = useEngine((s) => s.closeActionResult);
+  const actionResult = useEngine((s) => s.actionResult);
   const drawSimEvent = useEngine((s) => s.drawSimEvent);
   const resolveSimEvent = useEngine((s) => s.resolveSimEvent);
   const closeSimEvent = useEngine((s) => s.closeSimEvent);
   const simEvent = useEngine((s) => s.simEvent);
   const simResolution = useEngine((s) => s.simResolution);
-  const [lastQuick, setLastQuick] = useState<QuickAction | null>(null);
   const board = getBoard(state.semester);
-  const qas = quickActions[board.quickActionsRef] ?? [];
+  const actionViews = visibleActions(state);
   const mainlineDone = isMainlineComplete(state);
   const firstMainlineDone = state.completedActions.includes(board.mainline[0]?.id);
   // 过日子：本学期事件池余量（含连锁）
@@ -371,33 +341,43 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
           </div>
         )}
         <div className={`grid grid-cols-2 gap-3 ${firstMainlineDone ? '' : 'pointer-events-none opacity-40'}`}>
-          {qas.map((qa) => {
-            const cost = effectiveCost(qa.cost, qa.costWithAbility, state.abilities);
-            const done = state.completedActions.includes(qa.id);
+          {actionViews.map(({ action, locked, done, times }) => {
+            const cost = effectiveCost(action.cost, action.costWithAbility, state.abilities);
             const unaffordable = cost > state.actionPoints;
             return (
               <button
-                key={qa.id}
-                disabled={done || unaffordable}
-                onClick={() => {
-                  runQuickAction(qa);
-                  window.setTimeout(() => setLastQuick(qa), 250);
-                }}
+                key={action.id}
+                disabled={locked || done || unaffordable}
+                onClick={() => runSimAction(action)}
                 className={`rounded-xl border border-line bg-card p-4 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
-                  done ? 'opacity-55' : unaffordable ? 'opacity-40' : ''
+                  done ? 'opacity-55' : locked ? 'opacity-60' : unaffordable ? 'opacity-40' : ''
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-[15px] font-medium">{qa.label}</span>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="min-w-0 truncate text-[15px] font-medium">
+                    {action.icon && <span className="mr-1.5">{action.icon}</span>}
+                    {locked && <span className="mr-1">🔒</span>}
+                    {action.label}
+                    {times > 0 && (
+                      <span className="ml-1.5 rounded bg-accent-soft px-1 py-0.5 text-[10px] font-normal text-accent">
+                        {interpolate((ui.sim as Record<string, string>)['times-tag'], { n: times })}
+                      </span>
+                    )}
+                  </span>
                   {done ? (
-                    <span className="text-xs text-ink-soft">✓ {ui.board['completed-tag']}</span>
+                    <span className="shrink-0 text-xs text-ink-soft">✓ {ui.board['completed-tag']}</span>
                   ) : (
-                    <span className={`text-xs ${cost < qa.cost ? 'text-accent' : 'text-ink-soft'}`}>
-                      {cost === 0 ? ui.board['free-tag'] : `${'●'.repeat(cost)} ${cost}${ui.board['cost-unit']}`}
-                    </span>
+                    !locked && (
+                      <span className={`shrink-0 text-xs ${cost < action.cost ? 'text-accent' : 'text-ink-soft'}`}>
+                        {cost === 0 ? ui.board['free-tag'] : `${'●'.repeat(cost)} ${cost}${ui.board['cost-unit']}`}
+                      </span>
+                    )
                   )}
                 </div>
-                {cost < qa.cost && !done && (
+                <p className="mt-1 text-xs leading-relaxed text-ink-soft">
+                  {locked ? action.lockedHint : action.desc}
+                </p>
+                {cost < action.cost && !done && !locked && (
                   <div className="mt-1 text-xs text-accent">{ui.board['discount-tag']}</div>
                 )}
               </button>
@@ -416,7 +396,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         </Button>
       </div>
 
-      {lastQuick && <QuickResultModal qa={lastQuick} onClose={() => setLastQuick(null)} />}
+      {actionResult && <ActionResultModal res={actionResult} onClose={closeActionResult} />}
       {simEvent && (
         <EventModal
           event={simEvent}

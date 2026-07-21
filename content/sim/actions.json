@@ -1,0 +1,302 @@
+[
+  {
+    "id": "rest",
+    "label": "什么都不做",
+    "desc": "睡觉、看电影、发呆。没有任何产出。",
+    "icon": "🛏️",
+    "cost": 0,
+    "branches": [
+      { "result": { "text": "你睡了很多觉，看了两部电影，在床上横躺了一个下午。没有任何产出。挺好的。", "deltas": { "energy": 2 } } }
+    ]
+  },
+  {
+    "id": "gpa",
+    "label": "泡图书馆刷绩点",
+    "desc": "三楼靠窗的位置，和一摞练习册。",
+    "icon": "📚",
+    "cost": 1,
+    "branches": [
+      {
+        "when": { "minTags": { "grind": 3 } },
+        "result": { "text": "对觉醒的卷王来说这不算苦差。两周后小测，你是班里第一个交卷的，还检查了一遍。", "deltas": { "academic": 2 } }
+      },
+      { "result": { "text": "你在三楼守了两周。期中出分，比上次高了一截——原来绩点真是拿时间换的。", "deltas": { "academic": 2, "energy": -1 }, "tags": { "grind": 1 } } }
+    ]
+  },
+  {
+    "id": "tutor",
+    "label": "做家教",
+    "desc": "每周两次，教一个初中生数学。",
+    "icon": "🧑‍🏫",
+    "cost": 1,
+    "senpaiComment": "第一笔自己挣的钱，记住这个感觉。做熟了，这件事还能长出别的东西。",
+    "branches": [
+      { "result": { "text": "每周两次，一次两小时。这个月你没跟家里要生活费。小孩月考进步了 11 名，家长发来一个大红包表情——没有红包。", "deltas": { "cash": 2, "energy": -1 }, "tags": { "thrift": 1 } } }
+    ]
+  },
+  {
+    "id": "tutor-media",
+    "label": "开个讲题账号",
+    "desc": "把家教讲过的题做成短视频发出去。",
+    "icon": "📱",
+    "cost": 1,
+    "requires": { "minActions": { "tutor": 2 } },
+    "lockedHint": "先做过 2 次家教，手里有题可讲",
+    "branches": [
+      {
+        "when": { "abilities": ["image-gen"] },
+        "result": { "text": "封面用 AI 生成，标题用了家长最爱搜的那句话。第三条视频破了五千播放，评论区有人问「一对一怎么收费」。", "deltas": { "portfolio": 2, "cash": 1 }, "tags": { "maker": 1 } }
+      },
+      {
+        "check": { "axis": "expression", "dc": 3 },
+        "success": { "text": "对着手机讲题比对着学生难多了。前两条没人看，第三条被一个家长群转了——涨了两百粉，全是精准客户。", "deltas": { "portfolio": 1, "cash": 1 }, "tags": { "maker": 1 } },
+        "fail": { "text": "三条视频，播放量都是两位数，一半还是你自己刷的。你把账号设成了私密——但素材库留着了。", "deltas": { "energy": -1 }, "tags": { "maker": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "tutor-platform",
+    "label": "攒一个家教中介群",
+    "desc": "你认识缺家教的家长，也认识缺钱的同学。",
+    "icon": "🧩",
+    "cost": 1,
+    "requires": { "minActions": { "tutor": 3 }, "semesterMin": 3 },
+    "lockedHint": "家教做熟了（累计 3 次）、也认识了些人之后，再想这个",
+    "senpaiComment": "从「卖时间」到「搭平台」，这一步跨过去，赚钱的逻辑就换了。",
+    "branches": [
+      {
+        "check": { "axis": "expression", "dc": 4 },
+        "success": { "text": "你建了个群：这头是六个家长，那头是十来个同学，你从每单抽一点信息费。第一个月，你躺着赚了做三次家教的钱。", "deltas": { "cash": 3, "portfolio": 1 }, "tags": { "maker": 1, "thrift": 1 } },
+        "fail": { "text": "第一单就出问题：同学放了家长鸽子，家长在群里@你。你赔着笑善后，把介绍费退了。中介不是那么好当的。", "deltas": { "cash": -1, "energy": -1 }, "tags": { "maker": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "club-officer",
+    "label": "竞选社团部长",
+    "desc": "干了一年干事，该往上走一步了？",
+    "icon": "🎪",
+    "cost": 1,
+    "requires": { "semesterMin": 2, "minTags": { "social": 2 } },
+    "lockedHint": "先把场子混熟（场子熟 ×2）再谈竞选",
+    "branches": [
+      {
+        "check": { "axis": "expression", "dc": 3 },
+        "success": { "text": "竞选陈述三分钟，你把这一年干的活列成了三件事。投票结果贴出来，你的名字后面画满了正字。", "deltas": { "expression": 2 }, "tags": { "voice": 1, "social": 1 } },
+        "fail": { "text": "你输给了一个会拉票的。他提前一周就请遍了奶茶。你学到一课：光干活是不够的，得让人看见。", "deltas": { "energy": -1 }, "tags": { "voice": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "cet",
+    "label": "报名四六级",
+    "desc": "逃不掉的，早晚都要考。",
+    "icon": "📝",
+    "cost": 1,
+    "requires": { "semesterMin": 2 },
+    "branches": [
+      {
+        "when": { "minAxes": { "academic": 4 } },
+        "result": { "text": "裸考。听力有一段全靠蒙，但底子在那儿。出分：过了，还不算难看。", "deltas": { "academic": 1 }, "archive": { "id": "cert-cet", "title": "四六级证书", "resumeLine": "大学英语四/六级" } }
+      },
+      {
+        "check": { "axis": "academic", "dc": 3 },
+        "success": { "text": "考前两周你把真题刷了三遍。出分那天你反复登了四次网站——踩线过。过了就是过了。", "deltas": { "academic": 1 }, "archive": { "id": "cert-cet", "title": "四六级证书", "resumeLine": "大学英语四/六级" } },
+        "fail": { "text": "差 7 分。你盯着屏幕看了很久，把成绩截图存进了一个叫「下学期」的文件夹。", "deltas": { "energy": -1 }, "tags": { "grind": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "driving",
+    "label": "假期考驾照",
+    "desc": "趁假期把这事了了，工作后就没这时间了。",
+    "icon": "🚗",
+    "cost": 1,
+    "once": true,
+    "semesters": ["y1s2", "y2s1", "y2s2"],
+    "branches": [
+      { "result": { "text": "四十度的训练场，教练的嗓门比太阳还烈。科目二挂过一次，补考过了。拿本那天你拍了张照发家庭群，爸妈排队点赞。", "deltas": { "cash": -1, "energy": -1 }, "archive": { "id": "cert-driving", "title": "驾驶证", "resumeLine": "C1 驾驶证" } } }
+    ]
+  },
+  {
+    "id": "travel",
+    "label": "出去走一趟",
+    "desc": "特种兵式也好，慢慢晃也好。",
+    "icon": "🎒",
+    "cost": 1,
+    "branches": [
+      {
+        "when": { "minAxes": { "cash": 3 } },
+        "result": { "text": "你没抢特价票，住得也不憋屈。在陌生城市的江边坐了一下午，什么都没想——这钱花得值。", "deltas": { "energy": 2, "portfolio": 1 } }
+      },
+      { "result": { "text": "硬座去硬座回，两天走了六万步，靠面包和榨菜续命。累是真累，照片是真好看。", "deltas": { "energy": 1, "portfolio": 1, "cash": -1 }, "tags": { "thrift": 1 } } }
+    ]
+  },
+  {
+    "id": "volunteer",
+    "label": "周末支教",
+    "desc": "城郊小学缺人讲课，来回三小时。",
+    "icon": "🤝",
+    "cost": 1,
+    "branches": [
+      { "result": { "text": "你教的是四年级英语。下课时一个小孩追出来问：老师你下周还来吗？那三小时车程忽然就不算什么了。", "deltas": { "expression": 1, "energy": -1 }, "tags": { "nice": 1 } } }
+    ]
+  },
+  {
+    "id": "startup-team",
+    "label": "报学长的创业团队",
+    "desc": "群里看到招人：做校园周边生意，缺人手。",
+    "icon": "🚀",
+    "cost": 1,
+    "senpaiComment": "这件事本身没有错，错的可能只是时机——先把手里的技能攒出来，再去就是另一个故事。",
+    "branches": [
+      {
+        "when": { "semesterMax": 1 },
+        "result": { "text": "面聊十分钟。学长问：「你会什么？」你把高中的获奖经历说了一遍，他笑了笑说回去等通知。没有通知。那晚你翻着自己空空的文件夹，睡得很晚。", "deltas": { "energy": -1 } }
+      },
+      {
+        "when": { "abilities": ["structured-gen"] },
+        "result": { "text": "学长问你会什么。你打开文件夹：AI 做的策划 PPT、海报、还有个人网站。他看完直接把新品宣传册的活儿丢给你：「明天来开会。」", "deltas": { "portfolio": 2, "expression": 1 }, "tags": { "maker": 1 } }
+      },
+      {
+        "check": { "axis": "expression", "dc": 4 },
+        "success": { "text": "拿得出手的东西不多，但你把想法讲得很清楚。学长让你先从跑腿打杂干起——门是挤进来了。", "deltas": { "portfolio": 1, "energy": -1 }, "tags": { "voice": 1 } },
+        "fail": { "text": "这次连面聊都没约到，消息停在「已读」。你有点上头地又发了一段自我介绍，然后把对话框删了。", "deltas": { "energy": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "research-group",
+    "label": "联系老师进课题组",
+    "desc": "给专业课老师发邮件，问能不能进组打杂。",
+    "icon": "🔬",
+    "cost": 1,
+    "requires": { "semesterMin": 2 },
+    "branches": [
+      {
+        "when": { "semesterMax": 2 },
+        "result": { "text": "老师回信很客气：「先把基础课修完，大二下再来找我。」附了三篇综述。你下载了，没看。", "deltas": { "energy": -1 } }
+      },
+      {
+        "when": { "minAxes": { "academic": 4 } },
+        "result": { "text": "老师约你聊了二十分钟，问的两个问题你都答上来了。「周三组会来旁听吧。」你成了组里最小的那个。", "deltas": { "academic": 2 }, "tags": { "grind": 1 } }
+      },
+      {
+        "result": { "text": "老师问你概率论学得怎么样，你支吾了。「先把成绩提上来，组里不缺打杂的，缺能干活的。」话不好听，但没说错。", "deltas": { "energy": -1 }, "tags": { "grind": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "math-model",
+    "label": "数学建模竞赛",
+    "desc": "三人一队，三天三夜，一篇论文定胜负。",
+    "icon": "🧮",
+    "cost": 1,
+    "majors": ["cs", "eng", "sci"],
+    "requires": { "semesterMin": 2 },
+    "senpaiComment": "数模的真正奖品不是证书，是你第一次完整做完一件三天三夜的事。",
+    "branches": [
+      {
+        "when": { "minAxes": { "academic": 4 } },
+        "check": { "axis": "academic", "dc": 4 },
+        "success": { "text": "三天三夜，你负责建模和写作。交稿前最后一小时还在改摘要。三个月后出结果：省二等奖。宿舍那晚点了炸鸡。", "deltas": { "portfolio": 2, "academic": 1 }, "tags": { "grind": 1 }, "archive": { "id": "award-math-model", "title": "数学建模省二等奖", "resumeLine": "全国大学生数学建模竞赛 省级二等奖" } },
+        "fail": { "text": "三天三夜，论文交上去石沉大海。没有奖，但你学会了 LaTeX 和「怎么在凌晨四点跟队友讲道理」。", "deltas": { "academic": 1, "energy": -2 }, "tags": { "grind": 1 } }
+      },
+      {
+        "result": { "text": "队里你最菜，负责查资料和买咖啡。看着队长把模型一点点搭起来，你第一次知道差距长什么样。没获奖，但明年你知道该练什么了。", "deltas": { "academic": 1, "energy": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "code-contest",
+    "label": "程序设计竞赛",
+    "desc": "蓝桥杯这类，一个人、一台电脑、四个小时。",
+    "icon": "💻",
+    "cost": 1,
+    "majors": ["cs"],
+    "requires": { "semesterMin": 2 },
+    "branches": [
+      {
+        "check": { "axis": "academic", "dc": 3 },
+        "success": { "text": "四个小时，你 AC 了大半的题，最后一题暴力骗了点分。出分：省奖到手——这行字可以写进简历了。", "deltas": { "portfolio": 2 }, "archive": { "id": "award-code", "title": "程序设计竞赛省奖", "resumeLine": "程序设计类竞赛 省级奖项" } },
+        "fail": { "text": "第二题就卡住了。四个小时，你对着屏幕把自己会的东西数了一遍，发现是真不多。回宿舍你默默装上了刷题软件。", "deltas": { "academic": 1, "energy": -1 }, "tags": { "grind": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "biz-case",
+    "label": "商赛（案例分析大赛）",
+    "desc": "四大和咨询公司办的那种，组队给企业出方案。",
+    "icon": "📊",
+    "cost": 1,
+    "majors": ["biz"],
+    "requires": { "semesterMin": 2 },
+    "senpaiComment": "商赛拼两样：方案做得好不好看，故事讲得动不动人。工具能补前者。",
+    "branches": [
+      {
+        "when": { "abilities": ["structured-gen"] },
+        "check": { "axis": "expression", "dc": 3 },
+        "success": { "text": "队里的 PPT 是你用 AI 两小时出的初稿，省下的时间全花在打磨方案上。晋级复赛那封邮件，你截图发了三个群。", "deltas": { "portfolio": 2, "expression": 1 }, "archive": { "id": "award-biz-case", "title": "商赛晋级证明", "resumeLine": "商业案例分析大赛 晋级复赛" } },
+        "fail": { "text": "方案不差，但答辩时被评委三连问问穿了。复盘时队长说：下次财务测算得再扎实点。你记在了备忘录置顶。", "deltas": { "expression": 1, "energy": -1 } }
+      },
+      {
+        "check": { "axis": "expression", "dc": 5 },
+        "success": { "text": "PPT 熬了两个通宵还是糙，全靠你答辩时把故事圆了回来。压线晋级——评委点评：内容比呈现好。", "deltas": { "portfolio": 1, "expression": 1, "energy": -2 } },
+        "fail": { "text": "初筛就被刷了。你们的 PPT 排版停留在高中水平，方案再好也没人翻到第三页。工具的债，早晚要还。", "deltas": { "energy": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "moot-court",
+    "label": "模拟法庭",
+    "desc": "抽一个真实案例，站上法庭攻防。",
+    "icon": "⚖️",
+    "cost": 1,
+    "majors": ["law"],
+    "requires": { "semesterMin": 2 },
+    "branches": [
+      {
+        "check": { "axis": "expression", "dc": 3 },
+        "success": { "text": "你方是被告代理人。对方举证时你抓到一个程序瑕疵，当庭指出——评委席有人抬头看了你一眼。最佳辩手没拿到，但队伍赢了。", "deltas": { "expression": 2, "portfolio": 1 }, "tags": { "voice": 1 } },
+        "fail": { "text": "准备了两周的质证提纲，上场三分钟就被对方带偏了节奏。你第一次体会到：法条背得熟，和用得出来，是两回事。", "deltas": { "expression": 1, "energy": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "clinical-comp",
+    "label": "临床技能竞赛",
+    "desc": "缝合、查体、急救，练的全是手上功夫。",
+    "icon": "🩺",
+    "cost": 1,
+    "majors": ["med"],
+    "requires": { "semesterMin": 4, "minAxes": { "academic": 3 } },
+    "lockedHint": "专业课底子打牢（学术 ≥3、大二下起）才有资格进集训队",
+    "branches": [
+      {
+        "check": { "axis": "academic", "dc": 4 },
+        "success": { "text": "集训两个月，缝皮练到闭着眼都稳。校赛拿了名次，带教老师说了句「手不错」——这三个字你能记四年。", "deltas": { "portfolio": 2, "academic": 1 }, "archive": { "id": "award-clinical", "title": "临床技能竞赛奖", "resumeLine": "临床技能竞赛 校级奖项" } },
+        "fail": { "text": "站上操作台脑子一片空白，无菌观念扣了两分。出考场你在走廊站了十分钟，然后回技能中心又练了两小时。", "deltas": { "academic": 1, "energy": -1 }, "tags": { "grind": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "ad-contest",
+    "label": "大广赛",
+    "desc": "给真实品牌命题做广告作品。",
+    "icon": "🎨",
+    "cost": 1,
+    "majors": ["design", "hum", "biz"],
+    "requires": { "semesterMin": 2 },
+    "branches": [
+      {
+        "when": { "abilities": ["image-gen"] },
+        "result": { "text": "别人还在找素材，你已经用 AI 出了六版视觉稿，挑一版精修投了出去。入围名单里有你的名字——工具就是时间。", "deltas": { "portfolio": 2 }, "archive": { "id": "award-ad", "title": "大广赛入围", "resumeLine": "大学生广告艺术大赛 入围作品" } }
+      },
+      {
+        "check": { "axis": "portfolio", "dc": 3 },
+        "success": { "text": "熬了一周做出一支 15 秒短片，投出去入了围。评语只有四个字：「有点意思。」够了。", "deltas": { "portfolio": 2 }, "archive": { "id": "award-ad", "title": "大广赛入围", "resumeLine": "大学生广告艺术大赛 入围作品" } },
+        "fail": { "text": "作品交上去没有回音。你回头看自己的片子，发现和获奖作品差的不是创意，是完成度。", "deltas": { "portfolio": 1, "energy": -1 } }
+      }
+    ]
+  }
+]

@@ -86,6 +86,7 @@ export interface PlayerState {
   axesPeak: PlayerState['axes']; // 各轴历史最高值（结算总评用）
   eventHistory: string[]; // 已经历的模拟事件 id（事件默认不重复；供条件/结局引用）
   pendingEvents: string[]; // 连锁事件队列（事件 next 入队，抽卡时优先弹出）
+  actionHistory: Record<string, number>; // 行动跨学期累计次数（家教×3 → 解锁进阶行动）
 }
 
 // ---------- 2. 关卡插件接口 ----------
@@ -159,6 +160,7 @@ export interface Major {
   id: string;
   name: string; // "计算机科学与技术"
   aliases: string[]; // 搜索用
+  category?: string; // 专业大类（行动板过滤）：cs/eng/sci/med/biz/hum/design/edu/law/any
   card: {
     coreCourses: string[]; // 四年主干课（≤6）
     hardestY1: string[]; // 大一最难两门
@@ -168,18 +170,7 @@ export interface Major {
   };
 }
 
-// ---------- 3.4 速结行动 ----------
-
-export interface QuickAction {
-  id: string;
-  label: string; // "刷绩点"
-  cost: number; // 行动点
-  costWithAbility?: { ability: AbilityId; cost: number }; // 折扣
-  deltas: Partial<PlayerState['axes']>;
-  resultText: string; // 结算一句话
-  archiveItem?: Omit<ArchiveItem, 'semester' | 'borrowed'>;
-  senpaiComment?: string; // 学长点评（可空）
-}
+// ---------- 3.4 速结行动（v2.2 已被 3.6 行动板 SimAction 取代，类型移除）----------
 
 // ---------- 3.5 模拟层：入学特质 / 学期事件 / 标签（v2.1，docs/08 P0）----------
 
@@ -193,6 +184,10 @@ export interface SimCondition {
   notTags?: string[]; // 未沾任何列出标签（计数为 0）
   events?: string[]; // 已历任一事件
   notEvents?: string[]; // 未历任何列出事件
+  abilities?: AbilityId[]; // 已解锁全部列出的 AI 能力（主线教学的技能被模拟层读取）
+  minActions?: Record<string, number>; // 行动累计次数下限（进阶链前置）
+  semesterMin?: number; // 学期序号下限（1=大一上 … 7=大四）
+  semesterMax?: number; // 学期序号上限
 }
 
 export interface SimOutcome {
@@ -200,6 +195,7 @@ export interface SimOutcome {
   deltas?: Partial<PlayerState['axes']>;
   tags?: Record<string, number>; // 标签增量
   next?: string; // 连锁：目标事件入 pendingEvents，后续抽卡优先弹出
+  archive?: { id: string; title: string; resumeLine: string; assetRef?: string }; // 产出物入档（获奖证书等）
 }
 
 export interface SimEventOption {
@@ -237,6 +233,36 @@ export interface TagDef {
   name: string;
   threshold: number;
   awakenText: string; // 「你正在成为：××」
+}
+
+// ---------- 3.6 行动板（v2.2：取代速结行动 QuickAction）----------
+// 设计要点（docs/08 增补）：行动跨学期可重复可累进；与专业大类绑定；
+// 无绝对好坏——结果由「适配分支」决定（首个 when 命中者生效，末项无 when 为默认）。
+
+/** 行动结果分支：when 适配条件 + 可选检定（竞赛出结果看临场） */
+export interface SimActionBranch {
+  when?: SimCondition; // 适配条件；省略 = 默认分支
+  check?: { axis: keyof PlayerState['axes']; dc: number }; // 命中后仍需掷骰
+  result?: SimOutcome; // 无检定的直接结果
+  success?: SimOutcome; // 检定成功
+  fail?: SimOutcome; // 检定失败
+}
+
+/** 行动板条目 */
+export interface SimAction {
+  id: string;
+  label: string;
+  desc: string; // 行动板一句话说明（中性，不剧透好坏）
+  icon?: string; // emoji
+  cost: number; // 行动点
+  costWithAbility?: { ability: AbilityId; cost: number }; // 已学 AI 能力的折扣
+  majors?: string[]; // 专业大类过滤（缺省 = 全专业；'any' 类玩家全可见）
+  semesters?: SemesterId[]; // 出现学期窗口（缺省 = 全学期）
+  once?: boolean; // 全程仅一次（默认可跨学期重复，学期内仍限一次）
+  requires?: SimCondition; // 上板前置（进阶链：minActions 等）
+  lockedHint?: string; // requires 未满足时锁定显示的提示；缺省则直接隐藏
+  branches: SimActionBranch[]; // 依序取第一个 when 命中的分支
+  senpaiComment?: string; // 学长点评（可空）
 }
 
 // ---------- 4. 存档 ----------
