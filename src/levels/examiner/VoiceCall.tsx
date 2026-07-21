@@ -153,22 +153,65 @@ export const VoiceCall: React.FC<{ api: FlowAPI; onDone: (elapsed: string) => vo
         timers.push(window.setTimeout(finish, est) as unknown as number);
         return;
       }
-      const u = new SpeechSynthesisUtterance(text);
-      const v = pickVoice();
-      if (v) u.voice = v;
-      u.lang = v?.lang ?? 'en-GB';
-      u.rate = 0.94;
-      u.onboundary = (e) => setSubProgress(Math.max(e.charIndex, 0));
-      u.onend = finish;
-      u.onerror = finish;
+      // Chrome 兼容三板斧：①按句分段（整段长语句会静音超时）②周期 resume（cancel 后引擎
+      // 偶发卡在 paused 静音）③等 voiceschanged（首次 getVoices 常为空数组）
+      const chunks = text.match(/[^.!?]+[.!?]+['"”]?\s*/g) ?? [text];
+      timers.push(window.setInterval(() => synth.resume(), 4000) as unknown as number);
+      let offset = 0;
+      const speakChunk = (i: number) => {
+        if (disposed) return;
+        if (i >= chunks.length) {
+          finish();
+          return;
+        }
+        const chunk = chunks[i];
+        const u = new SpeechSynthesisUtterance(chunk);
+        const v = pickVoice();
+        if (v) u.voice = v;
+        u.lang = v?.lang ?? 'en-GB';
+        u.rate = 0.94;
+        const base = offset;
+        u.onboundary = (e) =>
+          setSubProgress(Math.min(text.length, base + Math.max(e.charIndex, 0)));
+        u.onend = () => {
+          offset = base + chunk.length;
+          speakChunk(i + 1);
+        };
+        u.onerror = () => {
+          offset = base + chunk.length;
+          speakChunk(i + 1);
+        };
+        synth.speak(u);
+        synth.resume();
+      };
+      let begun = false;
+      const begin = () => {
+        if (begun || disposed) return;
+        begun = true;
+        timers.push(window.setTimeout(() => speakChunk(0), 80) as unknown as number);
+      };
       synth.cancel();
-      timers.push(window.setTimeout(() => synth.speak(u), 80) as unknown as number);
+      if (synth.getVoices().length > 0) {
+        begin();
+      } else {
+        const onVoices = () => {
+          synth.removeEventListener('voiceschanged', onVoices);
+          begin();
+        };
+        synth.addEventListener('voiceschanged', onVoices);
+        timers.push(
+          window.setTimeout(() => {
+            synth.removeEventListener('voiceschanged', onVoices);
+            begin();
+          }, 400) as unknown as number,
+        );
+      }
       // 看门狗：无声环境（无音色/无回调）按演出时长收尾
-      timers.push(window.setTimeout(finish, Math.max(est * 1.8, 8000)) as unknown as number);
+      timers.push(window.setTimeout(finish, Math.max(est * 2.2, 10000)) as unknown as number);
     };
 
-    // 预置录音优先（文件不存在时 onerror 落回朗读）
-    audio = new Audio(`/assets/vo-ielts-${stage.key}.mp3`);
+    // 预置录音优先（/assets/vo-ielts-greet.mp3 等，文件不存在时落回朗读）
+    audio = new Audio(`/assets/vo-ielts-${stage.key.replace(/^vo-/, '')}.mp3`);
     audio.onerror = startTts;
     audio.oncanplaythrough = () => {
       if (disposed || !audio) return;

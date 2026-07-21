@@ -228,7 +228,24 @@ const SpeakingChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
           )}
           {step?.k === 'call' && !inCall && (
             <div className="mb-2.5 animate-fade-up">
-              <Button onClick={() => setInCall(true)}>{api.copy('btn-call')}</Button>
+              <Button
+                onClick={() => {
+                  // 用本次点击的用户激活解锁 speechSynthesis（部分浏览器无激活不发声）
+                  try {
+                    const synth = window.speechSynthesis;
+                    if (synth) {
+                      synth.cancel();
+                      synth.speak(new SpeechSynthesisUtterance(' '));
+                      synth.resume();
+                    }
+                  } catch {
+                    /* 忽略：不支持语音的环境走字幕演出 */
+                  }
+                  setInCall(true);
+                }}
+              >
+                {api.copy('btn-call')}
+              </Button>
             </div>
           )}
           {step?.k === 'button' && (
