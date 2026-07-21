@@ -46,6 +46,10 @@ const DOC_ITEMS: Record<string, { titleKey: string; mdKey: string }> = {
 
 type Tab = 'semester' | 'folder' | 'stats' | 'log';
 
+/** 行动板分组（调研实证三分类 + 搞钱/生活），标签页切换避免长列表 */
+const ACTION_GROUPS = ['study', 'research', 'practice', 'work', 'life'] as const;
+type ActionGroup = (typeof ACTION_GROUPS)[number];
+
 // ---------- 右侧状态栏 ----------
 
 const AxisBar: React.FC<{ label: string; value: number; strong?: boolean }> = ({
@@ -234,6 +238,14 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const simResolution = useEngine((s) => s.simResolution);
   const board = getBoard(state.semester);
   const actionViews = visibleActions(state);
+  const [actionGroup, setActionGroup] = useState<ActionGroup>('study');
+  // 选中组因过滤变空时回退到第一个非空组
+  const groupsWithItems = ACTION_GROUPS.filter((g) =>
+    actionViews.some((v) => (v.action.group ?? 'life') === g),
+  );
+  const activeGroup = groupsWithItems.includes(actionGroup)
+    ? actionGroup
+    : (groupsWithItems[0] ?? 'life');
   const mainlineDone = isMainlineComplete(state);
   const firstMainlineDone = state.completedActions.includes(board.mainline[0]?.id);
   // 过日子：本学期事件池余量（含连锁）
@@ -340,63 +352,84 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             </Button>
           </div>
         )}
-        {/* 按调研三分类扩展的五组：学习拓展/科研与竞赛/社会实践/搞钱/生活 */}
+        {/* 分组标签页 + 三列紧凑瓦片 + hover 渐进披露（调研：避免无尽滚动，卡面只留关键属性） */}
         <div className={firstMainlineDone ? '' : 'pointer-events-none opacity-40'}>
-          {(['study', 'research', 'practice', 'work', 'life'] as const).map((group) => {
-            const items = actionViews.filter(({ action }) => (action.group ?? 'life') === group);
-            if (items.length === 0) return null;
-            return (
-              <div key={group} className="mb-4 last:mb-0">
-                <div className="mb-2 px-1 text-[11px] tracking-widest text-ink-soft">
+          <div className="mb-3 flex flex-wrap gap-1.5">
+            {ACTION_GROUPS.map((group) => {
+              const items = actionViews.filter(({ action }) => (action.group ?? 'life') === group);
+              if (items.length === 0) return null;
+              const doable = items.filter(
+                (v) =>
+                  !v.locked &&
+                  !v.done &&
+                  effectiveCost(v.action.cost, v.action.costWithAbility, state.abilities) <=
+                    state.actionPoints,
+              ).length;
+              return (
+                <button
+                  key={group}
+                  onClick={() => setActionGroup(group)}
+                  className={`rounded-full px-3 py-1.5 text-[12.5px] transition ${
+                    activeGroup === group
+                      ? 'bg-ink font-medium text-paper shadow-soft'
+                      : 'border border-line bg-card text-ink-soft hover:border-accent/40 hover:text-ink'
+                  }`}
+                >
                   {simCopy(`group-${group}`)}
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {items.map(({ action, locked, done, times }) => {
-                    const cost = effectiveCost(action.cost, action.costWithAbility, state.abilities);
-                    const unaffordable = cost > state.actionPoints;
-                    return (
-                      <button
-                        key={action.id}
-                        disabled={locked || done || unaffordable}
-                        onClick={() => runSimAction(action)}
-                        className={`rounded-xl border border-line bg-card p-4 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
-                          done ? 'opacity-55' : locked ? 'opacity-60' : unaffordable ? 'opacity-40' : ''
-                        }`}
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="min-w-0 truncate text-[15px] font-medium">
-                            {action.icon && <span className="mr-1.5">{action.icon}</span>}
-                            {locked && <span className="mr-1">🔒</span>}
-                            {action.label}
-                            {times > 0 && (
-                              <span className="ml-1.5 rounded bg-accent-soft px-1 py-0.5 text-[10px] font-normal text-accent">
-                                {interpolate((ui.sim as Record<string, string>)['times-tag'], { n: times })}
-                              </span>
-                            )}
+                  {doable > 0 && (
+                    <span className={`ml-1 tabular-nums ${activeGroup === group ? 'text-paper/70' : 'text-accent'}`}>
+                      {doable}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {actionViews
+              .filter(({ action }) => (action.group ?? 'life') === activeGroup)
+              .map(({ action, locked, done, times }) => {
+                const cost = effectiveCost(action.cost, action.costWithAbility, state.abilities);
+                const unaffordable = cost > state.actionPoints;
+                return (
+                  <button
+                    key={action.id}
+                    data-action-tile
+                    disabled={locked || done || unaffordable}
+                    onClick={() => runSimAction(action)}
+                    className={`group relative flex items-center gap-2.5 rounded-xl border border-line bg-card px-3 py-2.5 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
+                      done ? 'opacity-50' : locked ? 'opacity-60' : unaffordable ? 'opacity-40' : ''
+                    }`}
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-paper text-lg">
+                      {locked ? '🔒' : (action.icon ?? '📌')}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[13.5px] font-medium leading-tight">
+                        {action.label}
+                      </span>
+                      <span className="mt-0.5 block text-[11px] text-ink-soft">
+                        {done
+                          ? `✓ ${ui.board['completed-tag']}`
+                          : cost === 0
+                            ? ui.board['free-tag']
+                            : `${'●'.repeat(cost)} ${cost}${ui.board['cost-unit']}`}
+                        {times > 0 && (
+                          <span className="ml-1.5 text-accent">
+                            {interpolate((ui.sim as Record<string, string>)['times-tag'], { n: times })}
                           </span>
-                          {done ? (
-                            <span className="shrink-0 text-xs text-ink-soft">✓ {ui.board['completed-tag']}</span>
-                          ) : (
-                            !locked && (
-                              <span className={`shrink-0 text-xs ${cost < action.cost ? 'text-accent' : 'text-ink-soft'}`}>
-                                {cost === 0 ? ui.board['free-tag'] : `${'●'.repeat(cost)} ${cost}${ui.board['cost-unit']}`}
-                              </span>
-                            )
-                          )}
-                        </div>
-                        <p className="mt-1 text-xs leading-relaxed text-ink-soft">
-                          {locked ? action.lockedHint : action.desc}
-                        </p>
-                        {cost < action.cost && !done && !locked && (
-                          <div className="mt-1 text-xs text-accent">{ui.board['discount-tag']}</div>
                         )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
+                        {cost < action.cost && !done && !locked && ' ⚡'}
+                      </span>
+                    </span>
+                    {/* hover 浮层：描述 / 解锁条件（渐进披露） */}
+                    <span className="pointer-events-none absolute left-0 top-full z-20 mt-1.5 hidden w-64 rounded-xl bg-ink p-3 text-[12px] leading-relaxed text-paper shadow-pop group-hover:block">
+                      {locked ? `🔒 ${action.lockedHint}` : action.desc}
+                    </span>
+                  </button>
+                );
+              })}
+          </div>
         </div>
       </Panel>
       </div>
