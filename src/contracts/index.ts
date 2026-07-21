@@ -254,6 +254,7 @@ export interface SimAction {
   label: string;
   desc: string; // 行动板一句话说明（中性，不剧透好坏）
   icon?: string; // emoji
+  group?: string; // 行动板分组：study/research/practice/work/life（缺省 life）
   cost: number; // 行动点
   costWithAbility?: { ability: AbilityId; cost: number }; // 已学 AI 能力的折扣
   majors?: string[]; // 专业大类过滤（缺省 = 全专业；'any' 类玩家全可见）

@@ -340,47 +340,61 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             </Button>
           </div>
         )}
-        <div className={`grid grid-cols-2 gap-3 ${firstMainlineDone ? '' : 'pointer-events-none opacity-40'}`}>
-          {actionViews.map(({ action, locked, done, times }) => {
-            const cost = effectiveCost(action.cost, action.costWithAbility, state.abilities);
-            const unaffordable = cost > state.actionPoints;
+        {/* 按调研三分类扩展的五组：学习拓展/科研与竞赛/社会实践/搞钱/生活 */}
+        <div className={firstMainlineDone ? '' : 'pointer-events-none opacity-40'}>
+          {(['study', 'research', 'practice', 'work', 'life'] as const).map((group) => {
+            const items = actionViews.filter(({ action }) => (action.group ?? 'life') === group);
+            if (items.length === 0) return null;
             return (
-              <button
-                key={action.id}
-                disabled={locked || done || unaffordable}
-                onClick={() => runSimAction(action)}
-                className={`rounded-xl border border-line bg-card p-4 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
-                  done ? 'opacity-55' : locked ? 'opacity-60' : unaffordable ? 'opacity-40' : ''
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 truncate text-[15px] font-medium">
-                    {action.icon && <span className="mr-1.5">{action.icon}</span>}
-                    {locked && <span className="mr-1">🔒</span>}
-                    {action.label}
-                    {times > 0 && (
-                      <span className="ml-1.5 rounded bg-accent-soft px-1 py-0.5 text-[10px] font-normal text-accent">
-                        {interpolate((ui.sim as Record<string, string>)['times-tag'], { n: times })}
-                      </span>
-                    )}
-                  </span>
-                  {done ? (
-                    <span className="shrink-0 text-xs text-ink-soft">✓ {ui.board['completed-tag']}</span>
-                  ) : (
-                    !locked && (
-                      <span className={`shrink-0 text-xs ${cost < action.cost ? 'text-accent' : 'text-ink-soft'}`}>
-                        {cost === 0 ? ui.board['free-tag'] : `${'●'.repeat(cost)} ${cost}${ui.board['cost-unit']}`}
-                      </span>
-                    )
-                  )}
+              <div key={group} className="mb-4 last:mb-0">
+                <div className="mb-2 px-1 text-[11px] tracking-widest text-ink-soft">
+                  {simCopy(`group-${group}`)}
                 </div>
-                <p className="mt-1 text-xs leading-relaxed text-ink-soft">
-                  {locked ? action.lockedHint : action.desc}
-                </p>
-                {cost < action.cost && !done && !locked && (
-                  <div className="mt-1 text-xs text-accent">{ui.board['discount-tag']}</div>
-                )}
-              </button>
+                <div className="grid grid-cols-2 gap-3">
+                  {items.map(({ action, locked, done, times }) => {
+                    const cost = effectiveCost(action.cost, action.costWithAbility, state.abilities);
+                    const unaffordable = cost > state.actionPoints;
+                    return (
+                      <button
+                        key={action.id}
+                        disabled={locked || done || unaffordable}
+                        onClick={() => runSimAction(action)}
+                        className={`rounded-xl border border-line bg-card p-4 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
+                          done ? 'opacity-55' : locked ? 'opacity-60' : unaffordable ? 'opacity-40' : ''
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="min-w-0 truncate text-[15px] font-medium">
+                            {action.icon && <span className="mr-1.5">{action.icon}</span>}
+                            {locked && <span className="mr-1">🔒</span>}
+                            {action.label}
+                            {times > 0 && (
+                              <span className="ml-1.5 rounded bg-accent-soft px-1 py-0.5 text-[10px] font-normal text-accent">
+                                {interpolate((ui.sim as Record<string, string>)['times-tag'], { n: times })}
+                              </span>
+                            )}
+                          </span>
+                          {done ? (
+                            <span className="shrink-0 text-xs text-ink-soft">✓ {ui.board['completed-tag']}</span>
+                          ) : (
+                            !locked && (
+                              <span className={`shrink-0 text-xs ${cost < action.cost ? 'text-accent' : 'text-ink-soft'}`}>
+                                {cost === 0 ? ui.board['free-tag'] : `${'●'.repeat(cost)} ${cost}${ui.board['cost-unit']}`}
+                              </span>
+                            )
+                          )}
+                        </div>
+                        <p className="mt-1 text-xs leading-relaxed text-ink-soft">
+                          {locked ? action.lockedHint : action.desc}
+                        </p>
+                        {cost < action.cost && !done && !locked && (
+                          <div className="mt-1 text-xs text-accent">{ui.board['discount-tag']}</div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </div>

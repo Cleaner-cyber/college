@@ -197,6 +197,11 @@
     "close": "继续过日子",
     "roll-rolling": "命运骰子…",
     "times-tag": "已做 {n} 次",
-    "action-close": "回到行动板"
+    "action-close": "回到行动板",
+    "group-study": "学习拓展",
+    "group-research": "科研与竞赛",
+    "group-practice": "社会实践",
+    "group-work": "搞钱",
+    "group-life": "生活"
   }
 }
