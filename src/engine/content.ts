@@ -33,6 +33,12 @@ import folderJson from '@content/folder/folder.json';
 import traitsJson from '@content/sim/traits.json';
 import tagsJson from '@content/sim/tags.json';
 import simEventsY1s1 from '@content/sim/events-y1s1.json';
+import simEventsY1s2 from '@content/sim/events-y1s2.json';
+import simEventsY2s1 from '@content/sim/events-y2s1.json';
+import simEventsY2s2 from '@content/sim/events-y2s2.json';
+import simEventsY3s1 from '@content/sim/events-y3s1.json';
+import simEventsY3s2 from '@content/sim/events-y3s2.json';
+import simEventsY4 from '@content/sim/events-y4.json';
 
 const levelContents: Record<string, LevelContent> = {
   prologue: prologueJson as LevelContent,
@@ -68,6 +74,12 @@ export function getTrait(id: string): Trait | undefined {
 
 const simEvents: Record<string, SimEvent[]> = {
   y1s1: simEventsY1s1 as SimEvent[],
+  y1s2: simEventsY1s2 as SimEvent[],
+  y2s1: simEventsY2s1 as SimEvent[],
+  y2s2: simEventsY2s2 as SimEvent[],
+  y3s1: simEventsY3s1 as SimEvent[],
+  y3s2: simEventsY3s2 as SimEvent[],
+  y4: simEventsY4 as SimEvent[],
 };
 
 export function getSimEvents(semester: string): SimEvent[] {
