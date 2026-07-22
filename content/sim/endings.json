@@ -11,7 +11,8 @@
         "cash": 6
       }
     },
-    "almostHint": "离六边形战士只差一格没点亮。"
+    "almostHint": "离六边形战士只差一格没点亮。",
+    "legacy": "legacy-scholar"
   },
   {
     "id": "lab-light",
@@ -26,7 +27,8 @@
         "research-group": 1
       }
     },
-    "almostHint": "科研这条线你已经走到门口了，差一步就推开那扇门。"
+    "almostHint": "科研这条线你已经走到门口了，差一步就推开那扇门。",
+    "legacy": "legacy-scholar"
   },
   {
     "id": "venture-alum",
@@ -36,7 +38,8 @@
       "events": [
         "venture-fate"
       ]
-    }
+    },
+    "legacy": "legacy-hustle"
   },
   {
     "id": "platform-boss",
@@ -50,7 +53,8 @@
         "tutor-platform": 1
       }
     },
-    "almostHint": "你已经很会折腾了，差一点就把散活儿攒成了自己的局。"
+    "almostHint": "你已经很会折腾了，差一点就把散活儿攒成了自己的局。",
+    "legacy": "legacy-hustle"
   },
   {
     "id": "maker-hands",
@@ -63,7 +67,8 @@
       "minPeaks": {
         "portfolio": 6
       }
-    }
+    },
+    "legacy": "legacy-maker"
   },
   {
     "id": "resume-story",
@@ -77,7 +82,8 @@
         "portfolio": 6
       }
     },
-    "almostHint": "作品攒得差不多了，简历里差的那个故事，其实只差一次出手。"
+    "almostHint": "作品攒得差不多了，简历里差的那个故事，其实只差一次出手。",
+    "legacy": "legacy-maker"
   },
   {
     "id": "grind-glow",
@@ -91,7 +97,8 @@
         "academic": 8
       }
     },
-    "almostHint": "你已经卷出名声了，差一口气就卷到发光。"
+    "almostHint": "你已经卷出名声了，差一口气就卷到发光。",
+    "legacy": "legacy-scholar"
   },
   {
     "id": "stage-person",
@@ -105,7 +112,8 @@
         "expression": 7
       }
     },
-    "almostHint": "你已经站到台边了，差一步就走进聚光灯。"
+    "almostHint": "你已经站到台边了，差一步就走进聚光灯。",
+    "legacy": "legacy-voice"
   },
   {
     "id": "flag-keeper",
@@ -113,7 +121,8 @@
     "verdict": "入学那天你许的四个愿，四年后一个都没赖账。这种人不多——你自己可能都没意识到这有多难。",
     "minFlagScore": 4,
     "almostHint": "开局许的愿你几乎都兑现了——差的那一步，也许只是再多试一件事。",
-    "minActionKinds": 6
+    "minActionKinds": 6,
+    "legacy": "legacy-ease"
   },
   {
     "id": "socialite",
@@ -126,7 +135,8 @@
       "minPeaks": {
         "expression": 5
       }
-    }
+    },
+    "legacy": "legacy-voice"
   },
   {
     "id": "quiet-master",
@@ -139,7 +149,8 @@
       "minPeaks": {
         "academic": 6
       }
-    }
+    },
+    "legacy": "legacy-scholar"
   },
   {
     "id": "night-creator",
@@ -152,7 +163,8 @@
       "minPeaks": {
         "portfolio": 6
       }
-    }
+    },
+    "legacy": "legacy-maker"
   },
   {
     "id": "thrifty",
@@ -165,7 +177,8 @@
       "minPeaks": {
         "cash": 6
       }
-    }
+    },
+    "legacy": "legacy-hustle"
   },
   {
     "id": "library-story",
@@ -175,7 +188,8 @@
       "events": [
         "crush-cafe"
       ]
-    }
+    },
+    "legacy": "legacy-ease"
   },
   {
     "id": "cert-ready",
@@ -188,14 +202,16 @@
         "driving": 1
       }
     },
-    "almostHint": "常规装备就差最后一件没配齐。"
+    "almostHint": "常规装备就差最后一件没配齐。",
+    "legacy": "legacy-scholar"
   },
   {
     "id": "try-everything",
     "title": "什么都试过的人",
     "verdict": "行动板上大半的事你都点过。四年下来你可能没有一门「绝活」，但你比谁都清楚自己不想要什么——这同样值钱。",
     "minActionKinds": 14,
-    "almostHint": "你几乎什么都试过了，就差最后一两件没伸手。"
+    "almostHint": "你几乎什么都试过了，就差最后一两件没伸手。",
+    "legacy": "legacy-maker"
   },
   {
     "id": "survivor",
@@ -210,7 +226,8 @@
         "sleepless-spring",
         "grad-burnout"
       ]
-    }
+    },
+    "legacy": "legacy-ease"
   },
   {
     "id": "life-clear",
@@ -221,7 +238,8 @@
         "energy": 7
       }
     },
-    "minFlagScore": 2
+    "minFlagScore": 2,
+    "legacy": "legacy-ease"
   },
   {
     "id": "axis-academic",
@@ -231,7 +249,8 @@
       "minPeaks": {
         "academic": 5
       }
-    }
+    },
+    "legacy": "legacy-scholar"
   },
   {
     "id": "axis-portfolio",
@@ -241,7 +260,8 @@
       "minPeaks": {
         "portfolio": 5
       }
-    }
+    },
+    "legacy": "legacy-maker"
   },
   {
     "id": "axis-expression",
@@ -251,7 +271,8 @@
       "minPeaks": {
         "expression": 5
       }
-    }
+    },
+    "legacy": "legacy-voice"
   },
   {
     "id": "axis-cash",
@@ -261,7 +282,8 @@
       "minPeaks": {
         "cash": 5
       }
-    }
+    },
+    "legacy": "legacy-hustle"
   },
   {
     "id": "chill",
@@ -271,11 +293,13 @@
       "minPeaks": {
         "energy": 5
       }
-    }
+    },
+    "legacy": "legacy-ease"
   },
   {
     "id": "plain-four-years",
     "title": "普通但完整的四年",
-    "verdict": "没有惊天动地的成绩，也没有过不去的坎。四年到站，人齐、心齐——这已经赢过很多故事了。"
+    "verdict": "没有惊天动地的成绩，也没有过不去的坎。四年到站，人齐、心齐——这已经赢过很多故事了。",
+    "legacy": "legacy-ease"
   }
 ]

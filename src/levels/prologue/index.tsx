@@ -6,6 +6,7 @@ import React, { useMemo, useState } from 'react';
 import type { LevelModule, LevelProps, Major, Trait } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
 import { searchMajors, getMajor, majors, traits as allTraits, interpolate, ui } from '@/engine/content';
+import { loadMeta, unlockedLegacyTraits } from '@/engine/meta';
 import { useProfile } from '@/engine/profile';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
@@ -14,15 +15,19 @@ const FLAG_KEYS = ['salaryBand', 'city', 'workStyle', 'offTime'] as const;
 const TRAIT_SHOW = 8; // 每局随机亮出的特质数
 const TRAIT_PICK = 2; // 可选数量
 
-/** 入学特质抽卡：随机亮 8 张选 2（build 起点，docs/08 C1） */
+/** 入学特质抽卡：随机亮 8 张选 2（build 起点，docs/08 C1）；
+ * 传承特质（上一局结局解锁，docs/08 P3）不占随机位、置顶常驻 */
 const TraitDraw: React.FC<{ api: FlowAPI; onConfirm: (ids: string[]) => void }> = ({
   api,
   onConfirm,
 }) => {
-  const shown = useMemo<Trait[]>(
-    () => [...allTraits].sort(() => Math.random() - 0.5).slice(0, TRAIT_SHOW),
-    [],
-  );
+  const shown = useMemo<Trait[]>(() => {
+    const legacyIds = unlockedLegacyTraits();
+    const legacy = allTraits.filter((t) => legacyIds.includes(t.id));
+    const base = allTraits.filter((t) => !t.legacy).sort(() => Math.random() - 0.5).slice(0, TRAIT_SHOW);
+    return [...legacy, ...base];
+  }, []);
+  const meta = useMemo(loadMeta, []);
   const [picked, setPicked] = useState<string[]>([]);
 
   const toggle = (id: string) =>
@@ -37,6 +42,13 @@ const TraitDraw: React.FC<{ api: FlowAPI; onConfirm: (ids: string[]) => void }> 
         <h2 className="mt-4 text-xl font-semibold">{api.copy('trait-title')}</h2>
         <p className="mt-1 text-[13px] text-ink-soft">{api.copy('trait-sub')}</p>
       </div>
+      {meta.runs > 0 && meta.lastEndingTitle && (
+        <div className="rounded-xl border border-accent/30 bg-accent-soft/40 p-3.5">
+          <p className="text-[13px] leading-relaxed">
+            {interpolate(api.copy('legacy-letter'), { title: meta.lastEndingTitle })}
+          </p>
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-3">
         {shown.map((t) => {
           const on = picked.includes(t.id);
@@ -52,11 +64,18 @@ const TraitDraw: React.FC<{ api: FlowAPI; onConfirm: (ids: string[]) => void }> 
             >
               <div className="flex items-center justify-between">
                 <span className="text-[15px] font-semibold">{t.name}</span>
-                {on && (
-                  <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] text-white">
-                    {api.copy('trait-picked-tag')}
-                  </span>
-                )}
+                <span className="flex items-center gap-1">
+                  {t.legacy && (
+                    <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent">
+                      {api.copy('legacy-tag')}
+                    </span>
+                  )}
+                  {on && (
+                    <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] text-white">
+                      {api.copy('trait-picked-tag')}
+                    </span>
+                  )}
+                </span>
               </div>
               <p className="mt-1 text-[12px] leading-relaxed text-ink-soft">{t.desc}</p>
             </button>

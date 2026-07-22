@@ -20,6 +20,8 @@ import {
 } from '@/services/saveAdapter';
 import { getBoard, getMajor, getTrait, interpolate, semesterName, tagDefs, ui } from './content';
 import { awakenedTagIds, checkRate, drawEvent, evalCondition, pickBranch } from './sim';
+import { pickEnding } from './ending';
+import { recordGraduation } from './meta';
 
 const SEMESTER_ACTION_POINTS = 3; // 每学期行动点（选修用）
 
@@ -442,6 +444,8 @@ export const useEngine = create<EngineStore>((set) => ({
             actionPoints: 0,
             semester: 'grad-end',
           };
+          // 元进度：只在 y4 → 毕业的首次结算记账（复看结算不重复计局）
+          if (st.semester === 'y4') recordGraduation(pickEnding(next));
         }
       } else {
         log.push(

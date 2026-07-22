@@ -3,72 +3,148 @@
     "id": "small-town",
     "name": "小镇做题家",
     "desc": "刷题是你唯一确定会赢的事。学术 +2，现金 −1",
-    "deltas": { "academic": 2, "cash": -1 }
+    "deltas": {
+      "academic": 2,
+      "cash": -1
+    }
   },
   {
     "id": "well-off",
     "name": "家境宽裕",
     "desc": "生活费从来不是问题——但别的都是。现金 +2",
-    "deltas": { "cash": 2 }
+    "deltas": {
+      "cash": 2
+    }
   },
   {
     "id": "shy",
     "name": "社恐",
     "desc": "人多的地方先躲为敬，独处回血。表达 −1，精力 +2",
-    "deltas": { "expression": -1, "energy": 2 }
+    "deltas": {
+      "expression": -1,
+      "energy": 2
+    }
   },
   {
     "id": "social-king",
     "name": "社牛",
     "desc": "三天认识全楼层，就是有点费自己。表达 +2，精力 −1",
-    "deltas": { "expression": 2, "energy": -1 }
+    "deltas": {
+      "expression": 2,
+      "energy": -1
+    }
   },
   {
     "id": "night-owl",
     "name": "夜猫子",
     "desc": "23 点之后才是你的一天。深夜的事，总会找上你",
-    "deltas": { "energy": 1 }
+    "deltas": {
+      "energy": 1
+    }
   },
   {
     "id": "grinder",
     "name": "卷王体质",
     "desc": "不卷会死星人。学术 +1，精力 −1",
-    "deltas": { "academic": 1, "energy": -1 }
+    "deltas": {
+      "academic": 1,
+      "energy": -1
+    }
   },
   {
     "id": "artsy",
     "name": "文艺青年",
     "desc": "手机相册里一半是天空。作品 +1",
-    "deltas": { "portfolio": 1 }
+    "deltas": {
+      "portfolio": 1
+    }
   },
   {
     "id": "pragmatic",
     "name": "实用主义",
     "desc": "开口先问「这有什么用」。现金 +1，学术 +1",
-    "deltas": { "cash": 1, "academic": 1 }
+    "deltas": {
+      "cash": 1,
+      "academic": 1
+    }
   },
   {
     "id": "homesick",
     "name": "恋家",
     "desc": "每周主动给家里打电话的那种人。精力 +1",
-    "deltas": { "energy": 1 }
+    "deltas": {
+      "energy": 1
+    }
   },
   {
     "id": "thick-skin",
     "name": "钝感力",
     "desc": "别人的阴阳怪气，你根本接收不到。精力 +2",
-    "deltas": { "energy": 2 }
+    "deltas": {
+      "energy": 2
+    }
   },
   {
     "id": "perfectionist",
     "name": "完美主义",
     "desc": "改到第七版才敢交。作品 +1，精力 −1",
-    "deltas": { "portfolio": 1, "energy": -1 }
+    "deltas": {
+      "portfolio": 1,
+      "energy": -1
+    }
   },
   {
     "id": "athlete",
     "name": "运动细胞",
     "desc": "操场十圈，脑子清空。精力 +1，表达 +1",
-    "deltas": { "energy": 1, "expression": 1 }
+    "deltas": {
+      "energy": 1,
+      "expression": 1
+    }
+  },
+  {
+    "id": "legacy-scholar",
+    "name": "上一世的书卷气",
+    "desc": "不知为何，一翻开书就静得下来——像有人替你练过。学术 +1",
+    "deltas": {
+      "academic": 1
+    },
+    "legacy": true
+  },
+  {
+    "id": "legacy-maker",
+    "name": "上一世的手艺",
+    "desc": "手比脑子先动。第一次做的东西，总带着熟练的影子。作品 +1",
+    "deltas": {
+      "portfolio": 1
+    },
+    "legacy": true
+  },
+  {
+    "id": "legacy-voice",
+    "name": "上一世的台风",
+    "desc": "站上台的瞬间心跳会慢半拍，而不是快。表达 +1",
+    "deltas": {
+      "expression": 1
+    },
+    "legacy": true
+  },
+  {
+    "id": "legacy-hustle",
+    "name": "上一世的生意经",
+    "desc": "看什么都能看出一门生意——这直觉不知从哪来的。现金 +1",
+    "deltas": {
+      "cash": 1
+    },
+    "legacy": true
+  },
+  {
+    "id": "legacy-ease",
+    "name": "上一世的松弛感",
+    "desc": "天塌下来先睡一觉。你好像天生知道什么值得急。精力 +1",
+    "deltas": {
+      "energy": 1
+    },
+    "legacy": true
   }
 ]

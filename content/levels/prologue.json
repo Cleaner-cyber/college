@@ -267,6 +267,8 @@
     "trait-title": "你是带着什么样的自己来的？",
     "trait-sub": "选 2 个。它们会跟着你四年——影响你的起点，也影响哪些事会找上你。",
     "trait-picked-tag": "已选",
+    "legacy-letter": "行李箱夹层里有一张不知道谁塞的纸条：「上次走到终点的你，是『{title}』。这一次，随你怎么活。」",
+    "legacy-tag": "上一世带来的",
     "trait-confirm": "就是这样的我",
     "trait-count": "{n} / 2"
   }

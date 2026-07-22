@@ -226,6 +226,7 @@ export interface Trait {
   name: string;
   desc: string; // 面向玩家的效果描述
   deltas?: Partial<PlayerState['axes']>;
+  legacy?: boolean; // 传承特质：默认不进序章卡池，须由上一局结局解锁（v2.4 元进度）
 }
 
 /** 标签定义：计数达 threshold 触发「觉醒」弹卡并重编事件卡袋 */
@@ -279,6 +280,7 @@ export interface EndingDef {
   minActionKinds?: number; // 做过的不同行动种数下限（「什么都试过」类）
   minFlagScore?: number; // 开局 flag 达成数下限（0-4）
   almostHint?: string; // 「差一点」提示：恰差一个条件时在结算页展示
+  legacy?: string; // 达成后为下一局解锁的传承特质 id（v2.4 元进度）
 }
 
 /** 开局 flag 的达成判定（flag 值 → 条件 + 达成/未达成判语） */
@@ -289,6 +291,18 @@ export interface FlagCheck {
   doneText: string;
   missText: string;
 }
+
+// ---------- 3.8 元进度（v2.4，docs/08 P3）----------
+// 跨局进度：不继承数值，只解锁内容（传承特质进序章卡池）+ 学长的信（上一世结局回声）。
+// 存本机 localStorage（META_KEY），清档重开不清除。
+
+export interface MetaState {
+  runs: number; // 已毕业局数
+  unlockedTraits: string[]; // 已解锁的传承特质 id
+  lastEndingTitle?: string; // 上一局身份卡名（序章「学长的信」用）
+}
+
+export const META_KEY = 'unisim_meta_v1';
 
 // ---------- 4. 存档 ----------
 // 云端：Supabase game_saves 表（user_id 主键 + state jsonb，RLS 仅本人可读写）
