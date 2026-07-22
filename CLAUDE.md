@@ -28,7 +28,8 @@
 /content            ← 全部中文文案与关卡配置 JSON。代码组件内禁止出现任何硬编码中文文案
 /public/assets      ← 预设图片资产，命名规则见 docs/03
 /supabase           ← schema.sql（数据库结构与 RLS 策略）
-/docs               ← 01-07 全部文档
+/docs               ← 01-10 全部文档
+/knowledge          ← 开发用知识库（中国大学专业规划：14 门类 / 790 专业文档 + index.json/mapping.json，见 docs/10）。仅供内容设计参考，不打包进前端
 ```
 
 ## 核心结构（游戏形态）
