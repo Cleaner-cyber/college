@@ -16,9 +16,9 @@ tags = {t['id']: t['name'] for t in json.loads((ROOT / 'content/sim/tags.json').
 AXES = {'academic': '学术', 'portfolio': '作品', 'expression': '表达', 'cash': '现金', 'energy': '精力'}
 MAJORS = {'cs': '计算机类', 'eng': '工科', 'sci': '理科', 'med': '医学', 'biz': '商科',
           'hum': '人文', 'design': '设计', 'edu': '教育', 'law': '法学'}
-ABIL = {'doc-feeding': '投喂长文档', 'image-gen': '生图迭代', 'structured-gen': '结构化生成',
-        'ai-coding': 'AI编程', 'examiner': '口语陪练', 'note-taking': '语音笔记', 'role-play': '角色扮演',
-        'lit-review': '读文献', 'data-analysis': '数据分析', 'multimodal': '多模态'}
+ABIL = {'doc-feeding': 'AI 读长文档', 'image-gen': 'AI 生图', 'structured-gen': 'AI 做 PPT',
+        'ai-coding': 'AI 编程', 'examiner': 'AI 口语陪练', 'note-taking': 'AI 记笔记', 'role-play': 'AI 模拟面试',
+        'lit-review': 'AI 读论文', 'data-analysis': 'AI 分析数据', 'multimodal': 'AI 做短视频'}
 SEM = {1: '大一上', 2: '大一下', 3: '大二上', 4: '大二下', 5: '大三上', 6: '大三下', 7: '大四'}
 GROUPS = {'study': '学习拓展', 'research': '科研与竞赛', 'practice': '社会实践', 'work': '搞钱', 'life': '生活'}
 LABELS = {a['id']: a['label'] for a in actions}

@@ -9,16 +9,16 @@
     "energy": "精力"
   },
   "abilities": {
-    "doc-feeding": "投喂长文档",
-    "image-gen": "生图与迭代",
-    "role-play": "角色扮演",
-    "structured-gen": "结构化生成",
+    "doc-feeding": "AI 读长文档",
+    "image-gen": "AI 生图",
+    "role-play": "AI 模拟面试",
+    "structured-gen": "AI 做 PPT",
     "ai-coding": "AI 编程",
-    "examiner": "口语陪练",
-    "note-taking": "语音笔记",
-    "lit-review": "文献综述",
-    "data-analysis": "数据分析",
-    "multimodal": "多模态"
+    "examiner": "AI 口语陪练",
+    "note-taking": "AI 记笔记",
+    "lit-review": "AI 读论文",
+    "data-analysis": "AI 分析数据",
+    "multimodal": "AI 做短视频"
   },
   "auth": {
     "welcome-title": "大学模拟器",
