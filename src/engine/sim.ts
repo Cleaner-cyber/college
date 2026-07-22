@@ -30,7 +30,26 @@ export function evalCondition(state: Readonly<PlayerState>, c?: SimCondition): b
   const si = semesterIndex(state.semester);
   if (c.semesterMin !== undefined && si < c.semesterMin) return false;
   if (c.semesterMax !== undefined && si > c.semesterMax) return false;
+  if (c.minPeaks && (Object.keys(c.minPeaks) as (keyof Axes)[]).some((k) => state.axesPeak[k] < (c.minPeaks![k] ?? 0))) return false;
   return true;
+}
+
+/** 条件未满足的项数（结局「差一点」判定用；0 = 全满足）。
+ * 数值映射型条件（minPeaks/minAxes/minTags/minActions）逐条计数——
+ * 「四轴差一轴」是差一点，「四轴差三轴」不是。 */
+export function conditionMissCount(state: Readonly<PlayerState>, c?: SimCondition): number {
+  if (!c) return 0;
+  let miss = 0;
+  for (const [k, v] of Object.entries(c)) {
+    if (k === 'minPeaks' || k === 'minAxes' || k === 'minTags' || k === 'minActions') {
+      for (const [key, n] of Object.entries(v as Record<string, number>)) {
+        if (!evalCondition(state, { [k]: { [key]: n } } as SimCondition)) miss += 1;
+      }
+    } else if (!evalCondition(state, { [k]: v } as SimCondition)) {
+      miss += 1;
+    }
+  }
+  return miss;
 }
 
 // ---------------- 行动板（v2.2） ----------------

@@ -122,7 +122,8 @@
     "profile-created": "{playerName} 入学，专业：{majorName}",
     "ability-unlock": "解锁 AI 能力「{ability}」",
     "dev-jump": "【测试】跳转到 {semester} · {label}",
-    "sim-event": "「{label}」——{result}"
+    "sim-event": "「{label}」——{result}",
+    "tag-awaken": "人设觉醒：「{tag}」——{desc}"
   },
   "board": {
     "completed-tag": "已完成",

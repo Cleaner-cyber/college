@@ -2,7 +2,7 @@
  * 内容加载器：所有面向用户的文案均来自 /content 下的 JSON。
  * 引擎负责加载并注入关卡（关卡不自行 import 内容）。
  */
-import type { LevelContent, Major, SimAction, SimEvent, TagDef, Trait } from '@/contracts';
+import type { EndingDef, FlagCheck, LevelContent, Major, SimAction, SimEvent, TagDef, Trait } from '@/contracts';
 
 import prologueJson from '@content/levels/prologue.json';
 import courseSelectJson from '@content/levels/course-select.json';
@@ -39,6 +39,9 @@ import simEventsY2s2 from '@content/sim/events-y2s2.json';
 import simEventsY3s1 from '@content/sim/events-y3s1.json';
 import simEventsY3s2 from '@content/sim/events-y3s2.json';
 import simEventsY4 from '@content/sim/events-y4.json';
+import endingsJson from '@content/sim/endings.json';
+import flagChecksJson from '@content/sim/flag-checks.json';
+import verdictsJson from '@content/sim/verdicts.json';
 
 const levelContents: Record<string, LevelContent> = {
   prologue: prologueJson as LevelContent,
@@ -107,6 +110,17 @@ export const simActions: SimAction[] = actionsJson as SimAction[];
 export function getSimAction(id: string): SimAction | undefined {
   return simActions.find((a) => a.id === id);
 }
+
+// ---- 结局系统内容（v2.3，docs/08 P2）----
+export const endings: EndingDef[] = endingsJson as EndingDef[];
+export const flagChecks: FlagCheck[] = flagChecksJson as FlagCheck[];
+
+/** 毕业总评配置：加权总分档位 + 各轴峰值三档短评（min 降序，取第一个命中档） */
+export interface VerdictConfig {
+  sum: { min: number; tier: string; title: string; text: string }[];
+  axes: Record<string, { min: number; text: string }[]>;
+}
+export const verdictConfig: VerdictConfig = verdictsJson as VerdictConfig;
 
 export interface BoardMainlineEntry {
   id: string; // 关卡 id

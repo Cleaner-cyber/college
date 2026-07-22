@@ -1,0 +1,102 @@
+[
+  {
+    "field": "salaryBand",
+    "value": "10万以内",
+    "doneText": "要得不多，日子稳稳当当——这不是没野心，是想清楚了。",
+    "missText": ""
+  },
+  {
+    "field": "salaryBand",
+    "value": "10~20万",
+    "require": { "minPeaks": { "portfolio": 4 } },
+    "doneText": "文件夹里的东西够你在面试桌上把这个数谈下来。",
+    "missText": "这个数需要几件拿得出手的作品撑着——文件夹还有点薄。"
+  },
+  {
+    "field": "salaryBand",
+    "value": "20~30万",
+    "require": { "minPeaks": { "portfolio": 5, "academic": 4 } },
+    "doneText": "作品和基本功都在线，这个数不虚。",
+    "missText": "这个价位要作品和基本功两条腿走路，你有一条还没跟上。"
+  },
+  {
+    "field": "salaryBand",
+    "value": "30万以上",
+    "require": { "minPeaks": { "portfolio": 6, "academic": 5 }, "minActions": { "intern-golden": 1 } },
+    "doneText": "顶配目标顶配准备：作品、绩点、黄金窗口的实习，一个不缺。",
+    "missText": "这个数是给准备最齐的人的——作品、绩点、暑期实习，你还缺一块。"
+  },
+  {
+    "field": "city",
+    "value": "一线",
+    "require": { "minPeaks": { "portfolio": 5 } },
+    "doneText": "一线城市看东西不看人情，你手里正好有东西。",
+    "missText": "一线城市门票是作品换的，你的文件夹还差几件硬货。"
+  },
+  {
+    "field": "city",
+    "value": "新一线",
+    "require": { "minPeaks": { "portfolio": 3 } },
+    "doneText": "有几件能聊的作品，新一线的门是开着的。",
+    "missText": "再攒一两件作品，落脚会容易得多。"
+  },
+  {
+    "field": "city",
+    "value": "家乡",
+    "doneText": "回家这条路一直通着，四年的东西都带得回去。",
+    "missText": ""
+  },
+  {
+    "field": "city",
+    "value": "无所谓",
+    "doneText": "不设限的人，到哪儿都是主场。",
+    "missText": ""
+  },
+  {
+    "field": "workStyle",
+    "value": "大厂",
+    "require": { "minActions": { "intern-golden": 1 } },
+    "doneText": "暑期实习那张门票你拿到了——大厂秋招提前批见。",
+    "missText": "大厂这条路最看暑期实习，黄金窗口你没赶上。"
+  },
+  {
+    "field": "workStyle",
+    "value": "体制内",
+    "require": { "minPeaks": { "academic": 5 } },
+    "doneText": "笔试拼的就是坐得住，你四年的分数证明你坐得住。",
+    "missText": "考编考公归根到底是笔试功夫，你的分数线还得再抬一抬。"
+  },
+  {
+    "field": "workStyle",
+    "value": "自由职业",
+    "require": { "minTags": { "maker": 3 } },
+    "doneText": "四年一直在自己折腾自己的事——你早就是自由职业者了，只差一张毕业证。",
+    "missText": "自由职业需要「折腾」的肌肉记忆，四年里你练得还不够多。"
+  },
+  {
+    "field": "workStyle",
+    "value": "还没想",
+    "doneText": "四年过完，选项都还开着——不着急，是因为路多。",
+    "missText": ""
+  },
+  {
+    "field": "offTime",
+    "value": "六点下班",
+    "require": { "minPeaks": { "energy": 5 } },
+    "doneText": "四年里你一直会休息。会下班的人，是在大学练出来的。",
+    "missText": "想六点下班的人，大学四年却总把精力烧到红线——这个习惯得改。"
+  },
+  {
+    "field": "offTime",
+    "value": "不介意加班",
+    "doneText": "你对时间的态度一直很坦荡：值得的事，多晚都行。",
+    "missText": ""
+  },
+  {
+    "field": "offTime",
+    "value": "想自己安排时间",
+    "require": { "minPeaks": { "cash": 4 } },
+    "doneText": "自己安排时间的底气是自己挣出来的——你有。",
+    "missText": "想自己安排时间，先得自己挣出说「不」的本钱。"
+  }
+]

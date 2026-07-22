@@ -297,6 +297,7 @@ export const useEngine = create<EngineStore>((set) => ({
         log: [
           ...st.log,
           logEntry('quick', 'sim-event', { label: opt.label, result: outcome.text }),
+          ...applied.awakened.map((t) => logEntry('system', 'tag-awaken', { tag: t.name, desc: t.awakenText })),
         ],
       };
       persistState(next);
@@ -359,6 +360,7 @@ export const useEngine = create<EngineStore>((set) => ({
         log: [
           ...st.log,
           logEntry('quick', 'quick', { label: action.label, result: outcome.text }),
+          ...applied.awakened.map((t) => logEntry('system', 'tag-awaken', { tag: t.name, desc: t.awakenText })),
         ],
       };
       persistState(next);

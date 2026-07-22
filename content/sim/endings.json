@@ -1,0 +1,281 @@
+[
+  {
+    "id": "hexagon",
+    "title": "六边形战士",
+    "verdict": "绩点、作品、表达、钱包，每一格都被你点亮过。别人挑一条路走，你把整张地图走完了。",
+    "require": {
+      "minPeaks": {
+        "academic": 7,
+        "portfolio": 7,
+        "expression": 7,
+        "cash": 6
+      }
+    },
+    "almostHint": "离六边形战士只差一格没点亮。"
+  },
+  {
+    "id": "lab-light",
+    "title": "实验室的灯记得你",
+    "verdict": "从蹭老师办公时间那天起，这条路你走了四年。实验室最后一个关灯的人，常常是你。",
+    "require": {
+      "minPeaks": {
+        "academic": 7
+      },
+      "minActions": {
+        "office-hour": 1,
+        "research-group": 1
+      }
+    },
+    "almostHint": "科研这条线你已经走到门口了，差一步就推开那扇门。"
+  },
+  {
+    "id": "venture-alum",
+    "title": "折腾过一场的人",
+    "verdict": "跟着室友把创业这件事从头到尾经历了一遍。成没成不重要——知道水有多深的人，下次下水不慌。",
+    "require": {
+      "events": [
+        "venture-fate"
+      ]
+    }
+  },
+  {
+    "id": "platform-boss",
+    "title": "攒局的人",
+    "verdict": "从自己讲题，到攒出一个能自己转的家教群。你把「做事」升级成了「做局」——这个思路比钱值钱。",
+    "require": {
+      "minTags": {
+        "maker": 3
+      },
+      "minActions": {
+        "tutor-platform": 1
+      }
+    },
+    "almostHint": "你已经很会折腾了，差一点就把散活儿攒成了自己的局。"
+  },
+  {
+    "id": "maker-hands",
+    "title": "折腾家",
+    "verdict": "四年里你手上就没停过。文件夹里那些东西不一定都成了，但每一件都是你自己捏出来的。",
+    "require": {
+      "minTags": {
+        "maker": 4
+      },
+      "minPeaks": {
+        "portfolio": 6
+      }
+    }
+  },
+  {
+    "id": "resume-story",
+    "title": "简历有故事的人",
+    "verdict": "暑期实习卡着黄金窗口进的，作品是一件一件攒的。你的简历不用写形容词，全是名词。",
+    "require": {
+      "minActions": {
+        "intern-golden": 1
+      },
+      "minPeaks": {
+        "portfolio": 6
+      }
+    },
+    "almostHint": "作品攒得差不多了，简历里差的那个故事，其实只差一次出手。"
+  },
+  {
+    "id": "grind-glow",
+    "title": "卷到发光的人",
+    "verdict": "别人说卷是贬义词，你用四年把它卷成了褒义词。绩点单拍在桌上的那一刻，没人再说话。",
+    "require": {
+      "minTags": {
+        "grind": 4
+      },
+      "minPeaks": {
+        "academic": 8
+      }
+    },
+    "almostHint": "你已经卷出名声了，差一口气就卷到发光。"
+  },
+  {
+    "id": "stage-person",
+    "title": "台前的人",
+    "verdict": "从第一次举手声音发抖，到答辩台上不看稿。四年练出来的不是口才，是敢。",
+    "require": {
+      "minTags": {
+        "voice": 3
+      },
+      "minPeaks": {
+        "expression": 7
+      }
+    },
+    "almostHint": "你已经站到台边了，差一步就走进聚光灯。"
+  },
+  {
+    "id": "flag-keeper",
+    "title": "说到做到的人",
+    "verdict": "入学那天你许的四个愿，四年后一个都没赖账。这种人不多——你自己可能都没意识到这有多难。",
+    "minFlagScore": 4,
+    "almostHint": "开局许的愿你几乎都兑现了——差的那一步，也许只是再多试一件事。",
+    "minActionKinds": 6
+  },
+  {
+    "id": "socialite",
+    "title": "哪儿都有熟人的人",
+    "verdict": "食堂、社团、实验楼，走到哪儿都有人跟你打招呼。人脉这个词太功利——你只是真的认识很多人。",
+    "require": {
+      "minTags": {
+        "social": 3
+      },
+      "minPeaks": {
+        "expression": 5
+      }
+    }
+  },
+  {
+    "id": "quiet-master",
+    "title": "安静的高手",
+    "verdict": "不合群不是缺点，是筛选。你一个人吃饭、一个人自习，然后一个人把事情都办成了。",
+    "require": {
+      "minTags": {
+        "lone": 3
+      },
+      "minPeaks": {
+        "academic": 6
+      }
+    }
+  },
+  {
+    "id": "night-creator",
+    "title": "深夜创作者",
+    "verdict": "你最好的东西都是后半夜做出来的。白天的校园属于所有人，凌晨的校园属于你。",
+    "require": {
+      "minTags": {
+        "night": 3
+      },
+      "minPeaks": {
+        "portfolio": 6
+      }
+    }
+  },
+  {
+    "id": "thrifty",
+    "title": "会过日子的人",
+    "verdict": "记账、比价、自己挣生活费。四年下来你最大的收获不是存款数字，是「我能养活自己」这句话。",
+    "require": {
+      "minTags": {
+        "thrift": 3
+      },
+      "minPeaks": {
+        "cash": 6
+      }
+    }
+  },
+  {
+    "id": "library-story",
+    "title": "图书馆三楼的故事",
+    "verdict": "那张纸条后来怎么样了，只有你自己知道。但大学四年，总得有一段不为绩点的心跳。",
+    "require": {
+      "events": [
+        "crush-cafe"
+      ]
+    }
+  },
+  {
+    "id": "cert-ready",
+    "title": "装备齐全的人",
+    "verdict": "四六级、计算机二级、驾照，一个不落。这些证不一定都用得上——但要用的时候，你都有。",
+    "require": {
+      "minActions": {
+        "cet": 1,
+        "computer-2": 1,
+        "driving": 1
+      }
+    },
+    "almostHint": "常规装备就差最后一件没配齐。"
+  },
+  {
+    "id": "try-everything",
+    "title": "什么都试过的人",
+    "verdict": "行动板上大半的事你都点过。四年下来你可能没有一门「绝活」，但你比谁都清楚自己不想要什么——这同样值钱。",
+    "minActionKinds": 14,
+    "almostHint": "你几乎什么都试过了，就差最后一两件没伸手。"
+  },
+  {
+    "id": "survivor",
+    "title": "熬过来的人",
+    "verdict": "崩溃过、生病过、通宵补过救。但每一次红着眼睛的第二天，你还是去上课了。这也是一种硬核。",
+    "require": {
+      "events": [
+        "flu-down",
+        "burnout-alarm",
+        "blackout-night",
+        "deadline-collapse",
+        "sleepless-spring",
+        "grad-burnout"
+      ]
+    }
+  },
+  {
+    "id": "life-clear",
+    "title": "把日子过明白的人",
+    "verdict": "目标兑现了大半，精力条还是绿的。会休息的人才走得远——这句话你用四年证明了。",
+    "require": {
+      "minPeaks": {
+        "energy": 7
+      }
+    },
+    "minFlagScore": 2
+  },
+  {
+    "id": "axis-academic",
+    "title": "把分数握在手里的人",
+    "verdict": "绩点是你四年里最稳的一条线。它不浪漫，但每一个需要它的关口，它都在。",
+    "require": {
+      "minPeaks": {
+        "academic": 5
+      }
+    }
+  },
+  {
+    "id": "axis-portfolio",
+    "title": "有作品的人",
+    "verdict": "文件夹比成绩单厚。面试时别人在介绍自己，你在展示自己——这是两种完全不同的底气。",
+    "require": {
+      "minPeaks": {
+        "portfolio": 5
+      }
+    }
+  },
+  {
+    "id": "axis-expression",
+    "title": "敢开口的人",
+    "verdict": "四年前你不敢举手，四年后你主持散伙饭。改变悄无声息，但它真的发生了。",
+    "require": {
+      "minPeaks": {
+        "expression": 5
+      }
+    }
+  },
+  {
+    "id": "axis-cash",
+    "title": "自己挣饭钱的人",
+    "verdict": "从发传单到有自己的活儿，生活费一点点变成自己挣的。这份底气会跟你很久。",
+    "require": {
+      "minPeaks": {
+        "cash": 5
+      }
+    }
+  },
+  {
+    "id": "chill",
+    "title": "大学没白玩的人",
+    "verdict": "你把大学过成了生活，而不是备赛。湖边走过的路、聊到天亮的夜，都算数。",
+    "require": {
+      "minPeaks": {
+        "energy": 5
+      }
+    }
+  },
+  {
+    "id": "plain-four-years",
+    "title": "普通但完整的四年",
+    "verdict": "没有惊天动地的成绩，也没有过不去的坎。四年到站，人齐、心齐——这已经赢过很多故事了。"
+  }
+]

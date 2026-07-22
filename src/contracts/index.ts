@@ -188,6 +188,7 @@ export interface SimCondition {
   minActions?: Record<string, number>; // 行动累计次数下限（进阶链前置）
   semesterMin?: number; // 学期序号下限（1=大一上 … 7=大四）
   semesterMax?: number; // 学期序号上限
+  minPeaks?: Partial<PlayerState['axes']>; // 各轴历史最高值下限（结局判定用，v2.3）
 }
 
 export interface SimOutcome {
@@ -264,6 +265,29 @@ export interface SimAction {
   lockedHint?: string; // requires 未满足时锁定显示的提示；缺省则直接隐藏
   branches: SimActionBranch[]; // 依序取第一个 when 命中的分支
   senpaiComment?: string; // 学长点评（可空）
+}
+
+// ---------- 3.7 结局系统（v2.3，docs/08 P2）----------
+
+/** 毕业身份卡定义：内容表按优先级排序，取第一张全部条件命中的卡；末张无条件兜底 */
+export interface EndingDef {
+  id: string;
+  title: string; // 身份卡名
+  verdict: string; // 判词
+  majors?: string[]; // 专业大类限定（可选）
+  require?: SimCondition; // 达成条件（含 minPeaks / minTags / minActions / events…）
+  minActionKinds?: number; // 做过的不同行动种数下限（「什么都试过」类）
+  minFlagScore?: number; // 开局 flag 达成数下限（0-4）
+  almostHint?: string; // 「差一点」提示：恰差一个条件时在结算页展示
+}
+
+/** 开局 flag 的达成判定（flag 值 → 条件 + 达成/未达成判语） */
+export interface FlagCheck {
+  field: keyof PlayerState['flag'];
+  value: string; // 序章选项的原值
+  require?: SimCondition; // 空 = 天然达成（如「无所谓」）
+  doneText: string;
+  missText: string;
 }
 
 // ---------- 4. 存档 ----------
