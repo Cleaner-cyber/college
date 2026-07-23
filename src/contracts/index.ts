@@ -157,17 +157,21 @@ export interface ScreenEffects {
 // ---------- 3.3 专业库 ----------
 
 export interface Major {
-  id: string;
+  id: string; // v2.5 起 = 专业名（知识库全量目录）；旧版短 id 经 aliases 兜底
   name: string; // "计算机科学与技术"
-  aliases: string[]; // 搜索用
+  aliases: string[]; // 搜索与旧档 id 兼容
   category?: string; // 专业大类（行动板过滤）：cs/eng/sci/med/biz/hum/design/edu/law/any
-  card: {
-    coreCourses: string[]; // 四年主干课（≤6）
-    hardestY1: string[]; // 大一最难两门
-    gpaKiller: string; // 绩点杀手
-    destinations: string[]; // 毕业去向（≤4）
-    secret: string; // "没人告诉你的一件事"
-  };
+  group?: string; // 知识库门类，如「工学」（序章分级浏览）
+  klass?: string; // 专业类，如「计算机类」
+}
+
+/** 单专业详情（v2.5）：由 scripts/gen-majors.py 从 knowledge/majors 抽取，
+ * 放 public/assets/majors/<id>.json，序章按需 fetch（同源静态资源，不在打包体积内） */
+export interface MajorDetail {
+  id: string;
+  name: string;
+  card: Partial<Record<'intro' | 'positioning' | 'fit' | 'unfit' | 'pit' | 'paths', string>>;
+  sections: { title: string; body: string }[]; // 知识库原文小节（已清洗）
 }
 
 // ---------- 3.4 速结行动（v2.2 已被 3.6 行动板 SimAction 取代，类型移除）----------

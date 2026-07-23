@@ -2,10 +2,19 @@
  * 序章：通知书 → 姓名 → 选专业 → 立 flag → 绑定学长 → 专业卡片 → 文件夹引入。
  * 建档写入（姓名/专业/flag）经引擎 ProfileContext，关卡不触碰 store。
  */
-import React, { useMemo, useState } from 'react';
-import type { LevelModule, LevelProps, Major, Trait } from '@/contracts';
+import React, { useEffect, useMemo, useState } from 'react';
+import type { LevelModule, LevelProps, Major, MajorDetail, Trait } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
-import { searchMajors, getMajor, majors, traits as allTraits, interpolate, ui } from '@/engine/content';
+import {
+  searchMajors,
+  getMajor,
+  majors,
+  majorGroups,
+  fetchMajorDetail,
+  traits as allTraits,
+  interpolate,
+  ui,
+} from '@/engine/content';
 import { loadMeta, unlockedLegacyTraits } from '@/engine/meta';
 import { useProfile } from '@/engine/profile';
 import { Button } from '@/components/ui/Button';
@@ -100,13 +109,33 @@ const TraitDraw: React.FC<{ api: FlowAPI; onConfirm: (ids: string[]) => void }> 
   );
 };
 
+/** 专业选择（v2.5，知识库全量 700+）：搜索直达，或按 门类 → 专业类 → 专业 分级浏览 */
 const MajorSelect: React.FC<{ api: FlowAPI; onSelect: (m: Major) => void }> = ({
   api,
   onSelect,
 }) => {
   const [query, setQuery] = useState('');
-  const results = searchMajors(query);
+  const [group, setGroup] = useState(majorGroups[0]?.name ?? '');
+  const [klass, setKlass] = useState(majorGroups[0]?.klasses[0]?.name ?? '');
+  const searching = query.trim().length > 0;
+  const results = searching ? searchMajors(query) : [];
   const fallback = majors.find((m) => m.id === 'generic')!;
+  const curGroup = majorGroups.find((g) => g.name === group);
+  const curKlass = curGroup?.klasses.find((k) => k.name === klass) ?? curGroup?.klasses[0];
+
+  const chip = (label: string, on: boolean, onClick: () => void) => (
+    <button
+      key={label}
+      onClick={onClick}
+      className={`rounded-full border px-2.5 py-1 text-[12px] transition ${
+        on
+          ? 'border-accent bg-accent-soft font-medium text-accent'
+          : 'border-line bg-card text-ink-soft hover:border-accent/50'
+      }`}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <div>
@@ -117,34 +146,123 @@ const MajorSelect: React.FC<{ api: FlowAPI; onSelect: (m: Major) => void }> = ({
         placeholder={api.copy('major-search-placeholder')}
         className="mt-5 w-full rounded-xl border border-line bg-card px-4 py-3 text-[16px] outline-none focus:border-accent"
       />
-      <div className="mt-4 flex max-h-[45dvh] flex-col gap-2 overflow-y-auto">
-        {results.slice(0, 12).map((m) => (
-          <Button key={m.id} variant="secondary" full onClick={() => onSelect(m)}>
-            {m.name}
-          </Button>
-        ))}
-        {results.length === 0 && (
-          <div className="rounded-xl border border-dashed border-line p-4 text-center">
-            <p className="text-sm text-ink-soft">{api.copy('major-search-empty')}</p>
-            <Button className="mt-3" variant="secondary" full onClick={() => onSelect(fallback)}>
-              {api.copy('major-fallback-pick')}
+      {searching ? (
+        <div className="mt-4 flex max-h-[45dvh] flex-col gap-2 overflow-y-auto">
+          {results.slice(0, 12).map((m) => (
+            <Button key={m.id} variant="secondary" full onClick={() => onSelect(m)}>
+              <span className="flex w-full items-baseline justify-between">
+                <span>{m.name}</span>
+                <span className="text-[11px] text-ink-soft">
+                  {m.group} · {m.klass}
+                </span>
+              </span>
             </Button>
+          ))}
+          {results.length === 0 && (
+            <div className="rounded-xl border border-dashed border-line p-4 text-center">
+              <p className="text-sm text-ink-soft">{api.copy('major-search-empty')}</p>
+              <Button className="mt-3" variant="secondary" full onClick={() => onSelect(fallback)}>
+                {api.copy('major-fallback-pick')}
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-4">
+          <div className="text-[11px] tracking-widest text-ink-soft">{api.copy('major-group-title')}</div>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {majorGroups.map((g) =>
+              chip(g.name, g.name === group, () => {
+                setGroup(g.name);
+                setKlass(g.klasses[0]?.name ?? '');
+              }),
+            )}
           </div>
-        )}
-      </div>
+          {curGroup && curGroup.klasses.length > 1 && (
+            <>
+              <div className="mt-3 text-[11px] tracking-widest text-ink-soft">
+                {api.copy('major-klass-title')}
+              </div>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {curGroup.klasses.map((k) => chip(k.name, k.name === curKlass?.name, () => setKlass(k.name)))}
+              </div>
+            </>
+          )}
+          <div className="mt-3 grid max-h-[30dvh] grid-cols-2 gap-2 overflow-y-auto">
+            {(curKlass?.majors ?? []).map((m) => (
+              <Button key={m.id} variant="secondary" full onClick={() => onSelect(m)}>
+                {m.name}
+              </Button>
+            ))}
+          </div>
+          <button
+            onClick={() => onSelect(fallback)}
+            className="mt-3 w-full text-center text-xs text-ink-soft underline-offset-2 hover:underline"
+          >
+            {api.copy('major-fallback-pick')}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
+/** 知识库正文段落渲染：### 子标题 / 普通段落（详细页用） */
+const KbBody: React.FC<{ body: string }> = ({ body }) => (
+  <div className="space-y-2.5">
+    {body.split(/\n{2,}/).map((p, i) => {
+      const line = p.trim();
+      if (!line) return null;
+      if (line.startsWith('### ')) {
+        return (
+          <h4 key={i} className="pt-2 text-[14px] font-semibold">
+            {line.slice(4)}
+          </h4>
+        );
+      }
+      return (
+        <p key={i} className="whitespace-pre-wrap text-[13px] leading-relaxed text-ink">
+          {line}
+        </p>
+      );
+    })}
+  </div>
+);
+
+/** 专业速览卡（v2.5）：内容取自知识库对应专业文档，可展开查看全文 */
 const MajorCard: React.FC<{ api: FlowAPI; majorId: string }> = ({ api, majorId }) => {
   const major = getMajor(majorId);
   const [typed, setTyped] = useState(false);
+  const [detail, setDetail] = useState<MajorDetail | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [showFull, setShowFull] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    fetchMajorDetail(major.id).then((d) => {
+      if (!alive) return;
+      setDetail(d);
+      setLoaded(true);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [major.id]);
+
+  const card = detail?.card ?? {};
+  const rows: [string, string | undefined][] = [
+    [api.copy('card-positioning'), card.positioning ?? card.intro],
+    [api.copy('card-fit'), card.fit],
+    [api.copy('card-unfit'), card.unfit],
+    [api.copy('card-pit'), card.pit],
+    [api.copy('card-paths'), card.paths],
+  ];
   const row = (label: string, body: React.ReactNode) => (
-    <div className="border-t border-line py-2.5 first:border-t-0">
+    <div key={label} className="border-t border-line py-2.5 first:border-t-0">
       <div className="text-[11px] tracking-widest text-ink-soft">{label}</div>
-      <div className="mt-1 text-[14px] leading-relaxed">{body}</div>
+      <div className="mt-1 text-[13px] leading-relaxed">{body}</div>
     </div>
   );
+
   return (
     <div>
       <Typewriter
@@ -157,15 +275,28 @@ const MajorCard: React.FC<{ api: FlowAPI; majorId: string }> = ({ api, majorId }
           <div className="mt-5 rounded-2xl border border-accent/40 bg-card p-4 shadow-soft animate-fade-up">
             <div className="mb-2 flex items-baseline justify-between">
               <span className="text-lg font-semibold">{major.name}</span>
-              <span className="text-[11px] text-accent">{ui['app-title']}</span>
+              <span className="text-[11px] text-ink-soft">
+                {major.group && `${major.group} · ${major.klass}`}
+              </span>
             </div>
-            {row(api.copy('card-core-courses'), major.card.coreCourses.join(' · '))}
-            {row(api.copy('card-hardest'), major.card.hardestY1.join(' / '))}
-            {row(api.copy('card-gpa-killer'), major.card.gpaKiller)}
-            {row(api.copy('card-destinations'), major.card.destinations.join(' · '))}
-            {row(
-              api.copy('card-secret'),
-              <span className="text-accent">{major.card.secret}</span>,
+            {!loaded && <p className="py-4 text-center text-sm text-ink-soft">{api.copy('card-loading')}</p>}
+            {loaded && !detail && (
+              <p className="py-3 text-[14px] leading-relaxed text-ink-soft">{api.copy('card-generic-note')}</p>
+            )}
+            {loaded && detail && (
+              <>
+                {rows.filter(([, v]) => v).map(([label, v]) => row(label, v))}
+                {detail.sections.length > 0 && (
+                  <Button
+                    variant="secondary"
+                    full
+                    className="mt-3"
+                    onClick={() => setShowFull(true)}
+                  >
+                    {api.copy('card-detail-btn')}
+                  </Button>
+                )}
+              </>
             )}
           </div>
           <p className="mt-3 text-center text-xs text-ink-soft">{api.copy('card-footer')}</p>
@@ -173,6 +304,45 @@ const MajorCard: React.FC<{ api: FlowAPI; majorId: string }> = ({ api, majorId }
             {api.nextLabel}
           </Button>
         </>
+      )}
+      {showFull && detail && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-6"
+          onClick={() => setShowFull(false)}
+        >
+          <div
+            className="flex max-h-[86dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-paper shadow-lift"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-line px-6 py-4">
+              <div>
+                <div className="text-[11px] tracking-widest text-ink-soft">{api.copy('card-detail-title')}</div>
+                <div className="text-lg font-semibold">{detail.name}</div>
+              </div>
+              <Button variant="secondary" onClick={() => setShowFull(false)}>
+                {api.copy('card-detail-close')}
+              </Button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              {detail.card.intro && (
+                <p className="mb-4 rounded-xl bg-accent-soft/40 p-3 text-[13px] leading-relaxed">
+                  {detail.card.intro}
+                </p>
+              )}
+              {detail.sections.map((s) => (
+                <details key={s.title} className="border-b border-line/70 py-2.5 last:border-b-0" open={false}>
+                  <summary className="cursor-pointer select-none text-[15px] font-medium marker:text-accent">
+                    {s.title}
+                  </summary>
+                  <div className="pb-2 pt-2.5">
+                    <KbBody body={s.body} />
+                  </div>
+                </details>
+              ))}
+              <p className="pt-3 text-center text-[11px] text-ink-soft">{api.copy('card-detail-source')}</p>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

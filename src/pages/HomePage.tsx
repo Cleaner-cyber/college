@@ -6,8 +6,9 @@
  */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { ArchiveItem, PlayerState } from '@/contracts';
+import type { ArchiveItem, MajorDetail, PlayerState } from '@/contracts';
 import {
+  fetchMajorDetail,
   getBoard,
   getFolderSection,
   getLevelContent,
@@ -19,7 +20,7 @@ import {
   ui,
 } from '@/engine/content';
 import { useEngine, effectiveCost, isMainlineComplete } from '@/engine/store';
-import { checkRate, conditionLabel, drawableCount, evalCondition, visibleActions } from '@/engine/sim';
+import { awakenedTagIds, checkRate, conditionLabel, drawableCount, evalCondition, visibleActions } from '@/engine/sim';
 import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
@@ -32,6 +33,89 @@ import { ActionResultModal, EventModal, simCopy, type EventOptionView } from '@/
 const home = ui.home as Record<string, string>;
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
 const AXIS_MAX = 8;
+
+/** 文件夹里的专业卡片：知识库速览行 + 按小节展开的全文（与序章共用同一份详情 JSON） */
+const FolderMajorCard: React.FC<{ majorId: string; copy: Record<string, string> }> = ({
+  majorId,
+  copy,
+}) => {
+  const major = getMajor(majorId);
+  const [detail, setDetail] = useState<MajorDetail | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  React.useEffect(() => {
+    let alive = true;
+    void fetchMajorDetail(major.id).then((d) => {
+      if (!alive) return;
+      setDetail(d);
+      setLoaded(true);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [major.id]);
+  const card = detail?.card ?? {};
+  const rows: [string, string | undefined][] = [
+    [copy['card-positioning'], card.positioning ?? card.intro],
+    [copy['card-fit'], card.fit],
+    [copy['card-unfit'], card.unfit],
+    [copy['card-pit'], card.pit],
+    [copy['card-paths'], card.paths],
+  ];
+  return (
+    <div className="rounded-xl border border-accent/40 bg-card p-4">
+      <div className="mb-2 flex items-baseline justify-between">
+        <span className="text-lg font-semibold">{major.name}</span>
+        <span className="text-[11px] text-ink-soft">
+          {major.group && `${major.group} · ${major.klass}`}
+        </span>
+      </div>
+      {!loaded && <p className="py-3 text-center text-sm text-ink-soft">{copy['card-loading']}</p>}
+      {loaded && !detail && (
+        <p className="py-2 text-[14px] leading-relaxed text-ink-soft">{copy['card-generic-note']}</p>
+      )}
+      {loaded && detail && (
+        <>
+          {rows
+            .filter(([, v]) => v)
+            .map(([label, v]) => (
+              <div key={label} className="border-t border-line py-2.5 first:border-t-0">
+                <div className="text-[11px] tracking-widest text-ink-soft">{label}</div>
+                <div className="mt-1 text-[13px] leading-relaxed">{v}</div>
+              </div>
+            ))}
+          {detail.sections.length > 0 && (
+            <div className="mt-3 border-t border-line pt-2">
+              <div className="mb-1 text-[11px] tracking-widest text-ink-soft">
+                {copy['card-detail-title']}
+              </div>
+              {detail.sections.map((s) => (
+                <details key={s.title} className="border-b border-line/60 py-2 last:border-b-0">
+                  <summary className="cursor-pointer select-none text-[14px] font-medium marker:text-accent">
+                    {s.title}
+                  </summary>
+                  <div className="space-y-2 pt-2">
+                    {s.body.split(/\n{2,}/).map((p, i) =>
+                      p.trim().startsWith('### ') ? (
+                        <h4 key={i} className="pt-1 text-[13px] font-semibold">
+                          {p.trim().slice(4)}
+                        </h4>
+                      ) : (
+                        <p key={i} className="whitespace-pre-wrap text-[13px] leading-relaxed">
+                          {p.trim()}
+                        </p>
+                      ),
+                    )}
+                  </div>
+                </details>
+              ))}
+              <p className="pt-2 text-center text-[11px] text-ink-soft">{copy['card-detail-source']}</p>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
 
 /** 资产地址：assetRef 自带扩展名则原样用（真图 jpg/webp），否则按占位 SVG 处理 */
 const assetUrl = (ref: string) => (ref.includes('.') ? `/assets/${ref}` : `/assets/${ref}.svg`);
@@ -111,6 +195,9 @@ const StatusRail: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
         ))}
       </dl>
     </Panel>
+    <Panel title={home['hud-persona-title']}>
+      <PersonaChips state={state} />
+    </Panel>
     <Panel title={home['stats-abilities-title']}>
       {state.abilities.length === 0 ? (
         <p className="text-xs leading-relaxed text-ink-soft">{home['stats-abilities-empty']}</p>
@@ -129,6 +216,44 @@ const StatusRail: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
     </Panel>
   </div>
 );
+
+/** 右栏「我的人设」：入学特质 + 已觉醒人设卡；养成中的显示进度点（像属性一样常驻可见） */
+const PersonaChips: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const awakened = awakenedTagIds(state.tags);
+  const growing = tagDefs.filter((t) => !awakened.includes(t.id) && (state.tags[t.id] ?? 0) > 0);
+  if (state.traits.length === 0 && awakened.length === 0 && growing.length === 0) {
+    return <p className="text-xs leading-relaxed text-ink-soft">{home['hud-persona-empty']}</p>;
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap gap-1.5">
+        {state.traits.map((id) => (
+          <span key={id} className="rounded-lg border border-line bg-paper px-2 py-1 text-xs">
+            {getTrait(id)?.name ?? id}
+          </span>
+        ))}
+        {awakened.map((id) => (
+          <span key={id} className="rounded-lg bg-accent-soft px-2 py-1 text-xs font-medium text-accent">
+            ★ {tagDefs.find((t) => t.id === id)?.name ?? id}
+          </span>
+        ))}
+      </div>
+      {growing.length > 0 && (
+        <div className="flex flex-col gap-1">
+          {growing.map((t) => (
+            <div key={t.id} className="flex items-center justify-between text-[11px] text-ink-soft">
+              <span>{t.name}</span>
+              <span className="tabular-nums">
+                {'●'.repeat(state.tags[t.id] ?? 0)}
+                {'○'.repeat(Math.max(0, t.threshold - (state.tags[t.id] ?? 0)))}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 // ---------- 左侧导航 ----------
 
@@ -625,25 +750,9 @@ const ArchiveDetail: React.FC<{
         </div>
       );
     }
-    // 专业卡片：完整五栏
+    // 专业卡片：知识库速览 + 可展开全文（v2.5）
     if (item.levelId === 'prologue') {
-      const major = getMajor(state.player.majorId);
-      const row = (label: string, body: React.ReactNode) => (
-        <div className="border-t border-line py-2.5 first:border-t-0">
-          <div className="text-[11px] tracking-widest text-ink-soft">{label}</div>
-          <div className="mt-1 text-[14px] leading-relaxed">{body}</div>
-        </div>
-      );
-      return (
-        <div className="rounded-xl border border-accent/40 bg-card p-4">
-          <div className="mb-2 text-lg font-semibold">{major.name}</div>
-          {row(levelCopy['card-core-courses'], major.card.coreCourses.join(' · '))}
-          {row(levelCopy['card-hardest'], major.card.hardestY1.join(' / '))}
-          {row(levelCopy['card-gpa-killer'], major.card.gpaKiller)}
-          {row(levelCopy['card-destinations'], major.card.destinations.join(' · '))}
-          {row(levelCopy['card-secret'], <span className="text-accent">{major.card.secret}</span>)}
-        </div>
-      );
+      return <FolderMajorCard majorId={state.player.majorId} copy={levelCopy} />;
     }
     // 避坑清单：要点卡 + 两轮对话记录（长文档以卡片入口打开文档查看器）
     if (item.id === 'course-map') {

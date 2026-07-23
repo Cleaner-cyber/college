@@ -2,7 +2,7 @@
  * 内容加载器：所有面向用户的文案均来自 /content 下的 JSON。
  * 引擎负责加载并注入关卡（关卡不自行 import 内容）。
  */
-import type { EndingDef, FlagCheck, LevelContent, Major, SimAction, SimEvent, TagDef, Trait } from '@/contracts';
+import type { EndingDef, FlagCheck, LevelContent, Major, MajorDetail, SimAction, SimEvent, TagDef, Trait } from '@/contracts';
 
 import prologueJson from '@content/levels/prologue.json';
 import courseSelectJson from '@content/levels/course-select.json';
@@ -19,7 +19,7 @@ import forkJson from '@content/levels/fork.json';
 import interviewJson from '@content/levels/interview.json';
 import thesisJson from '@content/levels/thesis.json';
 import settlementJson from '@content/levels/settlement.json';
-import majorsJson from '@content/majors/majors.json';
+import majorsJson from '@content/majors/catalog.json';
 import actionsJson from '@content/sim/actions.json';
 import boardY1s1 from '@content/board/y1s1.json';
 import boardY1s2 from '@content/board/y1s2.json';
@@ -91,17 +91,57 @@ export function getSimEvents(semester: string): SimEvent[] {
 
 export const majors: Major[] = majorsJson as Major[];
 
+/** 按 id 取专业；旧版短 id（se/cs…）经 aliases 兜底（旧档兼容），再兜底 generic */
 export function getMajor(id: string): Major {
-  return majors.find((m) => m.id === id) ?? majors.find((m) => m.id === 'generic')!;
+  return (
+    majors.find((m) => m.id === id) ??
+    majors.find((m) => m.aliases.includes(id)) ??
+    majors.find((m) => m.id === 'generic')!
+  );
 }
 
 export function searchMajors(query: string): Major[] {
   const list = majors.filter((m) => m.id !== 'generic');
   const q = query.trim().toLowerCase();
   if (!q) return list;
-  return list.filter(
-    (m) => m.name.toLowerCase().includes(q) || m.aliases.some((a) => a.toLowerCase().includes(q)),
+  const hit = list.filter(
+    (m) =>
+      m.name.toLowerCase().includes(q) ||
+      (m.klass ?? '').toLowerCase().includes(q) ||
+      m.aliases.some((a) => a.toLowerCase().includes(q)),
   );
+  // 名称前缀命中优先（「软件」→「软件工程」排最前）
+  return hit.sort((a, b) => Number(b.name.startsWith(query.trim())) - Number(a.name.startsWith(query.trim())));
+}
+
+/** 序章分级浏览：门类 → 专业类 → 专业（保持目录原序） */
+export interface MajorGroup {
+  name: string; // 门类
+  klasses: { name: string; majors: Major[] }[];
+}
+
+export const majorGroups: MajorGroup[] = (() => {
+  const groups: MajorGroup[] = [];
+  for (const m of majors) {
+    if (!m.group) continue;
+    let g = groups.find((x) => x.name === m.group);
+    if (!g) groups.push((g = { name: m.group, klasses: [] }));
+    let k = g.klasses.find((x) => x.name === m.klass);
+    if (!k) g.klasses.push((k = { name: m.klass ?? m.group, majors: [] }));
+    k.majors.push(m);
+  }
+  return groups;
+})();
+
+/** 单专业详情（速览卡 + 知识库全文小节）：同源静态资源按需加载，失败返回 null（卡片降级为只显示名称） */
+export async function fetchMajorDetail(id: string): Promise<MajorDetail | null> {
+  try {
+    const res = await fetch(`${import.meta.env.BASE_URL}assets/majors/${encodeURIComponent(id)}.json`);
+    if (!res.ok) return null;
+    return (await res.json()) as MajorDetail;
+  } catch {
+    return null;
+  }
 }
 
 // 行动板（v2.2：全学期统一池，专业/窗口/进阶链过滤见 engine/sim.ts）
