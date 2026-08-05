@@ -1,0 +1,119 @@
+/* 宿舍动态场景层（v2.8）：照片作布景，动态由浏览器渲染。
+   坐标为视口百分比，按 bg-dorm.jpg 构图校准（台灯/马克杯/窗区/远楼）。 */
+
+/* ── 杯子水汽：三缕错峰上升的雾丝 ── */
+@keyframes steam-rise {
+  0% { transform: translate(0, 0) scaleX(1); opacity: 0; }
+  15% { opacity: 0.4; }
+  55% { transform: translate(-6px, -34px) scaleX(1.4); opacity: 0.28; }
+  100% { transform: translate(4px, -60px) scaleX(1.9); opacity: 0; }
+}
+.dorm-steam {
+  position: absolute;
+  width: 7px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 244, 226, 0.5), transparent 70%);
+  filter: blur(3px);
+  animation: steam-rise 3.8s ease-out infinite;
+}
+
+/* ── 窗外行人 / 自行车：长周期穿越，绝大部分时间不在场 ── */
+@keyframes stroll-ltr {
+  0% { transform: translateX(-4vw); opacity: 0; }
+  2% { opacity: 0.5; }
+  26% { opacity: 0.5; }
+  28% { transform: translateX(46vw); opacity: 0; }
+  100% { transform: translateX(46vw); opacity: 0; }
+}
+@keyframes ride-rtl {
+  0% { transform: translateX(4vw) scaleX(-1); opacity: 0; }
+  1.5% { opacity: 0.55; }
+  11% { opacity: 0.55; }
+  12.5% { transform: translateX(-46vw) scaleX(-1); opacity: 0; }
+  100% { transform: translateX(-46vw) scaleX(-1); opacity: 0; }
+}
+@keyframes walk-bob {
+  0%, 100% { margin-top: 0; }
+  50% { margin-top: -1.5px; }
+}
+.dorm-walker {
+  position: absolute;
+  color: rgba(24, 14, 9, 0.6);
+  filter: blur(0.6px);
+  animation: stroll-ltr 34s linear infinite;
+}
+.dorm-walker > svg { animation: walk-bob 0.55s ease-in-out infinite; }
+.dorm-rider {
+  position: absolute;
+  color: rgba(24, 14, 9, 0.62);
+  filter: blur(0.6px);
+  animation: ride-rtl 41s linear infinite;
+}
+
+/* ── 远处楼宇的窗灯：慢闪 ── */
+@keyframes window-twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.75; }
+}
+.dorm-winlight {
+  position: absolute;
+  width: 4px;
+  height: 5px;
+  border-radius: 1px;
+  background: #ffc98a;
+  filter: blur(1px);
+  animation: window-twinkle 5s ease-in-out infinite;
+}
+
+/* ── 台灯光晕 / 笔记本屏幕微光：呼吸 ── */
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.85; }
+}
+.dorm-lampglow {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(ellipse, rgba(255, 190, 110, 0.4), transparent 65%);
+  filter: blur(6px);
+  animation: glow-breathe 4.6s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+.dorm-screenglow {
+  position: absolute;
+  border-radius: 10px;
+  background: radial-gradient(ellipse, rgba(210, 226, 255, 0.28), transparent 70%);
+  filter: blur(8px);
+  animation: glow-breathe 7s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+/* ── 偶尔掠过晚霞的鸟群 ── */
+@keyframes birds-fly {
+  0% { transform: translate(-6vw, 0.8vh); opacity: 0; }
+  3% { opacity: 0.5; }
+  22% { opacity: 0.5; }
+  25% { transform: translate(40vw, -2.4vh); opacity: 0; }
+  100% { transform: translate(40vw, -2.4vh); opacity: 0; }
+}
+.dorm-birds {
+  position: absolute;
+  color: rgba(30, 18, 12, 0.55);
+  filter: blur(0.4px);
+  animation: birds-fly 47s linear infinite;
+}
+
+/* 弱动效偏好：全部停掉，回到静态布景 */
+@media (prefers-reduced-motion: reduce) {
+  .dorm-steam,
+  .dorm-walker,
+  .dorm-rider,
+  .dorm-winlight,
+  .dorm-lampglow,
+  .dorm-screenglow,
+  .dorm-birds {
+    animation: none;
+    opacity: 0;
+  }
+  .dorm-lampglow { opacity: 0.6; }
+}

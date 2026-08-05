@@ -31,6 +31,7 @@ import {
 } from '@/engine/sim';
 import { getPath } from '@/engine/path';
 import { CampusMap, levelLocationName } from '@/components/CampusMap';
+import { DormScene } from '@/components/DormScene';
 import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
@@ -256,22 +257,6 @@ const HudStrip: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
           </span>
         </span>
       )}
-    </div>
-  );
-};
-
-/** 场景底图：优先真图 bg-dorm.jpg（生图后同名放入 public/assets 即生效，不改代码），缺省回退占位 SVG */
-const SceneImage: React.FC = () => {
-  const [src, setSrc] = useState('/assets/bg-dorm.jpg');
-  return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
-      <img
-        src={src}
-        onError={() => src !== '/assets/bg-dorm.svg' && setSrc('/assets/bg-dorm.svg')}
-        alt=""
-        className="h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-ink/10" />
     </div>
   );
 };
@@ -1150,7 +1135,7 @@ export const HomePage: React.FC = () => {
   return (
     // h-dvh 锁定视口高：场景主页是"一屏"页面，自身永不滚动（面板浮层各自内滚），杜绝滚出底图的白边
     <div className="relative h-dvh overflow-hidden bg-dusk">
-      <SceneImage />
+      <DormScene />
 
       {/* 顶栏 HUD 数值条：深棕玻璃 + 奶油字 + 琥珀数值（与傍晚底图同色系） */}
       <header
