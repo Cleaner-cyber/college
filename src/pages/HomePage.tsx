@@ -39,6 +39,16 @@ import { PromptText } from '@/components/ui/Markdown';
 import { DocViewer } from '@/components/ui/DocViewer';
 import { HomeTour, TOUR_KEY } from '@/components/ui/Tour';
 import { ActionResultModal, EventModal, simCopy, type EventOptionView } from '@/components/sim/EventModal';
+import {
+  BarChart3,
+  BedDouble,
+  BookOpen,
+  Dices,
+  FolderOpen,
+  Map as MapIcon,
+  NotebookPen,
+  ScrollText,
+} from 'lucide-react';
 
 const home = ui.home as Record<string, string>;
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
@@ -76,8 +86,8 @@ const CoursesPanel: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => 
       ) : (
         <div className="flex flex-wrap gap-1.5">
           {courses.map((c) => (
-            <span key={c} className="rounded-lg border border-line bg-paper px-2.5 py-1 text-[13px]">
-              📖 {c}
+            <span key={c} className="flex items-center gap-1.5 rounded-lg border border-line bg-paper px-2.5 py-1 text-[13px]">
+              <BookOpen size={13} strokeWidth={1.75} className="text-accent" /> {c}
             </span>
           ))}
         </div>
@@ -210,7 +220,7 @@ const HudStrip: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const gpa = cumulativeGpa(state);
   const path = getPath(state.pathGoal);
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-x-5 gap-y-1 text-[13px]">
+    <div className="flex min-w-0 flex-wrap items-center gap-x-5 gap-y-1 font-display text-[13px]">
       <span className="flex items-center gap-1.5">
         <span className="text-xs text-cream-soft">{home['action-points']}</span>
         {Array.from({ length: 3 }).map((_, i) => (
@@ -225,16 +235,16 @@ const HudStrip: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
       {VISIBLE_AXES.map((a) => (
         <span key={a} className="flex items-baseline gap-1">
           <span className="text-xs text-cream-soft">{ui.axes[a]}</span>
-          <span className="font-semibold tabular-nums text-cream">{state.axes[a]}</span>
+          <span className="font-sans font-semibold tabular-nums text-cream">{state.axes[a]}</span>
         </span>
       ))}
       <span className="flex items-baseline gap-1">
         <span className="text-xs text-cream-soft">{ui.axes.energy}</span>
-        <span className="font-semibold tabular-nums text-ember">{state.axes.energy}</span>
+        <span className="font-sans font-semibold tabular-nums text-ember">{state.axes.energy}</span>
       </span>
       <span className="flex items-baseline gap-1">
         <span className="text-xs text-cream-soft">{home['hud-gpa-label']}</span>
-        <span className="font-semibold tabular-nums text-ember">
+        <span className="font-sans font-semibold tabular-nums text-ember">
           {gpa?.toFixed(2) ?? home['hud-gpa-empty']}
         </span>
       </span>
@@ -270,7 +280,7 @@ const SceneImage: React.FC = () => {
 const SceneChip: React.FC<{
   x: number;
   y: number;
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   badge?: number;
   active?: boolean;
@@ -306,7 +316,7 @@ const SceneChip: React.FC<{
           </span>
         )}
       </span>
-      <span className="whitespace-nowrap text-[13px] font-medium tracking-wide">{label}</span>
+      <span className="whitespace-nowrap font-display text-[14px] font-medium tracking-wide">{label}</span>
     </button>
   </div>
 );
@@ -378,7 +388,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
           onClick={() => setMapOpen(true)}
           className="flex items-center gap-4 rounded-2xl border border-accent/50 bg-card/85 p-4 text-left shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:shadow-lift"
         >
-          <span className="text-2xl">🗺️</span>
+          <span className="text-ember"><MapIcon size={26} strokeWidth={1.6} /></span>
           <span className="min-w-0 flex-1">
             <span className="block text-[15px] font-semibold">{home['map-open-btn']}</span>
             <span className="mt-0.5 block text-xs text-ink-soft">{home['map-open-sub']}</span>
@@ -470,7 +480,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                 : 'border-line bg-paper opacity-70'
             } ${firstMainlineDone ? '' : 'pointer-events-none'}`}
           >
-            <span className="text-2xl">🎲</span>
+            <span className="text-accent"><Dices size={26} strokeWidth={1.6} /></span>
             <div className="min-w-0 flex-1">
               <div className="text-[15px] font-medium">{simCopy('live-title')}</div>
               <p className="mt-0.5 text-[12.5px] leading-relaxed text-ink-soft">
@@ -1195,7 +1205,7 @@ export const HomePage: React.FC = () => {
       <div className="pointer-events-none absolute inset-0 z-10" data-tour="nav">
         {/* 坐标按实景底图 bg-dorm.jpg 校准：书架左上、窗中上（避开水塔剪影）、便签墙右侧、笔记本中下、床左下 */}
         <SceneChip
-          x={64} y={28} icon="🗺️"
+          x={64} y={28} icon={<MapIcon size={16} strokeWidth={1.75} />}
           label={home['map-open-btn']}
           badge={mainlineLeft}
           active={mainlineLeft > 0}
@@ -1203,18 +1213,18 @@ export const HomePage: React.FC = () => {
           onClick={() => setMapOpen(true)}
         />
         <SceneChip
-          x={52} y={72} icon="🗂️"
+          x={52} y={72} icon={<NotebookPen size={16} strokeWidth={1.75} />}
           label={home['nav-semester']}
           badge={state.actionPoints}
           active={mainlineDone && state.actionPoints > 0 && !graduated}
           tour="electives"
           onClick={() => setPanel('semester')}
         />
-        <SceneChip x={9} y={22} icon="📁" label={home['nav-folder']} badge={state.archive.length} onClick={() => setPanel('folder')} />
-        <SceneChip x={8} y={68} icon="📊" label={home['nav-stats']} onClick={() => setPanel('stats')} />
-        <SceneChip x={89} y={42} icon="📝" label={home['nav-log']} onClick={() => setPanel('log')} />
+        <SceneChip x={9} y={22} icon={<FolderOpen size={16} strokeWidth={1.75} />} label={home['nav-folder']} badge={state.archive.length} onClick={() => setPanel('folder')} />
+        <SceneChip x={8} y={68} icon={<BarChart3 size={16} strokeWidth={1.75} />} label={home['nav-stats']} onClick={() => setPanel('stats')} />
+        <SceneChip x={89} y={42} icon={<ScrollText size={16} strokeWidth={1.75} />} label={home['nav-log']} onClick={() => setPanel('log')} />
         <SceneChip
-          x={11} y={87} icon="🛏️"
+          x={11} y={87} icon={<BedDouble size={16} strokeWidth={1.75} />}
           label={graduated ? home['view-ending'] : home['settle-btn']}
           active={mainlineDone || graduated}
           disabled={!mainlineDone && !graduated}

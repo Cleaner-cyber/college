@@ -37,10 +37,9 @@ export default {
           '"Microsoft YaHei"',
           'sans-serif',
         ],
-        // 场景 UI 标题衬线（档案/信纸气质，系统字体栈无外链）
+        // 场景 UI 字体：霞鹜文楷（打包进项目的暖手写衬线）→ 宋体系兜底
         display: [
-          '"Noto Serif SC"',
-          '"Source Han Serif SC"',
+          '"LXGW WenKai Lite"',
           '"Songti SC"',
           'STSong',
           'SimSun',
@@ -73,6 +72,16 @@ export default {
           '0%, 100%': { boxShadow: '0 0 0 0 rgba(255,166,77,0), 0 0 12px rgba(255,166,77,0.25)' },
           '50%': { boxShadow: '0 0 0 3px rgba(255,166,77,0.2), 0 0 24px rgba(255,166,77,0.5)' },
         },
+        // 校园地图全屏转场：轻推近 + 淡入（"出门"感）
+        'map-in': {
+          '0%': { opacity: '0', transform: 'scale(1.06)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        // 当期建筑高亮光斑：灯光式明暗呼吸
+        halo: {
+          '0%, 100%': { opacity: '0.55' },
+          '50%': { opacity: '0.95' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.35s ease-out both',
@@ -80,6 +89,8 @@ export default {
         'pop-in': 'pop-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2) both',
         breathe: 'breathe 2.2s ease-in-out infinite',
         'ember-breathe': 'ember-breathe 2.4s ease-in-out infinite',
+        'map-in': 'map-in 0.5s ease-out both',
+        halo: 'halo 2.6s ease-in-out infinite',
       },
     },
   },
