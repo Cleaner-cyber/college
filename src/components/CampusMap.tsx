@@ -98,7 +98,13 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
   React.useEffect(() => {
     compute();
     window.addEventListener('resize', compute);
-    return () => window.removeEventListener('resize', compute);
+    // 全屏接管期间锁死页面滚动（防止文档高于视口时滚出底图外的白边）
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('resize', compute);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [compute]);
 
   const mainline = getBoard(state.semester).mainline;

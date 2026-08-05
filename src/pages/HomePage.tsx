@@ -1148,7 +1148,8 @@ export const HomePage: React.FC = () => {
   const graduated = state.semester === 'grad-end';
 
   return (
-    <div className="relative min-h-dvh overflow-hidden">
+    // h-dvh 锁定视口高：场景主页是"一屏"页面，自身永不滚动（面板浮层各自内滚），杜绝滚出底图的白边
+    <div className="relative h-dvh overflow-hidden bg-dusk">
       <SceneImage />
 
       {/* 顶栏 HUD 数值条：深棕玻璃 + 奶油字 + 琥珀数值（与傍晚底图同色系） */}
