@@ -286,7 +286,7 @@ const SceneChip: React.FC<{
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-4 shadow-glass backdrop-blur-md transition ${
+      className={`flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-4 shadow-glass backdrop-blur-md backdrop-saturate-125 transition ${
         disabled
           ? 'border-cream/10 bg-dusk/55 text-cream-soft/50'
           : 'border-cream/25 bg-gradient-to-b from-dusk-2/85 to-dusk/90 text-cream hover:-translate-y-0.5 hover:border-ember/60'
@@ -1143,7 +1143,7 @@ export const HomePage: React.FC = () => {
 
       {/* 顶栏 HUD 数值条：深棕玻璃 + 奶油字 + 琥珀数值（与傍晚底图同色系） */}
       <header
-        className="relative z-20 border-b border-cream/10 bg-gradient-to-b from-dusk/90 to-dusk/70 text-cream backdrop-blur-md"
+        className="relative z-20 border-b border-cream/10 bg-gradient-to-b from-dusk/90 to-dusk/70 text-cream backdrop-blur-md backdrop-saturate-125"
         data-tour="rail"
       >
         <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-6 px-6 py-2.5">
@@ -1239,7 +1239,7 @@ export const HomePage: React.FC = () => {
           <div className="w-full max-w-[860px] pb-10 pt-2" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex justify-end">
               <button
-                className="rounded-full border border-cream/25 bg-dusk/80 px-4 py-1.5 text-sm text-cream shadow-glass backdrop-blur-md transition hover:border-ember/60 hover:text-ember"
+                className="rounded-full border border-cream/25 bg-dusk/80 px-4 py-1.5 text-sm text-cream shadow-glass backdrop-blur-md backdrop-saturate-125 transition hover:border-ember/60 hover:text-ember"
                 onClick={() => setPanel(null)}
               >
                 ✕ {home['panel-close']}

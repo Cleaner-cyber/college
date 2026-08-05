@@ -17,16 +17,16 @@ export default {
         'dusk-2': '#3A2415',
         cream: '#F6E7CC',
         'cream-soft': '#CBB394',
-        ember: '#F0A75A',
-        'ember-deep': '#C97C3C',
+        ember: '#FFB35C',
+        'ember-deep': '#E08A3C',
       },
       boxShadow: {
         soft: '0 1px 2px rgba(28,27,24,0.04), 0 4px 16px rgba(28,27,24,0.05)',
         lift: '0 2px 6px rgba(28,27,24,0.06), 0 10px 28px rgba(28,27,24,0.10)',
         pop: '0 24px 60px rgba(28,27,24,0.20)',
         glow: '0 0 0 3px rgba(192,90,50,0.18)',
-        glass: '0 2px 8px rgba(18,9,4,0.35), 0 10px 30px rgba(18,9,4,0.35)',
-        'ember-glow': '0 0 4px rgba(240,167,90,0.9), 0 0 16px rgba(240,167,90,0.55)',
+        glass: '0 4px 18px rgba(24,10,3,0.40), inset 0 1px 0 rgba(255,220,178,0.18)',
+        'ember-glow': '0 0 0 2px rgba(255,179,92,0.5), 0 0 18px rgba(255,166,77,0.45), 0 4px 14px rgba(24,10,3,0.4)',
       },
       fontFamily: {
         sans: [
@@ -68,9 +68,10 @@ export default {
           '0%, 100%': { boxShadow: '0 0 0 0 rgba(192,90,50,0.35)' },
           '50%': { boxShadow: '0 0 0 5px rgba(192,90,50,0)' },
         },
+        // 灯光式亮度呼吸（只动光晕不动尺寸——照片底图上禁止缩放弹跳）
         'ember-breathe': {
-          '0%, 100%': { boxShadow: '0 0 4px rgba(240,167,90,0.9), 0 0 14px rgba(240,167,90,0.45)' },
-          '50%': { boxShadow: '0 0 6px rgba(240,167,90,1), 0 0 26px rgba(240,167,90,0.8)' },
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(255,166,77,0), 0 0 12px rgba(255,166,77,0.25)' },
+          '50%': { boxShadow: '0 0 0 3px rgba(255,166,77,0.2), 0 0 24px rgba(255,166,77,0.5)' },
         },
       },
       animation: {

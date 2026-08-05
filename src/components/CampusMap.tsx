@@ -85,12 +85,12 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
           draggable={false}
         />
         {/* 顶部标题条：深棕玻璃 + 衬线标题（与傍晚底图同色系） */}
-        <div className="absolute left-4 top-4 rounded-xl border border-cream/15 bg-dusk/80 px-4 py-2 text-cream shadow-glass backdrop-blur-md">
+        <div className="absolute left-4 top-4 rounded-xl border border-cream/15 bg-dusk/80 px-4 py-2 text-cream shadow-glass backdrop-blur-md backdrop-saturate-125">
           <div className="font-display text-[16px] font-semibold tracking-[0.2em]">{map['title']}</div>
           <div className="text-[11px] text-cream-soft">{map['sub']}</div>
         </div>
         <button
-          className="absolute right-4 top-4 rounded-xl border border-cream/20 bg-dusk/80 px-3.5 py-2 text-sm text-cream shadow-glass backdrop-blur-md transition hover:border-ember/60 hover:text-ember"
+          className="absolute right-4 top-4 rounded-xl border border-cream/20 bg-dusk/80 px-3.5 py-2 text-sm text-cream shadow-glass backdrop-blur-md backdrop-saturate-125 transition hover:border-ember/60 hover:text-ember"
           onClick={onClose}
         >
           {map['close']}
@@ -118,16 +118,16 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
                         ? 'border-cream/25 bg-dusk/70 text-cream-soft shadow-glass'
                         : isDorm
                           ? 'border-cream/35 bg-dusk/75 text-cream shadow-glass'
-                          : 'border-cream/10 bg-dusk/40 text-cream-soft/40'
+                          : 'border-cream/20 bg-dusk/50 text-cream-soft/60'
                   }`}
                 >
                   {active ? '!' : done ? '✓' : isDorm ? '🏠' : '·'}
                 </span>
                 <span
-                  className={`mt-1 whitespace-nowrap rounded-md border px-2 py-0.5 text-[11px] tracking-wide backdrop-blur-sm ${
+                  className={`mt-1 whitespace-nowrap rounded-md border px-2 py-0.5 text-[11px] tracking-wide backdrop-blur-sm transition-opacity ${
                     active
                       ? 'border-ember/60 bg-ember font-semibold text-dusk shadow-ember-glow'
-                      : 'border-cream/15 bg-dusk/75 text-cream shadow-glass'
+                      : `border-cream/15 bg-dusk/75 text-cream shadow-glass ${isDorm ? '' : 'opacity-0 group-hover:opacity-100'}`
                   }`}
                 >
                   {map[`loc-${loc.id}`] ?? loc.id}
