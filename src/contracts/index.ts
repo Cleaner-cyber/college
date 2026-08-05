@@ -87,6 +87,10 @@ export interface PlayerState {
   eventHistory: string[]; // 已经历的模拟事件 id（事件默认不重复；供条件/结局引用）
   pendingEvents: string[]; // 连锁事件队列（事件 next 入队，抽卡时优先弹出）
   actionHistory: Record<string, number>; // 行动跨学期累计次数（家教×3 → 解锁进阶行动）
+  // ---- v2.6 出路与绩点（旧档水合时补默认值）----
+  pathGoal: string; // 开局选定的出路 id（kaoyan/baoyan/kaogong/job/abroad/startup；'' = 旧档未选）
+  gpaHistory: Record<string, number>; // 各已结算学期的学期绩点（1.5~4.0）
+  semesterAcademicStart: number; // 本学期开始时的学术值（结算算「本学期挣了多少学术」→ 学期绩点）
 }
 
 // ---------- 2. 关卡插件接口 ----------
@@ -172,6 +176,7 @@ export interface MajorDetail {
   name: string;
   card: Partial<Record<'intro' | 'positioning' | 'fit' | 'unfit' | 'pit' | 'paths', string>>;
   sections: { title: string; body: string }[]; // 知识库原文小节（已清洗）
+  courses?: { y1: string[]; y2: string[]; y3: string[]; y4: string[] }; // 分年课程名（v2.6 GPA 系统，知识库抽取）
 }
 
 // ---------- 3.4 速结行动（v2.2 已被 3.6 行动板 SimAction 取代，类型移除）----------
@@ -294,6 +299,44 @@ export interface FlagCheck {
   require?: SimCondition; // 空 = 天然达成（如「无所谓」）
   doneText: string;
   missText: string;
+}
+
+// ---------- 3.9 出路系统（v2.6）----------
+// 开局六选一出路目标；毕业按四年行为算走通概率并逐条解释（含「无用功」点破）。
+// 内容表 content/sim/paths.json；引擎 src/engine/path.ts。
+
+export interface PathFactor {
+  type:
+    | 'minPeak' // 某轴峰值达标（布尔）
+    | 'gpa' // 累计绩点达标（布尔）
+    | 'action' // 某行动做过 ≥min 次（布尔）
+    | 'tagAwakened' // 某人设已觉醒（布尔）
+    | 'anyEvent' // 经历过任一列出事件（布尔）
+    | 'ability' // 解锁某 AI 能力（布尔）
+    | 'trait' // 有某入学特质（布尔）
+    | 'kinds' // 做过的不同行动种数 ≥min（布尔，可配负分点破「什么都做=分心」）
+    | 'peakScale' // 某轴峰值超 from 后按每点给 each 分，绝对值封顶 cap
+    | 'gpaScale' // 绩点超 from 后按 (gpa-from)*each 给分，封顶 cap
+    | 'actionScale'; // 列出行动的总次数 × each，封顶 cap
+  axis?: keyof PlayerState['axes'];
+  id?: string;
+  ids?: string[];
+  min?: number;
+  from?: number;
+  each?: number;
+  cap?: number;
+  points?: number; // 布尔型命中所得（可为负）
+  label: string; // 结算页单行标签（人话）
+  note: string; // 学长口吻解释：为什么加/扣/不加分
+}
+
+export interface PathDef {
+  id: string; // kaoyan/baoyan/kaogong/job/abroad/startup
+  name: string;
+  icon: string;
+  desc: string; // 序章选卡描述
+  base: number; // 基础概率百分点
+  factors: PathFactor[];
 }
 
 // ---------- 3.8 元进度（v2.4，docs/08 P3）----------

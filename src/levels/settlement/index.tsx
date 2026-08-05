@@ -16,7 +16,8 @@ import {
   semesterName,
 } from '@/engine/content';
 import { nextSemester } from '@/engine/store';
-import { awakenedTagIds, tagDef } from '@/engine/sim';
+import { awakenedTagIds, cumulativeGpa, semesterGpa, tagDef } from '@/engine/sim';
+import { pathResult } from '@/engine/path';
 import {
   axisComment,
   computeSum,
@@ -98,11 +99,20 @@ function replayLines(state: Readonly<PlayerState>): { label: string; text: strin
 
 const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => {
   const highlight = currentHighlight(state);
+  // 学期绩点预告（正式入档在结算落账时；这里用同一公式先亮出来）
+  const gpa =
+    state.gpaHistory[state.semester] ??
+    semesterGpa(state.axes.academic - state.semesterAcademicStart, state.axes.energy);
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-wide">
-        {interpolate(api.copy('s1-title'), { semester: semesterName(state.semester) })}
-      </h1>
+      <div className="flex items-baseline justify-between">
+        <h1 className="text-2xl font-semibold tracking-wide">
+          {interpolate(api.copy('s1-title'), { semester: semesterName(state.semester) })}
+        </h1>
+        <span className="rounded-xl bg-accent-soft px-3 py-1.5 text-sm font-semibold tabular-nums text-accent">
+          {interpolate(api.copy('s1-gpa'), { gpa: gpa.toFixed(2) })}
+        </span>
+      </div>
       <AxesBars axes={state.axes} animate max={AXIS_MAX} />
       {highlight && !isFinal(state) && (
         <div className="rounded-xl border border-accent/30 bg-accent-soft/40 p-3">
@@ -178,6 +188,8 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
   const score = flags.filter((f) => f.done).length;
   const ending = pickEnding(state);
   const almost = findAlmost(state, ending);
+  const path = pathResult(state);
+  const gpa = cumulativeGpa(state);
   const made = state.archive.filter((a) => getFolderSection(a.id) !== 'prompts');
   const own = made.filter((a) => !a.borrowed).length;
   const topAxis = VISIBLE_AXES.reduce((best, a) => (state.axesPeak[a] > state.axesPeak[best] ? a : best), VISIBLE_AXES[0]);
@@ -209,6 +221,11 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
         </div>
         <p className="mt-2 text-[14px] font-medium text-accent">{tier.title}</p>
         <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">{tier.text}</p>
+        {gpa !== null && (
+          <p className="mt-2 text-[13px] text-ink-soft">
+            {interpolate(api.copy('grad-gpa'), { gpa: gpa.toFixed(2) })}
+          </p>
+        )}
 
         {/* 四年的形状（各轴历史最高） */}
         <div className="mt-5 border-t border-line pt-4">
@@ -284,6 +301,50 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
             ))}
           </ul>
         </div>
+
+        {/* 出路判定（v2.6）：开局目标 vs 四年真实作为 → 走通概率 + 逐条解释（含无用功点破） */}
+        {path && (
+          <div className="mt-5 border-t border-line pt-4">
+            <div className="mb-3 flex items-center justify-between">
+              <SectionTitle>{api.copy('grad-path-title')}</SectionTitle>
+              <span className="text-[13px] font-medium">
+                {path.def.icon} {path.def.name}
+              </span>
+            </div>
+            <div className="flex items-center gap-4 rounded-xl bg-accent-soft/50 p-4">
+              <div className="text-center">
+                <div className="text-3xl font-bold tabular-nums text-accent">{path.prob}%</div>
+                <div className="mt-0.5 text-[11px] text-ink-soft">{api.copy('grad-path-prob-label')}</div>
+              </div>
+              <p className="min-w-0 flex-1 text-[13px] leading-relaxed text-ink-soft">
+                {api.copy(
+                  path.prob >= 70
+                    ? 'grad-path-note-high'
+                    : path.prob >= 40
+                      ? 'grad-path-note-mid'
+                      : 'grad-path-note-low',
+                )}
+              </p>
+            </div>
+            <ul className="mt-3 space-y-2">
+              {path.factors.map((f) => (
+                <li key={f.label} className="flex gap-2.5">
+                  <span
+                    className={`w-9 shrink-0 pt-px text-right text-[13px] font-semibold tabular-nums ${
+                      f.points > 0 ? 'text-accent' : 'text-ink-soft'
+                    }`}
+                  >
+                    {f.points > 0 ? `+${f.points}` : f.points}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[13px] font-medium">{f.label}</div>
+                    <p className="mt-0.5 text-[12px] leading-relaxed text-ink-soft">{f.note}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* 身份卡 */}
         <div className="mt-5 rounded-xl bg-accent-soft/70 p-4 text-center shadow-soft animate-pop-in">

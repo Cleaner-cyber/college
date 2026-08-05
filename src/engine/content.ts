@@ -2,7 +2,7 @@
  * 内容加载器：所有面向用户的文案均来自 /content 下的 JSON。
  * 引擎负责加载并注入关卡（关卡不自行 import 内容）。
  */
-import type { EndingDef, FlagCheck, LevelContent, Major, MajorDetail, SimAction, SimEvent, TagDef, Trait } from '@/contracts';
+import type { EndingDef, FlagCheck, LevelContent, Major, MajorDetail, PathDef, SimAction, SimEvent, TagDef, Trait } from '@/contracts';
 
 import prologueJson from '@content/levels/prologue.json';
 import courseSelectJson from '@content/levels/course-select.json';
@@ -40,6 +40,7 @@ import simEventsY3s1 from '@content/sim/events-y3s1.json';
 import simEventsY3s2 from '@content/sim/events-y3s2.json';
 import simEventsY4 from '@content/sim/events-y4.json';
 import endingsJson from '@content/sim/endings.json';
+import pathsJson from '@content/sim/paths.json';
 import flagChecksJson from '@content/sim/flag-checks.json';
 import verdictsJson from '@content/sim/verdicts.json';
 
@@ -150,6 +151,9 @@ export const simActions: SimAction[] = actionsJson as SimAction[];
 export function getSimAction(id: string): SimAction | undefined {
   return simActions.find((a) => a.id === id);
 }
+
+// ---- 出路系统内容（v2.6）----
+export const paths: PathDef[] = pathsJson as PathDef[];
 
 // ---- 结局系统内容（v2.3，docs/08 P2）----
 export const endings: EndingDef[] = endingsJson as EndingDef[];

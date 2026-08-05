@@ -1,0 +1,449 @@
+[
+  {
+    "id": "kaoyan",
+    "name": "考研",
+    "icon": "📖",
+    "desc": "大三起图书馆见——考研是一个人的持久战，前两年打底子，后两年拼专注，坐得住的人才走得到十二月。",
+    "base": 22,
+    "factors": [
+      {
+        "type": "gpa",
+        "min": 2.5,
+        "points": 6,
+        "label": "本科底子及格",
+        "note": "平时成绩不拔尖没关系，考研是重新洗牌——但底子太烂的话，专业课得从头补，起跑就落后半年。"
+      },
+      {
+        "type": "gpaScale",
+        "from": 2.5,
+        "each": 8,
+        "cap": 12,
+        "label": "基础越扎实，复习越省力",
+        "note": "数学和专业课的底子是大一大二攒下的。别人从头学，你只是复习——这就是初试的时间差。"
+      },
+      {
+        "type": "minPeak",
+        "axis": "academic",
+        "min": 7,
+        "points": 12,
+        "label": "学术功底过硬",
+        "note": "考研初试就是一场硬考试。你证明过自己学得进、啃得动，这是这条路上最值钱的能力。"
+      },
+      {
+        "type": "tagAwakened",
+        "id": "grind",
+        "points": 8,
+        "label": "卷王体质",
+        "note": "考研拼的是大三下开始那三百天的日复一日。这种日子，你早就过习惯了。"
+      },
+      {
+        "type": "tagAwakened",
+        "id": "lone",
+        "points": 6,
+        "label": "耐得住一个人",
+        "note": "考研是孤独的长跑：研友会弃考，图书馆会空。一个人也行的人，才熬得完整个冬天。"
+      },
+      {
+        "type": "action",
+        "id": "cet",
+        "min": 1,
+        "points": 6,
+        "label": "英语底子在",
+        "note": "考研英语不考四六级原题，但你为它背过的每个单词都算数。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["gpa", "office-hour"],
+        "each": 2,
+        "cap": 10,
+        "label": "啃书刷题的习惯",
+        "note": "泡图书馆、追着老师问问题——这套动作换本教材就是考研复习，肌肉记忆都是现成的。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["math-model", "code-contest", "acm", "biz-case", "moot-court", "clinical-comp", "ad-contest", "eda-contest", "chuangxin-cup", "mun", "debate"],
+        "each": -1.5,
+        "cap": 9,
+        "label": "比赛打得多，初试不加分",
+        "note": "说句扎心的：考研初试只看卷面分，奖状一张都带不进考场。这些时间花在数学英语上性价比高得多——竞赛对保研倒是硬通货，可你选的是考研。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["cert-fomo", "computer-2", "teaching-cert", "driving"],
+        "each": -1.5,
+        "cap": 6,
+        "label": "证书考了一摞，考场带不进去",
+        "note": "这些证对初试一分不加。从功利角度讲，是拿复习时间换了一抽屉安全感。"
+      }
+    ]
+  },
+  {
+    "id": "baoyan",
+    "name": "保研",
+    "icon": "🎓",
+    "desc": "从大一第一场期末就开打的比赛——绩点排名是命根，竞赛综测是筹码，四年一个学期都松不得。",
+    "base": 12,
+    "factors": [
+      {
+        "type": "gpa",
+        "min": 3.3,
+        "points": 12,
+        "label": "排名挤进保研线",
+        "note": "保研资格通常卡在专业前 15%-20%，绩点 3.3 是入场券。没有它，后面一切免谈。"
+      },
+      {
+        "type": "gpa",
+        "min": 3.7,
+        "points": 18,
+        "label": "专业前几名",
+        "note": "3.7 往上，你在名额排序里站得很靠前。保研这个游戏里绩点是命根——别听任何人说绩点无用。"
+      },
+      {
+        "type": "minPeak",
+        "axis": "academic",
+        "min": 9,
+        "points": 6,
+        "label": "课业强度顶得住",
+        "note": "保研人的每个学期都是期末。你证明过自己能一直在线，不掉链子。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["math-model", "code-contest", "acm", "biz-case", "moot-court", "clinical-comp", "ad-contest", "eda-contest", "chuangxin-cup", "mun", "debate"],
+        "each": 3,
+        "cap": 15,
+        "label": "竞赛奖项：加分细则里的硬通货",
+        "note": "保研细则白纸黑字：省奖国奖直接加分。同样是打比赛，对考研是无用功，对保研是真金白银。"
+      },
+      {
+        "type": "action",
+        "id": "research-group",
+        "min": 1,
+        "points": 10,
+        "label": "进过课题组",
+        "note": "夏令营面试，多数导师把本科科研经历当筛选标准。你不只有成绩单，还有组会和数据——这就是差异化。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["volunteer", "sanxiaxiang", "student-union", "club-officer"],
+        "each": 2,
+        "cap": 8,
+        "label": "综测分攒够了",
+        "note": "志愿时长、社会实践、学生工作，综测细则里都有一栏。单看不起眼，排名咬得紧时就是胜负手。"
+      },
+      {
+        "type": "action",
+        "id": "cet",
+        "min": 1,
+        "points": 5,
+        "label": "四六级过线",
+        "note": "多数学校的保研资格和夏令营入营都卡六级分数。这是资格题，不是加分题。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["tutor", "tutor-media", "tutor-platform", "street-stall", "self-media", "intern-early", "intern-golden"],
+        "each": -1.5,
+        "cap": 9,
+        "label": "打工搞钱，细则里没有这一栏",
+        "note": "实习和赚钱的本事都是真本事，但保研加分细则里找不到它们，每一小时都在和刷绩点抢时间。在这条路上，它们是无用功。"
+      }
+    ]
+  },
+  {
+    "id": "kaogong",
+    "name": "考公",
+    "icon": "🏛️",
+    "desc": "行测申论加面试，考的是把题做得快、把话说明白——学生干部和基层履历，是这条路的隐形加分项。",
+    "base": 24,
+    "factors": [
+      {
+        "type": "actionScale",
+        "ids": ["student-union", "club-officer"],
+        "each": 4,
+        "cap": 12,
+        "label": "学生干部经历",
+        "note": "选调生的报名条件里常有「学生干部」这一栏，面试官也吃这套——你提前过了体制内的第一道审美。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["volunteer", "sanxiaxiang"],
+        "each": 3,
+        "cap": 9,
+        "label": "志愿与基层经历",
+        "note": "申论大作文离不开基层视角。你在村小和田埂上见过的中国，别人要靠背素材。"
+      },
+      {
+        "type": "minPeak",
+        "axis": "expression",
+        "min": 6,
+        "points": 10,
+        "label": "说得清、写得明",
+        "note": "申论是写给人看的，面试是说给人听的。表达是这场考试里被低估最狠的硬实力。"
+      },
+      {
+        "type": "gpa",
+        "min": 2.8,
+        "points": 8,
+        "label": "坐得住的应试底子",
+        "note": "行测 120 分钟 130 题，本质是刷题内功。大学四年认真考过试的人，重拾手感很快。"
+      },
+      {
+        "type": "tagAwakened",
+        "id": "nice",
+        "points": 6,
+        "label": "与人为善的口碑",
+        "note": "体制内讲究稳当靠谱。你帮过的忙、攒下的口碑，面试官一眼能看出来——这不是考前能演出来的。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["gpa"],
+        "each": 2,
+        "cap": 6,
+        "label": "刷题内功",
+        "note": "图书馆里练出的手速和耐心，直接迁移到行测——这可能是刷绩点最意外的一笔回报。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["startup-team", "street-stall", "self-media", "tutor-media", "tutor-platform", "side-project"],
+        "each": -1.5,
+        "cap": 8,
+        "label": "折腾生意的履历用不上",
+        "note": "摆摊、做号、创业，放在简历上是闯劲，放在考公报名表上没有对应的格子。这条路认的是另一套东西。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["math-model", "code-contest", "acm", "biz-case", "moot-court", "clinical-comp", "ad-contest", "eda-contest", "chuangxin-cup"],
+        "each": -1,
+        "cap": 5,
+        "label": "奖状帮不上行测",
+        "note": "竞赛奖在考公里不加分。真到笔试那天，拼的是每分钟做完一题的手速，不是奖杯。"
+      }
+    ]
+  },
+  {
+    "id": "job",
+    "name": "本科就业",
+    "icon": "💼",
+    "desc": "秋招只认三样：实习、作品、说得清自己做过什么。大三暑期那个实习窗口，错过就没有第二次。",
+    "base": 22,
+    "factors": [
+      {
+        "type": "action",
+        "id": "intern-golden",
+        "min": 1,
+        "points": 18,
+        "label": "大三暑期实习",
+        "note": "秋招简历的第一行就是它。有暑期实习的人聊「我做过什么」，没有的人只能聊「我学过什么」——高下立判。"
+      },
+      {
+        "type": "action",
+        "id": "intern-early",
+        "min": 1,
+        "points": 4,
+        "label": "早早试过水",
+        "note": "低年级海投大多石沉大海，但你提前见过真实的招聘市场——知道缺什么，回来补什么。"
+      },
+      {
+        "type": "peakScale",
+        "axis": "portfolio",
+        "from": 3,
+        "each": 3,
+        "cap": 15,
+        "label": "拿得出手的作品",
+        "note": "面试官不问你会什么，问你做过什么。文件夹越厚，你在面试桌上的话语权越大。"
+      },
+      {
+        "type": "minPeak",
+        "axis": "expression",
+        "min": 6,
+        "points": 8,
+        "label": "面试说得动人",
+        "note": "同样的经历，讲得清楚的人拿 offer，讲不清楚的人拿感谢信。"
+      },
+      {
+        "type": "action",
+        "id": "cet",
+        "min": 1,
+        "points": 5,
+        "label": "四六级：简历硬门槛",
+        "note": "很多大公司的网申系统直接拿六级筛人。它不加分，但没有它，简历关都过不去。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["math-model", "code-contest", "acm", "biz-case", "moot-court", "clinical-comp", "ad-contest", "eda-contest", "chuangxin-cup"],
+        "each": 1.5,
+        "cap": 6,
+        "label": "竞赛是简历亮点",
+        "note": "奖项能让简历亮一秒，但面试官下一句一定是「讲讲你实习做了什么」。它是佐料，不是主菜。"
+      },
+      {
+        "type": "gpa",
+        "min": 3.0,
+        "points": 5,
+        "label": "绩点过筛",
+        "note": "头部公司简历关会看绩点，3.0 是常见的隐形线。过线就行——秋招不是保研，没人为 3.9 多发一个 offer。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["cert-fomo"],
+        "each": -2,
+        "cap": 4,
+        "label": "跟风考的证，HR 不看",
+        "note": "招聘要求里没出现过的证书，写在简历上只会稀释重点。考之前先翻招聘软件——这是学长的血泪顺序。"
+      },
+      {
+        "type": "tagAwakened",
+        "id": "lone",
+        "points": -4,
+        "label": "独来独往，错过内推",
+        "note": "秋招一半的机会藏在人群里：内推码、面经、组队模拟面。独行侠效率高，但这一程会走得更陡。"
+      }
+    ]
+  },
+  {
+    "id": "abroad",
+    "name": "出国留学",
+    "icon": "✈️",
+    "desc": "招生官只看三行字：GPA、语言、科研或实践——这是一场从大一第一学期就开始的材料准备。",
+    "base": 20,
+    "factors": [
+      {
+        "type": "gpaScale",
+        "from": 3.0,
+        "each": 12,
+        "cap": 18,
+        "label": "GPA 是申请的第一道门",
+        "note": "留学申请里 GPA 没有补考机会，大一的每一分都算数。均分每高一档，够得着的学校就上一档。"
+      },
+      {
+        "type": "gpa",
+        "min": 3.5,
+        "points": 10,
+        "label": "均分 85+，够到强校线",
+        "note": "热门项目的隐形线普遍在 GPA 3.5、均分 85。过了这条线，文书和推荐信才有上场的机会。"
+      },
+      {
+        "type": "ability",
+        "id": "examiner",
+        "points": 8,
+        "label": "口语陪练练出的底气",
+        "note": "你让 AI 当过雅思考官，一遍遍磨过口语。语言考试是这条路的第一道坎，你比别人先迈了半步。"
+      },
+      {
+        "type": "action",
+        "id": "cet",
+        "min": 1,
+        "points": 4,
+        "label": "英语底子在",
+        "note": "四六级出了国门没人认，雅思托福才是硬通货——但你背过的单词不会背叛你，转考只是换个题型。"
+      },
+      {
+        "type": "action",
+        "id": "exchange",
+        "min": 1,
+        "points": 10,
+        "label": "交换经历与海外推荐信",
+        "note": "招生官最信的证据是「他来过这套体系，而且活得不错」。一学期交换，比十页文书有说服力。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["research-group", "office-hour"],
+        "each": 3,
+        "cap": 9,
+        "label": "科研经历与推荐信",
+        "note": "研究型项目看科研，推荐信要找真正带过你的老师写。组会坐过的每一次，都是文书里的实料。"
+      },
+      {
+        "type": "trait",
+        "id": "well-off",
+        "points": 6,
+        "label": "家里兜得住学费",
+        "note": "说句实在的：留学一年几十万，全奖是少数人的故事。经济压力小，选校就不用缩手缩脚。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["student-union", "club-officer", "cert-fomo", "teaching-cert", "computer-2"],
+        "each": -1.5,
+        "cap": 8,
+        "label": "国内证书与头衔，招生官看不懂",
+        "note": "计算机二级、学生会部长，这些写进文书连翻译都费劲，占的却是刷 GPA 和刷语言的时间。"
+      }
+    ]
+  },
+  {
+    "id": "startup",
+    "name": "创业",
+    "icon": "🚀",
+    "desc": "别急着休学写商业计划书——这条路先要你摆过摊、跑过单、亏过钱，把「生意」两个字亲手摸一遍。",
+    "base": 15,
+    "factors": [
+      {
+        "type": "anyEvent",
+        "ids": ["venture-fate"],
+        "points": 15,
+        "label": "完整跑过一个生意",
+        "note": "从起盘到抉择，你真金白银经营过一个项目。这段经历不论成败，都比任何商业课值钱。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["startup-team", "street-stall", "tutor-platform", "tutor-media", "self-media"],
+        "each": 3,
+        "cap": 15,
+        "label": "每次小买卖都是学费",
+        "note": "摆摊学定价、做号学流量、搭平台学撮合。创业的课没有教材，全靠一单一单交学费。"
+      },
+      {
+        "type": "tagAwakened",
+        "id": "maker",
+        "points": 8,
+        "label": "闲不住的折腾家",
+        "note": "创业者的底色不是聪明，是手痒。你已经证明了：见到想法就想动手。"
+      },
+      {
+        "type": "minPeak",
+        "axis": "cash",
+        "min": 6,
+        "points": 8,
+        "label": "自己挣出过现金流",
+        "note": "跟家里要来的钱叫预算，自己挣来的钱叫验证。你验证过：市场愿意为你付钱。"
+      },
+      {
+        "type": "minPeak",
+        "axis": "expression",
+        "min": 6,
+        "points": 6,
+        "label": "能拉人、能谈判",
+        "note": "创业一半的工作是说服：说服队友入伙、客户掏钱、房东降租。嘴上功夫就是生产力。"
+      },
+      {
+        "type": "action",
+        "id": "chuangxin-cup",
+        "min": 1,
+        "points": 5,
+        "label": "路演讲过商业故事",
+        "note": "大创大赛是低成本的练兵场——评委问倒你的每个问题，都是真投资人会问的。"
+      },
+      {
+        "type": "trait",
+        "id": "well-off",
+        "points": 5,
+        "label": "输得起的底气",
+        "note": "创业的失败率摆在那里。家里兜得住底，你就敢在别人止损的地方多试一轮。"
+      },
+      {
+        "type": "kinds",
+        "min": 12,
+        "points": 6,
+        "label": "什么都摸过一遍",
+        "note": "别的路嫌你杂，这条路奖励杂——招人、记账、做图、谈判，创业头两年全得自己来。"
+      },
+      {
+        "type": "actionScale",
+        "ids": ["gpa"],
+        "each": -1.5,
+        "cap": 6,
+        "label": "绩点换不来订单",
+        "note": "图书馆里刷出的 4.0，市场不认。对保研它是命根，对创业它只是机会成本——你选的是后者。"
+      }
+    ]
+  }
+]

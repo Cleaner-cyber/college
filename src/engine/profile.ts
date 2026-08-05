@@ -10,6 +10,7 @@ export interface ProfileService {
   setMajor: (majorId: string) => void;
   setFlag: (patch: Partial<PlayerState['flag']>) => void;
   setTraits: (traitIds: string[]) => void; // 入学特质（v2.1 模拟层）
+  setPathGoal: (pathId: string) => void; // 出路目标（v2.6 六选一）
 }
 
 export const ProfileContext = createContext<ProfileService | null>(null);

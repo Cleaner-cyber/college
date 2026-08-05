@@ -85,6 +85,15 @@
     "stats-flag-city": "城市",
     "stats-flag-work": "工作",
     "stats-flag-time": "下班",
+    "hud-gpa-label": "平均绩点",
+    "hud-gpa-empty": "—",
+    "hud-path-label": "出路",
+    "map-open-btn": "出门 · 去校园",
+    "map-open-sub": "主线要办的事，都得去校园里对应的地方",
+    "map-loc-prefix": "📍",
+    "courses-title": "本学期课程",
+    "courses-sub": "上课不耗行动点。期末绩点看你这学期在「学术」上花的功夫",
+    "courses-empty": "这学期的课表以通识课与公共课为主",
     "hud-persona-title": "我的人设",
     "hud-persona-empty": "人设还没长出来——多经历一些事，它会自己冒出来",
     "stats-abilities-title": "已解锁 AI 能力",
@@ -125,7 +134,8 @@
     "ability-unlock": "解锁 AI 能力「{ability}」",
     "dev-jump": "【测试】跳转到 {semester} · {label}",
     "sim-event": "「{label}」——{result}",
-    "tag-awaken": "人设觉醒：「{tag}」——{desc}"
+    "tag-awaken": "人设觉醒：「{tag}」——{desc}",
+    "semester-gpa": "本学期绩点 {gpa}，累计平均 {avg}"
   },
   "board": {
     "completed-tag": "已完成",
@@ -206,5 +216,21 @@
     "group-practice": "社会实践",
     "group-work": "搞钱",
     "group-life": "生活"
+  },
+  "map": {
+    "title": "校园地图",
+    "sub": "点亮的地方有事等你办",
+    "close": "回宿舍",
+    "loc-gate": "校门口",
+    "loc-jiaowu": "教务处",
+    "loc-teach": "教学楼",
+    "loc-lib": "图书馆",
+    "loc-lab": "实验楼",
+    "loc-activity": "学生活动中心",
+    "loc-lake": "湖边",
+    "loc-lang": "语言中心",
+    "loc-career": "就业指导中心",
+    "loc-innov": "创新创业中心",
+    "loc-dorm": "宿舍"
   }
 }

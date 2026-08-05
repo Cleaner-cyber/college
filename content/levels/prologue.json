@@ -163,7 +163,7 @@
         {
           "id": "t1",
           "label": "六点下班",
-          "next": "ST",
+          "next": "SP",
           "setVar": {
             "key": "offTime",
             "value": "六点下班"
@@ -172,7 +172,7 @@
         {
           "id": "t2",
           "label": "不介意加班",
-          "next": "ST",
+          "next": "SP",
           "setVar": {
             "key": "offTime",
             "value": "不介意加班"
@@ -181,13 +181,19 @@
         {
           "id": "t3",
           "label": "想自己安排时间",
-          "next": "ST",
+          "next": "SP",
           "setVar": {
             "key": "offTime",
             "value": "想自己安排时间"
           }
         }
       ]
+    },
+    {
+      "id": "SP",
+      "type": "workbench",
+      "text": "最后一个大问题。毕业那天，你想走哪条路？\n——现在选的是「目标」，不是「命运」。但四年怎么过，得对得起这个目标。",
+      "next": "ST"
     },
     {
       "id": "ST",
@@ -278,6 +284,10 @@
     "legacy-letter": "行李箱夹层里有一张不知道谁塞的纸条：「上次走到终点的你，是『{title}』。这一次，随你怎么活。」",
     "legacy-tag": "上一世带来的",
     "trait-confirm": "就是这样的我",
-    "trait-count": "{n} / 2"
+    "trait-count": "{n} / 2",
+    "path-title": "毕业后，你想走哪条路？",
+    "path-sub": "选一条。四年后按你真实做过的事，算你走通这条路的概率。",
+    "path-picked-tag": "就这条",
+    "path-confirm": "就往这条路走"
   }
 }

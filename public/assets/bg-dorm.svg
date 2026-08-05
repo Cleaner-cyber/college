@@ -1,210 +1,346 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
   <defs>
-    <linearGradient id="nightWall" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#26242D"/>
-      <stop offset="0.6" stop-color="#2E2B33"/>
-      <stop offset="1" stop-color="#2A2730"/>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBF9F4"/>
+      <stop offset="0.65" stop-color="#F7F5F0"/>
+      <stop offset="1" stop-color="#F2EEE4"/>
     </linearGradient>
-    <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#151A28"/>
-      <stop offset="1" stop-color="#232A3C"/>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ECE3D0"/>
+      <stop offset="1" stop-color="#E2D6BE"/>
     </linearGradient>
-    <radialGradient id="lampGlowD" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#F6C87E" stop-opacity="0.65"/>
-      <stop offset="0.5" stop-color="#EFB668" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#EFB668" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="screenGlow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#AECBE0" stop-opacity="0.4"/>
-      <stop offset="1" stop-color="#AECBE0" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="deskWoodN" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#6B573F"/>
-      <stop offset="1" stop-color="#594834"/>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#EDF0EB"/>
+      <stop offset="0.7" stop-color="#F6F3E8"/>
+      <stop offset="1" stop-color="#F9F5E9"/>
     </linearGradient>
-    <radialGradient id="vig" cx="0.5" cy="0.44" r="0.9">
-      <stop offset="0.5" stop-color="#12101A" stop-opacity="0"/>
-      <stop offset="1" stop-color="#12101A" stop-opacity="0.5"/>
-    </radialGradient>
+    <linearGradient id="deskWood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E9DCC2"/>
+      <stop offset="1" stop-color="#DBCBAA"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="rightWash" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.35"/>
+    </linearGradient>
+    <clipPath id="winClip">
+      <rect x="624" y="164" width="532" height="442"/>
+    </clipPath>
   </defs>
 
-  <rect width="1600" height="900" fill="url(#nightWall)"/>
-  <!-- floor -->
-  <rect x="0" y="700" width="1600" height="200" fill="#232028"/>
-  <rect x="0" y="700" width="1600" height="8" fill="#1B1920"/>
+  <!-- ======== room base ======== -->
+  <rect width="1920" height="1080" fill="url(#wall)"/>
+  <rect x="0" y="816" width="1920" height="14" fill="#EFEAE0"/>
+  <rect x="0" y="816" width="1920" height="3" fill="#E4E0D6"/>
+  <rect x="0" y="830" width="1920" height="250" fill="url(#floor)"/>
+  <g stroke="#C9BFA6" stroke-width="2" opacity="0.28">
+    <line x1="0" y1="892" x2="1920" y2="892"/>
+    <line x1="0" y1="962" x2="1920" y2="962"/>
+    <line x1="0" y1="1032" x2="1920" y2="1032"/>
+  </g>
+  <g stroke="#C9BFA6" stroke-width="2" opacity="0.18">
+    <line x1="260" y1="830" x2="260" y2="892"/>
+    <line x1="760" y1="892" x2="760" y2="962"/>
+    <line x1="1240" y1="830" x2="1240" y2="892"/>
+    <line x1="1560" y1="962" x2="1560" y2="1032"/>
+    <line x1="480" y1="962" x2="480" y2="1032"/>
+    <line x1="1030" y1="830" x2="1030" y2="892"/>
+    <line x1="1700" y1="892" x2="1700" y2="962"/>
+  </g>
 
-  <!-- window with night view -->
-  <g>
-    <rect x="1150" y="96" width="380" height="392" rx="8" fill="#3A3742"/>
-    <rect x="1166" y="112" width="348" height="360" fill="url(#nightSky)"/>
-    <!-- moon -->
-    <circle cx="1424" cy="180" r="34" fill="#EFE6C8" opacity="0.9"/>
-    <circle cx="1410" cy="170" r="30" fill="#232A3C"/>
-    <circle cx="1454" cy="176" r="2.5" fill="#8B93AC"/>
-    <circle cx="1220" cy="150" r="2" fill="#8B93AC"/>
-    <circle cx="1300" cy="132" r="2.5" fill="#8B93AC"/>
-    <circle cx="1256" cy="200" r="2" fill="#8B93AC"/>
-    <!-- opposite dorm building, few windows still lit -->
-    <rect x="1180" y="300" width="150" height="172" fill="#1C2130"/>
-    <rect x="1350" y="340" width="120" height="132" fill="#181D2A"/>
-    <g fill="#E8B45E" opacity="0.85">
-      <rect x="1196" y="318" width="20" height="16"/>
-      <rect x="1258" y="356" width="20" height="16"/>
-      <rect x="1196" y="394" width="20" height="16"/>
-      <rect x="1382" y="360" width="18" height="14"/>
+  <!-- soft rug under desk -->
+  <ellipse cx="870" cy="948" rx="340" ry="72" fill="#F3E4DC" opacity="0.55"/>
+  <ellipse cx="870" cy="948" rx="290" ry="56" fill="none" stroke="#E5CDBF" stroke-width="3" opacity="0.5"/>
+
+  <!-- ======== window ======== -->
+  <!-- frame shadow on wall -->
+  <rect x="612" y="154" width="580" height="490" rx="8" fill="#1C1B18" opacity="0.05"/>
+  <rect x="600" y="140" width="580" height="490" rx="8" fill="#FFFFFF"/>
+  <rect x="600" y="140" width="580" height="490" rx="8" fill="none" stroke="#E4E0D6" stroke-width="2"/>
+  <rect x="624" y="164" width="532" height="442" fill="url(#sky)"/>
+
+  <!-- campus view -->
+  <g clip-path="url(#winClip)">
+    <circle cx="712" cy="252" r="86" fill="#FBF4E0" opacity="0.5"/>
+    <circle cx="712" cy="252" r="52" fill="#FBF4E0" opacity="0.85"/>
+    <!-- far teaching building -->
+    <rect x="630" y="368" width="210" height="16" rx="3" fill="#D8D1BE"/>
+    <rect x="640" y="384" width="190" height="180" fill="#E1DBCB"/>
+    <g fill="#D2CAB5">
+      <rect x="660" y="404" width="30" height="22"/>
+      <rect x="720" y="404" width="30" height="22"/>
+      <rect x="780" y="404" width="30" height="22"/>
+      <rect x="660" y="446" width="30" height="22"/>
+      <rect x="720" y="446" width="30" height="22"/>
+      <rect x="780" y="446" width="30" height="22"/>
+      <rect x="660" y="488" width="30" height="22"/>
+      <rect x="720" y="488" width="30" height="22"/>
+      <rect x="780" y="488" width="30" height="22"/>
     </g>
-    <g fill="#3B4358" opacity="0.9">
-      <rect x="1228" y="318" width="20" height="16"/>
-      <rect x="1290" y="318" width="20" height="16"/>
-      <rect x="1290" y="356" width="20" height="16"/>
-      <rect x="1228" y="394" width="20" height="16"/>
-      <rect x="1414" y="360" width="18" height="14"/>
-      <rect x="1382" y="396" width="18" height="14"/>
-      <rect x="1414" y="396" width="18" height="14"/>
+    <!-- main building with clock + flag -->
+    <polygon points="868,332 982,332 925,296" fill="#D3CBB6"/>
+    <rect x="880" y="332" width="90" height="240" fill="#DCD5C2"/>
+    <rect x="892" y="420" width="66" height="152" fill="#D2CAB5"/>
+    <rect x="904" y="440" width="42" height="132" fill="#E6E0CE"/>
+    <circle cx="925" cy="376" r="17" fill="#F7F5F0" stroke="#C9C2B1" stroke-width="3"/>
+    <line x1="925" y1="376" x2="925" y2="366" stroke="#6B675E" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="925" y1="376" x2="933" y2="380" stroke="#6B675E" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="925" y1="296" x2="925" y2="264" stroke="#B7AE9A" stroke-width="3"/>
+    <polygon points="925,264 956,272 925,281" fill="#C05A32"/>
+    <!-- water tower -->
+    <g fill="none" stroke="#CBC3AE" stroke-width="6">
+      <line x1="1052" y1="430" x2="1040" y2="540"/>
+      <line x1="1098" y1="430" x2="1110" y2="540"/>
+      <line x1="1046" y1="500" x2="1104" y2="500"/>
     </g>
-    <!-- mullion -->
-    <rect x="1332" y="112" width="14" height="360" fill="#3A3742"/>
-    <!-- curtain pulled aside -->
-    <path d="M1150 96 C 1130 220, 1160 360, 1136 488 C 1128 520, 1146 520, 1158 496 L 1166 112 Z" fill="#4A4150"/>
-    <!-- faint moonlight on floor -->
-    <polygon points="1200,488 1470,488 1540,740 1140,740" fill="#AECBE0" opacity="0.035"/>
-  </g>
-
-  <!-- loft bed frame (bed on top, desk below) -->
-  <g>
-    <!-- posts -->
-    <rect x="120" y="60" width="26" height="640" fill="#4A3E33"/>
-    <rect x="820" y="60" width="26" height="640" fill="#4A3E33"/>
-    <!-- upper bunk platform -->
-    <rect x="120" y="212" width="726" height="26" fill="#55483A"/>
-    <rect x="120" y="238" width="726" height="10" fill="#3E342B"/>
-    <!-- railing -->
-    <rect x="120" y="140" width="726" height="10" fill="#4A3E33"/>
-    <g stroke="#4A3E33" stroke-width="8">
-      <line x1="240" y1="150" x2="240" y2="212"/>
-      <line x1="400" y1="150" x2="400" y2="212"/>
-      <line x1="560" y1="150" x2="560" y2="212"/>
-      <line x1="720" y1="150" x2="720" y2="212"/>
-    </g>
-    <!-- bedding (dim) -->
-    <path d="M146 212 C 200 176, 320 172, 420 186 C 560 202, 700 184, 820 196 L 820 212 Z" fill="#4E4A58"/>
-    <rect x="160" y="184" width="120" height="30" rx="14" fill="#5C5768"/>
-    <!-- towel drying on railing -->
-    <path d="M600 146 L 690 146 L 686 236 L 604 236 Z" fill="#5F7563" opacity="0.9"/>
-    <!-- ladder -->
-    <g stroke="#4A3E33" stroke-width="10">
-      <line x1="862" y1="238" x2="862" y2="700"/>
-      <line x1="920" y1="238" x2="920" y2="700"/>
-      <line x1="862" y1="300" x2="920" y2="300"/>
-      <line x1="862" y1="380" x2="920" y2="380"/>
-      <line x1="862" y1="460" x2="920" y2="460"/>
-      <line x1="862" y1="540" x2="920" y2="540"/>
-      <line x1="862" y1="620" x2="920" y2="620"/>
+    <rect x="1040" y="356" width="70" height="78" rx="10" fill="#D8D1BE"/>
+    <polygon points="1036,358 1114,358 1075,330" fill="#CCC4AE"/>
+    <!-- tree line -->
+    <circle cx="648" cy="540" r="38" fill="#C6C9AE"/>
+    <circle cx="700" cy="552" r="30" fill="#BDC1A4"/>
+    <circle cx="852" cy="548" r="34" fill="#C6C9AE"/>
+    <circle cx="900" cy="558" r="26" fill="#BDC1A4"/>
+    <circle cx="1000" cy="546" r="36" fill="#C6C9AE"/>
+    <circle cx="1058" cy="556" r="28" fill="#BDC1A4"/>
+    <circle cx="1130" cy="548" r="34" fill="#C6C9AE"/>
+    <!-- ground -->
+    <rect x="624" y="566" width="532" height="40" fill="#E3DDC9"/>
+    <!-- birds -->
+    <g stroke="#6B675E" stroke-width="2.5" fill="none" opacity="0.45" stroke-linecap="round">
+      <path d="M1010 226 q9 -9 18 0 q9 -9 18 0"/>
+      <path d="M1062 254 q7 -7 14 0 q7 -7 14 0"/>
     </g>
   </g>
 
-  <!-- bookshelf under bunk -->
+  <!-- mullions -->
+  <rect x="878" y="164" width="12" height="442" fill="#FFFFFF"/>
+  <rect x="878" y="164" width="12" height="442" fill="none" stroke="#E4E0D6" stroke-width="1.5"/>
+  <rect x="624" y="374" width="532" height="12" fill="#FFFFFF"/>
+  <rect x="624" y="374" width="532" height="12" fill="none" stroke="#E4E0D6" stroke-width="1.5"/>
+
+  <!-- windowsill -->
+  <rect x="580" y="630" width="620" height="20" rx="4" fill="#FFFFFF"/>
+  <rect x="580" y="630" width="620" height="20" rx="4" fill="none" stroke="#E4E0D6" stroke-width="2"/>
+  <rect x="592" y="652" width="596" height="10" fill="#1C1B18" opacity="0.05"/>
+
+  <!-- curtain rod + curtains -->
+  <rect x="540" y="116" width="700" height="8" rx="4" fill="#D9D2C2"/>
+  <circle cx="540" cy="120" r="7" fill="#C9C2B1"/>
+  <circle cx="1240" cy="120" r="7" fill="#C9C2B1"/>
+  <path d="M560 124 C 548 260, 574 420, 556 630 C 552 652, 584 654, 588 632 C 604 470, 592 280, 604 124 Z" fill="#F3E4DC"/>
+  <path d="M582 140 C 574 300, 586 480, 576 620" stroke="#E5CDBF" stroke-width="3" fill="none" opacity="0.8"/>
+  <path d="M1196 124 C 1206 260, 1186 430, 1202 630 C 1206 652, 1176 654, 1172 632 C 1160 470, 1170 280, 1160 124 Z" fill="#F3E4DC"/>
+  <path d="M1180 140 C 1186 300, 1176 480, 1186 620" stroke="#E5CDBF" stroke-width="3" fill="none" opacity="0.8"/>
+
+  <!-- light beam from window -->
+  <polygon points="636,650 1170,650 1330,1080 470,1080" fill="url(#beam)"/>
+  <g fill="#FFFFFF" opacity="0.7">
+    <circle cx="780" cy="760" r="3"/>
+    <circle cx="950" cy="820" r="2.5"/>
+    <circle cx="700" cy="900" r="3"/>
+    <circle cx="1080" cy="740" r="2.5"/>
+    <circle cx="880" cy="700" r="2"/>
+  </g>
+
+  <!-- ======== wall shelf (left of window) ======== -->
   <g>
-    <rect x="146" y="368" width="500" height="14" fill="#55483A"/>
-    <g>
-      <rect x="170" y="300" width="26" height="68" fill="#6E5A8E" opacity="0.85"/>
-      <rect x="200" y="308" width="24" height="60" fill="#8E5A48"/>
-      <rect x="228" y="296" width="28" height="72" fill="#5C6B57"/>
-      <rect x="260" y="312" width="22" height="56" fill="#7E8A99"/>
-      <rect x="286" y="304" width="26" height="64" fill="#A3814F"/>
-      <rect x="322" y="332" width="60" height="36" rx="4" fill="#4E4A58"/>
+    <rect x="236" y="398" width="300" height="12" rx="3" fill="#E3D9C4"/>
+    <rect x="236" y="410" width="300" height="5" fill="#1C1B18" opacity="0.06"/>
+    <polygon points="252,410 252,432 274,410" fill="#CBBFA4"/>
+    <polygon points="520,410 520,432 498,410" fill="#CBBFA4"/>
+    <!-- books -->
+    <rect x="258" y="330" width="20" height="68" rx="2" fill="#6B675E"/>
+    <rect x="282" y="340" width="18" height="58" rx="2" fill="#C9C2B1"/>
+    <rect x="304" y="334" width="22" height="64" rx="2" fill="#C05A32"/>
+    <rect x="330" y="344" width="17" height="54" rx="2" fill="#B7AE9A"/>
+    <rect x="351" y="336" width="20" height="62" rx="2" fill="#8B8574"/>
+    <g transform="rotate(12 396 370)">
+      <rect x="386" y="336" width="19" height="62" rx="2" fill="#DDD3BC"/>
     </g>
-    <!-- small trophy/cup on shelf -->
-    <path d="M560 336 h30 v10 a15 15 0 0 1 -30 0 Z" fill="#8A7040"/>
-    <rect x="570" y="358" width="10" height="10" fill="#8A7040"/>
-  </g>
-
-  <!-- desk under bunk -->
-  <g>
-    <rect x="146" y="560" width="700" height="22" fill="url(#deskWoodN)"/>
-    <rect x="146" y="560" width="700" height="8" fill="#7A644A"/>
-    <rect x="170" y="582" width="18" height="118" fill="#4A3E33"/>
-    <rect x="790" y="582" width="18" height="118" fill="#4A3E33"/>
-  </g>
-
-  <!-- lamp light pool -->
-  <ellipse cx="330" cy="520" rx="360" ry="240" fill="url(#lampGlowD)"/>
-  <ellipse cx="330" cy="566" rx="240" ry="26" fill="#F6C87E" opacity="0.18"/>
-
-  <!-- desk lamp (lit) -->
-  <g>
-    <rect x="196" y="546" width="96" height="16" rx="8" fill="#1F1C22"/>
-    <path d="M238 550 L 262 430" stroke="#1F1C22" stroke-width="10" stroke-linecap="round"/>
-    <path d="M262 430 L 348 398" stroke="#1F1C22" stroke-width="10" stroke-linecap="round"/>
-    <circle cx="262" cy="430" r="9" fill="#3A3742"/>
-    <path d="M330 374 L 404 406 L 372 468 L 304 436 Z" fill="#C05A32"/>
-    <path d="M372 468 L 404 406 L 418 412 L 386 476 Z" fill="#8F4525"/>
-    <ellipse cx="384" cy="458" rx="30" ry="14" fill="#FBE3B0" transform="rotate(25 384 458)"/>
-  </g>
-
-  <!-- laptop with glowing screen -->
-  <g>
-    <polygon points="470,354 700,354 700,564 470,564" fill="url(#screenGlow)" opacity="0.7"/>
-    <g transform="rotate(-1 585 500)">
-      <rect x="470" y="408" width="230" height="146" rx="8" fill="#1F1C22"/>
-      <rect x="482" y="420" width="206" height="122" fill="#2E3A4A"/>
-      <g fill="#AECBE0" opacity="0.8">
-        <rect x="494" y="432" width="90" height="7" rx="3"/>
-        <rect x="494" y="448" width="140" height="7" rx="3" opacity="0.55"/>
-        <rect x="510" y="464" width="110" height="7" rx="3" opacity="0.7"/>
-        <rect x="510" y="480" width="70" height="7" rx="3" opacity="0.5"/>
-        <rect x="494" y="496" width="120" height="7" rx="3" opacity="0.65"/>
-        <rect x="494" y="512" width="52" height="7" rx="3" opacity="0.45"/>
-      </g>
-      <rect x="612" y="500" width="62" height="30" rx="4" fill="#3E4E60"/>
-      <path d="M452 554 L 718 554 L 736 574 L 434 574 Z" fill="#2A272E"/>
-      <rect x="560" y="558" width="52" height="8" rx="4" fill="#3A3742"/>
+    <!-- small plant -->
+    <rect x="452" y="368" width="40" height="30" rx="5" fill="#F3E4DC"/>
+    <g fill="#A8AD8F">
+      <ellipse cx="462" cy="352" rx="9" ry="18" transform="rotate(-24 462 352)"/>
+      <ellipse cx="472" cy="344" rx="9" ry="21"/>
+      <ellipse cx="483" cy="353" rx="9" ry="17" transform="rotate(22 483 353)"/>
     </g>
-    <!-- screen light cast on face area / wall -->
-    <ellipse cx="585" cy="430" rx="220" ry="130" fill="url(#screenGlow)" opacity="0.5"/>
   </g>
 
-  <!-- cup noodles with chopsticks + steam (in lamp light) -->
+  <!-- ======== bed (lower-left, cropped by frame) ======== -->
   <g>
-    <path d="M400 500 L 408 562 L 456 562 L 464 500 Z" fill="#E8E0CE"/>
-    <path d="M400 500 L 464 500 L 460 516 L 404 516 Z" fill="#C0392B" opacity="0.8"/>
-    <ellipse cx="432" cy="500" rx="32" ry="9" fill="#F3E9CF"/>
-    <line x1="454" y1="446" x2="436" y2="504" stroke="#A3814F" stroke-width="5" stroke-linecap="round"/>
-    <line x1="464" y1="450" x2="444" y2="504" stroke="#A3814F" stroke-width="5" stroke-linecap="round"/>
-    <path d="M416 478 q-8 -16 2 -30" stroke="#D8CFBC" stroke-width="4" fill="none" opacity="0.4" stroke-linecap="round"/>
-    <path d="M432 472 q8 -18 -2 -34" stroke="#D8CFBC" stroke-width="4" fill="none" opacity="0.3" stroke-linecap="round"/>
+    <!-- shadow on floor -->
+    <ellipse cx="200" cy="846" rx="330" ry="22" fill="#1C1B18" opacity="0.06"/>
+    <!-- headboard -->
+    <rect x="380" y="462" width="28" height="342" rx="9" fill="#E0D3B6"/>
+    <rect x="380" y="462" width="28" height="342" rx="9" fill="none" stroke="#CBBC9C" stroke-width="2"/>
+    <!-- mattress -->
+    <rect x="-40" y="640" width="428" height="84" rx="12" fill="#FFFFFF"/>
+    <rect x="-40" y="640" width="428" height="84" rx="12" fill="none" stroke="#E4E0D6" stroke-width="2"/>
+    <!-- quilt -->
+    <path d="M-40 632 L 268 632 C 292 656, 288 690, 270 726 L -40 726 Z" fill="#EFE8D8"/>
+    <path d="M-40 632 L 268 632 C 280 644, 283 658, 281 672 L -40 672 Z" fill="#F3E4DC"/>
+    <path d="M60 636 C 66 668, 62 696, 52 722 M160 634 C 168 666, 164 698, 154 724" stroke="#E0D6C2" stroke-width="3" fill="none" opacity="0.9"/>
+    <path d="M268 632 C 292 656, 288 690, 270 726" stroke="#E0D6C2" stroke-width="3" fill="none"/>
+    <!-- pillow -->
+    <g transform="rotate(-3 322 628)">
+      <rect x="268" y="604" width="108" height="46" rx="18" fill="#FFFFFF"/>
+      <rect x="268" y="604" width="108" height="46" rx="18" fill="none" stroke="#E4E0D6" stroke-width="2.5"/>
+    </g>
+    <!-- frame rail + legs -->
+    <rect x="-40" y="722" width="446" height="24" rx="6" fill="#DECFB0"/>
+    <rect x="20" y="746" width="18" height="86" fill="#D3C29E"/>
+    <rect x="352" y="746" width="18" height="86" fill="#D3C29E"/>
+    <!-- storage boxes under bed -->
+    <rect x="64" y="762" width="120" height="62" rx="6" fill="#EAE3D2"/>
+    <rect x="104" y="774" width="40" height="7" rx="3.5" fill="#C9C2B1"/>
+    <rect x="204" y="762" width="120" height="62" rx="6" fill="#EAE3D2"/>
+    <rect x="244" y="774" width="40" height="7" rx="3.5" fill="#C9C2B1"/>
   </g>
 
-  <!-- power strip on desk edge + phone charging -->
+  <!-- backpack leaning on bed foot -->
   <g>
-    <rect x="216" y="586" width="120" height="26" rx="8" fill="#DDD5C2"/>
-    <rect x="232" y="592" width="18" height="14" rx="3" fill="#A39A85"/>
-    <rect x="262" y="592" width="18" height="14" rx="3" fill="#A39A85"/>
-    <rect x="292" y="592" width="18" height="14" rx="3" fill="#8A8272"/>
-    <circle cx="322" cy="599" r="4" fill="#C05A32"/>
-    <path d="M336 598 C 348 586, 344 572, 354 560" stroke="#DDD5C2" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <rect x="350" y="538" width="64" height="24" rx="7" fill="#1F1C22" transform="rotate(-3 382 550)"/>
-    <path d="M216 600 C 180 640, 190 680, 168 700" stroke="#3A3742" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <ellipse cx="446" cy="836" rx="52" ry="10" fill="#1C1B18" opacity="0.07"/>
+    <path d="M410 830 C 402 780, 414 742, 446 738 C 478 742, 490 780, 482 830 Z" fill="#8B8574"/>
+    <path d="M420 830 C 416 796, 422 772, 446 768 C 470 772, 476 796, 472 830 Z" fill="#9C957F"/>
+    <path d="M436 738 q10 -14 20 0" stroke="#6B675E" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <circle cx="446" cy="792" r="5" fill="#C05A32"/>
   </g>
 
-  <!-- chair with jacket (right of laptop) -->
+  <!-- ======== desk zone ======== -->
+  <!-- desk long soft shadow -->
+  <polygon points="486,832 1284,832 1352,1080 560,1080" fill="#1C1B18" opacity="0.04"/>
+
+  <!-- desk top + legs (drawn first, objects sit on top) -->
+  <rect x="470" y="700" width="810" height="24" rx="4" fill="url(#deskWood)"/>
+  <rect x="470" y="700" width="810" height="6" rx="3" fill="#F2E9D5"/>
+  <rect x="470" y="720" width="810" height="4" fill="#C9B892"/>
+  <rect x="500" y="724" width="20" height="106" fill="#D6C6A4"/>
+  <rect x="1226" y="724" width="20" height="106" fill="#D6C6A4"/>
+  <rect x="500" y="724" width="20" height="10" fill="#1C1B18" opacity="0.06"/>
+  <rect x="1226" y="724" width="20" height="10" fill="#1C1B18" opacity="0.06"/>
+  <rect x="520" y="760" width="706" height="10" rx="5" fill="#D6C6A4" opacity="0.6"/>
+  <ellipse cx="510" cy="836" rx="30" ry="7" fill="#1C1B18" opacity="0.07"/>
+  <ellipse cx="1236" cy="836" rx="30" ry="7" fill="#1C1B18" opacity="0.07"/>
+
+  <!-- lamp light pool on desk (behind objects) -->
+  <ellipse cx="700" cy="702" rx="190" ry="22" fill="#F7E9C9" opacity="0.5"/>
+
+  <!-- desk lamp: classic study lamp, head facing straight down -->
   <g>
-    <ellipse cx="770" cy="712" rx="150" ry="16" fill="#12101A" opacity="0.4"/>
-    <rect x="700" y="430" width="20" height="270" rx="8" fill="#3A3742" transform="rotate(-4 710 565)"/>
-    <rect x="670" y="408" width="150" height="130" rx="26" fill="#3B3844" transform="rotate(-4 745 473)"/>
-    <!-- jacket draped over chair back -->
-    <path d="M656 420 C 690 396, 800 392, 834 418 C 846 470, 842 520, 830 548 L 790 540 L 798 462 L 710 466 L 722 552 L 678 556 C 662 516, 652 466, 656 420 Z" fill="#55604B" transform="rotate(-4 745 470)"/>
-    <path d="M822 430 C 846 470, 848 530, 838 574 L 816 570 C 826 528, 826 474, 816 440 Z" fill="#47523E" transform="rotate(-4 830 500)"/>
-    <path d="M710 470 l84 -4" stroke="#47523E" stroke-width="5" transform="rotate(-4 750 468)"/>
-    <!-- chair legs -->
-    <path d="M730 700 L 770 640 L 810 700 M770 640 L 770 700" stroke="#3A3742" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <polygon points="614,614 706,614 766,700 554,700" fill="#F7E9C9" opacity="0.4"/>
+    <rect x="516" y="688" width="84" height="14" rx="7" fill="#6B675E"/>
+    <path d="M556 690 L 592 598" stroke="#6B675E" stroke-width="9" stroke-linecap="round"/>
+    <path d="M592 598 L 658 566" stroke="#6B675E" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="592" cy="598" r="8" fill="#514E47"/>
+    <polygon points="622,558 698,558 716,610 604,610" fill="#C05A32"/>
+    <path d="M698 558 L 716 610 L 700 610 L 684 558 Z" fill="#9A4626" opacity="0.65"/>
+    <ellipse cx="660" cy="610" rx="56" ry="10" fill="#FBE9C4"/>
   </g>
 
-  <!-- digital clock on shelf -->
+  <!-- book stack -->
   <g>
-    <rect x="436" y="328" width="92" height="40" rx="8" fill="#1F1C22"/>
-    <text x="482" y="356" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="24" fill="#9FB58A" letter-spacing="2">23:04</text>
+    <rect x="706" y="676" width="142" height="24" rx="3" fill="#FFFFFF" stroke="#E4E0D6" stroke-width="2"/>
+    <rect x="706" y="676" width="14" height="24" rx="3" fill="#C9C2B1"/>
+    <rect x="716" y="654" width="122" height="22" rx="3" fill="#EDE4D0"/>
+    <rect x="716" y="654" width="12" height="22" rx="3" fill="#B7AE9A"/>
+    <rect x="710" y="634" width="128" height="20" rx="3" fill="#F3E4DC"/>
+    <rect x="710" y="634" width="12" height="20" rx="3" fill="#C05A32"/>
+    <line x1="740" y1="631" x2="806" y2="634" stroke="#C05A32" stroke-width="6" stroke-linecap="round"/>
   </g>
 
-  <rect width="1600" height="900" fill="url(#vig)"/>
+  <!-- laptop -->
+  <g>
+    <ellipse cx="995" cy="724" rx="160" ry="9" fill="#1C1B18" opacity="0.07"/>
+    <rect x="878" y="554" width="234" height="150" rx="10" fill="#E9E3D4"/>
+    <rect x="878" y="554" width="234" height="150" rx="10" fill="none" stroke="#C9C2B1" stroke-width="3"/>
+    <rect x="892" y="568" width="206" height="122" rx="4" fill="#FFFFFF"/>
+    <rect x="892" y="568" width="206" height="22" rx="4" fill="#EFECE3"/>
+    <circle cx="904" cy="579" r="3.5" fill="#C05A32"/>
+    <circle cx="916" cy="579" r="3.5" fill="#D8D2C4"/>
+    <circle cx="928" cy="579" r="3.5" fill="#D8D2C4"/>
+    <g fill="#E4E0D6">
+      <rect x="906" y="602" width="120" height="8" rx="4"/>
+      <rect x="906" y="620" width="164" height="8" rx="4" opacity="0.8"/>
+      <rect x="906" y="638" width="140" height="8" rx="4" opacity="0.9"/>
+      <rect x="906" y="656" width="90" height="8" rx="4" opacity="0.7"/>
+    </g>
+    <rect x="1022" y="648" width="64" height="34" rx="5" fill="#F3E4DC"/>
+    <rect x="1022" y="648" width="64" height="34" rx="5" fill="none" stroke="#E5CDBF" stroke-width="2"/>
+    <path d="M860 704 L 1130 704 L 1152 724 L 838 724 Z" fill="#D8D0BC"/>
+    <path d="M838 724 L 1152 724 L 1152 730 Q 1150 734 1144 734 L 846 734 Q 840 734 838 730 Z" fill="#C2B89E"/>
+    <rect x="958" y="708" width="72" height="9" rx="4.5" fill="#C2B89E"/>
+  </g>
+
+  <!-- mug -->
+  <g>
+    <ellipse cx="1176" cy="704" rx="36" ry="7" fill="#1C1B18" opacity="0.07"/>
+    <path d="M1196 664 a16 14 0 0 1 0 28" fill="none" stroke="#C05A32" stroke-width="8"/>
+    <rect x="1150" y="648" width="48" height="54" rx="9" fill="#C05A32"/>
+    <rect x="1150" y="648" width="48" height="12" rx="6" fill="#9A4626" opacity="0.55"/>
+    <path d="M1160 634 q-7 -14 2 -26 M1180 636 q8 -15 -2 -28" stroke="#6B675E" stroke-width="4" fill="none" opacity="0.35" stroke-linecap="round"/>
+  </g>
+
+  <!-- notebook + pen cup -->
+  <g>
+    <rect x="1214" y="676" width="92" height="26" rx="3" fill="#FFFFFF" stroke="#E4E0D6" stroke-width="2" transform="rotate(-2 1260 689)"/>
+    <rect x="1214" y="676" width="10" height="26" rx="3" fill="#C9C2B1" transform="rotate(-2 1260 689)"/>
+    <rect x="1252" y="658" width="36" height="44" rx="6" fill="#E4E0D6"/>
+    <line x1="1262" y1="660" x2="1258" y2="628" stroke="#6B675E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="1274" y1="660" x2="1280" y2="624" stroke="#C05A32" stroke-width="5" stroke-linecap="round"/>
+    <line x1="1284" y1="662" x2="1294" y2="636" stroke="#B7AE9A" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- chair (right of desk) -->
+  <g>
+    <ellipse cx="1352" cy="838" rx="70" ry="10" fill="#1C1B18" opacity="0.06"/>
+    <rect x="1378" y="570" width="26" height="262" rx="12" fill="#DBCBAA"/>
+    <rect x="1378" y="570" width="26" height="262" rx="12" fill="none" stroke="#C9B892" stroke-width="2"/>
+    <rect x="1300" y="740" width="106" height="16" rx="5" fill="#E4D6B8"/>
+    <rect x="1306" y="728" width="94" height="14" rx="7" fill="#F3E4DC"/>
+    <rect x="1308" y="756" width="14" height="76" fill="#D3C29E"/>
+  </g>
+
+  <!-- ======== sticky notes on wall (right of window) ======== -->
+  <g>
+    <g transform="rotate(-3 1268 356)">
+      <rect x="1240" y="328" width="56" height="56" rx="2" fill="#FFFFFF"/>
+      <rect x="1240" y="328" width="56" height="56" rx="2" fill="none" stroke="#E4E0D6" stroke-width="1.5"/>
+      <rect x="1250" y="344" width="36" height="5" rx="2.5" fill="#D8D2C4"/>
+      <rect x="1250" y="356" width="26" height="5" rx="2.5" fill="#D8D2C4"/>
+      <rect x="1250" y="368" width="32" height="5" rx="2.5" fill="#D8D2C4"/>
+    </g>
+    <g transform="rotate(3 1342 372)">
+      <rect x="1314" y="344" width="56" height="56" rx="2" fill="#F3E4DC"/>
+      <rect x="1324" y="360" width="34" height="5" rx="2.5" fill="#DBBFAE"/>
+      <rect x="1324" y="372" width="24" height="5" rx="2.5" fill="#DBBFAE"/>
+    </g>
+    <g transform="rotate(2 1276 442)">
+      <rect x="1248" y="414" width="56" height="56" rx="2" fill="#F3E4DC"/>
+      <rect x="1258" y="430" width="30" height="5" rx="2.5" fill="#DBBFAE"/>
+      <rect x="1258" y="442" width="36" height="5" rx="2.5" fill="#DBBFAE"/>
+      <rect x="1258" y="454" width="22" height="5" rx="2.5" fill="#DBBFAE"/>
+    </g>
+    <g transform="rotate(-4 1350 452)">
+      <rect x="1322" y="424" width="56" height="56" rx="2" fill="#FFFFFF"/>
+      <rect x="1322" y="424" width="56" height="56" rx="2" fill="none" stroke="#E4E0D6" stroke-width="1.5"/>
+      <rect x="1332" y="440" width="36" height="5" rx="2.5" fill="#D8D2C4"/>
+      <rect x="1332" y="452" width="28" height="5" rx="2.5" fill="#D8D2C4"/>
+    </g>
+    <g transform="rotate(2 1308 516)">
+      <rect x="1284" y="494" width="48" height="44" rx="2" fill="#C05A32"/>
+      <rect x="1294" y="508" width="28" height="5" rx="2.5" fill="#E8B49A"/>
+      <rect x="1294" y="520" width="20" height="5" rx="2.5" fill="#E8B49A"/>
+    </g>
+    <!-- tape bits -->
+    <rect x="1258" y="322" width="22" height="9" rx="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-3 1269 326)"/>
+    <rect x="1332" y="338" width="22" height="9" rx="2" fill="#FFFFFF" opacity="0.8" transform="rotate(3 1343 342)"/>
+    <rect x="1266" y="408" width="22" height="9" rx="2" fill="#FFFFFF" opacity="0.8"/>
+    <rect x="1340" y="418" width="22" height="9" rx="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-4 1351 422)"/>
+  </g>
+
+  <!-- ======== right clean zone: subtle light wash only ======== -->
+  <rect x="1440" y="0" width="480" height="1080" fill="url(#rightWash)"/>
 </svg>

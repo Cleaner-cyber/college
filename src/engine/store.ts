@@ -19,7 +19,7 @@ import {
   flushState,
 } from '@/services/saveAdapter';
 import { getBoard, getMajor, getTrait, interpolate, semesterName, tagDefs, ui } from './content';
-import { awakenedTagIds, checkRate, drawEvent, evalCondition, pickBranch } from './sim';
+import { awakenedTagIds, checkRate, cumulativeGpa, drawEvent, evalCondition, pickBranch, semesterGpa } from './sim';
 import { pickEnding } from './ending';
 import { recordGraduation } from './meta';
 
@@ -44,6 +44,9 @@ function freshState(): PlayerState {
     eventHistory: [],
     pendingEvents: [],
     actionHistory: {},
+    pathGoal: '',
+    gpaHistory: {},
+    semesterAcademicStart: 0,
   };
 }
 
@@ -118,6 +121,9 @@ function migrate(state: PlayerState): PlayerState {
     eventHistory: state.eventHistory ?? [],
     pendingEvents: state.pendingEvents ?? [],
     actionHistory: state.actionHistory ?? {},
+    pathGoal: state.pathGoal ?? '',
+    gpaHistory: state.gpaHistory ?? {},
+    semesterAcademicStart: state.semesterAcademicStart ?? state.axes?.academic ?? 0,
   };
   const legacy: Record<string, PlayerState['semester']> = {
     'y1s1-end': 'y1s2',
@@ -189,11 +195,12 @@ interface EngineStore {
   hydrate: () => Promise<void>;
   /** 卸载状态（登出时用） */
   unload: () => void;
-  /** 序章建档（引擎职责）：姓名 / 专业 / flag 局部合并 / 入学特质（一次性生效轴修正） */
+  /** 序章建档（引擎职责）：姓名 / 专业 / flag 局部合并 / 出路目标 / 入学特质（一次性生效轴修正） */
   setProfile: (patch: {
     name?: string;
     majorId?: string;
     flag?: Partial<PlayerState['flag']>;
+    pathGoal?: string;
     traits?: string[];
   }) => void;
   /** 过日子：扣 1 行动点抽一张事件卡（进 simEvent 等待抉择） */
@@ -249,6 +256,7 @@ export const useEngine = create<EngineStore>((set) => ({
           majorId: patch.majorId ?? s.state.player.majorId,
         },
         flag: { ...s.state.flag, ...patch.flag },
+        pathGoal: patch.pathGoal ?? s.state.pathGoal,
         traits,
         axes,
         axesPeak: mergePeak(s.state.axesPeak, axes),
@@ -413,9 +421,10 @@ export const useEngine = create<EngineStore>((set) => ({
           semester: 'y1s1',
           actionPoints: SEMESTER_ACTION_POINTS,
           completedActions: [],
+          semesterAcademicStart: next.axes.academic,
         };
       } else if (levelId === 'settlement') {
-        // 学期结算：剩余行动点转化为休息 → 进入下一学期或结束
+        // 学期结算：剩余行动点转化为休息 → 记学期绩点 → 进入下一学期或结束
         const remaining = next.actionPoints;
         log.push(
           logEntry('semester', 'semester-end', {
@@ -423,6 +432,20 @@ export const useEngine = create<EngineStore>((set) => ({
             points: remaining,
           }),
         );
+        // 学期绩点：本学期挣的学术 + 精力状态（重复结算同一学期以首次为准）
+        let gpaHistory = next.gpaHistory;
+        if (isPlayingSemester(st.semester) && gpaHistory[st.semester] === undefined) {
+          const earned = next.axes.academic - next.semesterAcademicStart;
+          const gpa = semesterGpa(earned, next.axes.energy);
+          gpaHistory = { ...gpaHistory, [st.semester]: gpa };
+          const withGpa = { ...next, gpaHistory };
+          log.push(
+            logEntry('semester', 'semester-gpa', {
+              gpa: gpa.toFixed(2),
+              avg: (cumulativeGpa(withGpa) ?? gpa).toFixed(2),
+            }),
+          );
+        }
         const energy = next.axes.energy + remaining;
         const to = nextSemester(st.semester);
         const rested = { ...next.axes, energy };
@@ -430,15 +453,18 @@ export const useEngine = create<EngineStore>((set) => ({
           log.push(logEntry('semester', 'semester-start', { semester: semesterName(to) }));
           next = {
             ...next,
+            gpaHistory,
             axes: rested,
             axesPeak: mergePeak(next.axesPeak, rested),
             actionPoints: SEMESTER_ACTION_POINTS,
             semester: to,
             completedActions: [],
+            semesterAcademicStart: rested.academic,
           };
         } else {
           next = {
             ...next,
+            gpaHistory,
             axes: rested,
             axesPeak: mergePeak(next.axesPeak, rested),
             actionPoints: 0,
@@ -476,6 +502,7 @@ export const useEngine = create<EngineStore>((set) => ({
         semester,
         actionPoints: SEMESTER_ACTION_POINTS,
         completedActions: before,
+        semesterAcademicStart: st.axes.academic,
         log: [
           ...st.log,
           logEntry('system', 'dev-jump', {

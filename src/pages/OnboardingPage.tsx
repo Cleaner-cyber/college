@@ -23,6 +23,7 @@ export const OnboardingPage: React.FC = () => {
         setMajor: (majorId) => setProfile({ majorId }),
         setFlag: (flag) => setProfile({ flag }),
         setTraits: (traits) => setProfile({ traits }),
+        setPathGoal: (pathGoal) => setProfile({ pathGoal }),
       }}
     >
       <div className="flex min-h-dvh flex-col justify-center">

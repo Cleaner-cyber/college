@@ -1,0 +1,312 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="campus map">
+  <!-- 《大学模拟器》俯视校园导览图 · 手绘桌游风 · 地标中心坐标见 docs/03 -->
+  <defs>
+    <g id="t">
+      <circle r="11" fill="#DFE4D3" stroke="#AEB79E" stroke-width="1.6"/>
+      <circle cx="-3" cy="-3" r="4" fill="#D2D9C1"/>
+    </g>
+    <g id="h">
+      <rect x="-20" y="13" width="40" height="6" fill="#CFC8B7" stroke="#1C1B18" stroke-width="1.1"/>
+      <rect x="-20" y="-13" width="40" height="13" fill="#F1EDE3"/>
+      <rect x="-20" y="0" width="40" height="13" fill="#E1DBCC"/>
+      <rect x="-20" y="-13" width="40" height="26" fill="none" stroke="#1C1B18" stroke-width="1.2"/>
+      <line x1="-20" y1="0" x2="20" y2="0" stroke="#1C1B18" stroke-width="0.9"/>
+    </g>
+  </defs>
+
+  <!-- 纸底 -->
+  <rect width="1600" height="1000" fill="#F7F5F0"/>
+
+  <!-- 草坪块（低饱和灰绿） -->
+  <g>
+    <rect x="40" y="225" width="322" height="248" rx="36" fill="#E9EBDF"/>
+    <rect x="398" y="120" width="486" height="238" rx="36" fill="#E9EBDF"/>
+    <rect x="946" y="196" width="296" height="180" rx="34" fill="#E9EBDF"/>
+    <rect x="1272" y="352" width="196" height="140" rx="30" fill="#E9EBDF"/>
+    <rect x="552" y="404" width="496" height="222" rx="96" fill="#E3E7D8"/>
+    <rect x="232" y="476" width="220" height="152" rx="32" fill="#E9EBDF"/>
+    <rect x="468" y="656" width="656" height="116" rx="32" fill="#E9EBDF"/>
+    <rect x="1198" y="722" width="244" height="128" rx="30" fill="#E9EBDF"/>
+    <rect x="56" y="838" width="264" height="122" rx="26" fill="#E9EBDF"/>
+  </g>
+
+  <!-- 道路：先描边(路缘)再铺路面 -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#DAD4C6" stroke-width="26">
+      <path d="M 330,390 C 500,386 640,392 768,390 C 950,388 1080,392 1180,390 C 1236,389 1263,401 1277,434"/>
+      <path d="M 768,390 V 250"/>
+      <path d="M 400,390 C 396,470 396,560 400,640"/>
+      <path d="M 400,640 C 560,646 700,638 800,640 C 950,642 1100,638 1240,640 C 1286,641 1305,668 1310,738"/>
+      <path d="M 0,800 H 205 C 300,800 355,755 383,690 C 392,671 397,658 400,642"/>
+    </g>
+    <g stroke="#DAD4C6" stroke-width="18">
+      <path d="M 222,806 C 258,830 270,862 252,888 C 220,902 150,902 88,896"/>
+    </g>
+    <g stroke="#FBF9F4" stroke-width="17">
+      <path d="M 330,390 C 500,386 640,392 768,390 C 950,388 1080,392 1180,390 C 1236,389 1263,401 1277,434"/>
+      <path d="M 768,390 V 250"/>
+      <path d="M 400,390 C 396,470 396,560 400,640"/>
+      <path d="M 400,640 C 560,646 700,638 800,640 C 950,642 1100,638 1240,640 C 1286,641 1305,668 1310,738"/>
+      <path d="M 0,800 H 205 C 300,800 355,755 383,690 C 392,671 397,658 400,642"/>
+    </g>
+    <g stroke="#FBF9F4" stroke-width="11">
+      <path d="M 222,806 C 258,830 270,862 252,888 C 220,902 150,902 88,896"/>
+    </g>
+    <!-- 中线虚线 -->
+    <g stroke="#6B675E" stroke-width="1.4" opacity="0.28" stroke-dasharray="10 14">
+      <path d="M 330,390 C 500,386 640,392 768,390 C 950,388 1080,392 1180,390"/>
+      <path d="M 400,640 C 560,646 700,638 800,640 C 950,642 1100,638 1240,640"/>
+      <path d="M 0,800 H 205 C 300,800 355,755 383,690"/>
+    </g>
+    <!-- 湖畔小径 -->
+    <g stroke="#DFD9CB" stroke-width="7">
+      <path d="M 605,392 C 585,450 590,548 640,636"/>
+      <path d="M 1005,392 C 1030,455 1020,555 968,638"/>
+      <path d="M 800,640 V 604"/>
+      <path d="M 480,375 V 394"/>
+      <path d="M 366,550 H 394"/>
+      <path d="M 608,650 V 666"/>
+      <path d="M 1008,650 V 660"/>
+      <path d="M 322,360 C 344,364 344,382 334,392"/>
+      <path d="M 1276,432 L 1290,424"/>
+    </g>
+  </g>
+
+  <!-- 环岛（教学楼路口） -->
+  <circle cx="768" cy="390" r="24" fill="#FBF9F4" stroke="#DAD4C6" stroke-width="4"/>
+  <circle cx="768" cy="390" r="8" fill="#E3E7D8" stroke="#C9CFB9" stroke-width="1.5"/>
+
+  <!-- 湖 (50,50) -->
+  <g>
+    <path d="M 640,470 C 655,425 730,410 800,413 C 880,417 950,437 968,486 C 985,536 940,580 870,591 C 800,601 700,592 662,560 C 632,535 630,502 640,470 Z"
+          fill="#D8E3E1" stroke="#BFD0CC" stroke-width="2.5"/>
+    <path d="M 666,474 C 680,438 738,426 800,429 C 870,432 932,450 948,490 C 962,532 924,566 864,575 C 802,584 712,576 680,550 C 656,529 656,502 666,474 Z"
+          fill="none" stroke="#C9D8D4" stroke-width="1.4" opacity="0.8"/>
+    <g stroke="#AFC4BF" stroke-width="1.8" fill="none" stroke-linecap="round">
+      <path d="M 700,500 q 11,-5 22,0"/>
+      <path d="M 748,534 q 9,-4 18,0"/>
+      <path d="M 890,486 q 13,-6 26,0"/>
+      <path d="M 836,452 q 9,-4 18,0"/>
+    </g>
+    <ellipse cx="882" cy="546" rx="17" ry="11" fill="#E6E8DC" stroke="#B8BFA9" stroke-width="1.4"/>
+    <use href="#t" transform="translate(882 540) scale(0.72)"/>
+    <!-- 小码头 -->
+    <rect x="793" y="586" width="14" height="30" fill="#EADFC9" stroke="#9A9384" stroke-width="1.2"/>
+    <g stroke="#C9BFA6" stroke-width="1">
+      <line x1="793" y1="594" x2="807" y2="594"/>
+      <line x1="793" y1="602" x2="807" y2="602"/>
+      <line x1="793" y1="610" x2="807" y2="610"/>
+    </g>
+  </g>
+
+  <!-- 操场跑道 (12,35) -->
+  <g>
+    <rect x="62" y="262" width="260" height="176" rx="88" fill="#F3E4DC" stroke="#D9C9BE" stroke-width="2"/>
+    <rect x="72" y="272" width="240" height="156" rx="78" fill="none" stroke="#FFFFFF" stroke-width="1.6" opacity="0.9"/>
+    <rect x="82" y="282" width="220" height="136" rx="68" fill="#F3E4DC" stroke="#FFFFFF" stroke-width="1.6"/>
+    <rect x="92" y="292" width="200" height="116" rx="58" fill="#E2E6D6" stroke="#C9CFB9" stroke-width="1.6"/>
+    <line x1="192" y1="296" x2="192" y2="404" stroke="#FFFFFF" stroke-width="1.6" opacity="0.9"/>
+    <circle cx="192" cy="350" r="20" fill="none" stroke="#FFFFFF" stroke-width="1.6" opacity="0.9"/>
+  </g>
+
+  <!-- 校门口 (8,80)：门柱+陶土横梁 -->
+  <g>
+    <rect x="112" y="748" width="30" height="34" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.5"/>
+    <rect x="112" y="818" width="30" height="34" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.5"/>
+    <rect x="121" y="754" width="12" height="92" fill="#C05A32" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="108" y="744" width="38" height="7" fill="#E1DBCC" stroke="#1C1B18" stroke-width="1.2"/>
+    <rect x="108" y="849" width="38" height="7" fill="#E1DBCC" stroke="#1C1B18" stroke-width="1.2"/>
+  </g>
+
+  <!-- 教务处 (30,30)：L形平顶 -->
+  <g>
+    <path d="M 415,273 H 545 V 343 H 460 V 381 H 415 Z" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <path d="M 415,265 H 545 V 335 H 460 V 373 H 415 Z" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.4"/>
+    <path d="M 423,273 H 537 V 327 H 452 V 365 H 423 Z" fill="none" stroke="#E4E0D6" stroke-width="1.2"/>
+    <rect x="498" y="282" width="18" height="12" fill="#EEEAE0" stroke="#6B675E" stroke-width="0.9"/>
+    <rect x="502" y="306" width="12" height="12" fill="#EEEAE0" stroke="#6B675E" stroke-width="0.9"/>
+    <circle cx="435" cy="350" r="4" fill="#DDD8C9" stroke="#6B675E" stroke-width="0.9"/>
+  </g>
+
+  <!-- 教学楼+钟楼 (48,20) -->
+  <g>
+    <rect x="668" y="183" width="200" height="53" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="668" y="175" width="200" height="53" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="690" y="191" width="28" height="18" fill="#F1EDE3" stroke="#C7C1B2" stroke-width="1"/>
+    <rect x="818" y="191" width="28" height="18" fill="#F1EDE3" stroke="#C7C1B2" stroke-width="1"/>
+    <rect x="748" y="163" width="40" height="60" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="748" y="155" width="40" height="60" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.4"/>
+    <polygon points="745,155 791,155 768,116" fill="#C05A32" stroke="#1C1B18" stroke-width="1.4" stroke-linejoin="round"/>
+    <circle cx="768" cy="112" r="3" fill="#C05A32" stroke="#1C1B18" stroke-width="1"/>
+    <circle cx="768" cy="192" r="13" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.4"/>
+    <line x1="768" y1="192" x2="768" y2="183" stroke="#1C1B18" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="768" y1="192" x2="776" y2="195" stroke="#1C1B18" stroke-width="1.8" stroke-linecap="round"/>
+    <circle cx="768" cy="192" r="1.6" fill="#1C1B18"/>
+  </g>
+
+  <!-- 图书馆·最大建筑 (68,30)：三层退台+陶土穹顶 -->
+  <g>
+    <rect x="998" y="243" width="180" height="130" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="998" y="235" width="180" height="130" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.5"/>
+    <rect x="1020" y="257" width="136" height="86" fill="#F3EFE6" stroke="#1C1B18" stroke-width="1.2"/>
+    <rect x="1062" y="274" width="52" height="52" rx="6" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.1"/>
+    <circle cx="1088" cy="300" r="19" fill="#C05A32" stroke="#1C1B18" stroke-width="1.4"/>
+    <path d="M 1077,293 a 11,11 0 0 1 10,-5" fill="none" stroke="#F3E4DC" stroke-width="3" stroke-linecap="round"/>
+    <rect x="1006" y="243" width="14" height="10" fill="#EEEAE0" stroke="#C7C1B2" stroke-width="0.9"/>
+    <rect x="1156" y="348" width="14" height="10" fill="#EEEAE0" stroke="#C7C1B2" stroke-width="0.9"/>
+    <rect x="1034" y="373" width="108" height="14" rx="2" fill="#F0EDE4" stroke="#DAD4C6" stroke-width="1.2"/>
+    <line x1="1040" y1="378" x2="1136" y2="378" stroke="#DAD4C6" stroke-width="1"/>
+    <line x1="1040" y1="382" x2="1136" y2="382" stroke="#DAD4C6" stroke-width="1"/>
+  </g>
+
+  <!-- 实验楼 (85,42)：双排+连廊 -->
+  <g>
+    <rect x="1290" y="378" width="140" height="40" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="1290" y="438" width="140" height="40" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="1346" y="408" width="28" height="26" fill="#E9E4D6" stroke="#1C1B18" stroke-width="1.2"/>
+    <rect x="1290" y="370" width="140" height="40" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="1290" y="430" width="140" height="40" fill="#F3EFE6" stroke="#1C1B18" stroke-width="1.4"/>
+    <circle cx="1312" cy="390" r="4.5" fill="#DDD8C9" stroke="#6B675E" stroke-width="0.9"/>
+    <circle cx="1326" cy="390" r="4.5" fill="#DDD8C9" stroke="#6B675E" stroke-width="0.9"/>
+    <rect x="1394" y="382" width="18" height="14" fill="#EEEAE0" stroke="#6B675E" stroke-width="0.9"/>
+    <line x1="1302" y1="448" x2="1418" y2="448" stroke="#DAD4C6" stroke-width="2"/>
+    <line x1="1302" y1="458" x2="1418" y2="458" stroke="#DAD4C6" stroke-width="2"/>
+  </g>
+
+  <!-- 学生活动中心 (20,55)：八角 -->
+  <g>
+    <polygon points="338,514 364,540 364,576 338,602 302,602 276,576 276,540 302,514" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <polygon points="338,506 364,532 364,568 338,594 302,594 276,568 276,532 302,506" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.4"/>
+    <g stroke="#E4E0D6" stroke-width="1.2">
+      <line x1="338" y1="506" x2="326" y2="544"/>
+      <line x1="364" y1="568" x2="332" y2="554"/>
+      <line x1="302" y1="594" x2="314" y2="556"/>
+      <line x1="276" y1="532" x2="308" y2="546"/>
+    </g>
+    <circle cx="320" cy="550" r="17" fill="#F3EFE6" stroke="#1C1B18" stroke-width="1.2"/>
+  </g>
+
+  <!-- 语言中心 (38,70)：坡屋顶 -->
+  <g>
+    <rect x="555" y="676" width="106" height="62" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.3"/>
+    <rect x="555" y="668" width="106" height="32" fill="#F1EDE3"/>
+    <rect x="555" y="700" width="106" height="30" fill="#E1DBCC"/>
+    <rect x="555" y="668" width="106" height="62" fill="none" stroke="#1C1B18" stroke-width="1.4"/>
+    <line x1="555" y1="700" x2="661" y2="700" stroke="#1C1B18" stroke-width="1"/>
+    <rect x="636" y="676" width="10" height="13" fill="#DCD5C5" stroke="#6B675E" stroke-width="1"/>
+  </g>
+
+  <!-- 就业指导中心 (63,70)：合院 -->
+  <g>
+    <rect x="940" y="668" width="136" height="78" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="940" y="660" width="136" height="80" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="948" y="668" width="120" height="64" fill="none" stroke="#E4E0D6" stroke-width="1.2"/>
+    <rect x="976" y="686" width="64" height="30" fill="#E7EADC" stroke="#1C1B18" stroke-width="1.1"/>
+    <use href="#t" transform="translate(1008 701) scale(0.6)"/>
+  </g>
+
+  <!-- 创新创业中心 (82,78)：错位双体 -->
+  <g>
+    <rect x="1252" y="756" width="92" height="60" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="1252" y="748" width="92" height="60" fill="#FFFFFF" stroke="#1C1B18" stroke-width="1.4"/>
+    <rect x="1262" y="758" width="16" height="12" fill="#EEEAE0" stroke="#C7C1B2" stroke-width="0.9"/>
+    <rect x="1262" y="786" width="16" height="12" fill="#EEEAE0" stroke="#C7C1B2" stroke-width="0.9"/>
+    <rect x="1312" y="778" width="66" height="46" fill="#D8D2C2" stroke="#1C1B18" stroke-width="1.3"/>
+    <rect x="1312" y="770" width="66" height="46" fill="#F3EFE6" stroke="#1C1B18" stroke-width="1.3"/>
+    <g stroke="#DAD4C6" stroke-width="1.1">
+      <line x1="1312" y1="793" x2="1378" y2="793"/>
+      <line x1="1334" y1="770" x2="1334" y2="816"/>
+      <line x1="1356" y1="770" x2="1356" y2="816"/>
+    </g>
+  </g>
+
+  <!-- 宿舍区 (10,90)：小房子群 -->
+  <g>
+    <use href="#h" x="94" y="872"/>
+    <use href="#h" x="160" y="855"/>
+    <use href="#h" x="222" y="862"/>
+    <use href="#h" x="100" y="928"/>
+    <use href="#h" x="162" y="935"/>
+    <use href="#h" x="224" y="928"/>
+  </g>
+
+  <!-- 树木 -->
+  <g>
+    <use href="#t" transform="translate(64 120)"/>
+    <use href="#t" transform="translate(112 88) scale(1.2)"/>
+    <use href="#t" transform="translate(162 118) scale(0.9)"/>
+    <use href="#t" transform="translate(92 162) scale(0.8)"/>
+    <use href="#t" transform="translate(215 96) scale(1.1)"/>
+    <use href="#t" transform="translate(262 140) scale(0.85)"/>
+    <use href="#t" transform="translate(352 90)"/>
+    <use href="#t" transform="translate(398 132) scale(0.8)"/>
+    <use href="#t" transform="translate(380 246) scale(0.8)"/>
+    <use href="#t" transform="translate(300 244) scale(0.85)"/>
+    <use href="#t" transform="translate(445 158) scale(0.9)"/>
+    <use href="#t" transform="translate(602 138) scale(0.8)"/>
+    <use href="#t" transform="translate(880 152) scale(0.9)"/>
+    <use href="#t" transform="translate(912 262)"/>
+    <use href="#t" transform="translate(938 318) scale(0.85)"/>
+    <use href="#t" transform="translate(915 348) scale(0.7)"/>
+    <use href="#t" transform="translate(1265 112) scale(1.1)"/>
+    <use href="#t" transform="translate(1318 148) scale(0.9)"/>
+    <use href="#t" transform="translate(1372 104) scale(1.2)"/>
+    <use href="#t" transform="translate(1420 168) scale(0.85)"/>
+    <use href="#t" transform="translate(1472 120)"/>
+    <use href="#t" transform="translate(1490 230) scale(0.9)"/>
+    <use href="#t" transform="translate(1445 282) scale(0.8)"/>
+    <use href="#t" transform="translate(1502 330) scale(0.75)"/>
+    <use href="#t" transform="translate(1465 520) scale(0.9)"/>
+    <use href="#t" transform="translate(1502 568) scale(0.8)"/>
+    <use href="#t" transform="translate(1438 556) scale(0.7)"/>
+    <use href="#t" transform="translate(596 466) scale(0.9)"/>
+    <use href="#t" transform="translate(586 534) scale(0.75)"/>
+    <use href="#t" transform="translate(1002 462) scale(0.9)"/>
+    <use href="#t" transform="translate(1010 532) scale(0.8)"/>
+    <use href="#t" transform="translate(760 690)"/>
+    <use href="#t" transform="translate(806 726) scale(0.9)"/>
+    <use href="#t" transform="translate(722 730) scale(0.8)"/>
+    <use href="#t" transform="translate(858 688) scale(0.85)"/>
+    <use href="#t" transform="translate(882 742) scale(0.7)"/>
+    <use href="#t" transform="translate(240 462) scale(0.8)"/>
+    <use href="#t" transform="translate(212 520) scale(0.9)"/>
+    <use href="#t" transform="translate(240 606) scale(0.75)"/>
+    <use href="#t" transform="translate(300 748) scale(0.8)"/>
+    <use href="#t" transform="translate(345 832) scale(0.9)"/>
+    <use href="#t" transform="translate(60 742) scale(0.8)"/>
+    <use href="#t" transform="translate(300 902) scale(0.9)"/>
+    <use href="#t" transform="translate(312 948) scale(0.75)"/>
+    <use href="#t" transform="translate(560 936) scale(0.9)"/>
+    <use href="#t" transform="translate(622 956) scale(0.8)"/>
+    <use href="#t" transform="translate(688 934)"/>
+    <use href="#t" transform="translate(880 948) scale(0.85)"/>
+    <use href="#t" transform="translate(950 930) scale(0.9)"/>
+    <use href="#t" transform="translate(1016 948) scale(0.8)"/>
+    <use href="#t" transform="translate(1090 928) scale(0.7)"/>
+    <use href="#t" transform="translate(1180 884) scale(0.85)"/>
+    <use href="#t" transform="translate(1130 922) scale(0.7)"/>
+    <use href="#t" transform="translate(1436 896) scale(1.1)"/>
+    <use href="#t" transform="translate(1492 862) scale(0.9)"/>
+    <use href="#t" transform="translate(1470 944) scale(0.8)"/>
+    <use href="#t" transform="translate(1352 618) scale(0.9)"/>
+    <use href="#t" transform="translate(1398 662) scale(0.75)"/>
+    <use href="#t" transform="translate(1180 470) scale(0.9)"/>
+    <use href="#t" transform="translate(1222 540) scale(0.8)"/>
+    <use href="#t" transform="translate(1162 590) scale(0.7)"/>
+    <use href="#t" transform="translate(90 560) scale(0.9)"/>
+    <use href="#t" transform="translate(70 632) scale(0.75)"/>
+    <use href="#t" transform="translate(152 612) scale(0.8)"/>
+  </g>
+
+  <!-- 指北针 -->
+  <g>
+    <circle cx="1490" cy="84" r="22" fill="#FFFFFF" stroke="#DAD4C6" stroke-width="1.6"/>
+    <polygon points="1490,66 1496,84 1484,84" fill="#1C1B18"/>
+    <polygon points="1490,102 1496,84 1484,84" fill="#C7C1B2"/>
+    <circle cx="1490" cy="84" r="1.6" fill="#FFFFFF"/>
+  </g>
+
+  <!-- 图框（导览图边框） -->
+  <rect x="20" y="20" width="1560" height="960" rx="8" fill="none" stroke="#E4E0D6" stroke-width="2.5"/>
+  <rect x="30" y="30" width="1540" height="940" rx="5" fill="none" stroke="#E4E0D6" stroke-width="1" opacity="0.7"/>
+</svg>

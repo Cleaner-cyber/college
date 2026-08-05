@@ -20,7 +20,18 @@ import {
   ui,
 } from '@/engine/content';
 import { useEngine, effectiveCost, isMainlineComplete } from '@/engine/store';
-import { awakenedTagIds, checkRate, conditionLabel, drawableCount, evalCondition, visibleActions } from '@/engine/sim';
+import {
+  awakenedTagIds,
+  checkRate,
+  conditionLabel,
+  cumulativeGpa,
+  drawableCount,
+  evalCondition,
+  semesterIndex,
+  visibleActions,
+} from '@/engine/sim';
+import { getPath } from '@/engine/path';
+import { CampusMap, levelLocationName } from '@/components/CampusMap';
 import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
@@ -33,6 +44,48 @@ import { ActionResultModal, EventModal, simCopy, type EventOptionView } from '@/
 const home = ui.home as Record<string, string>;
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
 const AXIS_MAX = 8;
+
+/** 本学期课程（v2.6 GPA 系统）：按专业详情的分年课程表取当期一半（上/下学期各一半） */
+const detailCache = new Map<string, MajorDetail | null>();
+
+const CoursesPanel: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const major = getMajor(state.player.majorId);
+  const [detail, setDetail] = useState<MajorDetail | null>(detailCache.get(major.id) ?? null);
+  React.useEffect(() => {
+    if (detailCache.has(major.id)) return;
+    let alive = true;
+    void fetchMajorDetail(major.id).then((d) => {
+      detailCache.set(major.id, d);
+      if (alive) setDetail(d);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [major.id]);
+
+  const si = semesterIndex(state.semester); // 1..7
+  const yearKey = (['y1', 'y1', 'y2', 'y2', 'y3', 'y3', 'y4'] as const)[si - 1] ?? 'y1';
+  const yearCourses = detail?.courses?.[yearKey] ?? [];
+  const half = Math.ceil(yearCourses.length / 2);
+  const courses =
+    si === 7 ? yearCourses : si % 2 === 1 ? yearCourses.slice(0, half) : yearCourses.slice(half);
+
+  return (
+    <Panel title={home['courses-title']} sub={home['courses-sub']}>
+      {courses.length === 0 ? (
+        <p className="text-sm text-ink-soft">{home['courses-empty']}</p>
+      ) : (
+        <div className="flex flex-wrap gap-1.5">
+          {courses.map((c) => (
+            <span key={c} className="rounded-lg border border-line bg-paper px-2.5 py-1 text-[13px]">
+              📖 {c}
+            </span>
+          ))}
+        </div>
+      )}
+    </Panel>
+  );
+};
 
 /** 文件夹里的专业卡片：知识库速览行 + 按小节展开的全文（与序章共用同一份详情 JSON） */
 const FolderMajorCard: React.FC<{ majorId: string; copy: Record<string, string> }> = ({
@@ -176,10 +229,24 @@ const StatusRail: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
           <AxisBar key={a} label={ui.axes[a]} value={state.axes[a]} />
         ))}
         <AxisBar label={ui.axes.energy} value={state.axes.energy} strong />
+        <div className="mt-1 flex items-baseline justify-between border-t border-line pt-2">
+          <span className="text-xs text-ink-soft">🎓 {home['hud-gpa-label']}</span>
+          <span className="text-[15px] font-semibold tabular-nums text-accent">
+            {cumulativeGpa(state)?.toFixed(2) ?? home['hud-gpa-empty']}
+          </span>
+        </div>
       </div>
     </Panel>
     <Panel title={home['stats-flag-title']}>
       <dl className="grid grid-cols-1 gap-1.5 text-sm">
+        {state.pathGoal && (
+          <div className="flex items-baseline justify-between">
+            <dt className="text-xs text-ink-soft">{home['hud-path-label']}</dt>
+            <dd className="font-semibold text-accent">
+              {getPath(state.pathGoal)?.icon} {getPath(state.pathGoal)?.name}
+            </dd>
+          </div>
+        )}
         {(
           [
             ['stats-flag-salary', state.flag.salaryBand],
@@ -363,6 +430,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const simResolution = useEngine((s) => s.simResolution);
   const board = getBoard(state.semester);
   const actionViews = visibleActions(state);
+  const [mapOpen, setMapOpen] = useState(false);
   const [actionGroup, setActionGroup] = useState<ActionGroup>('study');
   // 选中组因过滤变空时回退到第一个非空组
   const groupsWithItems = ACTION_GROUPS.filter((g) =>
@@ -396,6 +464,33 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
 
   return (
     <div className="flex flex-col gap-4">
+      {/* 出门 · 校园地图（v2.6 场景化：主线关卡从地图地标进入） */}
+      {!mainlineDone && (
+        <button
+          onClick={() => setMapOpen(true)}
+          className="flex items-center gap-4 rounded-2xl border border-accent/50 bg-card/85 p-4 text-left shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:shadow-lift"
+        >
+          <span className="text-2xl">🗺️</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[15px] font-semibold">{home['map-open-btn']}</span>
+            <span className="mt-0.5 block text-xs text-ink-soft">{home['map-open-sub']}</span>
+          </span>
+          <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-white shadow-glow">
+            {board.mainline.filter((m) => !state.completedActions.includes(m.id)).length}
+          </span>
+        </button>
+      )}
+      {mapOpen && (
+        <CampusMap
+          state={state}
+          onClose={() => setMapOpen(false)}
+          onEnter={(id) => {
+            setMapOpen(false);
+            navigate(`/level/${id}`);
+          }}
+        />
+      )}
+      <CoursesPanel state={state} />
       <div data-tour="mainline">
         <Panel title={home['mainline-title']} sub={home['mainline-sub']}>
         <ol className="flex flex-col gap-3">
@@ -430,6 +525,12 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                     <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[11px] text-accent">
                       {m.tag}
                     </span>
+                    {levelLocationName(m.id) && (
+                      <span className="rounded bg-paper px-1.5 py-0.5 text-[11px] text-ink-soft">
+                        {home['map-loc-prefix']}
+                        {levelLocationName(m.id)}
+                      </span>
+                    )}
                   </div>
                   <p className="mt-0.5 truncate text-sm text-ink-soft">{m.desc}</p>
                 </div>
@@ -1064,6 +1165,11 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-dvh">
+      {/* 宿舍场景背景（v2.6 场景化）：所有面板半透明叠在上面 */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <img src="/assets/bg-dorm.svg" alt="" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-paper/45" />
+      </div>
       <header className="sticky top-0 z-20 border-b border-line/70 bg-paper/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3.5">
           <div className="flex items-baseline gap-4">

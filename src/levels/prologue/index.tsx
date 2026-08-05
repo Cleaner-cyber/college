@@ -11,6 +11,7 @@ import {
   majors,
   majorGroups,
   fetchMajorDetail,
+  paths,
   traits as allTraits,
   interpolate,
   ui,
@@ -23,6 +24,61 @@ import { Typewriter } from '@/components/ui/Typewriter';
 const FLAG_KEYS = ['salaryBand', 'city', 'workStyle', 'offTime'] as const;
 const TRAIT_SHOW = 8; // 每局随机亮出的特质数
 const TRAIT_PICK = 2; // 可选数量
+
+/** 出路六选一（v2.6）：考研/保研/考公/就业/出国/创业 —— 毕业按四年行为算走通概率 */
+const PathSelect: React.FC<{ api: FlowAPI; onConfirm: (id: string) => void }> = ({
+  api,
+  onConfirm,
+}) => {
+  const [picked, setPicked] = useState('');
+  return (
+    <div className="flex flex-col gap-5">
+      <div>
+        <p className="whitespace-pre-wrap text-[16px] leading-relaxed">{api.t(api.screen.text ?? '')}</p>
+        <h2 className="mt-4 text-xl font-semibold">{api.copy('path-title')}</h2>
+        <p className="mt-1 text-[13px] text-ink-soft">{api.copy('path-sub')}</p>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {paths.map((p) => {
+          const on = picked === p.id;
+          return (
+            <button
+              key={p.id}
+              onClick={() => setPicked(p.id)}
+              className={`rounded-xl border p-3.5 text-left transition ${
+                on
+                  ? 'border-accent bg-accent-soft shadow-glow'
+                  : 'border-line bg-card shadow-soft hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[15px] font-semibold">
+                  {p.icon} {p.name}
+                </span>
+                {on && (
+                  <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] text-white">
+                    {api.copy('path-picked-tag')}
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-[12px] leading-relaxed text-ink-soft">{p.desc}</p>
+            </button>
+          );
+        })}
+      </div>
+      <Button
+        full
+        disabled={!picked}
+        onClick={() => {
+          onConfirm(picked);
+          api.advance();
+        }}
+      >
+        {api.copy('path-confirm')}
+      </Button>
+    </div>
+  );
+};
 
 /** 入学特质抽卡：随机亮 8 张选 2（build 起点，docs/08 C1）；
  * 传承特质（上一局结局解锁，docs/08 P3）不占随机位、置顶常驻 */
@@ -374,6 +430,7 @@ const PrologueComponent: React.FC<LevelProps> = ({ state, content, onComplete })
             }}
           />
         ),
+        SP: (api) => <PathSelect api={api} onConfirm={(id) => profile.setPathGoal(id)} />,
         ST: (api) => <TraitDraw api={api} onConfirm={(ids) => profile.setTraits(ids)} />,
         S6: (api) => <MajorCard api={api} majorId={state.player.majorId} />,
       }}

@@ -144,6 +144,21 @@ export function drawEvent(state: Readonly<PlayerState>): SimEvent | null {
   return weighted[weighted.length - 1][0];
 }
 
+// ---------------- 绩点（v2.6） ----------------
+
+/** 学期绩点：看本学期挣了多少学术 + 精力是否守住（把重心放在卷绩点上 → 高；完全不管 → 2.0 上下） */
+export function semesterGpa(earnedAcademic: number, energy: number): number {
+  const raw = 2.0 + 0.35 * Math.max(0, earnedAcademic) + (energy >= 3 ? 0.1 : 0);
+  return Math.round(Math.min(4.0, Math.max(1.5, raw)) * 100) / 100;
+}
+
+/** 累计平均绩点（无已结算学期 → null，HUD 显示 —） */
+export function cumulativeGpa(state: Readonly<PlayerState>): number | null {
+  const vals = Object.values(state.gpaHistory);
+  if (vals.length === 0) return null;
+  return Math.round((vals.reduce((s, v) => s + v, 0) / vals.length) * 100) / 100;
+}
+
 /** 检定成功率：轴值与难度差每 1 点 ±15%，钳制在 5%~95%（同值五五开） */
 export function checkRate(axisValue: number, dc: number): number {
   return Math.min(0.95, Math.max(0.05, 0.5 + 0.15 * (axisValue - dc)));
