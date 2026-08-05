@@ -84,13 +84,13 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
           className="block w-full select-none"
           draggable={false}
         />
-        {/* 顶部标题条 */}
-        <div className="absolute left-4 top-4 rounded-xl bg-card/85 px-4 py-2 shadow-soft backdrop-blur-md">
-          <div className="text-[15px] font-semibold tracking-wide">{map['title']}</div>
-          <div className="text-[11px] text-ink-soft">{map['sub']}</div>
+        {/* 顶部标题条：深棕玻璃 + 衬线标题（与傍晚底图同色系） */}
+        <div className="absolute left-4 top-4 rounded-xl border border-cream/15 bg-dusk/80 px-4 py-2 text-cream shadow-glass backdrop-blur-md">
+          <div className="font-display text-[16px] font-semibold tracking-[0.2em]">{map['title']}</div>
+          <div className="text-[11px] text-cream-soft">{map['sub']}</div>
         </div>
         <button
-          className="absolute right-4 top-4 rounded-xl bg-card/85 px-3 py-2 text-sm shadow-soft backdrop-blur-md transition hover:text-accent"
+          className="absolute right-4 top-4 rounded-xl border border-cream/20 bg-dusk/80 px-3.5 py-2 text-sm text-cream shadow-glass backdrop-blur-md transition hover:border-ember/60 hover:text-ember"
           onClick={onClose}
         >
           {map['close']}
@@ -111,27 +111,29 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
                 className={`group flex flex-col items-center ${!isDorm && !active ? 'cursor-default' : ''}`}
               >
                 <span
-                  className={`flex h-9 w-9 items-center justify-center rounded-full border-2 text-[15px] shadow-soft transition ${
+                  className={`flex h-9 w-9 items-center justify-center rounded-full border-2 text-[15px] transition ${
                     active
-                      ? 'animate-breathe border-accent bg-accent text-white shadow-glow'
+                      ? 'animate-ember-breathe border-cream/70 bg-gradient-to-b from-ember to-ember-deep font-bold text-dusk shadow-ember-glow'
                       : done
-                        ? 'border-line bg-card/90 text-ink-soft'
+                        ? 'border-cream/25 bg-dusk/70 text-cream-soft shadow-glass'
                         : isDorm
-                          ? 'border-line bg-card/90 text-ink'
-                          : 'border-line/60 bg-card/60 text-ink-soft/50'
+                          ? 'border-cream/35 bg-dusk/75 text-cream shadow-glass'
+                          : 'border-cream/10 bg-dusk/40 text-cream-soft/40'
                   }`}
                 >
                   {active ? '!' : done ? '✓' : isDorm ? '🏠' : '·'}
                 </span>
                 <span
-                  className={`mt-1 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[11px] shadow-soft backdrop-blur-sm ${
-                    active ? 'bg-accent text-white' : 'bg-card/85 text-ink-soft'
+                  className={`mt-1 whitespace-nowrap rounded-md border px-2 py-0.5 text-[11px] tracking-wide backdrop-blur-sm ${
+                    active
+                      ? 'border-ember/60 bg-ember font-semibold text-dusk shadow-ember-glow'
+                      : 'border-cream/15 bg-dusk/75 text-cream shadow-glass'
                   }`}
                 >
                   {map[`loc-${loc.id}`] ?? loc.id}
                 </span>
                 {active && (
-                  <span className="mt-0.5 whitespace-nowrap rounded-md bg-card/90 px-1.5 py-0.5 text-[11px] font-medium text-accent shadow-soft">
+                  <span className="mt-0.5 whitespace-nowrap rounded-md border border-ember/50 bg-dusk/85 px-2 py-0.5 text-[11px] font-medium text-ember shadow-glass backdrop-blur-sm">
                     {active.label}
                   </span>
                 )}

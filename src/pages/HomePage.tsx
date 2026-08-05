@@ -212,36 +212,36 @@ const HudStrip: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-x-5 gap-y-1 text-[13px]">
       <span className="flex items-center gap-1.5">
-        <span className="text-xs text-paper/60">{home['action-points']}</span>
+        <span className="text-xs text-cream-soft">{home['action-points']}</span>
         {Array.from({ length: 3 }).map((_, i) => (
           <span
             key={i}
             className={`inline-block h-2.5 w-2.5 rounded-full ${
-              i < state.actionPoints ? 'bg-accent shadow-glow' : 'bg-paper/25'
+              i < state.actionPoints ? 'bg-ember shadow-ember-glow' : 'bg-cream/15'
             }`}
           />
         ))}
       </span>
       {VISIBLE_AXES.map((a) => (
         <span key={a} className="flex items-baseline gap-1">
-          <span className="text-xs text-paper/60">{ui.axes[a]}</span>
-          <span className="font-semibold tabular-nums">{state.axes[a]}</span>
+          <span className="text-xs text-cream-soft">{ui.axes[a]}</span>
+          <span className="font-semibold tabular-nums text-cream">{state.axes[a]}</span>
         </span>
       ))}
       <span className="flex items-baseline gap-1">
-        <span className="text-xs text-paper/60">{ui.axes.energy}</span>
-        <span className="font-semibold tabular-nums text-accent">{state.axes.energy}</span>
+        <span className="text-xs text-cream-soft">{ui.axes.energy}</span>
+        <span className="font-semibold tabular-nums text-ember">{state.axes.energy}</span>
       </span>
       <span className="flex items-baseline gap-1">
-        <span className="text-xs text-paper/60">{home['hud-gpa-label']}</span>
-        <span className="font-semibold tabular-nums text-accent">
+        <span className="text-xs text-cream-soft">{home['hud-gpa-label']}</span>
+        <span className="font-semibold tabular-nums text-ember">
           {gpa?.toFixed(2) ?? home['hud-gpa-empty']}
         </span>
       </span>
       {path && (
         <span className="flex items-baseline gap-1">
-          <span className="text-xs text-paper/60">{home['hud-path-label']}</span>
-          <span className="font-semibold">
+          <span className="text-xs text-cream-soft">{home['hud-path-label']}</span>
+          <span className="font-semibold text-cream">
             {path.icon} {path.name}
           </span>
         </span>
@@ -286,23 +286,27 @@ const SceneChip: React.FC<{
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3.5 shadow-lift backdrop-blur-md transition ${
-        disabled ? 'bg-card/55 text-ink-soft/70' : 'bg-card/90 hover:-translate-y-0.5 hover:shadow-pop'
+      className={`flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-4 shadow-glass backdrop-blur-md transition ${
+        disabled
+          ? 'border-cream/10 bg-dusk/55 text-cream-soft/50'
+          : 'border-cream/25 bg-gradient-to-b from-dusk-2/85 to-dusk/90 text-cream hover:-translate-y-0.5 hover:border-ember/60'
       }`}
     >
       <span
         className={`relative flex h-8 w-8 items-center justify-center rounded-full text-[15px] ${
-          active ? 'animate-breathe bg-accent text-white shadow-glow' : 'bg-accent-soft'
+          active
+            ? 'animate-ember-breathe bg-gradient-to-b from-ember to-ember-deep text-dusk shadow-ember-glow'
+            : 'border border-cream/20 bg-cream/10'
         }`}
       >
         {icon}
         {badge !== undefined && badge > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-white shadow-soft">
+          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-bold text-dusk shadow-soft">
             {badge}
           </span>
         )}
       </span>
-      <span className="whitespace-nowrap text-[13px] font-medium">{label}</span>
+      <span className="whitespace-nowrap text-[13px] font-medium tracking-wide">{label}</span>
     </button>
   </div>
 );
@@ -1137,21 +1141,23 @@ export const HomePage: React.FC = () => {
     <div className="relative min-h-dvh overflow-hidden">
       <SceneImage />
 
-      {/* 顶栏 HUD 数值条 */}
+      {/* 顶栏 HUD 数值条：深棕玻璃 + 奶油字 + 琥珀数值（与傍晚底图同色系） */}
       <header
-        className="relative z-20 border-b border-ink/30 bg-ink/70 text-paper backdrop-blur-md"
+        className="relative z-20 border-b border-cream/10 bg-gradient-to-b from-dusk/90 to-dusk/70 text-cream backdrop-blur-md"
         data-tour="rail"
       >
         <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-6 px-6 py-2.5">
           <div className="flex shrink-0 items-baseline gap-3">
-            <span className="text-[16px] font-semibold tracking-widest">{ui['app-title']}</span>
-            <span className="text-xs text-paper/60">{board.header}</span>
+            <span className="font-display text-[17px] font-semibold tracking-[0.25em] text-cream">
+              {ui['app-title']}
+            </span>
+            <span className="text-xs text-cream-soft">{board.header}</span>
           </div>
           <HudStrip state={state} />
           <div className="flex shrink-0 items-center gap-3 text-xs">
             {state.semester === 'y1s1' && (
               <button
-                className="rounded-full border border-paper/30 px-2 py-0.5 text-paper/80 transition hover:border-accent hover:text-accent"
+                className="rounded-full border border-cream/25 px-2 py-0.5 text-cream-soft transition hover:border-ember hover:text-ember"
                 onClick={() => {
                   setPanel(null);
                   setTourOpen(true);
@@ -1160,7 +1166,7 @@ export const HomePage: React.FC = () => {
                 ？{(ui.tour as Record<string, string>)['replay']}
               </button>
             )}
-            <span className="font-medium">
+            <span className="font-medium text-cream">
               {interpolate(home['greeting'], {
                 playerName: state.player.name,
                 majorName: major.name,
@@ -1168,16 +1174,16 @@ export const HomePage: React.FC = () => {
             </span>
             {isCloudMode ? (
               <>
-                <span className="text-paper/50">{email}</span>
+                <span className="text-cream-soft/70">{email}</span>
                 <button
-                  className="text-paper/70 underline underline-offset-4"
+                  className="text-cream-soft underline underline-offset-4 hover:text-ember"
                   onClick={() => void signOut()}
                 >
                   {(ui.auth as Record<string, string>)['logout']}
                 </button>
               </>
             ) : (
-              <span className="rounded bg-paper/15 px-2 py-0.5 text-paper/70">
+              <span className="rounded bg-cream/10 px-2 py-0.5 text-cream-soft">
                 {(ui.auth as Record<string, string>)['local-mode-title']}
               </span>
             )}
@@ -1233,7 +1239,7 @@ export const HomePage: React.FC = () => {
           <div className="w-full max-w-[860px] pb-10 pt-2" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex justify-end">
               <button
-                className="rounded-full bg-card/90 px-4 py-1.5 text-sm shadow-soft transition hover:text-accent"
+                className="rounded-full border border-cream/25 bg-dusk/80 px-4 py-1.5 text-sm text-cream shadow-glass backdrop-blur-md transition hover:border-ember/60 hover:text-ember"
                 onClick={() => setPanel(null)}
               >
                 ✕ {home['panel-close']}
