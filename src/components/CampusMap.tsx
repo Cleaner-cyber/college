@@ -85,14 +85,15 @@ interface CampusMapProps {
 export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose }) => {
   // 底图优先真图 bg-campus.jpg（生图后同名放入 public/assets 即生效），缺省回退占位 SVG
   const [imgSrc, setImgSrc] = React.useState('/assets/bg-campus.jpg');
-  // cover 铺满视口：按图片原始宽高比算出覆盖框尺寸，图钉挂在框内百分比坐标上（不裁偏、不滚动）
+  // contain 完整显示：按图片原始宽高比算出内接框尺寸（全图必须可见，不裁任何建筑），
+  // 视口比例差出的空隙由底层的模糊放大版同图补齐（弥散景深，不露黑边白边）
   const natural = React.useRef({ w: 1600, h: 1000 });
   const [box, setBox] = React.useState({ w: window.innerWidth, h: window.innerHeight });
   const compute = React.useCallback(() => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const { w, h } = natural.current;
-    const s = Math.max(vw / w, vh / h);
+    const s = Math.min(vw / w, vh / h);
     setBox({ w: w * s, h: h * s });
   }, []);
   React.useEffect(() => {
@@ -124,9 +125,18 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
 
   return (
     <div className="fixed inset-0 z-50 animate-map-in overflow-hidden bg-dusk font-display">
-      {/* cover 覆盖框：图与图钉同一坐标系 */}
+      {/* 弥散补边层：同图放大模糊铺满视口，主图 contain 后的空隙不露黑白边 */}
+      <img
+        aria-hidden
+        src={imgSrc}
+        alt=""
+        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-55 blur-xl"
+        draggable={false}
+      />
+      <div aria-hidden className="absolute inset-0 bg-dusk/35" />
+      {/* contain 内接框：全图完整可见，图与图钉同一坐标系 */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 shadow-pop"
         style={{ width: box.w, height: box.h }}
       >
         <img
