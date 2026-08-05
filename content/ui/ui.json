@@ -116,7 +116,8 @@
     "stats-traits-title": "入学人设",
     "stats-tags-title": "人设轨迹",
     "stats-tags-empty": "你的选择会在这里留下痕迹",
-    "stats-tags-awakened": "已觉醒"
+    "stats-tags-awakened": "已觉醒",
+    "panel-close": "收起"
   },
   "level-page": {
     "back": "返回主页",
@@ -155,16 +156,16 @@
     "done": "开始大一",
     "replay": "新手引导",
     "progress": "{step}/{total}",
-    "step-mainline-title": "主线任务",
-    "step-mainline-body": "这些是教学关：不耗行动点，全部完成才能结束这学期。等会儿点「进入」开始第一个。",
-    "step-electives-title": "行动板 · 选修",
-    "step-electives-body": "每学期只有 3 个行动点，全花在这里。点数花在哪，你的学期就长成什么样。",
-    "step-rail-title": "你的状态",
-    "step-rail-body": "行动点、五项属性、入学时立的目标、已解锁的 AI 能力，随时在这一栏看。",
-    "step-nav-title": "随时翻看",
-    "step-nav-body": "「文件夹」攒着你的作品、提示词模板和档案；「记录」是你做过的每一件事。",
-    "step-settle-title": "结束学期",
-    "step-settle-body": "主线全部完成后这个按钮会亮起，进入学期结算。现在，开始吧。"
+    "step-mainline-title": "出门 · 校园地图",
+    "step-mainline-body": "主线要办的事都在校园里。点开地图，亮起的地标就是这学期要去的地方——不耗行动点，全部完成才能结束学期。",
+    "step-electives-title": "书桌 · 本学期",
+    "step-electives-body": "书桌上是你的课表和行动板：每学期 3 个行动点全花在这里，点数花在哪，你的学期就长成什么样。",
+    "step-rail-title": "你的状态条",
+    "step-rail-body": "行动点、五项属性、平均绩点、出路目标，都在这条顶栏上，随时可见。",
+    "step-nav-title": "这间宿舍都能点",
+    "step-nav-body": "书架是你的文件夹，床头能看属性和人设，墙上的便签是你的记录。",
+    "step-settle-title": "床 · 结束学期",
+    "step-settle-body": "主线全办完，床就会亮起来——上床睡一觉，这学期就翻篇了。现在，出门吧。"
   },
   "hints": {
     "vn-click": "单击画面任意处继续",

@@ -54,6 +54,8 @@ interface CampusMapProps {
 }
 
 export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose }) => {
+  // 底图优先真图 bg-campus.jpg（生图后同名放入 public/assets 即生效），缺省回退占位 SVG
+  const [imgSrc, setImgSrc] = React.useState('/assets/bg-campus.jpg');
   const mainline = getBoard(state.semester).mainline;
   // 每个地标的当期状态：可进入的关卡（顺序解锁）/ 已完成 / 无事发生
   const locState = (locId: string) => {
@@ -75,7 +77,13 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
         className="relative w-full max-w-[1100px] overflow-hidden rounded-2xl shadow-lift"
         onClick={(e) => e.stopPropagation()}
       >
-        <img src="/assets/bg-campus.svg" alt="" className="block w-full select-none" draggable={false} />
+        <img
+          src={imgSrc}
+          onError={() => imgSrc !== '/assets/bg-campus.svg' && setImgSrc('/assets/bg-campus.svg')}
+          alt=""
+          className="block w-full select-none"
+          draggable={false}
+        />
         {/* 顶部标题条 */}
         <div className="absolute left-4 top-4 rounded-xl bg-card/85 px-4 py-2 shadow-soft backdrop-blur-md">
           <div className="text-[15px] font-semibold tracking-wide">{map['title']}</div>

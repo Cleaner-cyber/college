@@ -21,7 +21,6 @@ import {
 } from '@/engine/content';
 import { useEngine, effectiveCost, isMainlineComplete } from '@/engine/store';
 import {
-  awakenedTagIds,
   checkRate,
   conditionLabel,
   cumulativeGpa,
@@ -206,164 +205,111 @@ const AxisBar: React.FC<{ label: string; value: number; strong?: boolean }> = ({
   </div>
 );
 
-const StatusRail: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
-  <div className="flex flex-col gap-4">
-    <Panel title={home['action-points']}>
-      <div className="flex items-center gap-2">
+/** 顶栏 HUD 数值条（留学模拟器式）：行动点 / 五轴 / 绩点 / 出路，一条看全 */
+const HudStrip: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const gpa = cumulativeGpa(state);
+  const path = getPath(state.pathGoal);
+  return (
+    <div className="flex min-w-0 flex-wrap items-center gap-x-5 gap-y-1 text-[13px]">
+      <span className="flex items-center gap-1.5">
+        <span className="text-xs text-paper/60">{home['action-points']}</span>
         {Array.from({ length: 3 }).map((_, i) => (
           <span
             key={i}
-            className={`inline-block h-4 w-4 rounded-full transition-colors ${
-              i < state.actionPoints
-                ? 'bg-accent shadow-glow animate-breathe'
-                : 'border border-line bg-paper'
+            className={`inline-block h-2.5 w-2.5 rounded-full ${
+              i < state.actionPoints ? 'bg-accent shadow-glow' : 'bg-paper/25'
             }`}
           />
         ))}
-        <span className="ml-1 text-sm font-semibold">{state.actionPoints}/3</span>
-      </div>
-    </Panel>
-    <Panel title={home['stats-title']}>
-      <div className="flex flex-col gap-2.5">
-        {VISIBLE_AXES.map((a) => (
-          <AxisBar key={a} label={ui.axes[a]} value={state.axes[a]} />
-        ))}
-        <AxisBar label={ui.axes.energy} value={state.axes.energy} strong />
-        <div className="mt-1 flex items-baseline justify-between border-t border-line pt-2">
-          <span className="text-xs text-ink-soft">🎓 {home['hud-gpa-label']}</span>
-          <span className="text-[15px] font-semibold tabular-nums text-accent">
-            {cumulativeGpa(state)?.toFixed(2) ?? home['hud-gpa-empty']}
+      </span>
+      {VISIBLE_AXES.map((a) => (
+        <span key={a} className="flex items-baseline gap-1">
+          <span className="text-xs text-paper/60">{ui.axes[a]}</span>
+          <span className="font-semibold tabular-nums">{state.axes[a]}</span>
+        </span>
+      ))}
+      <span className="flex items-baseline gap-1">
+        <span className="text-xs text-paper/60">{ui.axes.energy}</span>
+        <span className="font-semibold tabular-nums text-accent">{state.axes.energy}</span>
+      </span>
+      <span className="flex items-baseline gap-1">
+        <span className="text-xs text-paper/60">{home['hud-gpa-label']}</span>
+        <span className="font-semibold tabular-nums text-accent">
+          {gpa?.toFixed(2) ?? home['hud-gpa-empty']}
+        </span>
+      </span>
+      {path && (
+        <span className="flex items-baseline gap-1">
+          <span className="text-xs text-paper/60">{home['hud-path-label']}</span>
+          <span className="font-semibold">
+            {path.icon} {path.name}
           </span>
-        </div>
-      </div>
-    </Panel>
-    <Panel title={home['stats-flag-title']}>
-      <dl className="grid grid-cols-1 gap-1.5 text-sm">
-        {state.pathGoal && (
-          <div className="flex items-baseline justify-between">
-            <dt className="text-xs text-ink-soft">{home['hud-path-label']}</dt>
-            <dd className="font-semibold text-accent">
-              {getPath(state.pathGoal)?.icon} {getPath(state.pathGoal)?.name}
-            </dd>
-          </div>
-        )}
-        {(
-          [
-            ['stats-flag-salary', state.flag.salaryBand],
-            ['stats-flag-city', state.flag.city],
-            ['stats-flag-work', state.flag.workStyle],
-            ['stats-flag-time', state.flag.offTime],
-          ] as const
-        ).map(([k, v]) => (
-          <div key={k} className="flex items-baseline justify-between">
-            <dt className="text-xs text-ink-soft">{home[k]}</dt>
-            <dd className="font-medium">{v}</dd>
-          </div>
-        ))}
-      </dl>
-    </Panel>
-    <Panel title={home['hud-persona-title']}>
-      <PersonaChips state={state} />
-    </Panel>
-    <Panel title={home['stats-abilities-title']}>
-      {state.abilities.length === 0 ? (
-        <p className="text-xs leading-relaxed text-ink-soft">{home['stats-abilities-empty']}</p>
-      ) : (
-        <div className="flex flex-wrap gap-1.5">
-          {state.abilities.map((a) => (
-            <span
-              key={a}
-              className="rounded-lg bg-accent-soft px-2 py-1 text-xs font-medium text-accent"
-            >
-              ⚡ {ui.abilities[a] ?? a}
-            </span>
-          ))}
-        </div>
-      )}
-    </Panel>
-  </div>
-);
-
-/** 右栏「我的人设」：入学特质 + 已觉醒人设卡；养成中的显示进度点（像属性一样常驻可见） */
-const PersonaChips: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
-  const awakened = awakenedTagIds(state.tags);
-  const growing = tagDefs.filter((t) => !awakened.includes(t.id) && (state.tags[t.id] ?? 0) > 0);
-  if (state.traits.length === 0 && awakened.length === 0 && growing.length === 0) {
-    return <p className="text-xs leading-relaxed text-ink-soft">{home['hud-persona-empty']}</p>;
-  }
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-1.5">
-        {state.traits.map((id) => (
-          <span key={id} className="rounded-lg border border-line bg-paper px-2 py-1 text-xs">
-            {getTrait(id)?.name ?? id}
-          </span>
-        ))}
-        {awakened.map((id) => (
-          <span key={id} className="rounded-lg bg-accent-soft px-2 py-1 text-xs font-medium text-accent">
-            ★ {tagDefs.find((t) => t.id === id)?.name ?? id}
-          </span>
-        ))}
-      </div>
-      {growing.length > 0 && (
-        <div className="flex flex-col gap-1">
-          {growing.map((t) => (
-            <div key={t.id} className="flex items-center justify-between text-[11px] text-ink-soft">
-              <span>{t.name}</span>
-              <span className="tabular-nums">
-                {'●'.repeat(state.tags[t.id] ?? 0)}
-                {'○'.repeat(Math.max(0, t.threshold - (state.tags[t.id] ?? 0)))}
-              </span>
-            </div>
-          ))}
-        </div>
+        </span>
       )}
     </div>
   );
 };
 
-// ---------- 左侧导航 ----------
-
-const NavIcon: React.FC<{ tab: Tab }> = ({ tab }) => {
-  const paths: Record<Tab, React.ReactNode> = {
-    semester: (
-      <>
-        <rect x="3" y="4" width="14" height="13" rx="2" />
-        <path d="M6.5 9l2 2 4-4M6.5 13.5h7" />
-      </>
-    ),
-    folder: <path d="M3 6a2 2 0 0 1 2-2h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" />,
-    stats: <path d="M4 16V9M10 16V4M16 16v-5" />,
-    log: <path d="M5 5h10M5 10h10M5 15h6" />,
-  };
+/** 场景底图：优先真图 bg-dorm.jpg（生图后同名放入 public/assets 即生效，不改代码），缺省回退占位 SVG */
+const SceneImage: React.FC = () => {
+  const [src, setSrc] = useState('/assets/bg-dorm.jpg');
   return (
-    <svg
-      width="17"
-      height="17"
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="shrink-0"
-    >
-      {paths[tab]}
-    </svg>
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
+      <img
+        src={src}
+        onError={() => src !== '/assets/bg-dorm.svg' && setSrc('/assets/bg-dorm.svg')}
+        alt=""
+        className="h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-ink/10" />
+    </div>
   );
 };
 
-const NavColumn: React.FC<{
-  tab: Tab;
-  onTab: (t: Tab) => void;
-  state: Readonly<PlayerState>;
-}> = ({ tab, onTab, state }) => {
-  const items: [Tab, string][] = [
-    ['semester', home['nav-semester']],
-    ['folder', home['nav-folder']],
-    ['stats', home['nav-stats']],
-    ['log', home['nav-log']],
-  ];
+/** 场景热点：底图上的可点击地标（图钉圆标 + 标签 + 角标）——「底图 + 按钮」式主页的基本件 */
+const SceneChip: React.FC<{
+  x: number;
+  y: number;
+  icon: string;
+  label: string;
+  badge?: number;
+  active?: boolean;
+  disabled?: boolean;
+  tour?: string;
+  onClick: () => void;
+}> = ({ x, y, icon, label, badge, active = false, disabled = false, tour, onClick }) => (
+  <div
+    className="pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2"
+    style={{ left: `${x}%`, top: `${y}%` }}
+    data-tour={tour}
+  >
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3.5 shadow-lift backdrop-blur-md transition ${
+        disabled ? 'bg-card/55 text-ink-soft/70' : 'bg-card/90 hover:-translate-y-0.5 hover:shadow-pop'
+      }`}
+    >
+      <span
+        className={`relative flex h-8 w-8 items-center justify-center rounded-full text-[15px] ${
+          active ? 'animate-breathe bg-accent text-white shadow-glow' : 'bg-accent-soft'
+        }`}
+      >
+        {icon}
+        {badge !== undefined && badge > 0 && (
+          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-white shadow-soft">
+            {badge}
+          </span>
+        )}
+      </span>
+      <span className="whitespace-nowrap text-[13px] font-medium">{label}</span>
+    </button>
+  </div>
+);
+
+// ---------- 四年时间轴（属性页展示） ----------
+
+const TimelinePanel: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const timeline = home['timeline'].split('｜');
   const TL_IDX: Record<string, number> = {
     prologue: 0, y1s1: 1, 'y1s1-end': 1, y1s2: 2, 'y1s2-end': 2,
@@ -371,48 +317,26 @@ const NavColumn: React.FC<{
   };
   const currentIdx = TL_IDX[state.semester] ?? 1;
   return (
-    <div className="flex flex-col gap-6">
-      <nav className="flex flex-col gap-1">
-        {items.map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => onTab(key)}
-            className={`flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-left text-[15px] transition ${
-              tab === key ? 'bg-ink font-medium text-paper shadow-soft' : 'text-ink hover:bg-line/60'
+    <Panel title={home['timeline-title']}>
+      <ol className="relative flex flex-col gap-1 px-1 before:absolute before:bottom-2 before:left-[6.5px] before:top-2 before:w-px before:bg-line">
+        {timeline.map((t, i) => (
+          <li
+            key={t}
+            className={`flex items-center gap-2 text-xs ${
+              i === currentIdx ? 'font-semibold text-accent' : i < currentIdx ? 'text-ink' : 'text-ink-soft/50'
             }`}
           >
-            <NavIcon tab={key} />
-            {label}
-            {key === 'folder' && state.archive.length > 0 && (
-              <span className="ml-auto text-xs opacity-70">{state.archive.length}</span>
-            )}
-          </button>
-        ))}
-      </nav>
-      <div>
-        <div className="mb-2 px-1 text-[11px] tracking-widest text-ink-soft">
-          {home['timeline-title']}
-        </div>
-        <ol className="relative flex flex-col gap-1 px-1 before:absolute before:bottom-2 before:left-[6.5px] before:top-2 before:w-px before:bg-line">
-          {timeline.map((t, i) => (
-            <li
-              key={t}
-              className={`flex items-center gap-2 text-xs ${
-                i === currentIdx ? 'font-semibold text-accent' : i < currentIdx ? 'text-ink' : 'text-ink-soft/50'
+            <span
+              className={`relative z-10 inline-block h-1.5 w-1.5 rounded-full ring-2 ring-paper ${
+                i === currentIdx ? 'bg-accent shadow-glow' : i < currentIdx ? 'bg-ink' : 'bg-line'
               }`}
-            >
-              <span
-                className={`relative z-10 inline-block h-1.5 w-1.5 rounded-full ring-2 ring-paper ${
-                  i === currentIdx ? 'bg-accent shadow-glow' : i < currentIdx ? 'bg-ink' : 'bg-line'
-                }`}
-              />
-              {t}
-              {i === currentIdx && <span className="text-[10px]">◀ {home['timeline-current']}</span>}
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
+            />
+            {t}
+            {i === currentIdx && <span className="text-[10px]">◀ {home['timeline-current']}</span>}
+          </li>
+        ))}
+      </ol>
+    </Panel>
   );
 };
 
@@ -421,13 +345,7 @@ const NavColumn: React.FC<{
 const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const navigate = useNavigate();
   const runSimAction = useEngine((s) => s.runSimAction);
-  const closeActionResult = useEngine((s) => s.closeActionResult);
-  const actionResult = useEngine((s) => s.actionResult);
   const drawSimEvent = useEngine((s) => s.drawSimEvent);
-  const resolveSimEvent = useEngine((s) => s.resolveSimEvent);
-  const closeSimEvent = useEngine((s) => s.closeSimEvent);
-  const simEvent = useEngine((s) => s.simEvent);
-  const simResolution = useEngine((s) => s.simResolution);
   const board = getBoard(state.semester);
   const actionViews = visibleActions(state);
   const [mapOpen, setMapOpen] = useState(false);
@@ -444,20 +362,6 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   // 过日子：本学期事件池余量（含连锁）
   const drawable = drawableCount(state);
   const canDraw = drawable > 0 && state.actionPoints >= 1;
-  const simOptionViews: EventOptionView[] = (simEvent?.options ?? []).map((o) => ({
-    label: o.label,
-    disabled: o.require ? !evalCondition(state, o.require) : false,
-    requireHint: o.require
-      ? simCopy('require-hint', { cond: conditionLabel(o.require) })
-      : undefined,
-    checkHint: o.check
-      ? simCopy('check-hint', {
-          axis: ui.axes[o.check.axis],
-          rate: Math.round(checkRate(state.axes[o.check.axis], o.check.dc) * 100),
-        })
-      : undefined,
-  }));
-
   if (state.semester === 'grad-end') {
     return <SemesterEnded />;
   }
@@ -660,7 +564,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
       </Panel>
       </div>
 
-      <div className="flex items-center justify-end gap-4" data-tour="settle">
+      <div className="flex items-center justify-end gap-4">
         <span className="text-sm text-ink-soft">
           {mainlineDone ? home['settle-hint-ready'] : home['settle-hint-mainline']}
         </span>
@@ -669,6 +573,34 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         </Button>
       </div>
 
+    </div>
+  );
+};
+
+/** 模拟层弹窗（事件卡 / 行动结果）：挂在页面根层——不能嵌进 backdrop-blur 的面板浮层
+ * （backdrop-filter 会劫持 fixed 定位的包含块，导致弹窗错位） */
+const SimModals: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const closeActionResult = useEngine((s) => s.closeActionResult);
+  const actionResult = useEngine((s) => s.actionResult);
+  const resolveSimEvent = useEngine((s) => s.resolveSimEvent);
+  const closeSimEvent = useEngine((s) => s.closeSimEvent);
+  const simEvent = useEngine((s) => s.simEvent);
+  const simResolution = useEngine((s) => s.simResolution);
+  const simOptionViews: EventOptionView[] = (simEvent?.options ?? []).map((o) => ({
+    label: o.label,
+    disabled: o.require ? !evalCondition(state, o.require) : false,
+    requireHint: o.require
+      ? simCopy('require-hint', { cond: conditionLabel(o.require) })
+      : undefined,
+    checkHint: o.check
+      ? simCopy('check-hint', {
+          axis: ui.axes[o.check.axis],
+          rate: Math.round(checkRate(state.axes[o.check.axis], o.check.dc) * 100),
+        })
+      : undefined,
+  }));
+  return (
+    <>
       {actionResult && <ActionResultModal res={actionResult} onClose={closeActionResult} />}
       {simEvent && (
         <EventModal
@@ -679,7 +611,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
           onClose={closeSimEvent}
         />
       )}
-    </div>
+    </>
   );
 };
 
@@ -1051,6 +983,38 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
 
 const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   <div className="flex flex-col gap-4">
+    <TimelinePanel state={state} />
+    <Panel title={home['stats-flag-title']}>
+      <dl className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
+        {state.pathGoal && (
+          <div className="flex items-baseline justify-between">
+            <dt className="text-xs text-ink-soft">{home['hud-path-label']}</dt>
+            <dd className="font-semibold text-accent">
+              {getPath(state.pathGoal)?.icon} {getPath(state.pathGoal)?.name}
+            </dd>
+          </div>
+        )}
+        <div className="flex items-baseline justify-between">
+          <dt className="text-xs text-ink-soft">{home['hud-gpa-label']}</dt>
+          <dd className="font-semibold tabular-nums text-accent">
+            {cumulativeGpa(state)?.toFixed(2) ?? home['hud-gpa-empty']}
+          </dd>
+        </div>
+        {(
+          [
+            ['stats-flag-salary', state.flag.salaryBand],
+            ['stats-flag-city', state.flag.city],
+            ['stats-flag-work', state.flag.workStyle],
+            ['stats-flag-time', state.flag.offTime],
+          ] as const
+        ).map(([k, v]) => (
+          <div key={k} className="flex items-baseline justify-between">
+            <dt className="text-xs text-ink-soft">{home[k]}</dt>
+            <dd className="font-medium">{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </Panel>
     <Panel title={home['stats-title']}>
       <div className="flex flex-col gap-3">
         {VISIBLE_AXES.map((a) => (
@@ -1156,32 +1120,40 @@ const LogTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
 export const HomePage: React.FC = () => {
   const state = useEngine((s) => s.state)!;
   const { email, signOut } = useAuth();
-  const [tab, setTab] = useState<Tab>('semester');
+  const navigate = useNavigate();
+  const [panel, setPanel] = useState<Tab | null>(null);
+  const [mapOpen, setMapOpen] = useState(false);
   // 首次进入 Home 自动播放新手引导（可跳过；顶栏可重看）
   const [tourOpen, setTourOpen] = useState(
     () => state.semester === 'y1s1' && !localStorage.getItem(TOUR_KEY),
   );
   const major = getMajor(state.player.majorId);
+  const board = getBoard(state.semester);
+  const mainlineDone = isMainlineComplete(state);
+  const mainlineLeft = board.mainline.filter((m) => !state.completedActions.includes(m.id)).length;
+  const graduated = state.semester === 'grad-end';
 
   return (
-    <div className="min-h-dvh">
-      {/* 宿舍场景背景（v2.6 场景化）：所有面板半透明叠在上面 */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <img src="/assets/bg-dorm.svg" alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-paper/45" />
-      </div>
-      <header className="sticky top-0 z-20 border-b border-line/70 bg-paper/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3.5">
-          <div className="flex items-baseline gap-4">
-            <span className="text-lg font-semibold tracking-widest">{ui['app-title']}</span>
-            <span className="text-sm text-ink-soft">{getBoard(state.semester).header}</span>
+    <div className="relative min-h-dvh overflow-hidden">
+      <SceneImage />
+
+      {/* 顶栏 HUD 数值条 */}
+      <header
+        className="relative z-20 border-b border-ink/30 bg-ink/70 text-paper backdrop-blur-md"
+        data-tour="rail"
+      >
+        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-6 px-6 py-2.5">
+          <div className="flex shrink-0 items-baseline gap-3">
+            <span className="text-[16px] font-semibold tracking-widest">{ui['app-title']}</span>
+            <span className="text-xs text-paper/60">{board.header}</span>
           </div>
-          <div className="flex items-center gap-4 text-sm">
+          <HudStrip state={state} />
+          <div className="flex shrink-0 items-center gap-3 text-xs">
             {state.semester === 'y1s1' && (
               <button
-                className="rounded-full border border-line bg-card px-2.5 py-1 text-xs text-ink-soft transition hover:border-accent hover:text-accent"
+                className="rounded-full border border-paper/30 px-2 py-0.5 text-paper/80 transition hover:border-accent hover:text-accent"
                 onClick={() => {
-                  setTab('semester');
+                  setPanel(null);
                   setTourOpen(true);
                 }}
               >
@@ -1196,16 +1168,16 @@ export const HomePage: React.FC = () => {
             </span>
             {isCloudMode ? (
               <>
-                <span className="text-xs text-ink-soft">{email}</span>
+                <span className="text-paper/50">{email}</span>
                 <button
-                  className="text-xs text-ink-soft underline underline-offset-4"
+                  className="text-paper/70 underline underline-offset-4"
                   onClick={() => void signOut()}
                 >
                   {(ui.auth as Record<string, string>)['logout']}
                 </button>
               </>
             ) : (
-              <span className="rounded bg-line px-2 py-0.5 text-xs text-ink-soft">
+              <span className="rounded bg-paper/15 px-2 py-0.5 text-paper/70">
                 {(ui.auth as Record<string, string>)['local-mode-title']}
               </span>
             )}
@@ -1213,20 +1185,81 @@ export const HomePage: React.FC = () => {
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-[1200px] grid-cols-[200px_minmax(0,1fr)_280px] gap-6 px-6 py-6">
-        <div data-tour="nav">
-          <NavColumn tab={tab} onTab={setTab} state={state} />
-        </div>
-        <main className="animate-fade-up" key={tab}>
-          {tab === 'semester' && <SemesterTab state={state} />}
-          {tab === 'folder' && <FolderTab state={state} />}
-          {tab === 'stats' && <StatsTab state={state} />}
-          {tab === 'log' && <LogTab state={state} />}
-        </main>
-        <div data-tour="rail">
-          <StatusRail state={state} />
-        </div>
+      {/* 场景热点：主页全部入口都长在底图上（底图 + 按钮式主页） */}
+      <div className="pointer-events-none absolute inset-0 z-10" data-tour="nav">
+        <SceneChip
+          x={33} y={34} icon="🗺️"
+          label={home['map-open-btn']}
+          badge={mainlineLeft}
+          active={mainlineLeft > 0}
+          tour="mainline"
+          onClick={() => setMapOpen(true)}
+        />
+        <SceneChip
+          x={55} y={60} icon="🗂️"
+          label={home['nav-semester']}
+          badge={state.actionPoints}
+          active={mainlineDone && state.actionPoints > 0 && !graduated}
+          tour="electives"
+          onClick={() => setPanel('semester')}
+        />
+        <SceneChip x={15} y={31} icon="📁" label={home['nav-folder']} badge={state.archive.length} onClick={() => setPanel('folder')} />
+        <SceneChip x={11} y={60} icon="📊" label={home['nav-stats']} onClick={() => setPanel('stats')} />
+        <SceneChip x={76} y={38} icon="📝" label={home['nav-log']} onClick={() => setPanel('log')} />
+        <SceneChip
+          x={13} y={80} icon="🛏️"
+          label={graduated ? home['view-ending'] : home['settle-btn']}
+          active={mainlineDone || graduated}
+          disabled={!mainlineDone && !graduated}
+          tour="settle"
+          onClick={() => navigate('/settlement')}
+        />
       </div>
+
+      {/* 毕业态：场景中央的毕业卡 */}
+      {graduated && !panel && (
+        <div className="relative z-10 mx-auto mt-14 max-w-md px-6">
+          <SemesterEnded />
+        </div>
+      )}
+
+      {/* 面板浮层：点热点弹出对应内容 */}
+      {panel && (
+        <div
+          className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-ink/45 p-6 backdrop-blur-[2px]"
+          onClick={() => setPanel(null)}
+        >
+          <div className="w-full max-w-[860px] pb-10 pt-2" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-3 flex justify-end">
+              <button
+                className="rounded-full bg-card/90 px-4 py-1.5 text-sm shadow-soft transition hover:text-accent"
+                onClick={() => setPanel(null)}
+              >
+                ✕ {home['panel-close']}
+              </button>
+            </div>
+            <div className="animate-fade-up">
+              {panel === 'semester' && <SemesterTab state={state} />}
+              {panel === 'folder' && <FolderTab state={state} />}
+              {panel === 'stats' && <StatsTab state={state} />}
+              {panel === 'log' && <LogTab state={state} />}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {mapOpen && (
+        <CampusMap
+          state={state}
+          onClose={() => setMapOpen(false)}
+          onEnter={(id) => {
+            setMapOpen(false);
+            navigate(`/level/${id}`);
+          }}
+        />
+      )}
+
+      <SimModals state={state} />
 
       {tourOpen && <HomeTour onClose={() => setTourOpen(false)} />}
     </div>
