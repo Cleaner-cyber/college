@@ -1187,8 +1187,9 @@ export const HomePage: React.FC = () => {
 
       {/* 场景热点：主页全部入口都长在底图上（底图 + 按钮式主页） */}
       <div className="pointer-events-none absolute inset-0 z-10" data-tour="nav">
+        {/* 坐标按实景底图布局规范（docs/04 底图版式）：窗=中上、桌/笔记本=中下、书架=左上、床=左下、便签墙=右上 */}
         <SceneChip
-          x={33} y={34} icon="🗺️"
+          x={52} y={28} icon="🗺️"
           label={home['map-open-btn']}
           badge={mainlineLeft}
           active={mainlineLeft > 0}
@@ -1196,18 +1197,18 @@ export const HomePage: React.FC = () => {
           onClick={() => setMapOpen(true)}
         />
         <SceneChip
-          x={55} y={60} icon="🗂️"
+          x={55} y={73} icon="🗂️"
           label={home['nav-semester']}
           badge={state.actionPoints}
           active={mainlineDone && state.actionPoints > 0 && !graduated}
           tour="electives"
           onClick={() => setPanel('semester')}
         />
-        <SceneChip x={15} y={31} icon="📁" label={home['nav-folder']} badge={state.archive.length} onClick={() => setPanel('folder')} />
-        <SceneChip x={11} y={60} icon="📊" label={home['nav-stats']} onClick={() => setPanel('stats')} />
-        <SceneChip x={76} y={38} icon="📝" label={home['nav-log']} onClick={() => setPanel('log')} />
+        <SceneChip x={12} y={28} icon="📁" label={home['nav-folder']} badge={state.archive.length} onClick={() => setPanel('folder')} />
+        <SceneChip x={8} y={64} icon="📊" label={home['nav-stats']} onClick={() => setPanel('stats')} />
+        <SceneChip x={87} y={28} icon="📝" label={home['nav-log']} onClick={() => setPanel('log')} />
         <SceneChip
-          x={13} y={80} icon="🛏️"
+          x={13} y={88} icon="🛏️"
           label={graduated ? home['view-ending'] : home['settle-btn']}
           active={mainlineDone || graduated}
           disabled={!mainlineDone && !graduated}
