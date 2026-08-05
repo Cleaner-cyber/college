@@ -9,19 +9,19 @@ import { getBoard, ui } from '@/engine/content';
 
 const map = (ui as Record<string, unknown>)['map'] as Record<string, string>;
 
-/** 地标表：坐标为相对 bg-campus.svg 的百分比（与资产内建筑中心对齐） */
+/** 地标表：坐标为相对底图 bg-campus.jpg 的百分比（按成图建筑落位校准；换图后需复核） */
 const LOCATIONS: { id: string; x: number; y: number }[] = [
-  { id: 'gate', x: 8, y: 80 },
-  { id: 'jiaowu', x: 30, y: 30 },
-  { id: 'teach', x: 48, y: 20 },
-  { id: 'lib', x: 68, y: 30 },
-  { id: 'lab', x: 85, y: 42 },
-  { id: 'activity', x: 20, y: 55 },
-  { id: 'lake', x: 50, y: 50 },
-  { id: 'lang', x: 38, y: 70 },
-  { id: 'career', x: 63, y: 70 },
-  { id: 'innov', x: 82, y: 78 },
-  { id: 'dorm', x: 10, y: 90 },
+  { id: 'gate', x: 24, y: 82 },
+  { id: 'jiaowu', x: 28, y: 30 },
+  { id: 'teach', x: 50, y: 17 },
+  { id: 'lib', x: 78, y: 27 },
+  { id: 'lab', x: 88, y: 47 },
+  { id: 'activity', x: 18, y: 46 },
+  { id: 'lake', x: 52, y: 46 },
+  { id: 'lang', x: 40, y: 66 },
+  { id: 'career', x: 60, y: 72 },
+  { id: 'innov', x: 84, y: 76 },
+  { id: 'dorm', x: 13, y: 68 },
 ];
 
 /** 主线关卡 → 地标（结构映射，非文案） */
