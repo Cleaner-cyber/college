@@ -18,39 +18,6 @@
   animation: steam-rise 3.8s ease-out infinite;
 }
 
-/* ── 窗外行人 / 自行车：长周期穿越，绝大部分时间不在场 ── */
-@keyframes stroll-ltr {
-  0% { transform: translateX(-4vw); opacity: 0; }
-  2% { opacity: 0.5; }
-  26% { opacity: 0.5; }
-  28% { transform: translateX(46vw); opacity: 0; }
-  100% { transform: translateX(46vw); opacity: 0; }
-}
-@keyframes ride-rtl {
-  0% { transform: translateX(4vw) scaleX(-1); opacity: 0; }
-  1.5% { opacity: 0.55; }
-  11% { opacity: 0.55; }
-  12.5% { transform: translateX(-46vw) scaleX(-1); opacity: 0; }
-  100% { transform: translateX(-46vw) scaleX(-1); opacity: 0; }
-}
-@keyframes walk-bob {
-  0%, 100% { margin-top: 0; }
-  50% { margin-top: -1.5px; }
-}
-.dorm-walker {
-  position: absolute;
-  color: rgba(24, 14, 9, 0.6);
-  filter: blur(0.6px);
-  animation: stroll-ltr 34s linear infinite;
-}
-.dorm-walker > svg { animation: walk-bob 0.55s ease-in-out infinite; }
-.dorm-rider {
-  position: absolute;
-  color: rgba(24, 14, 9, 0.62);
-  filter: blur(0.6px);
-  animation: ride-rtl 41s linear infinite;
-}
-
 /* ── 远处楼宇的窗灯：慢闪 ── */
 @keyframes window-twinkle {
   0%, 100% { opacity: 0.15; }
@@ -106,8 +73,6 @@
 /* 弱动效偏好：全部停掉，回到静态布景 */
 @media (prefers-reduced-motion: reduce) {
   .dorm-steam,
-  .dorm-walker,
-  .dorm-rider,
   .dorm-winlight,
   .dorm-lampglow,
   .dorm-screenglow,

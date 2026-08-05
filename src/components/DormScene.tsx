@@ -7,22 +7,68 @@
 import React from 'react';
 import './dorm-scene.css';
 
-/** 简笔行人剪影（窗外远景，深色压暗+轻模糊后融入照片） */
-const WalkerSvg: React.FC<{ size?: number }> = ({ size = 22 }) => (
-  <svg width={size * 0.5} height={size} viewBox="0 0 12 24" fill="currentColor" aria-hidden>
-    <circle cx="6" cy="3" r="2.4" />
-    <path d="M4 6.5h4l1 7h-2l.6 9h-2l-.6-8-.6 8h-2l.6-9h-2z" />
-  </svg>
-);
-
-/** 简笔骑车剪影 */
-const RiderSvg: React.FC<{ size?: number }> = ({ size = 20 }) => (
-  <svg width={size * 1.5} height={size} viewBox="0 0 36 24" fill="currentColor" aria-hidden>
-    <circle cx="8" cy="18" r="5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-    <circle cx="28" cy="18" r="5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-    <path d="M8 18 L15 10 L24 10 L28 18 M15 10 L18 18 M20 4 a2.2 2.2 0 1 0 .1 0 M19 7 l-3 3 M21 7 l3 4" stroke="currentColor" strokeWidth="1.8" fill="none" />
-  </svg>
-);
+/**
+ * 窗外交通层：光点沿照片里真实的道路走线滑行（SVG animateMotion，viewBox 随窗框拉伸自动贴路）。
+ * 俯瞰远景里可信的运动是"路上的灯"：车头灯（暖白）、尾灯（暗红）、极小的行人暗点沿步道缓行。
+ * 路径坐标 = 窗框区域内 0-1000 归一化，按 bg-dorm.jpg 的马路/步道描线。
+ */
+const WindowTraffic: React.FC = () => {
+  // 一次穿越的时段占整个周期的比例（其余时间路上没车 →「时不时」）
+  const mover = (
+    path: string,
+    dur: number,
+    begin: number,
+    crossRatio: number,
+    core: string,
+    r: number,
+    halo: string,
+    haloR: number,
+    peak: number,
+  ) => (
+    <g opacity="0">
+      <circle r={haloR} fill={halo} opacity="0.5" />
+      <circle r={r} fill={core} />
+      <animateMotion
+        dur={`${dur}s`}
+        begin={`${begin}s`}
+        repeatCount="indefinite"
+        calcMode="linear"
+        keyPoints={`0;1;1`}
+        keyTimes={`0;${crossRatio};1`}
+        path={path}
+      />
+      <animate
+        attributeName="opacity"
+        dur={`${dur}s`}
+        begin={`${begin}s`}
+        repeatCount="indefinite"
+        values={`0;${peak};${peak};0;0`}
+        keyTimes={`0;0.02;${crossRatio - 0.02};${crossRatio};1`}
+      />
+    </g>
+  );
+  // 主干道（窗底路灯一线，左→右微抬）/ 近侧车道（右→左）/ 公园步道（树间灯带）
+  const ROAD_LTR = 'M 15 950 C 350 944, 650 938, 985 930';
+  const ROAD_RTL = 'M 985 966 C 650 971, 350 975, 15 979';
+  const WALKWAY = 'M 300 886 C 420 880, 540 876, 660 872';
+  return (
+    <svg
+      className="absolute inset-0 h-full w-full"
+      viewBox="0 0 1000 1000"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      {/* 车头灯：暖白光点 + 光晕，两辆错峰 */}
+      {mover(ROAD_LTR, 34, 0, 0.4, '#FFE7C0', 4, '#FFC98A', 9, 0.9)}
+      {mover(ROAD_LTR, 47, 21, 0.26, '#FFEACB', 3.4, '#FFC98A', 7.5, 0.8)}
+      {/* 尾灯：暗红，反向 */}
+      {mover(ROAD_RTL, 41, 9, 0.34, '#FF7A5C', 3.2, '#B33A2A', 6.5, 0.65)}
+      {/* 行人：步道上极小的暗点，缓慢挪动（远景比例） */}
+      {mover(WALKWAY, 52, 5, 0.55, '#241610', 3, '#241610', 0, 0.55)}
+      {mover(WALKWAY, 63, 33, 0.5, '#2B1B12', 2.6, '#2B1B12', 0, 0.5)}
+    </svg>
+  );
+};
 
 /** 三点式鸟群 */
 const BirdsSvg: React.FC = () => (
@@ -75,17 +121,8 @@ export const DormScene: React.FC = () => {
           className="absolute overflow-hidden"
           style={{ left: '31%', top: '5%', width: '50%', height: '52%' }}
         >
-          {/* 行人（两位，错峰对穿） */}
-          <div className="dorm-walker" style={{ left: '2%', bottom: '9%' }}>
-            <WalkerSvg size={20} />
-          </div>
-          <div className="dorm-walker" style={{ left: '-4%', bottom: '6%', animationDelay: '17s' }}>
-            <WalkerSvg size={24} />
-          </div>
-          {/* 自行车（反向） */}
-          <div className="dorm-rider" style={{ right: '-6%', bottom: '7%', animationDelay: '9s' }}>
-            <RiderSvg size={20} />
-          </div>
+          {/* 窗外交通：车灯/行人暗点沿照片里的道路走线滑行（俯瞰远景比例） */}
+          <WindowTraffic />
           {/* 远楼窗灯慢闪 */}
           <span className="dorm-winlight" style={{ left: '52%', top: '68%', animationDelay: '0s' }} />
           <span className="dorm-winlight" style={{ left: '78%', top: '62%', animationDelay: '1.8s', animationDuration: '6.4s' }} />
