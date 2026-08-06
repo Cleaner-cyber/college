@@ -53,6 +53,22 @@ const LOC_ICONS: Record<string, React.ReactNode> = {
   dorm: <Home size={16} strokeWidth={1.75} />,
 };
 
+/** 建筑轮廓多边形（% 坐标，按 bg-campus.jpg 网格描点；换图后需重描）：
+ * 高亮时用 clip-path 把该建筑的像素单独提亮并沿轮廓打光——等效抠图，无需图片切割 */
+const BUILDING_POLY: Record<string, string> = {
+  teach: '40% 28%, 40% 17%, 48.5% 16%, 49% 5.5%, 52.5% 5.5%, 53% 16%, 56.5% 17%, 56.5% 28%',
+  lib: '63% 32%, 64% 22%, 71% 18%, 88% 18%, 93% 24%, 93% 33%, 82% 37%, 68% 36%',
+  jiaowu: '21% 32%, 21% 27%, 24% 24%, 33% 24%, 36% 27%, 36% 33%, 29% 35%',
+  lab: '80% 53%, 80% 43%, 84% 40%, 93% 40%, 95% 44%, 95% 55%, 88% 57%',
+  activity: '10% 50%, 10% 43%, 13% 39%, 20% 38%, 24% 42%, 24% 50%, 18% 53%',
+  lake: '45% 49%, 46% 42%, 50% 40%, 54% 41%, 56% 45%, 55% 49%, 50% 51%',
+  lang: '32% 71%, 32% 64%, 36% 60%, 43% 60%, 46% 64%, 46% 72%, 40% 75%',
+  career: '53% 76%, 53% 68%, 56% 64%, 63% 64%, 65% 68%, 65% 77%, 59% 80%',
+  innov: '74% 83%, 74% 73%, 79% 68%, 90% 69%, 94% 75%, 93% 86%, 83% 89%',
+  dorm: '1% 78%, 1% 62%, 6% 58%, 17% 57%, 26% 63%, 26% 78%, 14% 83%',
+  gate: '19% 88%, 19% 80%, 22% 76%, 29% 76%, 31% 80%, 31% 89%, 25% 91%',
+};
+
 /** 主线关卡 → 地标（结构映射，非文案） */
 export const LEVEL_LOC: Record<string, string> = {
   'course-select': 'jiaowu',
@@ -154,23 +170,32 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
           draggable={false}
         />
 
-        {/* 当期建筑高亮：琥珀光斑呼吸（垫在图钉层下） */}
+        {/* 当期建筑高亮：clip-path 抠出该建筑像素单独提亮 + 沿轮廓琥珀光晕呼吸（垫在图钉层下） */}
         {LOCATIONS.map((loc) => {
           if (loc.id === 'dorm') return null;
           const { active } = locState(loc.id);
-          if (!active) return null;
+          const poly = BUILDING_POLY[loc.id];
+          if (!active || !poly) return null;
           return (
             <div
-              key={`halo-${loc.id}`}
+              key={`hl-${loc.id}`}
               aria-hidden
-              className="pointer-events-none absolute h-56 w-56 -translate-x-1/2 -translate-y-1/2 animate-halo"
+              className="pointer-events-none absolute inset-0"
               style={{
-                left: `${loc.x}%`,
-                top: `${loc.y}%`,
-                background:
-                  'radial-gradient(circle, rgba(255,179,92,0.38) 0%, rgba(255,179,92,0.14) 45%, transparent 68%)',
+                filter:
+                  'drop-shadow(0 0 10px rgba(255,179,92,0.9)) drop-shadow(0 0 28px rgba(255,166,77,0.55))',
               }}
-            />
+            >
+              <div className="absolute inset-0 animate-halo" style={{ clipPath: `polygon(${poly})` }}>
+                <img
+                  src={imgSrc}
+                  alt=""
+                  draggable={false}
+                  className="h-full w-full select-none"
+                  style={{ filter: 'brightness(1.32) saturate(1.18)' }}
+                />
+              </div>
+            </div>
           );
         })}
 
