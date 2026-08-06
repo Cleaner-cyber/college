@@ -180,21 +180,38 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
             <div
               key={`hl-${loc.id}`}
               aria-hidden
-              className="pointer-events-none absolute inset-0"
+              className="pointer-events-none absolute inset-0 animate-hl-blink"
               style={{
+                // 以该建筑为中心整体放大：像"被镜头点名"，比原位提亮更醒目
+                transform: 'scale(1.08)',
+                transformOrigin: `${loc.x}% ${loc.y}%`,
                 filter:
-                  'drop-shadow(0 0 10px rgba(255,179,92,0.9)) drop-shadow(0 0 28px rgba(255,166,77,0.55))',
+                  'drop-shadow(0 0 10px rgba(255,179,92,0.95)) drop-shadow(0 0 30px rgba(255,166,77,0.6))',
               }}
             >
-              <div className="absolute inset-0 animate-halo" style={{ clipPath: `polygon(${poly})` }}>
+              <div className="absolute inset-0" style={{ clipPath: `polygon(${poly})` }}>
                 <img
                   src={imgSrc}
                   alt=""
                   draggable={false}
                   className="h-full w-full select-none"
-                  style={{ filter: 'brightness(1.32) saturate(1.18)' }}
+                  style={{ filter: 'brightness(1.38) saturate(1.2)' }}
                 />
               </div>
+              {/* 沿建筑轮廓的琥珀描边（与高亮层同步闪动） */}
+              <svg
+                className="absolute inset-0 h-full w-full"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                <polygon
+                  points={poly.replace(/%/g, '')}
+                  fill="none"
+                  stroke="#FFB35C"
+                  strokeWidth="0.32"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </div>
           );
         })}

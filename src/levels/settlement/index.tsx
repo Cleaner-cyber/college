@@ -202,7 +202,17 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-lift">
+      <div className="overflow-hidden rounded-2xl border border-accent/40 bg-card shadow-lift">
+        {/* 封面：毕业典礼散场（装饰图，加载失败自动隐藏） */}
+        <img
+          src="/assets/bg-grad.jpg"
+          alt=""
+          className="h-40 w-full object-cover"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+        <div className="p-5">
         {/* 抬头：姓名 · 专业 · 总评档位 */}
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -382,6 +392,7 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
           </p>
         )}
         <p className="mt-2 text-sm font-medium text-accent">{api.copy('grad-flag-echo')}</p>
+        </div>
       </div>
       <Button full onClick={api.advance}>
         {api.nextLabel}
