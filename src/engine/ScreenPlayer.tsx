@@ -11,6 +11,22 @@ import { Typewriter } from '@/components/ui/Typewriter';
 import { FakeLoading } from '@/components/ui/FakeLoading';
 import { SpeakerTag } from '@/components/ui/SpeakerTag';
 
+/** VN 场景底图：presetAssets 若指向占位 .svg，则先试同名 .jpg 真图（生图后同名放入即替换，不改内容 JSON） */
+const SceneBg: React.FC<{ src?: string }> = ({ src }) => {
+  const preferred = src?.endsWith('.svg') ? src.replace(/\.svg$/, '.jpg') : src;
+  const [cur, setCur] = useState(preferred);
+  React.useEffect(() => setCur(preferred), [preferred]);
+  if (!cur) return null;
+  return (
+    <img
+      src={cur}
+      onError={() => src && cur !== src && setCur(src)}
+      alt=""
+      className="absolute inset-0 h-full w-full object-cover"
+    />
+  );
+};
+
 export interface FlowAPI {
   screen: Screen;
   vars: Record<string, string>;
@@ -268,7 +284,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
 
   const customRenderer = custom?.[screen.id];
 
-  // 视觉小说模式：copy 里 scene-{屏id} / sprite-{屏id} 指向 presetAssets 的场景与立绘
+  // 视觉小说模式：copy 里 scene-{屏 id} / sprite-{屏 id} 指向 presetAssets 的场景与立绘
   const sceneSrc = content.presetAssets?.[content.copy[`scene-${screen.id}`] ?? ''];
   const spriteSrc = content.presetAssets?.[content.copy[`sprite-${screen.id}`] ?? ''];
   const isVN =
@@ -307,8 +323,8 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
         onClick={handleSceneClick}
         className="relative h-[min(72dvh,660px)] w-full select-none overflow-hidden rounded-2xl border border-line shadow-lift"
       >
-        {/* 场景 */}
-        <img src={sceneSrc} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        {/* 场景：真图 .jpg 优先（生图后同名放 public/assets 即生效），缺省回退占位 .svg */}
+        <SceneBg src={sceneSrc} />
         {/* 底部渐变压暗：托住对话盒，突出立绘 */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink/25 to-transparent" />
         {/* 新手提示：单击继续 */}
