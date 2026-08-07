@@ -176,61 +176,67 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
           const { active } = locState(loc.id);
           const poly = BUILDING_POLY[loc.id];
           if (!active || !poly) return null;
-          // 箭头位置：建筑轮廓最低点下方（从下往上指向建筑，弹跳引导视线）
+          // 箭头位置：建筑轮廓最低点下方（从下往上指向建筑）
           const maxY = Math.max(...poly.split(',').map((p) => parseFloat(p.trim().split(/\s+/)[1])));
           return (
             <React.Fragment key={`hl-${loc.id}`}>
-              {/* 贴纸式高亮：建筑像素提亮 + 奶油白粗描边 + 琥珀外发光（静态，不闪） */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  filter:
-                    'drop-shadow(0 0 8px rgba(255,179,92,0.9)) drop-shadow(0 0 24px rgba(255,166,77,0.55))',
-                }}
-              >
+              {/* 柔光高亮（参照芯火村）：光晕 = 建筑自身像素抠图的强提亮拷贝整体大模糊——
+                  光的形状即建筑的形状，边缘自然羽化外溢，不出现任何几何描边或方块感；
+                  上面再叠一层清晰提亮的建筑本体；整组慢速一亮一暗 */}
+              <div aria-hidden className="pointer-events-none absolute inset-0 animate-hl-glow">
+                {/* 外圈柔光：大模糊，光溢出剪影 */}
+                <div className="absolute inset-0" style={{ filter: 'blur(18px) saturate(1.3)', opacity: 0.85 }}>
+                  <div className="absolute inset-0" style={{ clipPath: `polygon(${poly})` }}>
+                    <img
+                      src={imgSrc}
+                      alt=""
+                      draggable={false}
+                      className="h-full w-full select-none"
+                      style={{ filter: 'brightness(2.2) saturate(1.25)' }}
+                    />
+                  </div>
+                </div>
+                {/* 内圈亮边：小模糊，贴着剪影的亮包边 */}
+                <div className="absolute inset-0" style={{ filter: 'blur(6px)', opacity: 0.65 }}>
+                  <div className="absolute inset-0" style={{ clipPath: `polygon(${poly})` }}>
+                    <img
+                      src={imgSrc}
+                      alt=""
+                      draggable={false}
+                      className="h-full w-full select-none"
+                      style={{ filter: 'brightness(1.9) saturate(1.2)' }}
+                    />
+                  </div>
+                </div>
+                {/* 建筑本体提亮（清晰层，亮度克制——边界由光晕层遮盖羽化） */}
                 <div className="absolute inset-0" style={{ clipPath: `polygon(${poly})` }}>
                   <img
                     src={imgSrc}
                     alt=""
                     draggable={false}
                     className="h-full w-full select-none"
-                    style={{ filter: 'brightness(1.32) saturate(1.15)' }}
+                    style={{ filter: 'brightness(1.22) saturate(1.1)' }}
                   />
                 </div>
-                <svg
-                  className="absolute inset-0 h-full w-full"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                >
-                  <polygon
-                    points={poly.replace(/%/g, '')}
-                    fill="none"
-                    stroke="#FFF3DC"
-                    strokeWidth="0.55"
-                    strokeLinejoin="round"
-                    opacity="0.95"
-                  />
-                </svg>
               </div>
-              {/* 弹跳箭头：从建筑下方指向建筑 */}
+              {/* 引导箭头：弹跳 + 光晕脉动 */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute -translate-x-1/2 animate-arrow-bob"
-                style={{ left: `${loc.x}%`, top: `${Math.min(maxY + 2.5, 93)}%` }}
+                style={{ left: `${loc.x}%`, top: `${Math.min(maxY + 4.5, 92)}%` }}
               >
-                <svg width="44" height="44" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 3px 6px rgba(20,8,2,0.5))' }}>
+                <svg width="48" height="48" viewBox="0 0 24 24" className="animate-arrow-glow">
                   <defs>
                     <linearGradient id={`ar-${loc.id}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#FFD97A" />
+                      <stop offset="0%" stopColor="#FFE39A" />
                       <stop offset="100%" stopColor="#F0A030" />
                     </linearGradient>
                   </defs>
                   <path
                     d="M12 3 L20.5 13 H15.5 V21 H8.5 V13 H3.5 Z"
                     fill={`url(#ar-${loc.id})`}
-                    stroke="#7A4512"
-                    strokeWidth="1.1"
+                    stroke="#FFF6DF"
+                    strokeWidth="1.3"
                     strokeLinejoin="round"
                   />
                 </svg>

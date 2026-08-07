@@ -46,7 +46,10 @@ export const FakeLoading: React.FC<FakeLoadingProps> = ({ ms, tips, onDone }) =>
         />
       </div>
       {tips.length > 0 && (
-        <p key={tipIndex} className="text-sm text-ink-soft animate-fade-up">
+        <p
+          key={tipIndex}
+          className="rounded-full border border-cream/15 bg-dusk/70 px-4 py-1.5 text-sm text-cream-soft shadow-glass backdrop-blur-md animate-fade-up"
+        >
           {tips[tipIndex]}
         </p>
       )}

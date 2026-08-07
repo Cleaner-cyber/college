@@ -79,7 +79,7 @@ export const LevelPage: React.FC = () => {
 
       {leaving && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
-          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
+          <div className="w-full max-w-sm rounded-2xl bg-milk p-6 shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{copy['leave-confirm-title']}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button full onClick={() => navigate('/home')}>

@@ -194,7 +194,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
             {isSystem ? (
               <div className="py-4 text-left">{body}</div>
             ) : (
-              <div className="ml-[52px] rounded-2xl rounded-tl-md border border-line bg-card p-4 shadow-soft">
+              <div className="ml-[52px] rounded-2xl rounded-tl-md border border-line-warm bg-parchment/70 p-4 shadow-soft">
                 {body}
               </div>
             )}
@@ -351,7 +351,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
                 <button
                   key={c.id}
                   style={{ animationDelay: `${i * 70}ms` }}
-                  className="animate-fade-up rounded-xl border border-line/70 bg-paper/85 px-5 py-3 text-[15px] shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:border-accent hover:shadow-lift"
+                  className="animate-fade-up rounded-xl border border-line-warm/70 bg-milk/85 px-5 py-3 text-[15px] shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:border-accent hover:shadow-lift"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (c.setVar) setVar(c.setVar.key, c.setVar.value);
@@ -371,13 +371,13 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
             {!isSystem && (
               <span
                 className={`relative z-10 -mb-px ml-4 inline-block rounded-t-xl border border-b-0 border-line/60 px-4 py-1.5 text-sm font-semibold tracking-wide ${
-                  screen.speaker === 'senpai' ? 'bg-accent text-white' : 'bg-ink text-paper'
+                  screen.speaker === 'senpai' ? 'bg-accent text-white' : 'bg-dusk-2 text-cream'
                 }`}
               >
                 {name}
               </span>
             )}
-            <div className="relative min-h-[104px] rounded-2xl border border-line/60 bg-paper/90 px-7 py-5 shadow-pop backdrop-blur-md">
+            <div className="relative min-h-[104px] rounded-2xl border border-line-warm/60 bg-milk/90 px-7 py-5 shadow-pop backdrop-blur-md">
               {text &&
                 (useTypewriter && !forceFull ? (
                   <Typewriter
@@ -451,7 +451,16 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
         />
       ) : (
         <div key={screen.id} className="flex-1 animate-fade-up">
-          {customRenderer ? customRenderer(api) : isVN ? renderVN() : renderDefault()}
+          {customRenderer ? (
+            customRenderer(api)
+          ) : isVN ? (
+            renderVN()
+          ) : (
+            /* 默认叙事屏：垫一张暖纸卡——关卡页是深色实景底，正文不能裸排在暗底上 */
+            <div className="rounded-2xl border border-line-warm bg-milk/95 p-6 shadow-lift backdrop-blur-sm">
+              {renderDefault()}
+            </div>
+          )}
         </div>
       )}
       {overlay?.(api)}

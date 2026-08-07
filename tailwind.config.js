@@ -19,6 +19,10 @@ export default {
         'cream-soft': '#CBB394',
         ember: '#FFB35C',
         'ember-deep': '#E08A3C',
+        // 暖纸卡片（v2.8）：关卡页深色实景底上的浅色内容卡——羊皮纸/奶白替代纯白
+        parchment: '#F7EDD9',
+        milk: '#FFFBF0',
+        'line-warm': '#E7D8BC',
       },
       boxShadow: {
         soft: '0 1px 2px rgba(28,27,24,0.04), 0 4px 16px rgba(28,27,24,0.05)',
@@ -85,7 +89,17 @@ export default {
         // 引导箭头弹跳：朝建筑方向上下跳动
         'arrow-bob': {
           '0%, 100%': { transform: 'translate(-50%, 0)' },
-          '50%': { transform: 'translate(-50%, -9px)' },
+          '50%': { transform: 'translate(-50%, -10px)' },
+        },
+        // 箭头光晕脉动（与弹跳叠加）
+        'arrow-glow': {
+          '0%, 100%': { filter: 'drop-shadow(0 3px 6px rgba(20,8,2,0.5)) drop-shadow(0 0 4px rgba(255,196,120,0.4))' },
+          '50%': { filter: 'drop-shadow(0 3px 6px rgba(20,8,2,0.5)) drop-shadow(0 0 14px rgba(255,196,120,0.9))' },
+        },
+        // 建筑柔光高亮：慢速一亮一暗
+        'hl-glow': {
+          '0%, 100%': { opacity: '0.55' },
+          '50%': { opacity: '1' },
         },
       },
       animation: {
@@ -96,7 +110,9 @@ export default {
         'ember-breathe': 'ember-breathe 2.4s ease-in-out infinite',
         'map-in': 'map-in 0.5s ease-out both',
         halo: 'halo 2.6s ease-in-out infinite',
-        'arrow-bob': 'arrow-bob 1.1s ease-in-out infinite',
+        'arrow-bob': 'arrow-bob 1.2s ease-in-out infinite',
+        'arrow-glow': 'arrow-glow 1.2s ease-in-out infinite',
+        'hl-glow': 'hl-glow 3.2s ease-in-out infinite',
       },
     },
   },

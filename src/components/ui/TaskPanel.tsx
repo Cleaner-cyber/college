@@ -17,27 +17,27 @@ export const TaskPanel: React.FC<TaskPanelProps> = ({ items, checked, title }) =
     <div className="fixed right-6 top-20 z-20 text-sm">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="rounded-full border border-line bg-card px-3 py-1.5 shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
+        className="rounded-full border border-cream/20 bg-dusk/80 px-3.5 py-1.5 font-display text-cream shadow-glass backdrop-blur-md transition hover:-translate-y-0.5 hover:border-ember/60"
       >
         {title || ui.checklist.title}{' '}
-        <span className="font-semibold text-accent">
+        <span className="font-sans font-semibold text-ember">
           {interpolate(ui.checklist.progress, { done, total: items.length })}
         </span>
       </button>
       {open && (
-        <ul className="mt-2 w-52 rounded-xl border border-line/70 bg-card p-3 shadow-lift animate-pop-in">
+        <ul className="mt-2 w-52 rounded-xl border border-cream/15 bg-dusk/85 p-3 text-cream shadow-glass backdrop-blur-md animate-pop-in">
           {items.map((item) => {
             const isDone = checked.includes(item.id);
             return (
               <li key={item.id} className="flex items-center gap-2 py-1">
                 <span
                   className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
-                    isDone ? 'border-accent bg-accent text-white shadow-glow' : 'border-line bg-paper'
+                    isDone ? 'border-ember bg-ember text-dusk' : 'border-cream/30 bg-transparent'
                   }`}
                 >
                   {isDone ? '✓' : ''}
                 </span>
-                <span className={isDone ? 'text-ink' : 'text-ink-soft'}>{item.label}</span>
+                <span className={isDone ? 'text-cream' : 'text-cream-soft'}>{item.label}</span>
               </li>
             );
           })}
