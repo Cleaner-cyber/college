@@ -82,10 +82,10 @@ export default {
           '0%, 100%': { opacity: '0.55' },
           '50%': { opacity: '0.95' },
         },
-        // 当期建筑闪动：高亮层+描边整体明暗闪烁（引导视线）
-        'hl-blink': {
-          '0%, 100%': { opacity: '0.4' },
-          '50%': { opacity: '1' },
+        // 引导箭头弹跳：朝建筑方向上下跳动
+        'arrow-bob': {
+          '0%, 100%': { transform: 'translate(-50%, 0)' },
+          '50%': { transform: 'translate(-50%, -9px)' },
         },
       },
       animation: {
@@ -96,7 +96,7 @@ export default {
         'ember-breathe': 'ember-breathe 2.4s ease-in-out infinite',
         'map-in': 'map-in 0.5s ease-out both',
         halo: 'halo 2.6s ease-in-out infinite',
-        'hl-blink': 'hl-blink 1.5s ease-in-out infinite',
+        'arrow-bob': 'arrow-bob 1.1s ease-in-out infinite',
       },
     },
   },

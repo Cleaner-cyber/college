@@ -176,43 +176,66 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
           const { active } = locState(loc.id);
           const poly = BUILDING_POLY[loc.id];
           if (!active || !poly) return null;
+          // 箭头位置：建筑轮廓最低点下方（从下往上指向建筑，弹跳引导视线）
+          const maxY = Math.max(...poly.split(',').map((p) => parseFloat(p.trim().split(/\s+/)[1])));
           return (
-            <div
-              key={`hl-${loc.id}`}
-              aria-hidden
-              className="pointer-events-none absolute inset-0 animate-hl-blink"
-              style={{
-                // 以该建筑为中心整体放大：像"被镜头点名"，比原位提亮更醒目
-                transform: 'scale(1.08)',
-                transformOrigin: `${loc.x}% ${loc.y}%`,
-                filter:
-                  'drop-shadow(0 0 10px rgba(255,179,92,0.95)) drop-shadow(0 0 30px rgba(255,166,77,0.6))',
-              }}
-            >
-              <div className="absolute inset-0" style={{ clipPath: `polygon(${poly})` }}>
-                <img
-                  src={imgSrc}
-                  alt=""
-                  draggable={false}
-                  className="h-full w-full select-none"
-                  style={{ filter: 'brightness(1.38) saturate(1.2)' }}
-                />
-              </div>
-              {/* 沿建筑轮廓的琥珀描边（与高亮层同步闪动） */}
-              <svg
-                className="absolute inset-0 h-full w-full"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
+            <React.Fragment key={`hl-${loc.id}`}>
+              {/* 贴纸式高亮：建筑像素提亮 + 奶油白粗描边 + 琥珀外发光（静态，不闪） */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  filter:
+                    'drop-shadow(0 0 8px rgba(255,179,92,0.9)) drop-shadow(0 0 24px rgba(255,166,77,0.55))',
+                }}
               >
-                <polygon
-                  points={poly.replace(/%/g, '')}
-                  fill="none"
-                  stroke="#FFB35C"
-                  strokeWidth="0.32"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
+                <div className="absolute inset-0" style={{ clipPath: `polygon(${poly})` }}>
+                  <img
+                    src={imgSrc}
+                    alt=""
+                    draggable={false}
+                    className="h-full w-full select-none"
+                    style={{ filter: 'brightness(1.32) saturate(1.15)' }}
+                  />
+                </div>
+                <svg
+                  className="absolute inset-0 h-full w-full"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                >
+                  <polygon
+                    points={poly.replace(/%/g, '')}
+                    fill="none"
+                    stroke="#FFF3DC"
+                    strokeWidth="0.55"
+                    strokeLinejoin="round"
+                    opacity="0.95"
+                  />
+                </svg>
+              </div>
+              {/* 弹跳箭头：从建筑下方指向建筑 */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -translate-x-1/2 animate-arrow-bob"
+                style={{ left: `${loc.x}%`, top: `${Math.min(maxY + 2.5, 93)}%` }}
+              >
+                <svg width="44" height="44" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 3px 6px rgba(20,8,2,0.5))' }}>
+                  <defs>
+                    <linearGradient id={`ar-${loc.id}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#FFD97A" />
+                      <stop offset="100%" stopColor="#F0A030" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M12 3 L20.5 13 H15.5 V21 H8.5 V13 H3.5 Z"
+                    fill={`url(#ar-${loc.id})`}
+                    stroke="#7A4512"
+                    strokeWidth="1.1"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            </React.Fragment>
           );
         })}
 
