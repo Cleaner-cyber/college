@@ -11,6 +11,44 @@ import { Typewriter } from '@/components/ui/Typewriter';
 import { FakeLoading } from '@/components/ui/FakeLoading';
 import { SpeakerTag } from '@/components/ui/SpeakerTag';
 
+/** VN 立绘：同名 .jpg 真图（国乙系卡面画，不透明）优先，按"相框卡"呈现——
+ * 暖白描边 + 轻微倾斜 + 3% 琥珀罩色；缺省回退占位 .svg（透明剪影，直接贴场景上） */
+const SpriteImg: React.FC<{ src: string; side: 'left' | 'right' }> = ({ src, side }) => {
+  const preferred = src.endsWith('.svg') ? src.replace(/\.svg$/, '.jpg') : src;
+  const [cur, setCur] = useState(preferred);
+  React.useEffect(() => setCur(preferred), [preferred]);
+  const isCard = cur !== src && cur.endsWith('.jpg');
+  if (isCard) {
+    return (
+      <div
+        className={`pointer-events-none absolute bottom-[9%] animate-fade-up ${
+          side === 'left' ? 'left-[5%] -rotate-2' : 'right-[5%] rotate-2'
+        } h-[66%]`}
+      >
+        <div className="relative h-full overflow-hidden rounded-2xl border-[3px] border-milk/90 shadow-pop">
+          <img
+            src={cur}
+            onError={() => setCur(src)}
+            alt=""
+            className="h-full w-auto object-cover"
+          />
+          <div className="absolute inset-0 bg-ember/[0.04]" />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={cur}
+      onError={() => cur !== src && setCur(src)}
+      alt=""
+      className={`pointer-events-none absolute bottom-0 h-[76%] animate-fade-up ${
+        side === 'left' ? 'left-[6%]' : 'right-[6%]'
+      }`}
+    />
+  );
+};
+
 /** VN 场景底图：presetAssets 若指向占位 .svg，则先试同名 .jpg 真图（生图后同名放入即替换，不改内容 JSON） */
 const SceneBg: React.FC<{ src?: string }> = ({ src }) => {
   const preferred = src?.endsWith('.svg') ? src.replace(/\.svg$/, '.jpg') : src;
@@ -333,15 +371,9 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
             👆 {(ui.hints as Record<string, string>)['vn-click']}
           </span>
         )}
-        {/* 立绘：学长在右，NPC 在左 */}
+        {/* 立绘：学长在右，NPC 在左（真图卡面 jpg 优先，占位 svg 兜底） */}
         {spriteSrc && (
-          <img
-            src={spriteSrc}
-            alt=""
-            className={`absolute bottom-0 h-[76%] animate-fade-up ${
-              screen.speaker === 'npc' ? 'left-[6%]' : 'right-[6%]'
-            }`}
-          />
+          <SpriteImg key={spriteSrc} src={spriteSrc} side={screen.speaker === 'npc' ? 'left' : 'right'} />
         )}
         {/* 选项浮层 */}
         {screen.type === 'choice' && ready && (

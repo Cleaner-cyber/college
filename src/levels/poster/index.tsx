@@ -375,7 +375,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                     <div key={i} className="mx-auto w-[88%] animate-fade-up">
                       <div className="rounded-2xl border border-line-warm bg-parchment/70 p-3.5 shadow-soft">
                         <div className="mb-1.5 flex items-center gap-2">
-                          <NpcAvatar name={api.copy('xuejie-name')} size={24} />
+                          <NpcAvatar name={api.copy('xuejie-name')} size={24} avatar={assets['avatar-xuejie']} />
                           <span className="text-[11px] tracking-widest text-ink-soft">
                             {api.copy('xuejie-msg-app')}
                           </span>
