@@ -101,6 +101,11 @@ export default {
           '0%, 100%': { opacity: '0.55' },
           '50%': { opacity: '1' },
         },
+        // VN 立绘入场：淡入 + 从上方 20px 落定 + 由 0.95 放到 1（DDLC transforms.rpy 的实测值）
+        'sprite-in': {
+          '0%': { opacity: '0', transform: 'translateY(-20px) scale(0.95)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.35s ease-out both',
@@ -113,6 +118,7 @@ export default {
         'arrow-bob': 'arrow-bob 1.2s ease-in-out infinite',
         'arrow-glow': 'arrow-glow 1.2s ease-in-out infinite',
         'hl-glow': 'hl-glow 3.2s ease-in-out infinite',
+        'sprite-in': 'sprite-in 0.25s ease-in both',
       },
     },
   },
