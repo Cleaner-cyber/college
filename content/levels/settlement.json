@@ -34,7 +34,7 @@
   "copy": {
     "s1-title": "{semester} · 结束",
     "s1-gpa": "本学期绩点 {gpa}",
-    "s1-highlight-title": "本学期高光",
+    "s1-highlight-title": "这学期最有故事的一件事",
     "s1-replay-title": "这学期你做了",
     "next-S1": "看看文件夹",
     "s2-title": "你的文件夹",
@@ -64,7 +64,7 @@
     "grad-card-title": "你的身份卡",
     "grad-report-title": "毕业档案",
     "grad-report-sub": "{playerName} · {majorName}",
-    "grad-sum-title": "四年总评",
+    "grad-sum-title": "四年的广度",
     "grad-timeline-title": "四年时间线",
     "grad-timeline-quiet": "平静的一个学期，也是四年的一部分。",
     "grad-persona-title": "你的人设",
@@ -73,7 +73,7 @@
     "grad-flag-score": "兑现 {score} / 4",
     "grad-flag-echo": "现在，带着这张卡去要吧。",
     "grad-gpa": "四年平均绩点 {gpa}",
-    "grad-path-title": "你选的那条路",
+    "grad-path-title": "你选的那条路（这才是结果）",
     "grad-path-prob-label": "走通概率",
     "grad-path-note-high": "这条路你不是「想走」，是真的在走。按这个走法，大概率能成。",
     "grad-path-note-mid": "有底子，也有欠账。差的那几块补上，这条路就通了。",
@@ -82,6 +82,7 @@
     "grad-almost-line": "你离「{title}」只有一步：",
     "grad-abilities-title": "四年解锁的 AI 能力",
     "grad-made": "四年 {total} 件产出里，你自己做的有 {own} 件",
-    "grad-axes-title": "四年的形状（各线最高到过哪）"
+    "grad-axes-title": "四年的形状（各线最高到过哪）",
+    "grad-sum-sub": "把五条轴摊开看你铺了多宽。它不是成绩单——专精一条路的人这里天然偏低，那不是缺点。"
   }
 }

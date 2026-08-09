@@ -117,7 +117,8 @@
     "stats-tags-title": "人设轨迹",
     "stats-tags-empty": "你的选择会在这里留下痕迹",
     "stats-tags-awakened": "已觉醒",
-    "panel-close": "收起"
+    "panel-close": "收起",
+    "grad-header": "毕业 · 已离校"
   },
   "level-page": {
     "back": "返回主页",
@@ -234,5 +235,9 @@
     "loc-career": "就业指导中心",
     "loc-innov": "创新创业中心",
     "loc-dorm": "宿舍"
+  },
+  "path": {
+    "borrowed-label": "{total} 件产出里有 {borrowed} 件是借来的",
+    "borrowed-note": "学长的成品能交差，但交不出你自己的手感。真到了要你独立做的场合，这部分是空的。"
   }
 }

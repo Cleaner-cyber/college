@@ -246,6 +246,11 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({
         </div>
         <p className="mt-2 text-[14px] font-medium text-accent">{tier.title}</p>
         <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">{tier.text}</p>
+        {/* 点破「广度」与「出路」的关系：不加这句，专精玩家会看到"走通概率 80%"和"C 档"并列，
+            以为系统在自相矛盾 */}
+        <p className="mt-1.5 text-[12px] leading-relaxed text-ink-soft/80">
+          {api.copy('grad-sum-sub')}
+        </p>
         {gpa !== null && (
           <p className="mt-2 text-[13px] text-ink-soft">
             {interpolate(api.copy('grad-gpa'), { gpa: gpa.toFixed(2) })}

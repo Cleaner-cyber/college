@@ -1151,7 +1151,10 @@ export const HomePage: React.FC = () => {
             <span className="font-display text-[17px] font-semibold tracking-[0.25em] text-cream">
               {ui['app-title']}
             </span>
-            <span className="text-xs text-cream-soft">{board.header}</span>
+            {/* grad-end 复用 y4 的行动板配置，但顶栏不能跟着写「大四 · 秋冬」——人已经毕业了 */}
+            <span className="text-xs text-cream-soft">
+              {state.semester === 'grad-end' ? home['grad-header'] : board.header}
+            </span>
           </div>
           <HudStrip state={state} />
           <div className="flex shrink-0 items-center gap-3 text-xs">

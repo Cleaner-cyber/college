@@ -4,8 +4,10 @@
  * 权重与话术全部来自 content/sim/paths.json。
  */
 import type { PathDef, PathFactor, PlayerState } from '@/contracts';
-import { paths } from './content';
+import { paths, ui, interpolate, getFolderSection } from './content';
 import { awakenedTagIds, cumulativeGpa } from './sim';
+
+const pathCopy = ui.path as Record<string, string>;
 
 export interface FactorResult {
   label: string;
@@ -60,10 +62,35 @@ function factorPoints(state: Readonly<PlayerState>, f: PathFactor): number {
   }
 }
 
+/** 「借来的」惩罚：点[问学长]直接拿走学长的成品，产出会标 borrowed。
+ *
+ * 没有这条的话，全程点跳过和全程自己做，毕业概率一模一样——「借来的」就只是个展示标签，
+ * 而「每个玩家都要真的经历一遍 AI 教学」这条产品底线也就只拦得住不点按钮的人。
+ * 按借用比例扣分（不是按件数），这样做得多的人不会因为借了一件就被重罚。 */
+const BORROW_MAX_PENALTY = 12;
+
+function borrowedFactor(state: Readonly<PlayerState>): FactorResult | null {
+  // 与毕业页「四年 N 件产出里你自己做的有 M 件」用同一个判据，扣分口径和展示口径必须一致
+  const made = state.archive.filter((a) => getFolderSection(a.id) !== 'prompts');
+  if (made.length === 0) return null;
+  const borrowed = made.filter((a) => a.borrowed).length;
+  if (borrowed === 0) return null;
+  const ratio = borrowed / made.length;
+  const points = -Math.round(ratio * BORROW_MAX_PENALTY);
+  if (points === 0) return null;
+  return {
+    label: interpolate(pathCopy['borrowed-label'], { borrowed, total: made.length }),
+    note: pathCopy['borrowed-note'],
+    points,
+  };
+}
+
 /** 计算某条出路的走通概率与因子明细 */
 export function evalPath(state: Readonly<PlayerState>, def: PathDef): PathResult {
+  const borrowed = borrowedFactor(state);
   const factors = def.factors
     .map((f) => ({ label: f.label, note: f.note, points: Math.round(factorPoints(state, f)) }))
+    .concat(borrowed ? [borrowed] : [])
     .filter((r) => r.points !== 0)
     .sort((a, b) => Math.abs(b.points) - Math.abs(a.points));
   const raw = def.base + factors.reduce((s, r) => s + r.points, 0);
