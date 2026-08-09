@@ -1090,22 +1090,37 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   </div>
 );
 
+/** 每条日志属于哪个学期：按日志里的「X学期开始了」标记切桶推出来。
+ * 原先这里显示的是玩家电脑的真实时间（游戏里是 2026 年 9 月，页面上却写着今天的日期），
+ * 而且同一秒写入的多条完全无法区分——记录页的意义是"这四年我做了什么"，那就该用游戏内时间。 */
+function logSemesters(state: Readonly<PlayerState>): string[] {
+  const tmpl = (ui['log-tmpl'] as Record<string, string>)['semester-start'];
+  const names = home['timeline'].split('｜');
+  const marker = new Map(
+    names.map((n) => [interpolate(tmpl, { semester: n }), n] as const),
+  );
+  let cur = names[0] ?? '';
+  return state.log.map((e) => {
+    const hit = e.type === 'semester' ? marker.get(e.text) : undefined;
+    if (hit) cur = hit;
+    return cur;
+  });
+}
+
 const LogTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   <Panel title={home['log-title']}>
     {state.log.length === 0 ? (
       <p className="text-sm text-ink-soft">{home['log-empty']}</p>
     ) : (
       <ol className="flex flex-col gap-0.5">
-        {[...state.log].reverse().map((entry, i) => (
+        {[...state.log]
+          .map((entry, i) => ({ entry, sem: logSemesters(state)[i] }))
+          .reverse()
+          .map(({ entry, sem }, i) => (
           <li key={i} className="flex items-baseline gap-3 border-b border-line/60 py-2.5 last:border-b-0">
-            <time className="shrink-0 text-xs tabular-nums text-ink-soft">
-              {new Date(entry.ts).toLocaleString('zh-CN', {
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </time>
+            <span className="w-14 shrink-0 text-xs text-cream-soft" title={entry.ts}>
+              {sem}
+            </span>
             <span
               className={`text-sm leading-relaxed ${entry.type === 'semester' ? 'font-semibold' : ''}`}
             >

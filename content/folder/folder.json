@@ -21,6 +21,15 @@
     "doc-summer-plan": "works",
     "doc-ppt-outline": "works",
     "doc-ppt-tools": "docs",
-    "ielts-speaking": "docs"
+    "ielts-speaking": "docs",
+    "prompt-ai-coding": "prompts",
+    "prompt-data-analysis": "prompts",
+    "prompt-examiner": "prompts",
+    "prompt-lit-review": "prompts",
+    "prompt-multimodal": "prompts",
+    "prompt-note-taking": "prompts",
+    "prompt-resume": "prompts",
+    "prompt-role-play": "prompts",
+    "prompt-thesis": "prompts"
   }
 }
