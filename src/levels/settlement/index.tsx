@@ -4,6 +4,7 @@
  * 总评档位 + 四年形状（峰值）+ 时间线 + 人设画像 + flag 对照 + 身份卡 + 差一点提示。
  */
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { LevelModule, LevelProps, PlayerState } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
 import {
@@ -483,6 +484,43 @@ const Hook: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, s
   };
   const remaining = timeline.slice((idxMap[state.semester] ?? 7) + 1);
 
+  // 毕业最终屏是全产品的情感落点，也是玩家关页面前的最后一眼——
+  // 不能是一段裸文字贴在米白页左上角、下面 600px 全空。套 bg-grad 全屏底 + 居中玻璃卡收束。
+  if (final) {
+    // 必须走 portal：ScreenPlayer 包裹自定义屏的 animate-fade-up 带 transform，
+    // 会成为 fixed 后代的包含块，直接用 fixed 会塌成顶部一条（EventModal 踩过同一个坑）。
+    return createPortal(
+      <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto bg-dusk px-6 py-12">
+        <img
+          aria-hidden
+          src="/assets/bg-grad.jpg"
+          onError={(e) => (e.currentTarget.style.display = 'none')}
+          alt=""
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-dusk/70" />
+        <div className="relative w-full max-w-[560px] rounded-2xl border border-cream/18 bg-dusk/85 p-8 text-center shadow-glass backdrop-blur-xl">
+          <Typewriter
+            text={line}
+            onDone={() => setTyped(true)}
+            className="font-display text-[18px] leading-[1.9] text-cream"
+          />
+          {typed && (
+            <div className="animate-fade-up">
+              <p className="mt-4 text-[14px] leading-relaxed text-cream-soft">
+                {api.copy('s4-final-note')}
+              </p>
+              <Button full className="mt-7" onClick={api.advance}>
+                {api.nextLabel}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>,
+      document.body,
+    );
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <Typewriter text={line} onDone={() => setTyped(true)} className="text-[17px]" />
@@ -502,13 +540,10 @@ const Hook: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, s
               </ul>
             </>
           )}
-          {final && <p className="text-[15px] text-ink">{api.copy('s4-final-note')}</p>}
           <Button full className="mt-6" onClick={api.advance}>
-            {final || state.semester === 'grad-end'
-              ? api.nextLabel
-              : interpolate(api.copy('s4-next-semester'), {
-                  next: semesterName(nextSemester(state.semester)),
-                })}
+            {interpolate(api.copy('s4-next-semester'), {
+              next: semesterName(nextSemester(state.semester)),
+            })}
           </Button>
         </div>
       )}
