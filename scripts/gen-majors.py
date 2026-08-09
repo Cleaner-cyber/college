@@ -72,11 +72,24 @@ def cut(text: str, limit: int = 150) -> str:
 
 
 def first_para(body: str) -> str:
+    """摘要正文：跳过小标题/列表/表格，累积正文段直到够一段话的信息量。
+
+    知识库里几乎每段都以一句引子开场（「这专业挑人。」「简单说几句。」），
+    只取第一段会让 702 张专业卡里大半只剩这半句话——真正的内容在后面的段落。
+    因此这里累积到 MIN_LEN 为止（再由 cut() 截到句号边界）。
+    """
+    MIN_LEN = 60
+    picked: list[str] = []
+    total = 0
     for p in re.split(r'\n{2,}', body):
         p = p.strip()
-        if p and not p.startswith('#') and not p.startswith('-') and not p.startswith('|'):
-            return p
-    return ''
+        if not p or p.startswith('#') or p.startswith('-') or p.startswith('|'):
+            continue
+        picked.append(p)
+        total += len(p)
+        if total >= MIN_LEN:
+            break
+    return ' '.join(picked)
 
 
 def find_sec(secs, *keys):
