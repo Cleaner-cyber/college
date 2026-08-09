@@ -124,6 +124,14 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
     };
   }, [compute]);
 
+  // 点了不能进的地标时给一行轻提示，2 秒后自动消失（不要让点击落空）
+  const [hint, setHint] = React.useState<{ id: string; text: string } | null>(null);
+  React.useEffect(() => {
+    if (!hint) return;
+    const t = window.setTimeout(() => setHint(null), 2200);
+    return () => window.clearTimeout(t);
+  }, [hint]);
+
   const mainline = getBoard(state.semester).mainline;
   // 每个地标的当期状态：可进入的关卡（顺序解锁）/ 已完成 / 无事发生
   const locState = (locId: string) => {
@@ -255,9 +263,13 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
               style={{ left: `${loc.x}%`, top: `${loc.y}%` }}
             >
               <button
-                onClick={() => (isDorm ? onClose() : active && onEnter(active.id))}
-                disabled={!isDorm && !active}
-                className={`flex flex-col items-center ${!isDorm && !active ? 'cursor-default' : ''}`}
+                onClick={() => {
+                  if (isDorm) return onClose();
+                  if (active) return onEnter(active.id);
+                  // 不能进也要给回应：done=办完了，其余=这学期没事
+                  setHint({ id: loc.id, text: done ? map['done-hint'] : map['idle-hint'] });
+                }}
+                className="flex flex-col items-center"
               >
                 <span
                   className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition ${
@@ -267,7 +279,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
                         ? 'border-cream/25 bg-dusk/70 text-cream-soft shadow-glass backdrop-blur-sm'
                         : isDorm
                           ? 'border-cream/35 bg-dusk/75 text-cream shadow-glass backdrop-blur-sm'
-                          : 'border-cream/20 bg-dusk/55 text-cream-soft/80 shadow-glass backdrop-blur-sm'
+                          : 'border-cream/15 bg-dusk/45 text-cream-soft/50 shadow-glass backdrop-blur-sm'
                   }`}
                 >
                   {done ? <Check size={16} strokeWidth={2.25} /> : LOC_ICONS[loc.id]}
@@ -285,6 +297,11 @@ export const CampusMap: React.FC<CampusMapProps> = ({ state, onEnter, onClose })
                 {active && (
                   <span className="mt-0.5 whitespace-nowrap rounded-md border border-ember/50 bg-dusk/85 px-2 py-0.5 text-[12px] font-medium text-ember shadow-glass backdrop-blur-sm">
                     {active.label}
+                  </span>
+                )}
+                {hint?.id === loc.id && (
+                  <span className="mt-0.5 whitespace-nowrap rounded-md border border-cream/20 bg-dusk/90 px-2 py-0.5 text-[12px] text-cream-soft shadow-glass backdrop-blur-sm animate-fade-up">
+                    {hint.text}
                   </span>
                 )}
               </button>

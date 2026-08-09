@@ -67,9 +67,9 @@ const AxesBars: React.FC<{ axes: Readonly<PlayerState['axes']>; animate?: boolea
       {VISIBLE_AXES.map((axis) => (
         <div key={axis} className="flex items-center gap-3">
           <span className="w-8 text-right text-sm text-ink-soft">{ui.axes[axis]}</span>
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-line">
+          <div className="h-2 flex-1 overflow-hidden rounded-full bg-line-warm">
             <div
-              className="h-full rounded-full bg-ink transition-[width] duration-700 ease-out"
+              className="h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
               style={{
                 width: grown ? `${Math.max(0, Math.min(100, (axes[axis] / max) * 100))}%` : '0%',
               }}
@@ -129,6 +129,8 @@ const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, 
           <p className="text-[13px] leading-relaxed">{highlight}</p>
         </div>
       )}
+      {/* 列表为空时整段不渲染——空标题在屏幕上就是 bug，玩家会以为内容没加载出来 */}
+      {replayLines(state).length > 0 && (
       <div>
         <div className="mb-2 text-xs tracking-widest text-ink-soft">
           {api.copy('s1-replay-title')}
@@ -144,6 +146,7 @@ const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, 
           ))}
         </ul>
       </div>
+      )}
       <Button full onClick={api.advance}>
         {api.nextLabel}
       </Button>

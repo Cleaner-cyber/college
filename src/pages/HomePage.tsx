@@ -1197,7 +1197,7 @@ export const HomePage: React.FC = () => {
       {/* 场景热点：主页全部入口都长在底图上（底图 + 按钮式主页） */}
       <div
         className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-200 ${
-          panel ? 'opacity-0' : 'opacity-100'
+          panel || graduated ? 'opacity-0' : 'opacity-100'
         }`}
         data-tour="nav"
       >
@@ -1231,10 +1231,13 @@ export const HomePage: React.FC = () => {
         />
       </div>
 
-      {/* 毕业态：场景中央的毕业卡 */}
+      {/* 毕业态：场景中央的毕业卡。必须带遮罩——不隔离背景就没有层级，
+          而且卡片右缘会正好切过「出门·去校园」热点，露半个按钮在外面 */}
       {graduated && !panel && (
-        <div className="relative z-10 mx-auto mt-14 max-w-md px-6">
-          <SemesterEnded />
+        <div className="fixed inset-x-0 bottom-0 top-[52px] z-30 flex items-start justify-center overflow-y-auto bg-ink/60 px-6 py-16 backdrop-blur-[4px]">
+          <div className="w-full max-w-md">
+            <SemesterEnded />
+          </div>
         </div>
       )}
 

@@ -9,6 +9,9 @@ import { createPortal } from 'react-dom';
 import type { FlowAPI } from '@/engine/ScreenPlayer';
 import { interpolate } from '@/engine/content';
 
+/** 已就位的考官预置录音（把录音放进 public/assets 后，把对应 key 加进来；空数组＝全部走浏览器朗读） */
+const AVAILABLE_VO: string[] = [];
+
 type CallStage =
   | { k: 'vo'; key: string; cue?: boolean }
   | { k: 'answer'; options: { label: string; msg: string }[]; dur: string; check?: string }
@@ -210,8 +213,19 @@ export const VoiceCall: React.FC<{ api: FlowAPI; onDone: (elapsed: string) => vo
       timers.push(window.setTimeout(finish, Math.max(est * 2.2, 10000)) as unknown as number);
     };
 
-    // 预置录音优先（/assets/vo-ielts-greet.mp3 等，文件不存在时落回朗读）
-    audio = new Audio(`/assets/vo-ielts-${stage.key.replace(/^vo-/, '')}.mp3`);
+    // 预置录音优先（/assets/vo-ielts-greet.mp3 等，文件不存在时落回朗读）。
+    // 没有录音就别发请求：仓库里一个 vo-ielts-*.mp3 都没有时，每局会白发 4 个失败请求，
+    // 规范静态托管下就是 4 个实打实的 404。录音就位后把 key 加进 AVAILABLE_VO 即可。
+    const voKey = stage.key.replace(/^vo-/, '');
+    if (!AVAILABLE_VO.includes(voKey)) {
+      startTts();
+      return () => {
+        disposed = true;
+        timers.forEach((t) => window.clearTimeout(t));
+        window.speechSynthesis?.cancel();
+      };
+    }
+    audio = new Audio(`/assets/vo-ielts-${voKey}.mp3`);
     audio.onerror = startTts;
     audio.oncanplaythrough = () => {
       if (disposed || !audio) return;

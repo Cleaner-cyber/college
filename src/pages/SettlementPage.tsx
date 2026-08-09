@@ -19,7 +19,7 @@ export const SettlementPage: React.FC = () => {
   if (!canSettle && !isReview) return <Navigate to="/home" replace />;
 
   return (
-    <div className="mx-auto max-w-xl">
+    <div className="mx-auto max-w-3xl px-4">
       <mod.Component
         state={state}
         content={content}

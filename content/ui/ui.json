@@ -234,7 +234,10 @@
     "loc-lang": "语言中心",
     "loc-career": "就业指导中心",
     "loc-innov": "创新创业中心",
-    "loc-dorm": "宿舍"
+    "loc-dorm": "宿舍",
+    "idle-hint": "这学期这里没你的事。",
+    "locked-hint": "先办完当前主线，这里才轮到你。",
+    "done-hint": "这儿的事你已经办完了。"
   },
   "path": {
     "borrowed-label": "{total} 件产出里有 {borrowed} 件是借来的",
