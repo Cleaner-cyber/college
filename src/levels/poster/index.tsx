@@ -12,6 +12,7 @@ import { ui, interpolate } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
 import { TaskPanel } from '@/components/ui/TaskPanel';
 import { SenpaiAvatar, NpcAvatar } from '@/components/ui/SpeakerTag';
+import { ClipboardList, Droplet, Image as ImageIcon, Scissors } from 'lucide-react';
 
 type Stage =
   | 'build' // 照需求单拼提示词（选比例）
@@ -193,7 +194,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
         <aside className="flex flex-col gap-3">
           <div className="rounded-2xl border border-accent/30 bg-milk/95 p-4 shadow-lift backdrop-blur-sm">
             <div className="mb-2.5 font-display text-[13px] font-bold tracking-widest text-accent">
-              📋 {api.copy('req-title')}
+              <ClipboardList size={14} strokeWidth={1.75} className="inline align-[-2px]" /> {api.copy('req-title')}
             </div>
             <ul className="space-y-2.5 text-[12px] leading-relaxed text-ink">
               {['req-theme', 'req-sub', 'req-ratio', 'req-copy', 'req-qr'].map((k, i) => (
@@ -336,7 +337,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                   return (
                     <div key={i} className="flex justify-end animate-fade-up">
                       <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line-warm bg-parchment/70 px-3 py-2 text-[12.5px]">
-                        🖼️ <span>{m.text}</span>
+                        <ImageIcon size={14} strokeWidth={1.75} className="shrink-0 text-accent" /> <span>{m.text}</span>
                       </span>
                     </div>
                   );
@@ -500,7 +501,7 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
       <div className="flex flex-col gap-4">
         <header>
           <h1 className="font-display text-xl font-bold tracking-wide text-cream">
-            ✂️ {api.copy('jy-title')}
+            <Scissors size={20} strokeWidth={1.75} className="inline text-cream-soft" /> {api.copy('jy-title')}
           </h1>
           <p className="mt-1 text-[13px] text-cream-soft">{api.copy('jy-sub')}</p>
         </header>
@@ -562,7 +563,7 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
           </div>
         )}
         <div className="rounded-xl border border-line-warm bg-milk/90 p-3.5 text-[12.5px] leading-relaxed backdrop-blur-sm">
-          <span className="mr-2 font-semibold text-accent">💧 {api.copy('jy-tip-title')}</span>
+          <span className="mr-2 font-semibold text-accent"><Droplet size={13} strokeWidth={1.75} className="inline" /> {api.copy('jy-tip-title')}</span>
           {api.copy('jy-tip')}
         </div>
         {done && (

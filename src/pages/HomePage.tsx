@@ -45,7 +45,9 @@ import {
   BedDouble,
   BookOpen,
   Dices,
+  FileText,
   FolderOpen,
+  Zap,
   Map as MapIcon,
   NotebookPen,
   ScrollText,
@@ -717,7 +719,7 @@ const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item,
     className="flex w-full items-center gap-3.5 rounded-2xl border border-line bg-card p-4 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
   >
     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
-      ⚡
+      <Zap size={14} strokeWidth={1.75} className="text-accent" />
     </span>
     <span className="min-w-0 flex-1">
       <span className="flex items-center gap-2">
@@ -823,7 +825,7 @@ const ArchiveDetail: React.FC<{
                 className="flex w-[360px] max-w-full items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-card p-3.5 text-left shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
               >
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
-                  📄
+                  <FileText size={18} strokeWidth={1.75} className="text-accent" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[13.5px] font-semibold">
@@ -870,7 +872,7 @@ const ArchiveDetail: React.FC<{
         {/* 固定头部：标题 + 关闭（不随内容滚动） */}
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-line bg-paper/80 px-6 py-3.5">
           <h3 className="truncate text-[16px] font-semibold">
-            {section === 'prompts' ? '⚡' : '📁'} {item.title}
+            {section === 'prompts' ? <Zap size={14} strokeWidth={1.75} className="shrink-0 text-accent" /> : <FolderOpen size={14} strokeWidth={1.75} className="shrink-0 text-accent" />} {item.title}
           </h3>
           <div className="flex shrink-0 items-center gap-2">
             {item.borrowed && (
@@ -1081,7 +1083,7 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
         <div className="flex flex-wrap gap-2">
           {state.abilities.map((a) => (
             <span key={a} className="rounded-lg bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent">
-              ⚡ {ui.abilities[a] ?? a}
+              <Zap size={13} strokeWidth={1.75} className="inline align-[-2px] text-accent" /> {ui.abilities[a] ?? a}
             </span>
           ))}
         </div>

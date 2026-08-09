@@ -6,6 +6,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ui } from '@/engine/content';
 import { extractToc, renderMarkdown } from './Markdown';
+import { FileText } from 'lucide-react';
 
 const doc = ui.doc as Record<string, string>;
 
@@ -43,7 +44,7 @@ export const DocViewer: React.FC<{ title: string; md: string; onClose: () => voi
       >
         {/* 文档头 */}
         <header className="flex items-center gap-3 border-b border-line bg-paper/70 px-5 py-3">
-          <span className="text-xl">📄</span>
+          <FileText size={20} strokeWidth={1.75} className="text-accent" />
           <div className="min-w-0 flex-1">
             <h2 className="truncate text-[15px] font-semibold">{title}</h2>
             <p className="text-[11px] text-ink-soft">

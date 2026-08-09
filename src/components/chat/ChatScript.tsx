@@ -10,6 +10,7 @@ import { ui } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
 import { renderMarkdown } from '@/components/ui/Markdown';
 import { SenpaiAvatar, NpcAvatar } from '@/components/ui/SpeakerTag';
+import { FileText } from 'lucide-react';
 
 export type ChatStep =
   | { type: 'senpai'; key: string }
@@ -222,7 +223,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                   }`}
                 >
                   <div className="flex items-start gap-2.5">
-                    <span className="mt-0.5 text-xl">📄</span>
+                    <FileText size={20} strokeWidth={1.75} className="mt-0.5 shrink-0 text-accent" />
                     <div className="min-w-0">
                       <div className="break-all text-[12.5px] font-medium leading-snug">
                         {api.copy(f.nameKey)}
@@ -298,7 +299,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
                     <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line-warm bg-parchment/70 px-3 py-2 text-[12.5px]">
-                      📄 <span className="break-all">{api.copy(m.nameKey)}</span>
+                      <FileText size={14} strokeWidth={1.75} className="shrink-0 text-accent" /> <span className="break-all">{api.copy(m.nameKey)}</span>
                     </span>
                   </div>
                 );

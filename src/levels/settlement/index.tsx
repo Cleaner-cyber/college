@@ -31,6 +31,7 @@ import {
 } from '@/engine/ending';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
+import { Folder as FolderIcon, Zap } from 'lucide-react';
 
 const VISIBLE_AXES = ['academic', 'portfolio', 'expression', 'cash'] as const;
 const AXIS_MAX = 8;
@@ -169,7 +170,7 @@ const Folder: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api,
             key={item.id}
             className="flex items-center justify-between rounded-xl border border-line/70 bg-card px-4 py-3 shadow-soft"
           >
-            <span className="text-[15px]">📁 {item.title}</span>
+            <span className="flex items-center gap-2 text-[15px]"><FolderIcon size={15} strokeWidth={1.75} className="text-accent" />{item.title}</span>
             {item.borrowed && (
               <span className="rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
                 {api.copy('borrowed-tag')}
@@ -404,7 +405,7 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({
             <div className="flex flex-wrap gap-1.5">
               {state.abilities.map((a) => (
                 <span key={a} className="rounded-lg bg-accent-soft px-2 py-1 text-xs font-medium text-accent">
-                  ⚡ {ui.abilities[a] ?? a}
+                  <Zap size={13} strokeWidth={1.75} className="inline align-[-2px] text-accent" /> {ui.abilities[a] ?? a}
                 </span>
               ))}
             </div>
