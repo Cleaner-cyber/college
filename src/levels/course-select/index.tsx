@@ -5,7 +5,8 @@
  * 分析内容为基于真实浙大文档预先跑出的结果，存于 /content（无运行时 AI 调用）。
  */
 import React, { useEffect, useRef, useState } from 'react';
-import type { LevelModule, LevelProps } from '@/contracts';
+import type { LevelModule, LevelProps, LevelResult } from '@/contracts';
+import { DeliverScreen, EscapeOverlay } from '@/components/chat/DeliverScreen';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
 import { interpolate, ui, getMajor } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
@@ -442,7 +443,51 @@ const DeliverList: React.FC<{ api: FlowAPI }> = ({ api }) => {
   );
 };
 
-const CourseSelectComponent: React.FC<LevelProps> = ({ state, content, onComplete }) => {
+const CourseSelectComponent: React.FC<LevelProps> = ({ state, content, onComplete, onEscape }) => {
+  // 这是玩家遇到的第一个、也是最长的教学关（要拖两份 PDF、读一份上万字文档、再走第二问），
+  // 却唯独没有 [问学长] 出口——卡住只能丢掉全部进度返回。补上，与其余 11 关同构。
+  const buildResult = (borrowed: boolean): LevelResult => ({
+    deltas: {},
+    abilityUnlocks: ['doc-feeding'],
+    archiveItems: [
+      {
+        id: 'course-map',
+        levelId: 'course-select',
+        title: borrowed
+          ? content.copy['archive-title-borrowed']
+          : content.copy['archive-title'],
+        resumeLine: '',
+        borrowed,
+      },
+      {
+        id: 'doc-course-rules',
+        levelId: 'course-select',
+        title: content.copy['doc1-title'],
+        resumeLine: borrowed
+          ? content.copy['archive-doc1-line-borrowed']
+          : content.copy['archive-doc1-line'],
+        borrowed,
+        assetRef: 'ai-doc',
+      },
+      {
+        id: 'doc-summer-plan',
+        levelId: 'course-select',
+        title: content.copy['doc2-title'],
+        resumeLine: borrowed ? '' : content.copy['archive-doc2-line'],
+        borrowed,
+        assetRef: 'ai-doc',
+      },
+      {
+        // 学完即沉淀：模板是知识，走 [问学长] 也给，不打借条
+        id: 'prompt-doc-feeding',
+        levelId: 'course-select',
+        title: content.copy['prompt-item-title'],
+        resumeLine: '',
+        borrowed: false,
+      },
+    ],
+  });
+
   return (
     <ScreenPlayer
       content={content}
@@ -453,47 +498,12 @@ const CourseSelectComponent: React.FC<LevelProps> = ({ state, content, onComplet
       custom={{
         S2: (api) => <AiChat api={api} />,
         S6: (api) => <DeliverList api={api} />,
+        ESC: (api) => (
+          <DeliverScreen api={api} total={0} escape onDone={() => onEscape(buildResult(true))} />
+        ),
       }}
-      onFinish={() =>
-        onComplete({
-          deltas: {},
-          abilityUnlocks: ['doc-feeding'],
-          archiveItems: [
-            {
-              id: 'course-map',
-              levelId: 'course-select',
-              title: content.copy['archive-title'],
-              resumeLine: '',
-              borrowed: false,
-            },
-            // 两份 AI 生成的长文档进作品集（点开走文档查看器）
-            {
-              id: 'doc-course-rules',
-              levelId: 'course-select',
-              title: content.copy['doc1-title'],
-              resumeLine: content.copy['archive-doc1-line'],
-              borrowed: false,
-              assetRef: 'ai-doc',
-            },
-            {
-              id: 'doc-summer-plan',
-              levelId: 'course-select',
-              title: content.copy['doc2-title'],
-              resumeLine: content.copy['archive-doc2-line'],
-              borrowed: false,
-              assetRef: 'ai-doc',
-            },
-            {
-              // 学完即沉淀：可复用的提示词模板入库
-              id: 'prompt-doc-feeding',
-              levelId: 'course-select',
-              title: content.copy['prompt-item-title'],
-              resumeLine: '',
-              borrowed: false,
-            },
-          ],
-        })
-      }
+      overlay={(api) => <EscapeOverlay api={api} screens={['S2']} />}
+      onFinish={() => onComplete(buildResult(false))}
     />
   );
 };

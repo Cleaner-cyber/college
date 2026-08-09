@@ -41,6 +41,12 @@
       "effects": {
         "typewriter": true
       }
+    },
+    {
+      "id": "ESC",
+      "type": "deliver",
+      "text": "卡住了？我当年整理好的那份清单先拿去用。\n但答应我：开学后拿你自己的培养方案，把这套动作再走一遍——清单是死的，会问才是你的。",
+      "next": "end"
     }
   ],
   "copy": {
@@ -91,6 +97,13 @@
     "doc2-title": "准大一暑假 8 周学习计划（编程 · 英语 · 专业认知）",
     "archive-doc1-line": "AI 整理的四年规则清单：5 阶段 40+ 节点 · 6 张速查表 · 全部标注官方来源",
     "archive-doc2-line": "AI 排的暑假 8 周计划：编程/英语/方向三线并行 · 逐日打卡表",
-    "file-hand-name": ""
+    "file-hand-name": "",
+    "esc-button": "问学长",
+    "esc-confirm-title": "让学长把他整理好的清单直接给你？（作品会标注「借来的」）",
+    "esc-confirm-yes": "先用学长的",
+    "esc-confirm-no": "我自己来",
+    "next-ESC": "收下学长的清单",
+    "archive-title-borrowed": "大学四年关键规则清单 · 学长版",
+    "archive-doc1-line-borrowed": "参与整理大学四年关键规则与时间点清单"
   }
 }
