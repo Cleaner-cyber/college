@@ -1135,6 +1135,8 @@ export const HomePage: React.FC = () => {
   const mainlineDone = isMainlineComplete(state);
   const mainlineLeft = board.mainline.filter((m) => !state.completedActions.includes(m.id)).length;
   const graduated = state.semester === 'grad-end';
+  // 毕业卡默认展开一次，关掉后本次停留期间不再挡住 Home（床位热点可随时重看）
+  const [gradCard, setGradCard] = useState(true);
 
   return (
     // h-dvh 锁定视口高：场景主页是"一屏"页面，自身永不滚动（面板浮层各自内滚），杜绝滚出底图的白边
@@ -1197,7 +1199,7 @@ export const HomePage: React.FC = () => {
       {/* 场景热点：主页全部入口都长在底图上（底图 + 按钮式主页） */}
       <div
         className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-200 ${
-          panel || graduated ? 'opacity-0' : 'opacity-100'
+          panel || (graduated && gradCard) ? 'opacity-0' : 'opacity-100'
         }`}
         data-tour="nav"
       >
@@ -1231,12 +1233,22 @@ export const HomePage: React.FC = () => {
         />
       </div>
 
-      {/* 毕业态：场景中央的毕业卡。必须带遮罩——不隔离背景就没有层级，
-          而且卡片右缘会正好切过「出门·去校园」热点，露半个按钮在外面 */}
-      {graduated && !panel && (
-        <div className="fixed inset-x-0 bottom-0 top-[52px] z-30 flex items-start justify-center overflow-y-auto bg-ink/60 px-6 py-16 backdrop-blur-[4px]">
-          <div className="w-full max-w-md">
+      {/* 毕业态：场景中央的毕业卡。带遮罩（不隔离背景就没有层级，卡片右缘还会切掉半个热点），
+          但**必须可关闭**——毕业后玩家还要回来翻文件夹/属性/记录，常驻遮罩会把整个 Home 锁死。
+          关掉后用床位那个「查看毕业身份卡」热点随时再看。 */}
+      {graduated && !panel && gradCard && (
+        <div
+          className="fixed inset-x-0 bottom-0 top-[52px] z-30 flex items-start justify-center overflow-y-auto bg-ink/60 px-6 py-16 backdrop-blur-[4px]"
+          onClick={() => setGradCard(false)}
+        >
+          <div className="w-full max-w-md" onClick={(e) => e.stopPropagation()}>
             <SemesterEnded />
+            <button
+              className="mx-auto mt-4 block rounded-full border border-cream/25 bg-dusk/80 px-4 py-1.5 text-sm text-cream shadow-glass backdrop-blur-md transition hover:border-ember/60 hover:text-ember"
+              onClick={() => setGradCard(false)}
+            >
+              {home['panel-close']}
+            </button>
           </div>
         </div>
       )}
