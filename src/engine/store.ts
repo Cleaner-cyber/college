@@ -24,6 +24,9 @@ import { pickEnding } from './ending';
 import { recordGraduation } from './meta';
 
 const SEMESTER_ACTION_POINTS = 3; // 每学期行动点（选修用）
+// 精力上限：结算把剩余行动点 1:1 转精力，不封顶的话「全程不花点」四年能攒到 22，
+// 而总评分里精力峰值是直接相加的——摆烂反而拿走九成分数，正好对冲掉「学会取舍」这个产品目的。
+const ENERGY_MAX = 10;
 
 function freshState(): PlayerState {
   return {
@@ -69,7 +72,8 @@ function mergeDeltas(
   (Object.keys(deltas) as (keyof PlayerState['axes'])[]).forEach((k) => {
     // 下限钳到 0：轴值是"你长成什么样"，没有负的形状。
     // 不钳的话正常通关就会出现「现金 -1」，HUD 上还会把数字挤出容器。
-    next[k] = Math.max(0, (next[k] ?? 0) + (deltas[k] ?? 0));
+    const v = Math.max(0, (next[k] ?? 0) + (deltas[k] ?? 0));
+    next[k] = k === 'energy' ? Math.min(ENERGY_MAX, v) : v;
   });
   return next;
 }
@@ -107,6 +111,27 @@ export function nextSemester(current: string): PlayerState['semester'] {
   const i = SEMESTER_CHAIN.indexOf(current as (typeof SEMESTER_CHAIN)[number]);
   if (i >= 0 && i < SEMESTER_CHAIN.length - 1) return SEMESTER_CHAIN[i + 1];
   return 'grad-end';
+}
+
+/** 结算投影：把「结算时会发生的记账」先算出来，但不推进学期。
+ *
+ * 结算页是先渲染、后落账的（applyLevelResult 在玩家点完最后一屏才调用），
+ * 毕业档案如果直接吃当前 state，展示的就是结算前的旧账——玩家看到的结局
+ * 和系统记进元进度的结局会是两张不同的卡。展示侧一律用这份投影，保证所见即所记。 */
+export function projectSettlement(state: Readonly<PlayerState>): PlayerState {
+  if (!isPlayingSemester(state.semester)) return state as PlayerState;
+  const axes = { ...state.axes, energy: Math.min(ENERGY_MAX, state.axes.energy + state.actionPoints) };
+  const gpaHistory =
+    state.gpaHistory[state.semester] === undefined
+      ? {
+          ...state.gpaHistory,
+          [state.semester]: semesterGpa(
+            state.axes.academic - state.semesterAcademicStart,
+            state.axes.energy,
+          ),
+        }
+      : state.gpaHistory;
+  return { ...state, axes, axesPeak: mergePeak(state.axesPeak, axes), gpaHistory };
 }
 
 export function isPlayingSemester(semester: string): boolean {
@@ -273,9 +298,9 @@ export const useEngine = create<EngineStore>((set) => ({
       if (!st || s.simEvent || st.actionPoints < 1) return {};
       const ev = drawEvent(st);
       if (!ev) return {};
-      const next: PlayerState = { ...st, actionPoints: st.actionPoints - 1 };
-      persistState(next);
-      return { state: next, simEvent: ev, simResolution: null };
+      // 抽卡本身不扣点——事件只存在于内存，刷新即失；扣点放到 resolveSimEvent，
+      // 保证"花掉的行动点"一定换到了一个已结算的选项。
+      return { simEvent: ev, simResolution: null };
     }),
 
   resolveSimEvent: (optionIndex) =>
@@ -301,6 +326,8 @@ export const useEngine = create<EngineStore>((set) => ({
       const applied = applyOutcome(st, outcome);
       const next: PlayerState = {
         ...st,
+        // 行动点在这里才扣（抽卡时不扣，见 drawSimEvent）
+        actionPoints: Math.max(0, st.actionPoints - 1),
         axes: applied.axes,
         axesPeak: mergePeak(st.axesPeak, applied.axes),
         tags: applied.tags,
@@ -351,7 +378,7 @@ export const useEngine = create<EngineStore>((set) => ({
         axesPeak: mergePeak(st.axesPeak, applied.axes),
         tags: applied.tags,
         pendingEvents: applied.pendingEvents,
-        actionPoints: st.actionPoints - cost,
+        actionPoints: Math.max(0, st.actionPoints - cost),
         completedActions: [...st.completedActions, action.id],
         actionHistory: {
           ...st.actionHistory,
@@ -456,7 +483,7 @@ export const useEngine = create<EngineStore>((set) => ({
             }),
           );
         }
-        const energy = next.axes.energy + remaining;
+        const energy = Math.min(ENERGY_MAX, next.axes.energy + remaining);
         const to = nextSemester(st.semester);
         const rested = { ...next.axes, energy };
         if (to !== 'grad-end') {

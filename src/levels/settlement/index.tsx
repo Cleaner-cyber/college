@@ -15,7 +15,7 @@ import {
   getFolderSection,
   semesterName,
 } from '@/engine/content';
-import { nextSemester } from '@/engine/store';
+import { nextSemester, projectSettlement } from '@/engine/store';
 import { awakenedTagIds, cumulativeGpa, semesterGpa, tagDef } from '@/engine/sim';
 import { pathResult } from '@/engine/path';
 import {
@@ -106,14 +106,6 @@ function currentSemesterGpa(state: Readonly<PlayerState>): number {
   );
 }
 
-/** 含当期的累计绩点：毕业档案上印的数字必须和落账后 HUD 显示的一致 */
-function gpaIncludingCurrent(state: Readonly<PlayerState>): number | null {
-  return cumulativeGpa({
-    ...state,
-    gpaHistory: { ...state.gpaHistory, [state.semester]: currentSemesterGpa(state) },
-  });
-}
-
 const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => {
   const highlight = currentHighlight(state);
   // 学期绩点预告（正式入档在结算落账时；这里用同一公式先亮出来）
@@ -194,7 +186,14 @@ const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 );
 
 /** 毕业档案长卡（P2）：总评 → 形状 → 时间线 → 人设 → flag 对照 → 身份卡 → 差一点 → 产出与能力 */
-const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => {
+const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({
+  api,
+  state: rawState,
+}) => {
+  // 结算落账发生在玩家点完最后一屏之后；这里先按同一套规则投影，
+  // 否则毕业卡展示的是结算前的旧账（大四绩点、剩余行动点转的精力都不在里面），
+  // 会出现"看到的结局"和"记录下来的结局"是两张卡。
+  const state = projectSettlement(rawState);
   const sum = computeSum(state);
   const tier = sumTier(sum);
   const stories = semesterStories(state);
@@ -205,7 +204,7 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
   const almost = findAlmost(state, ending);
   const path = pathResult(state);
   // 含大四本身：漏算的话毕业卡上印的均绩会比落账后的 HUD 少一档，两处数字打架
-  const gpa = gpaIncludingCurrent(state);
+  const gpa = cumulativeGpa(state);
   const made = state.archive.filter((a) => getFolderSection(a.id) !== 'prompts');
   const own = made.filter((a) => !a.borrowed).length;
   const topAxis = VISIBLE_AXES.reduce((best, a) => (state.axesPeak[a] > state.axesPeak[best] ? a : best), VISIBLE_AXES[0]);
