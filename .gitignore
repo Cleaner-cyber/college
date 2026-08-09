@@ -2,3 +2,6 @@ node_modules
 dist
 *.local
 .DS_Store
+
+# Python 缓存（scripts/ 下的构建脚本）
+__pycache__/
