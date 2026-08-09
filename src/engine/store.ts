@@ -67,7 +67,9 @@ function mergeDeltas(
 ): PlayerState['axes'] {
   const next = { ...axes };
   (Object.keys(deltas) as (keyof PlayerState['axes'])[]).forEach((k) => {
-    next[k] = (next[k] ?? 0) + (deltas[k] ?? 0);
+    // 下限钳到 0：轴值是"你长成什么样"，没有负的形状。
+    // 不钳的话正常通关就会出现「现金 -1」，HUD 上还会把数字挤出容器。
+    next[k] = Math.max(0, (next[k] ?? 0) + (deltas[k] ?? 0));
   });
   return next;
 }
@@ -386,6 +388,14 @@ export const useEngine = create<EngineStore>((set) => ({
     set((s) => {
       const st = s.state;
       if (!st) return {};
+      // 幂等闸：同一关卡/同一次结算只能入账一次。
+      // 没有它的话，连点「收进文件夹」会把轴值加 N 遍，连点「进入下一学期」会一路推学期、
+      // 把中间几个学期的主线教学关整个跳过——后者直接击穿「主线必修全做完才能结算」这条底线。
+      if (levelId === 'settlement') {
+        if (!isPlayingSemester(st.semester) || !isMainlineComplete(st)) return {};
+      } else if (levelId !== 'prologue' && st.completedActions.includes(levelId)) {
+        return {};
+      }
       const borrowed = result.archiveItems.some((i) => i.borrowed);
       const newAbilities = result.abilityUnlocks.filter((a) => !st.abilities.includes(a));
       const log: LogEntry[] = [...st.log];

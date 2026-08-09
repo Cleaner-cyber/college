@@ -52,9 +52,13 @@ const ToolSelect: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
   const [picked, setPicked] = useState<string | null>(null);
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5">
+      {/* 这屏没有内容卡垫底，直接压在深棕实景 backdrop 上——必须用奶油字，
+          用浅色主题的 ink/ink-soft 会掉到 1.36:1，字直接看不见 */}
       <header>
-        <h1 className="text-xl font-semibold">{api.copy('tool-title')}</h1>
-        <p className="mt-1 text-sm text-ink-soft">{api.copy('tool-sub')}</p>
+        <h1 className="font-display text-xl font-bold tracking-wide text-cream">
+          {api.copy('tool-title')}
+        </h1>
+        <p className="mt-1 text-sm text-cream-soft">{api.copy('tool-sub')}</p>
       </header>
       <div className="grid grid-cols-3 gap-3">
         {TOOLS.map((t) => {

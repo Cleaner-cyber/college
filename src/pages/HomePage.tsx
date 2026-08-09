@@ -472,12 +472,16 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                 {simCopy('live-sub')}
               </p>
             </div>
-            <Button disabled={!canDraw} onClick={() => drawSimEvent()}>
-              {state.actionPoints < 1
-                ? simCopy('no-points')
-                : drawable === 0
-                  ? simCopy('pool-empty')
-                  : simCopy('draw-btn')}
+            {/* 主线未完成时整块被 pointer-events-none 吞掉点击，按钮必须同步置灰并说明原因，
+                否则它是一个满血样式却点不动的按钮——新手只会以为游戏卡了 */}
+            <Button disabled={!canDraw || !firstMainlineDone} onClick={() => drawSimEvent()}>
+              {!firstMainlineDone
+                ? simCopy('locked-btn')
+                : state.actionPoints < 1
+                  ? simCopy('no-points')
+                  : drawable === 0
+                    ? simCopy('pool-empty')
+                    : simCopy('draw-btn')}
             </Button>
           </div>
         )}
@@ -1188,7 +1192,12 @@ export const HomePage: React.FC = () => {
       </header>
 
       {/* 场景热点：主页全部入口都长在底图上（底图 + 按钮式主页） */}
-      <div className="pointer-events-none absolute inset-0 z-10" data-tour="nav">
+      <div
+        className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-200 ${
+          panel ? 'opacity-0' : 'opacity-100'
+        }`}
+        data-tour="nav"
+      >
         {/* 坐标按实景底图 bg-dorm.jpg 校准：书架左上、窗中上（避开水塔剪影）、便签墙右侧、笔记本中下、床左下 */}
         <SceneChip
           x={64} y={28} icon={<MapIcon size={16} strokeWidth={1.75} />}
@@ -1229,7 +1238,7 @@ export const HomePage: React.FC = () => {
       {/* 面板浮层：点热点弹出对应内容 */}
       {panel && (
         <div
-          className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-ink/45 p-6 backdrop-blur-[2px]"
+          className="fixed inset-x-0 bottom-0 top-[52px] z-40 flex items-start justify-center overflow-y-auto bg-ink/65 p-6 backdrop-blur-[6px]"
           onClick={() => setPanel(null)}
         >
           <div className="w-full max-w-[860px] pb-10 pt-2" onClick={(e) => e.stopPropagation()}>

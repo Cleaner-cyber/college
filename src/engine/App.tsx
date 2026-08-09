@@ -18,6 +18,17 @@ import { HomePage } from '@/pages/HomePage';
 import { LevelPage } from '@/pages/LevelPage';
 import { SettlementPage } from '@/pages/SettlementPage';
 
+/** 调试入口是否可见：开发构建默认开；生产构建只在显式打开开关时出现
+ *  （localStorage.unisim_dev='1' 或 URL 带 ?dev=1），保证自动化回归仍能驱动跳关。 */
+const devToolsEnabled = (() => {
+  if (import.meta.env.DEV) return true;
+  try {
+    return localStorage.getItem('unisim_dev') === '1' || location.href.includes('dev=1');
+  } catch {
+    return false;
+  }
+})();
+
 const Loading: React.FC = () => (
   <div className="flex min-h-dvh items-center justify-center text-sm text-ink-soft">
     {ui.common.loading}
@@ -191,8 +202,12 @@ export const App: React.FC = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
-      <DevResetButton />
-      <DevJumpButton />
+      {devToolsEnabled && (
+        <>
+          <DevResetButton />
+          <DevJumpButton />
+        </>
+      )}
     </div>
   );
 };

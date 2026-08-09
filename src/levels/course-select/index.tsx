@@ -7,7 +7,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { LevelModule, LevelProps } from '@/contracts';
 import { ScreenPlayer, type FlowAPI } from '@/engine/ScreenPlayer';
-import { interpolate, ui } from '@/engine/content';
+import { interpolate, ui, getMajor } from '@/engine/content';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
 import { renderMarkdown } from '@/components/ui/Markdown';
@@ -446,7 +446,7 @@ const CourseSelectComponent: React.FC<LevelProps> = ({ state, content, onComplet
   return (
     <ScreenPlayer
       content={content}
-      globalVars={{ playerName: state.player.name }}
+      globalVars={{ playerName: state.player.name, majorName: getMajor(state.player.majorId).name }}
       defaultNextLabel={ui.common.continue}
       senpaiLabel={ui.board['senpai-prefix']}
       wideScreens={['S2']}

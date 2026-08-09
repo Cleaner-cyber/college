@@ -15,7 +15,8 @@ const copy = ui['level-page'] as Record<string, string>;
 const LevelBackdrop: React.FC<{ preferred: string; fallback: string }> = ({ preferred, fallback }) => {
   const [src, setSrc] = useState(preferred);
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
+    // overflow-hidden 必须有：里面的 scale-110 会把图撑出视口，造成 64px 的横向滚动条
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <img
         src={src}
         onError={() => src !== fallback && setSrc(fallback)}
@@ -34,10 +35,20 @@ export const LevelPage: React.FC = () => {
   const applyLevelResult = useEngine((s) => s.applyLevelResult);
   const [leaving, setLeaving] = useState(false);
 
-  const entry = getBoard(state.semester).mainline.find((m) => m.id === levelId);
+  const mainline = getBoard(state.semester).mainline;
+  const idx = mainline.findIndex((m) => m.id === levelId);
+  const entry = idx >= 0 ? mainline[idx] : undefined;
   const mod = levelRegistry[levelId];
-  // 非法/已完成/学期不符 → 回主页
-  if (!entry || !mod || !isPlayingSemester(state.semester) || state.completedActions.includes(levelId)) {
+  // 顺序解锁必须在这里判：只画在 Home 和地图上的话，改一下地址栏 hash 就能直接进未解锁的关卡
+  const prevDone = idx <= 0 || state.completedActions.includes(mainline[idx - 1].id);
+  // 非法/已完成/学期不符/前置未完成 → 回主页
+  if (
+    !entry ||
+    !mod ||
+    !isPlayingSemester(state.semester) ||
+    state.completedActions.includes(levelId) ||
+    !prevDone
+  ) {
     return <Navigate to="/home" replace />;
   }
   const content = getLevelContent(levelId);

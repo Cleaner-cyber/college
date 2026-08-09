@@ -213,12 +213,12 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                     e.dataTransfer.effectAllowed = 'copy';
                   }}
                   onDoubleClick={() => feed(f.id)}
-                  className={`select-none rounded-xl border bg-card p-3 shadow-soft transition ${
+                  className={`select-none rounded-xl border bg-milk/95 p-3 shadow-soft transition ${
                     isFed
-                      ? 'border-line opacity-50 shadow-none'
+                      ? 'border-line-warm opacity-50 shadow-none'
                       : active
                         ? 'cursor-grab border-accent shadow-glow hover:-translate-y-0.5 hover:shadow-lift'
-                        : 'cursor-grab border-line'
+                        : 'cursor-grab border-line-warm'
                   }`}
                 >
                   <div className="flex items-start gap-2.5">
@@ -269,11 +269,11 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
           setDragOver(false);
           feed(e.dataTransfer.getData('text/plain'));
         }}
-        className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-card shadow-soft transition-colors ${
-          dragOver ? 'border-accent bg-accent-soft/40' : waitingFile ? 'border-dashed border-line' : 'border-line'
+        className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-milk/95 shadow-soft transition-colors ${
+          dragOver ? 'border-accent bg-accent-soft/40' : waitingFile ? 'border-dashed border-line-warm' : 'border-line-warm'
         }`}
       >
-        <div className="flex items-center gap-2 border-b border-line bg-paper/60 px-4 py-2.5">
+        <div className="flex items-center gap-2 border-b border-line-warm bg-parchment/70 px-4 py-2.5">
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-accent" />
             <span className="h-2 w-2 rounded-full bg-line" />
@@ -297,7 +297,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
               if (m.kind === 'file') {
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
-                    <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line bg-paper px-3 py-2 text-[12.5px]">
+                    <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line-warm bg-parchment/70 px-3 py-2 text-[12.5px]">
                       📄 <span className="break-all">{api.copy(m.nameKey)}</span>
                     </span>
                   </div>
@@ -306,7 +306,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
               if (m.kind === 'user') {
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
-                    <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13px] leading-relaxed text-paper">
+                    <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-dusk-2 px-4 py-2.5 text-[13px] leading-relaxed text-cream">
                       {m.text}
                     </div>
                   </div>
@@ -323,7 +323,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
               if (m.kind === 'npc') {
                 return (
                   <div key={i} className="mx-auto w-[88%] animate-fade-up">
-                    <div className="rounded-2xl border border-line bg-paper p-3.5 shadow-soft">
+                    <div className="rounded-2xl border border-line-warm bg-parchment/70 p-3.5 shadow-soft">
                       <div className="mb-1.5 flex items-center gap-2">
                         <NpcAvatar name={m.name} size={24} />
                         <span className="text-[11px] tracking-widest text-ink-soft">{m.app}</span>
@@ -341,14 +341,14 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                     onClick={() => {
                       if (!m.done && streaming) setStreamCount(m.text.length);
                     }}
-                    className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line/70 bg-paper px-4 py-3 shadow-soft"
+                    className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line-warm/70 bg-parchment/70 px-4 py-3 shadow-soft"
                   >
                     {renderMarkdown(shown)}
                     {m.img && m.done && (
                       <img
                         src={m.img}
                         alt=""
-                        className="w-full max-w-[520px] rounded-lg border border-line shadow-soft"
+                        className="w-full max-w-[520px] rounded-lg border border-line-warm shadow-soft"
                       />
                     )}
                     {!m.done && isLast && <span className="animate-pulse text-accent">▍</span>}
@@ -361,7 +361,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
         </div>
 
         {/* 输入区 */}
-        <div className="border-t border-line px-4 py-3">
+        <div className="border-t border-line-warm px-4 py-3">
           {step?.type === 'chip' && typingText === null && (
             <button
               onClick={() => {
@@ -403,7 +403,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
           <div className="flex items-end gap-2">
             <div
               ref={inputRef}
-              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
+              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line-warm bg-parchment/70 px-3.5 py-2.5 text-[13px] leading-relaxed ${
                 inputText ? 'text-ink' : 'text-ink-soft/60'
               }`}
             >
@@ -412,7 +412,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
             </div>
             <button
               disabled
-              className="rounded-xl bg-ink px-4 py-2.5 text-[13px] text-paper opacity-40"
+              className="rounded-xl bg-dusk-2 px-4 py-2.5 text-[13px] text-cream opacity-40"
             >
               {ui.common.confirm}
             </button>

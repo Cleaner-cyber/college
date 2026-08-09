@@ -97,12 +97,27 @@ function replayLines(state: Readonly<PlayerState>): { label: string; text: strin
   });
 }
 
+/** 本学期绩点：已落账就用落账值，否则用同一公式现算。
+ * 结算页渲染早于 applyLevelResult('settlement') 落账，不现算的话当期绩点会缺席。 */
+function currentSemesterGpa(state: Readonly<PlayerState>): number {
+  return (
+    state.gpaHistory[state.semester] ??
+    semesterGpa(state.axes.academic - state.semesterAcademicStart, state.axes.energy)
+  );
+}
+
+/** 含当期的累计绩点：毕业档案上印的数字必须和落账后 HUD 显示的一致 */
+function gpaIncludingCurrent(state: Readonly<PlayerState>): number | null {
+  return cumulativeGpa({
+    ...state,
+    gpaHistory: { ...state.gpaHistory, [state.semester]: currentSemesterGpa(state) },
+  });
+}
+
 const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, state }) => {
   const highlight = currentHighlight(state);
   // 学期绩点预告（正式入档在结算落账时；这里用同一公式先亮出来）
-  const gpa =
-    state.gpaHistory[state.semester] ??
-    semesterGpa(state.axes.academic - state.semesterAcademicStart, state.axes.energy);
+  const gpa = currentSemesterGpa(state);
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-baseline justify-between">
@@ -189,7 +204,8 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ 
   const ending = pickEnding(state);
   const almost = findAlmost(state, ending);
   const path = pathResult(state);
-  const gpa = cumulativeGpa(state);
+  // 含大四本身：漏算的话毕业卡上印的均绩会比落账后的 HUD 少一档，两处数字打架
+  const gpa = gpaIncludingCurrent(state);
   const made = state.archive.filter((a) => getFolderSection(a.id) !== 'prompts');
   const own = made.filter((a) => !a.borrowed).length;
   const topAxis = VISIBLE_AXES.reduce((best, a) => (state.axesPeak[a] > state.axesPeak[best] ? a : best), VISIBLE_AXES[0]);
