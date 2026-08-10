@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">
+  <rect width="480" height="360" fill="#F7EDD9"/>
+  <rect width="480" height="360" fill="#5F7161" fill-opacity="0.06"/>
+  <g stroke="#5F7161" stroke-opacity="0.14" stroke-width="2" stroke-linecap="round"><line x1="288" y1="88" x2="440" y2="88" /><line x1="288" y1="122" x2="440" y2="122" /><line x1="288" y1="156" x2="440" y2="156" /><line x1="288" y1="190" x2="440" y2="190" /><line x1="288" y1="224" x2="440" y2="224" /><line x1="288" y1="258" x2="440" y2="258" /><line x1="288" y1="292" x2="440" y2="292" /></g>
+  <rect x="-70" y="-70" width="300" height="300" rx="72" transform="rotate(12 80 80)" fill="#5F7161" fill-opacity="0.92"/>
+  <g transform="translate(36 44) scale(4.2)"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 3v4h4" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12a2 2 0 1 0 4 0a2 2 0 1 0-4 0" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 17c.6-1.8 2-2.5 3-2.5s2.4.7 3 2.5" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <rect x="0" y="350" width="480" height="10" fill="#5F7161" fill-opacity="0.85"/>
+  <text x="466" y="338" text-anchor="end" font-family="monospace" font-size="9"
+        fill="#5F7161" fill-opacity="0.45">cover-resume-doc</text>
+</svg>

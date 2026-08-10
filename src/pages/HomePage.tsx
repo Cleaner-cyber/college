@@ -45,13 +45,29 @@ import {
   BarChart3,
   BedDouble,
   BookOpen,
+  Bug,
+  ChartColumn,
+  Clapperboard,
+  ClipboardCheck,
+  CodeXml,
+  Compass,
+  Copy,
   Dices,
   FileText,
   FolderOpen,
+  GraduationCap,
+  IdCard,
+  Image as ImageIcon,
+  Lock,
+  Mail,
+  MessagesSquare,
+  Mic,
+  Presentation,
   Zap,
   Map as MapIcon,
   NotebookPen,
   ScrollText,
+  type LucideIcon,
 } from 'lucide-react';
 
 const home = ui.home as Record<string, string>;
@@ -677,78 +693,119 @@ const SectionHead: React.FC<{ title: string; sub: string; count: number }> = ({
   </header>
 );
 
-/** 作品卡：横向堆叠的大图卡片 */
+/** 作品卡：封面优先的大图卡片。真实图（jpg/webp/png）直接当封面；
+ * 其余作品用 covers/cover-<id>.svg 专属封面（占位可同名替换，见 scripts/gen-covers.py）。
+ * 简历措辞不再排在卡面上（详情里看），卡面只留封面+标题。 */
 const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
   const [imgOk, setImgOk] = useState(true);
+  const raster = item.assetRef && /\.(jpe?g|png|webp)$/i.test(item.assetRef);
+  const cover = raster ? assetUrl(item.assetRef!) : `/assets/covers/cover-${item.id}.svg`;
   return (
     <button
       onClick={onOpen}
-      className="w-[270px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
+      className="w-[240px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
     >
-      <div className="h-[180px] w-full overflow-hidden border-b border-line bg-paper">
-        {item.assetRef && imgOk ? (
+      <div className="h-[168px] w-full overflow-hidden border-b border-line bg-paper">
+        {imgOk ? (
           <img
-            src={assetUrl(item.assetRef)}
+            src={cover}
             alt=""
             onError={() => setImgOk(false)}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl">🗂️</div>
+          <div className="flex h-full items-center justify-center text-ink-soft">
+            <FolderOpen size={36} strokeWidth={1.5} />
+          </div>
         )}
       </div>
-      <div className="p-4">
-        <div className="flex items-center justify-between gap-2">
-          <span className="truncate text-[14.5px] font-medium">{item.title}</span>
-          {item.borrowed && (
-            <span className="shrink-0 rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
-              {home['borrowed-tag']}
-            </span>
-          )}
-        </div>
-        {item.resumeLine && (
-          <p className="mt-1 truncate text-xs text-ink-soft">{item.resumeLine}</p>
+      <div className="flex items-center justify-between gap-2 p-3.5">
+        <span className="truncate text-[14px] font-medium">{item.title}</span>
+        {item.borrowed && (
+          <span className="shrink-0 rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
+            {home['borrowed-tag']}
+          </span>
         )}
       </div>
     </button>
   );
 };
 
-/** 提示词模板卡：紧凑行卡（模板全文点进详情看） */
-const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
-  <button
-    onClick={onOpen}
-    className="flex w-full items-center gap-3.5 rounded-2xl border border-line bg-card p-4 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
-  >
-    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
-      <Zap size={14} strokeWidth={1.75} className="text-accent" />
-    </span>
-    <span className="min-w-0 flex-1">
-      <span className="flex items-center gap-2">
-        <span className="truncate text-[14.5px] font-semibold">{item.title}</span>
-        <span className="shrink-0 rounded bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent">
-          {home['prompt-badge']}
+/** 提示词卡的专属图标：图形替文字，卡面不再重复"点击查看/可复制"一类说明 */
+const PROMPT_ICONS: Record<string, LucideIcon> = {
+  'prompt-doc-feeding': FileText,
+  'prompt-image-gen': ImageIcon,
+  'prompt-structured-gen': Presentation,
+  'prompt-ai-coding': CodeXml,
+  'prompt-data-analysis': ChartColumn,
+  'prompt-examiner': Mic,
+  'prompt-lit-review': BookOpen,
+  'prompt-multimodal': Clapperboard,
+  'prompt-note-taking': NotebookPen,
+  'prompt-resume': IdCard,
+  'prompt-role-play': MessagesSquare,
+  'prompt-thesis': GraduationCap,
+};
+
+/** 提示词卡：图标为主的紧凑法宝卡。hover 浮起并露出"复制"角标（图形示意，不占常驻文字） */
+const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
+  const Icon = PROMPT_ICONS[item.id] ?? Zap;
+  return (
+    <button
+      onClick={onOpen}
+      aria-label={`${item.title}｜${home['prompt-open-hint']}`}
+      className="group relative flex flex-col items-center gap-2.5 rounded-2xl border border-line bg-card px-3 py-4 text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
+    >
+      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent-soft transition group-hover:shadow-glow">
+        <Icon size={22} strokeWidth={1.75} className="text-accent" />
+      </span>
+      <span className="w-full truncate text-center text-[13px] font-medium leading-snug">
+        {item.title.replace(/[·・]?\s*提示词模板$/, '')}
+      </span>
+      <span
+        aria-hidden
+        className="absolute right-2 top-2 text-ink-soft/0 transition group-hover:text-ink-soft"
+      >
+        <Copy size={13} strokeWidth={1.75} />
+      </span>
+    </button>
+  );
+};
+
+/** 档案卡的专属图标（图形辅助识别，替掉纯文字白卡） */
+const DOC_ICONS: Record<string, LucideIcon> = {
+  'major-card': Compass,
+  'course-map': MapIcon,
+  'coding-fix': Bug,
+  'notes-doc': NotebookPen,
+  'mentor-email': Mail,
+  'exam-sheet': ClipboardCheck,
+  'interview-review': MessagesSquare,
+  'doc-ppt-tools': Presentation,
+  'ielts-speaking': Mic,
+};
+
+/** 档案卡：信纸折角 + 图标牌 + 学期章。标题一行，其余进详情 */
+const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
+  const Icon = DOC_ICONS[item.id] ?? ScrollText;
+  return (
+    <button
+      onClick={onOpen}
+      className="relative flex w-full break-inside-avoid items-center gap-3 overflow-hidden rounded-xl border border-line bg-card p-3.5 pr-7 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
+    >
+      <span className="absolute right-0 top-0 h-0 w-0 border-l-[18px] border-t-[18px] border-l-transparent border-t-line" />
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-paper">
+        <Icon size={18} strokeWidth={1.75} className="text-accent" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[13.5px] font-medium">{item.title}</span>
+        <span className="mt-0.5 block text-[11px] text-ink-soft">
+          {getBoard(item.semester).header}
         </span>
       </span>
-      <span className="mt-0.5 block truncate text-xs text-ink-soft">
-        {home['prompt-open-hint']}
-      </span>
-    </span>
-    <span className="shrink-0 text-ink-soft">›</span>
-  </button>
-);
-
-/** 档案卡：信纸折角样式 */
-const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
-  <button
-    onClick={onOpen}
-    className="relative break-inside-avoid overflow-hidden rounded-xl border border-line bg-card p-4 pr-8 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
-  >
-    <span className="absolute right-0 top-0 h-0 w-0 border-l-[18px] border-t-[18px] border-l-transparent border-t-line" />
-    <div className="text-[14.5px] font-medium">{item.title}</div>
-    <div className="mt-1 text-xs text-ink-soft">{getBoard(item.semester).header}</div>
-  </button>
-);
+    </button>
+  );
+};
 
 /** 详情弹层：完整内容，不做删减 */
 const ArchiveDetail: React.FC<{
@@ -962,7 +1019,7 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             {home['folder-empty-prompts']}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-4 gap-3">
             {prompts.map((item) => (
               <PromptCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
             ))}
@@ -1091,21 +1148,91 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
         </div>
       )}
     </Panel>
-    <Panel title={home['stats-abilities-title']}>
-      {state.abilities.length === 0 ? (
-        <p className="text-sm text-cream-soft">{home['stats-abilities-empty']}</p>
-      ) : (
-        <div className="flex flex-wrap gap-2">
-          {state.abilities.map((a) => (
-            <span key={a} className="rounded-lg bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent">
-              <Zap size={13} strokeWidth={1.75} className="inline align-[-2px] text-accent" /> {ui.abilities[a] ?? a}
-            </span>
-          ))}
-        </div>
-      )}
+    <Panel title={home['stats-abilities-title']} sub={home['stats-tree-sub']}>
+      <AbilityTree abilities={state.abilities} />
     </Panel>
   </div>
 );
+
+/** 能力树：按学期分列的科技树。已解锁点亮，未解锁挂锁变暗——
+ * 越靠后的能力天然越"高阶"（顺序解锁由主线保证）。节点只有图标+短名，说明进 hover title。 */
+const ABILITY_TREE: { sem: string; nodes: { id: string; icon: LucideIcon }[] }[] = [
+  { sem: 'y1s1', nodes: [{ id: 'doc-feeding', icon: FileText }, { id: 'image-gen', icon: ImageIcon }] },
+  { sem: 'y1s2', nodes: [{ id: 'structured-gen', icon: Presentation }, { id: 'ai-coding', icon: CodeXml }] },
+  { sem: 'y2s1', nodes: [{ id: 'lit-review', icon: BookOpen }, { id: 'note-taking', icon: NotebookPen }] },
+  { sem: 'y2s2', nodes: [{ id: 'data-analysis', icon: ChartColumn }, { id: 'multimodal', icon: Clapperboard }] },
+  { sem: 'y3s1', nodes: [{ id: 'examiner', icon: Mic }] },
+  { sem: 'y3s2', nodes: [{ id: 'role-play', icon: MessagesSquare }] },
+];
+
+const AbilityTree: React.FC<{ abilities: readonly string[] }> = ({ abilities }) => {
+  const semNames = home['timeline'].split('｜');
+  return (
+    <div className="relative overflow-x-auto pb-1">
+      {/* 干线：贯穿各学期列圆点中心的水平轨道（标签行高 + 间距 + 半个点 ≈ 28px） */}
+      <div aria-hidden className="absolute left-6 right-6 top-[28px] h-px bg-cream/20" />
+      <div className="relative flex min-w-[560px] items-start justify-between gap-2">
+        {ABILITY_TREE.map((col, ci) => {
+          const colUnlocked = col.nodes.some((n) => abilities.includes(n.id));
+          return (
+            <div key={col.sem} className="flex flex-1 flex-col items-center gap-2.5">
+              <span className={`text-[10.5px] tracking-widest ${colUnlocked ? 'text-ember' : 'text-cream-soft/50'}`}>
+                {semNames[ci + 1] ?? col.sem}
+              </span>
+              {/* 干线上的结点 */}
+              <span
+                aria-hidden
+                className={`h-2.5 w-2.5 rounded-full ring-4 ring-dusk ${colUnlocked ? 'bg-ember' : 'bg-cream/25'}`}
+              />
+              <div className="flex flex-col gap-2">
+                {col.nodes.map((n) => {
+                  const unlocked = abilities.includes(n.id);
+                  const name = (ui.abilities as Record<string, string>)[n.id] ?? n.id;
+                  const Icon = n.icon;
+                  return (
+                    <div
+                      key={n.id}
+                      title={unlocked ? name : `${name}｜${home['stats-tree-locked']}`}
+                      className={`flex w-[76px] flex-col items-center gap-1.5 rounded-xl border px-1.5 py-2.5 transition ${
+                        unlocked
+                          ? 'border-ember/50 bg-ember/10'
+                          : 'border-cream/10 bg-dusk-2/40 opacity-60'
+                      }`}
+                    >
+                      <span
+                        className={`relative flex h-9 w-9 items-center justify-center rounded-lg ${
+                          unlocked ? 'bg-accent-soft shadow-glow' : 'bg-cream/8'
+                        }`}
+                      >
+                        <Icon
+                          size={17}
+                          strokeWidth={1.75}
+                          className={unlocked ? 'text-accent' : 'text-cream-soft/60'}
+                        />
+                        {!unlocked && (
+                          <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-dusk-2 ring-1 ring-cream/20">
+                            <Lock size={9} strokeWidth={2} className="text-cream-soft" />
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className={`w-full truncate text-center text-[10.5px] leading-tight ${
+                          unlocked ? 'text-cream' : 'text-cream-soft/60'
+                        }`}
+                      >
+                        {name.replace(/^AI\s*/, '')}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 /** 每条日志属于哪个学期：按日志里的「X学期开始了」标记切桶推出来。
  * 原先这里显示的是玩家电脑的真实时间（游戏里是 2026 年 9 月，页面上却写着今天的日期），

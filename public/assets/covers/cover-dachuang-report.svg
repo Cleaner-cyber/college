@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">
+  <rect width="480" height="360" fill="#F7EDD9"/>
+  <rect width="480" height="360" fill="#6E5470" fill-opacity="0.06"/>
+  <g stroke="#6E5470" stroke-opacity="0.12" stroke-width="1.5"><line x1="440" y1="328" x2="300" y2="288" /><line x1="440" y1="328" x2="300" y2="248" /><line x1="440" y1="328" x2="300" y2="208" /><line x1="440" y1="328" x2="300" y2="168" /></g>
+  <rect x="-70" y="-70" width="300" height="300" rx="72" transform="rotate(12 80 80)" fill="#6E5470" fill-opacity="0.92"/>
+  <g transform="translate(36 44) scale(4.2)"><path d="M5 20V9" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20V4" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 20v-8" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 20V7" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 20h18" fill="none" stroke="#FFFBF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <rect x="0" y="350" width="480" height="10" fill="#6E5470" fill-opacity="0.85"/>
+  <text x="466" y="338" text-anchor="end" font-family="monospace" font-size="9"
+        fill="#6E5470" fill-opacity="0.45">cover-dachuang-report</text>
+</svg>
