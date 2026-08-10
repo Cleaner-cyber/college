@@ -426,7 +426,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
                 <button
                   key={c.id}
                   style={{ animationDelay: `${i * 70}ms` }}
-                  className="animate-fade-up rounded-xl border border-line-warm/70 bg-milk/85 px-5 py-3 text-[15px] shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:border-accent hover:shadow-lift"
+                  className="animate-fade-up rounded-xl border border-cream/20 bg-dusk/75 px-5 py-3 font-display text-[15px] text-cream shadow-glass backdrop-blur-md transition hover:-translate-y-0.5 hover:border-ember/70 hover:text-ember"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (c.setVar) setVar(c.setVar.key, c.setVar.value);
@@ -446,14 +446,14 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
           <div className="mx-auto max-w-2xl">
             {!isSystem && (
               <span
-                className={`relative z-10 -mb-[3px] ml-4 inline-block rounded-t-xl border border-b-0 border-line/60 px-4 py-1.5 text-sm font-semibold tracking-wide ${
-                  screen.speaker === 'senpai' ? 'bg-accent text-white' : 'bg-dusk-2 text-cream'
+                className={`relative z-10 -mb-[3px] ml-4 inline-block rounded-t-xl border border-b-0 border-cream/20 px-4 py-1.5 font-display text-sm font-semibold tracking-wide ${
+                  screen.speaker === 'senpai' ? 'bg-accent text-white' : 'bg-cream text-dusk'
                 }`}
               >
                 {name}
               </span>
             )}
-            <div className="relative min-h-[104px] rounded-2xl border border-line-warm/60 bg-milk/90 px-7 py-5 shadow-pop backdrop-blur-md">
+            <div className="relative min-h-[104px] rounded-2xl border border-cream/15 bg-dusk/80 px-7 py-5 font-display text-cream shadow-glass backdrop-blur-md backdrop-saturate-125">
               {text &&
                 (useTypewriter && !forceFull ? (
                   <Typewriter
@@ -484,7 +484,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
                       }
                     }}
                     placeholder={screen.placeholder ? t(screen.placeholder) : ''}
-                    className="flex-1 rounded-xl border border-line bg-card px-4 py-2.5 text-[16px] outline-none focus:border-accent"
+                    className="flex-1 rounded-xl border border-cream/20 bg-dusk-2/70 px-4 py-2.5 text-[16px] text-cream outline-none transition placeholder:text-cream-soft/50 focus:border-ember"
                   />
                   <Button
                     disabled={!canConfirm}
@@ -498,7 +498,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
                 </div>
               )}
               {screen.type === 'dialogue' && ready && (
-                <span className="absolute bottom-2.5 right-4 animate-bounce text-accent">▾</span>
+                <span className="absolute bottom-2.5 right-4 animate-bounce text-ember">▾</span>
               )}
             </div>
           </div>
