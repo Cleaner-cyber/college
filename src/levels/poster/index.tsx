@@ -43,7 +43,14 @@ const PosterImage: React.FC<{ src?: string; fakeQr?: boolean; tag?: string }> = 
   tag,
 }) => (
   <div className="relative w-full max-w-[250px]">
-    {src && <img src={src} alt="" className="w-full rounded-lg border border-line shadow-soft" />}
+    {src && (
+      <img
+        src={src}
+        alt=""
+        style={{ aspectRatio: '3 / 4' }}
+        className="w-full rounded-lg border border-line object-cover shadow-soft"
+      />
+    )}
     {fakeQr && (
       <>
         <span
@@ -90,7 +97,14 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
 
   useEffect(() => {
     const el = scrollRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+    // 出图消息的图片加载完成后内容会再长高一截，滚动要补一次，
+    // 否则图片下面的消息（对比滑块等）会被顶出视口
+    const t = window.setTimeout(() => {
+      el.scrollTop = el.scrollHeight;
+    }, 450);
+    return () => window.clearTimeout(t);
   }, [msgs, stage, styleAdded, logoFed]);
 
   // 思考 → 出图
