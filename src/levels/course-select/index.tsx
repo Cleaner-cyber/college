@@ -15,6 +15,7 @@ import { renderMarkdown } from '@/components/ui/Markdown';
 import { DocViewer } from '@/components/ui/DocViewer';
 import { SenpaiAvatar } from '@/components/ui/SpeakerTag';
 import { FileText } from 'lucide-react';
+import { Writing } from '@/components/fx/Writing';
 
 type FileId = 'plan' | 'handbook';
 
@@ -92,15 +93,7 @@ const FileCard: React.FC<{
 
 const ThinkingDots: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex items-center gap-2 text-[13px] text-ink-soft">
-    <span className="flex gap-1">
-      {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent"
-          style={{ animationDelay: `${i * 0.25}s` }}
-        />
-      ))}
-    </span>
+    <Writing />
     {label}
   </div>
 );

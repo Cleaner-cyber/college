@@ -926,9 +926,16 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         count={works.length}
       />
       {works.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-line p-6 text-center text-sm text-ink-soft">
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-cream/25 p-6 text-center text-sm text-cream-soft">
+          {/* 纸页扇出的文件夹（hover 时纸探出来）：档案的字面隐喻，见 docs/13 */}
+          <div aria-hidden className="fx-folder">
+            <div className="fx-folder-back" />
+            <div className="fx-folder-paper" />
+            <div className="fx-folder-paper fx-folder-paper2" />
+            <div className="fx-folder-front" />
+          </div>
           {home['folder-empty-works']}
-        </p>
+        </div>
       ) : (
         <div className="flex snap-x gap-4 overflow-x-auto pb-2">
           {works.map((item) => (
@@ -945,9 +952,15 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
           count={prompts.length}
         />
         {prompts.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-line p-6 text-center text-sm text-ink-soft">
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-cream/25 p-6 text-center text-sm text-cream-soft">
+            <div aria-hidden className="fx-folder">
+              <div className="fx-folder-back" />
+              <div className="fx-folder-paper" />
+              <div className="fx-folder-paper fx-folder-paper2" />
+              <div className="fx-folder-front" />
+            </div>
             {home['folder-empty-prompts']}
-          </p>
+          </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {prompts.map((item) => (
@@ -1080,7 +1093,7 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
     </Panel>
     <Panel title={home['stats-abilities-title']}>
       {state.abilities.length === 0 ? (
-        <p className="text-sm text-ink-soft">{home['stats-abilities-empty']}</p>
+        <p className="text-sm text-cream-soft">{home['stats-abilities-empty']}</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {state.abilities.map((a) => (
@@ -1114,14 +1127,14 @@ function logSemesters(state: Readonly<PlayerState>): string[] {
 const LogTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   <Panel title={home['log-title']}>
     {state.log.length === 0 ? (
-      <p className="text-sm text-ink-soft">{home['log-empty']}</p>
+      <p className="text-sm text-cream-soft">{home['log-empty']}</p>
     ) : (
       <ol className="flex flex-col gap-0.5">
         {[...state.log]
           .map((entry, i) => ({ entry, sem: logSemesters(state)[i] }))
           .reverse()
           .map(({ entry, sem }, i) => (
-          <li key={i} className="flex items-baseline gap-3 border-b border-line/60 py-2.5 last:border-b-0">
+          <li key={i} className="flex items-baseline gap-3 border-b border-cream/10 py-2.5 last:border-b-0">
             <span className="w-14 shrink-0 text-xs text-cream-soft" title={entry.ts}>
               {sem}
             </span>

@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/Button';
 import { TaskPanel } from '@/components/ui/TaskPanel';
 import { SenpaiAvatar, NpcAvatar } from '@/components/ui/SpeakerTag';
 import { ClipboardList, Droplet, Image as ImageIcon, Scissors } from 'lucide-react';
+import { Writing } from '@/components/fx/Writing';
+import { Compare } from '@/components/fx/Compare';
 
 type Stage =
   | 'build' // 照需求单拼提示词（选比例）
@@ -28,6 +30,7 @@ type Stage =
 type Msg =
   | { kind: 'user'; text: string; param?: string; prefix?: string }
   | { kind: 'ai'; text: string; img?: string; fakeQr?: boolean; tag?: string }
+  | { kind: 'compare' } // v1/v2 对比滑块（迭代教学的落点）
   | { kind: 'file'; text: string }
   | { kind: 'qrfile' } // 学姐发来的真实报名二维码
   | { kind: 'senpai'; text: string }
@@ -64,15 +67,7 @@ const PosterImage: React.FC<{ src?: string; fakeQr?: boolean; tag?: string }> = 
 const Thinking: React.FC<{ label: string; tip: string }> = ({ label, tip }) => (
   <div className="flex flex-col gap-1.5">
     <div className="flex items-center gap-2 text-[13px] text-ink-soft">
-      <span className="flex gap-1">
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent"
-            style={{ animationDelay: `${i * 0.25}s` }}
-          />
-        ))}
-      </span>
+      <Writing />
       {label}
     </div>
     <span className="text-[11.5px] text-ink-soft/70">{tip}</span>
@@ -114,6 +109,8 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
         setMsgs((m) => [
           ...m,
           { kind: 'ai', text: api.copy('ai-v2'), img: assets['poster-acg-v2'] },
+          { kind: 'senpai', text: api.copy('compare-note') },
+          { kind: 'compare' },
         ]);
         setStage('v2');
       } else {
@@ -357,6 +354,21 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                             {api.copy('qr-file-meta')}
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  );
+                }
+                if (m.kind === 'compare') {
+                  return (
+                    <div key={i} className="flex justify-start animate-fade-up">
+                      <div className="w-full max-w-[250px] rounded-2xl rounded-tl-md border border-line-warm bg-parchment/70 p-2.5">
+                        <Compare
+                          before={assets['poster-acg-v1']}
+                          after={assets['poster-acg-v2']}
+                          beforeLabel={api.copy('compare-before')}
+                          afterLabel={api.copy('compare-after')}
+                          hint={api.copy('compare-hint')}
+                        />
                       </div>
                     </div>
                   );

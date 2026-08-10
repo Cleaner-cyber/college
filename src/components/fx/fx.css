@@ -106,11 +106,107 @@
   );
 }
 
+/* 纸页扇出文件夹（React Bits Folder 机制简化版，零依赖）：
+   「档案」的字面隐喻，放文件夹空态。hover 时两张纸从夹里探出（一次性，非循环）。 */
+.fx-folder {
+  position: relative;
+  width: 64px;
+  height: 50px;
+}
+.fx-folder-back {
+  position: absolute;
+  inset: 0;
+  top: 7px;
+  border-radius: 5px 8px 8px 8px;
+  background: #cbb394;
+}
+.fx-folder-back::before {
+  /* 标签舌头 */
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 0;
+  width: 26px;
+  height: 10px;
+  border-radius: 4px 8px 0 0;
+  background: #cbb394;
+}
+.fx-folder-paper {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 3px;
+  bottom: 12px;
+  border-radius: 3px;
+  background: #fffbf0;
+  box-shadow: 0 1px 2px rgba(38, 24, 15, 0.18);
+  transition: transform 0.3s ease;
+}
+.fx-folder-paper2 {
+  background: #f7edd9;
+}
+.fx-folder-front {
+  position: absolute;
+  inset: 0;
+  top: 14px;
+  border-radius: 6px 8px 8px 8px;
+  background: linear-gradient(180deg, #e3c69c, #d4b285);
+  box-shadow: 0 -1px 2px rgba(38, 24, 15, 0.08);
+}
+.fx-folder:hover .fx-folder-paper {
+  transform: translateY(-7px) rotate(-4deg);
+}
+.fx-folder:hover .fx-folder-paper2 {
+  transform: translateY(-11px) rotate(3deg);
+}
+
+/* 铅笔画线加载指示（Uiverse Shoh2008 铅笔机制简化为水平书写）：
+   「学长正在写…」。铅笔往返，笔下的线随之画出/收回。 */
+.fx-write {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 15px;
+}
+.fx-write-pencil {
+  position: absolute;
+  left: 0;
+  bottom: 1px;
+  color: #c05a32;
+  animation: fx-writing 1.1s ease-in-out infinite alternate;
+}
+.fx-write-line {
+  position: absolute;
+  left: 3px;
+  bottom: 0;
+  width: 26px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: rgba(192, 90, 50, 0.45);
+  transform-origin: left center;
+  animation: fx-writeline 1.1s ease-in-out infinite alternate;
+}
+@keyframes fx-writing {
+  from { transform: translateX(0) rotate(-2deg); }
+  to { transform: translateX(20px) rotate(4deg); }
+}
+@keyframes fx-writeline {
+  from { transform: scaleX(0.12); }
+  to { transform: scaleX(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fx-book-page {
     animation: none;
   }
   .fx-tick {
     transition: none;
+  }
+  .fx-folder-paper {
+    transition: none;
+  }
+  .fx-write-pencil,
+  .fx-write-line {
+    animation: none;
   }
 }

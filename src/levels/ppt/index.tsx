@@ -17,6 +17,7 @@ import { DocViewer } from '@/components/ui/DocViewer';
 import { SenpaiAvatar } from '@/components/ui/SpeakerTag';
 import { DeliverScreen, EscapeOverlay } from '@/components/chat/DeliverScreen';
 import { SlideViewer, type SlideViewerLabels } from './SlideViewer';
+import { Writing } from '@/components/fx/Writing';
 
 /** 成品档位：槽位名=工具名（来自用户上传压缩包的文件名），展示名/注释由 deck-{id}-name/note 决定 */
 const DECK_IDS = [
@@ -84,15 +85,7 @@ const DECK_CHAT_TITLE: Record<string, string> = {
 
 const Thinking: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex items-center gap-2 text-[13px] text-ink-soft">
-    <span className="flex gap-1">
-      {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent"
-          style={{ animationDelay: `${i * 0.25}s` }}
-        />
-      ))}
-    </span>
+    <Writing />
     {label}
   </div>
 );

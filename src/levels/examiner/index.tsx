@@ -13,6 +13,7 @@ import { renderMarkdown } from '@/components/ui/Markdown';
 import { SenpaiAvatar } from '@/components/ui/SpeakerTag';
 import { DeliverScreen, EscapeOverlay } from '@/components/chat/DeliverScreen';
 import { VoiceCall, formatCallLog } from './VoiceCall';
+import { Writing } from '@/components/fx/Writing';
 
 type Step =
   | { k: 'senpai'; key: string }
@@ -45,15 +46,7 @@ type Msg =
 
 const Thinking: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex items-center gap-2 text-[13px] text-ink-soft">
-    <span className="flex gap-1">
-      {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent"
-          style={{ animationDelay: `${i * 0.25}s` }}
-        />
-      ))}
-    </span>
+    <Writing />
     {label}
   </div>
 );
