@@ -84,7 +84,7 @@ const DECK_CHAT_TITLE: Record<string, string> = {
 };
 
 const Thinking: React.FC<{ label: string }> = ({ label }) => (
-  <div className="flex items-center gap-2 text-[13px] text-ink-soft">
+  <div className="flex items-center gap-2 text-[13px] text-cream-soft">
     <Writing />
     {label}
   </div>
@@ -100,7 +100,7 @@ const ChatCard: React.FC<{
   <div className="flex justify-start animate-fade-up">
     <button
       onClick={onOpen}
-      className="flex w-[360px] max-w-[92%] items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-card p-3.5 text-left shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
+      className="flex w-[360px] max-w-[92%] items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-parchment/95 p-3.5 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
     >
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
         {icon}
@@ -216,20 +216,20 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="rounded-xl bg-accent-soft/60 p-2.5 text-[12px] leading-relaxed text-ink-soft">
+      <p className="rounded-xl border border-cream/15 bg-dusk/70 p-2.5 text-[12px] leading-relaxed text-cream-soft shadow-glass backdrop-blur-md">
         {api.copy('s3-steps')}
       </p>
 
-      <div className="flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 border-line bg-card shadow-soft">
-        <div className="flex items-center gap-2 border-b border-line bg-paper/60 px-4 py-2.5">
+      <div className="fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 border-cream/12 bg-dusk/85 shadow-glass backdrop-blur-md">
+        <div className="flex items-center gap-2 border-b border-cream/10 bg-dusk-2/70 px-4 py-2.5">
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-accent" />
-            <span className="h-2 w-2 rounded-full bg-line" />
-            <span className="h-2 w-2 rounded-full bg-line" />
+            <span className="h-2 w-2 rounded-full bg-cream/20" />
+            <span className="h-2 w-2 rounded-full bg-cream/20" />
           </span>
-          <span className="ml-1 text-[13px] font-medium">{api.copy('chat-title')}</span>
+          <span className="ml-1 text-[13px] font-medium text-cream">{api.copy('chat-title')}</span>
           {streaming && (
-            <span className="ml-auto text-[11px] text-ink-soft">{api.copy('chat-skip-hint')}</span>
+            <span className="ml-auto text-[11px] text-cream-soft">{api.copy('chat-skip-hint')}</span>
           )}
         </div>
 
@@ -240,7 +240,7 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
               if (m.kind === 'user') {
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
-                    <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13px] leading-relaxed text-paper">
+                    <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md border border-ember/30 bg-dusk-2 px-4 py-2.5 text-[13px] leading-relaxed text-cream">
                       {m.text}
                     </div>
                   </div>
@@ -250,7 +250,7 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
                 return (
                   <div key={i} className="flex items-start gap-2 py-1 animate-fade-up">
                     <SenpaiAvatar size={26} />
-                    <p className="whitespace-pre-wrap pt-0.5 text-[12.5px] leading-relaxed text-accent">
+                    <p className="whitespace-pre-wrap pt-0.5 text-[12.5px] leading-relaxed text-ember">
                       {m.text}
                     </p>
                   </div>
@@ -292,7 +292,7 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
                     onClick={() => {
                       if (!m.done && streaming) setStreamCount(m.text.length);
                     }}
-                    className="max-w-[92%] rounded-2xl rounded-tl-md border border-line/70 bg-paper px-4 py-3 shadow-soft"
+                    className="max-w-[92%] rounded-2xl rounded-tl-md border border-line-warm/70 bg-parchment/95 px-4 py-3 text-ink shadow-soft"
                   >
                     {renderMarkdown(shown)}
                     {!m.done && isLast && <span className="animate-pulse text-accent">▍</span>}
@@ -305,7 +305,7 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
         </div>
 
         {/* 输入区 */}
-        <div className="border-t border-line px-4 py-3">
+        <div className="border-t border-cream/10 px-4 py-3">
           {step?.k === 'chip' && typingText === null && (
             <button
               onClick={() => {
@@ -325,16 +325,16 @@ const TwoRoadsChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> =
           <div className="flex items-end gap-2">
             <div
               ref={inputRef}
-              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
-                inputText ? 'text-ink' : 'text-ink-soft/60'
+              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-cream/12 bg-dusk-2/70 px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                inputText ? 'text-cream' : 'text-cream-soft/50'
               }`}
             >
               {inputText || api.copy('chat-input-placeholder')}
-              {typingText !== null && <span className="animate-pulse text-accent">▍</span>}
+              {typingText !== null && <span className="animate-pulse text-ember">▍</span>}
             </div>
             <button
               disabled
-              className="rounded-xl bg-ink px-4 py-2.5 text-[13px] text-paper opacity-40"
+              className="rounded-xl bg-ember px-4 py-2.5 text-[13px] font-medium text-dusk opacity-40"
             >
               {ui.common.confirm}
             </button>
@@ -391,12 +391,12 @@ const Arena: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ api
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <h2 className="text-lg font-semibold">{api.copy('arena-title')}</h2>
-        <p className="mt-1 text-[12.5px] leading-relaxed text-ink-soft">{api.copy('arena-sub')}</p>
+        <h2 className="text-lg font-semibold text-cream">{api.copy('arena-title')}</h2>
+        <p className="mt-1 text-[12.5px] leading-relaxed text-cream-soft">{api.copy('arena-sub')}</p>
       </div>
 
       {/* 横评总表 */}
-      <div className="overflow-hidden rounded-2xl border border-line bg-card shadow-soft">
+      <div className="overflow-hidden rounded-2xl border border-line bg-card text-ink shadow-soft">
         <table className="w-full border-collapse text-left text-[12px] leading-relaxed">
           <thead>
             <tr className="border-b border-line bg-paper/70 text-[11.5px] tracking-wide text-ink-soft">
@@ -445,14 +445,14 @@ const Arena: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ api
 
       {/* 真实成品陈列 */}
       <div>
-        <h3 className="text-[15px] font-semibold">{api.copy('gallery-title')}</h3>
-        <p className="mt-0.5 text-[12px] text-ink-soft">{api.copy('gallery-sub')}</p>
+        <h3 className="text-[15px] font-semibold text-cream">{api.copy('gallery-title')}</h3>
+        <p className="mt-0.5 text-[12px] text-cream-soft">{api.copy('gallery-sub')}</p>
         <div className="mt-3 grid grid-cols-5 gap-3">
           {decks.map((d) => (
             <button
               key={d.id}
               onClick={() => setViewer(d.id)}
-              className="group overflow-hidden rounded-xl border border-line bg-card text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
+              className="group overflow-hidden rounded-xl border border-line bg-card text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
             >
               <div className="aspect-video overflow-hidden border-b border-line bg-paper">
                 <img
@@ -482,9 +482,9 @@ const Arena: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ api
         </div>
       </div>
 
-      <div className="flex items-start gap-2 rounded-xl bg-accent-soft/60 p-3">
+      <div className="flex items-start gap-2 rounded-xl border border-cream/15 bg-dusk/70 p-3 shadow-glass backdrop-blur-md">
         <SenpaiAvatar size={26} />
-        <p className="pt-0.5 text-[12.5px] leading-relaxed text-accent">
+        <p className="pt-0.5 text-[12.5px] leading-relaxed text-ember">
           {api.copy('arena-senpai')}
         </p>
       </div>

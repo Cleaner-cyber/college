@@ -70,31 +70,27 @@ const ToolSelect: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = (
                 setPicked(t.id);
                 if (t.id === 'trae') api.check('ck-tool');
               }}
-              className={`flex flex-col items-center gap-2.5 rounded-2xl border bg-card p-4 text-center shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift ${
-                active ? 'border-accent shadow-glow' : 'border-line'
+              className={`flex flex-col items-center gap-2.5 rounded-2xl border p-4 text-center shadow-glass backdrop-blur-md transition hover:-translate-y-0.5 ${
+                active ? 'border-ember bg-ember/15' : 'border-cream/20 bg-dusk-2/60 hover:border-ember/50'
               }`}
             >
               <img src={assets[t.icon]} alt="" className="h-14 w-14 rounded-xl" />
-              <span className="text-[15px] font-semibold">{api.copy(`tool-${t.id}-name`)}</span>
+              <span className="text-[15px] font-semibold text-cream">{api.copy(`tool-${t.id}-name`)}</span>
               <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[10.5px] font-medium text-accent">
                 {api.copy(`tool-${t.id}-badge`)}
               </span>
-              <span className="text-xs leading-relaxed text-ink-soft">
+              <span className="text-xs leading-relaxed text-cream-soft">
                 {api.copy(`tool-${t.id}-desc`)}
               </span>
-              <span className="text-[11px] text-ink-soft/70">{api.copy(`tool-${t.id}-site`)}</span>
+              <span className="text-[11px] text-cream-soft/70">{api.copy(`tool-${t.id}-site`)}</span>
             </button>
           );
         })}
       </div>
       <p
         key={picked ?? 'none'}
-        className={`rounded-xl p-3.5 text-[13.5px] leading-relaxed animate-fade-up ${
-          picked === 'trae'
-            ? 'bg-accent-soft/70 text-ink'
-            : picked
-              ? 'bg-card text-ink-soft'
-              : 'bg-card text-ink-soft'
+        className={`rounded-xl border border-cream/15 bg-dusk/70 p-3.5 text-[13.5px] leading-relaxed shadow-glass backdrop-blur-md animate-fade-up ${
+          picked === 'trae' ? 'text-cream' : 'text-cream-soft'
         }`}
       >
         <span className="mr-1.5 rounded bg-accent-soft px-1.5 py-0.5 text-xs font-semibold text-accent">
@@ -150,12 +146,12 @@ const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
     maxLength: number,
   ) => (
     <label className="block">
-      <span className="text-xs tracking-widest text-ink-soft">{label}</span>
+      <span className="text-xs tracking-widest text-cream-soft">{label}</span>
       <input
         value={value}
         maxLength={maxLength}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 w-full rounded-xl border border-line bg-card px-4 py-2.5 text-[14.5px] outline-none transition focus:border-accent focus:shadow-glow"
+        className="mt-1.5 w-full rounded-xl border border-cream/12 bg-dusk-2/70 px-4 py-2.5 text-[14.5px] text-cream outline-none transition focus:border-ember focus:shadow-glow"
       />
     </label>
   );
@@ -174,14 +170,14 @@ const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
     <div className="grid grid-cols-[360px_minmax(0,1fr)] gap-6">
       <div className="flex flex-col gap-4">
         <header>
-          <h1 className="text-xl font-semibold">{api.copy('s4-title')}</h1>
-          <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">{api.copy('s4-sub')}</p>
+          <h1 className="text-xl font-semibold text-cream">{api.copy('s4-title')}</h1>
+          <p className="mt-1 text-[13px] leading-relaxed text-cream-soft">{api.copy('s4-sub')}</p>
         </header>
         {field(api.copy('form-tagline-label'), tagline, setTagline, 40)}
         {field(api.copy('form-hobbies-label'), hobbies, setHobbies, 30)}
         {field(api.copy('form-showcase-label'), showcase, setShowcase, 60)}
         <div>
-          <span className="text-xs tracking-widest text-ink-soft">
+          <span className="text-xs tracking-widest text-cream-soft">
             {api.copy('form-color-label')}
           </span>
           <div className="mt-1.5 flex gap-2">
@@ -189,8 +185,10 @@ const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
               <button
                 key={c}
                 onClick={() => setColor(c)}
-                className={`flex items-center gap-1.5 rounded-full border bg-accent-soft/60 px-3 py-1.5 text-[12.5px] transition ${
-                  color === c ? 'border-accent text-accent shadow-glow' : 'border-line text-ink-soft'
+                className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12.5px] transition ${
+                  color === c
+                    ? 'border-ember bg-ember/15 text-ember'
+                    : 'border-cream/20 bg-dusk-2/60 text-cream hover:border-ember/50'
                 }`}
               >
                 <span
@@ -207,10 +205,10 @@ const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
         </Button>
       </div>
       <div>
-        <div className="mb-2 text-[11px] tracking-widest text-ink-soft">
+        <div className="mb-2 text-[11px] tracking-widest text-cream-soft">
           {api.copy('s4-preview-title')}
         </div>
-        <div className="max-h-[520px] overflow-y-auto whitespace-pre-wrap rounded-2xl border border-line bg-card p-5 text-[13.5px] leading-relaxed shadow-soft">
+        <div className="max-h-[520px] overflow-y-auto whitespace-pre-wrap rounded-2xl border border-cream/12 bg-dusk-2/70 p-5 text-[13.5px] leading-relaxed text-cream shadow-glass backdrop-blur-md">
           {preview}
         </div>
       </div>
@@ -224,14 +222,14 @@ const BrowserFrame: React.FC<{ address: string; children: React.ReactNode }> = (
   address,
   children,
 }) => (
-  <div className="overflow-hidden rounded-2xl border border-line bg-card shadow-lift">
-    <div className="flex items-center gap-2 border-b border-line bg-paper/70 px-4 py-2.5">
+  <div className="overflow-hidden rounded-2xl border border-cream/12 bg-dusk/85 shadow-glass backdrop-blur-md">
+    <div className="flex items-center gap-2 border-b border-cream/10 bg-dusk-2/70 px-4 py-2.5">
       <span className="flex items-center gap-1.5">
         <span className="h-2.5 w-2.5 rounded-full bg-accent" />
-        <span className="h-2.5 w-2.5 rounded-full bg-line" />
-        <span className="h-2.5 w-2.5 rounded-full bg-line" />
+        <span className="h-2.5 w-2.5 rounded-full bg-cream/20" />
+        <span className="h-2.5 w-2.5 rounded-full bg-cream/20" />
       </span>
-      <span className="ml-2 flex-1 truncate rounded-full bg-card px-3 py-1 text-[12px] text-ink-soft">
+      <span className="ml-2 flex-1 truncate rounded-full bg-dusk/70 px-3 py-1 text-[12px] text-cream-soft">
         {address}
       </span>
     </div>
@@ -244,8 +242,8 @@ const BrokenPreview: React.FC<{ api: FlowAPI }> = ({ api }) => (
     <BrowserFrame address={api.copy('s6-title')}>
       <div className="flex h-[300px] items-center justify-center bg-white" />
     </BrowserFrame>
-    <p className="text-center text-[15px] text-ink-soft">{api.copy('s6-white-line')}</p>
-    <p className="rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px] leading-relaxed">
+    <p className="text-center text-[15px] text-cream-soft">{api.copy('s6-white-line')}</p>
+    <p className="rounded-xl border border-cream/12 bg-dusk/70 p-3.5 text-[13.5px] leading-relaxed text-cream shadow-glass backdrop-blur-md">
       <span className="mr-1.5 rounded bg-accent-soft px-1.5 py-0.5 text-xs font-semibold text-accent">
         {ui.board['senpai-prefix']}
       </span>
@@ -263,7 +261,7 @@ const DevToolsPanel: React.FC<{ api: FlowAPI }> = ({ api }) => {
   const [copied, setCopied] = useState(false);
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-4">
-      <div className="overflow-hidden rounded-2xl border border-line shadow-lift">
+      <div className="overflow-hidden rounded-2xl border border-cream/12 shadow-glass">
         <div className="flex items-center gap-1 bg-[#2b2a27] px-3 pt-2 text-[12px] text-paper/60">
           <span className="rounded-t-lg px-3 py-1.5">{api.copy('s8-tab-elements')}</span>
           <span className="rounded-t-lg bg-[#1e1d1b] px-3 py-1.5 font-medium text-paper">
@@ -295,7 +293,7 @@ const DevToolsPanel: React.FC<{ api: FlowAPI }> = ({ api }) => {
           <div className="mt-2 text-paper/30">&gt;</div>
         </div>
       </div>
-      <p className="rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px] leading-relaxed">
+      <p className="rounded-xl border border-cream/12 bg-dusk/70 p-3.5 text-[13.5px] leading-relaxed text-cream shadow-glass backdrop-blur-md">
         <span className="mr-1.5 rounded bg-accent-soft px-1.5 py-0.5 text-xs font-semibold text-accent">
           {ui.board['senpai-prefix']}
         </span>
@@ -339,12 +337,12 @@ const SitePreview: React.FC<{ api: FlowAPI; html: string; filename: string }> = 
         />
       </BrowserFrame>
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[13px] text-ink-soft">{api.copy('s9p-night-hint')}</p>
+        <p className="text-[13px] text-cream-soft">{api.copy('s9p-night-hint')}</p>
         <Button variant="secondary" onClick={download}>
           {downloaded ? api.copy('s9p-downloaded') : api.copy('s9p-download')}
         </Button>
       </div>
-      <p className="rounded-xl bg-accent-soft/60 p-3.5 text-[13.5px] leading-relaxed">
+      <p className="rounded-xl border border-cream/12 bg-dusk/70 p-3.5 text-[13.5px] leading-relaxed text-cream shadow-glass backdrop-blur-md">
         <span className="mr-1.5 rounded bg-accent-soft px-1.5 py-0.5 text-xs font-semibold text-accent">
           {ui.board['senpai-prefix']}
         </span>
