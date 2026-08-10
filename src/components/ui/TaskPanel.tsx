@@ -31,11 +31,22 @@ export const TaskPanel: React.FC<TaskPanelProps> = ({ items, checked, title }) =
             return (
               <li key={item.id} className="flex items-center gap-2 py-1">
                 <span
-                  className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
-                    isDone ? 'border-ember bg-ember text-dusk' : 'border-cream/30 bg-transparent'
+                  className={`flex h-4 w-4 items-center justify-center rounded border transition-colors duration-300 ${
+                    isDone ? 'border-ember bg-ember' : 'border-cream/30 bg-transparent'
                   }`}
                 >
-                  {isDone ? '✓' : ''}
+                  {/* 勾像笔画一样画出来（dashoffset 24→0），比瞬时打勾更有"完成一项"的手感 */}
+                  <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" aria-hidden>
+                    <path
+                      d="M4.5 12.5 L9.5 17.5 L19.5 6.5"
+                      stroke="#26180F"
+                      strokeWidth={3.2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="fx-tick"
+                      style={{ strokeDasharray: 26, strokeDashoffset: isDone ? 0 : 26 }}
+                    />
+                  </svg>
                 </span>
                 <span className={isDone ? 'text-cream' : 'text-cream-soft'}>{item.label}</span>
               </li>

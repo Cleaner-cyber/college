@@ -533,7 +533,7 @@ export const ScreenPlayer: React.FC<ScreenPlayerProps> = ({
             renderVN()
           ) : (
             /* 默认叙事屏：垫一张暖纸卡——关卡页是深色实景底，正文不能裸排在暗底上 */
-            <div className="rounded-2xl border border-line-warm bg-milk/95 p-6 shadow-lift backdrop-blur-sm">
+            <div className="fx-paper rounded-2xl border border-line-warm bg-milk/95 p-6 shadow-lift backdrop-blur-sm">
               {renderDefault()}
             </div>
           )}

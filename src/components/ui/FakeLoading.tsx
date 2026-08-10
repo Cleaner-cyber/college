@@ -39,6 +39,11 @@ export const FakeLoading: React.FC<FakeLoadingProps> = ({ ms, tips, onDone }) =>
 
   return (
     <div className="flex flex-col items-center gap-4 py-10 animate-fade-up">
+      {/* 翻书加载器：假生成的"学长在翻资料"演出（Uiverse 机制重着色，见 docs/13） */}
+      <div aria-hidden className="fx-book mb-1">
+        <div className="fx-book-page" />
+        <div className="fx-book-page fx-book-page2" />
+      </div>
       <div className="h-1.5 w-56 overflow-hidden rounded-full bg-line shadow-inner">
         <div
           className="h-full rounded-full bg-accent shadow-glow transition-[width] duration-100"

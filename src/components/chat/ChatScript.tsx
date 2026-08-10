@@ -270,7 +270,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
           setDragOver(false);
           feed(e.dataTransfer.getData('text/plain'));
         }}
-        className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-milk/95 shadow-soft transition-colors ${
+        className={`fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-milk/95 shadow-soft transition-colors ${
           dragOver ? 'border-accent bg-accent-soft/40' : waitingFile ? 'border-dashed border-line-warm' : 'border-line-warm'
         }`}
       >

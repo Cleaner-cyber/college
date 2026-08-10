@@ -53,3 +53,64 @@
     display: none;
   }
 }
+
+/* 翻书加载器（Uiverse vinodjangid07 机制重着色：书页=暖纸，书脊=锈红）。
+   加载指示是无限循环动画唯一的正当场合；reduced-motion 下只留静态书。 */
+.fx-book {
+  position: relative;
+  width: 84px;
+  height: 11px;
+  border-radius: 2px;
+  background: #f7edd9;
+  border-bottom: 2px solid #c05a32;
+}
+.fx-book-page {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 46%;
+  height: 2px;
+  border-radius: 1px;
+  background: #f7edd9;
+  transform-origin: left center;
+  animation: fx-paging 0.7s ease-out infinite;
+}
+.fx-book-page2 {
+  animation-duration: 0.85s;
+}
+@keyframes fx-paging {
+  10% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(-180deg); }
+}
+
+/* 自绘勾（Uiverse LeonKohli 机制：stroke-dashoffset 24→0，勾像笔画一样画出来） */
+.fx-tick {
+  transition: stroke-dashoffset 0.45s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+
+/* 纸纹肌理（Uiverse LilaRest 的 repeating-conic-gradient 噪点技巧，极低透明度）：
+   给暖纸卡一点真实纸面的颗粒感，静态无动画 */
+.fx-paper {
+  position: relative;
+}
+.fx-paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: repeating-conic-gradient(
+    rgba(38, 24, 15, 0.028) 0% 0.0001%,
+    rgba(255, 251, 240, 0.03) 0.0002% 0.0004%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-book-page {
+    animation: none;
+  }
+  .fx-tick {
+    transition: none;
+  }
+}

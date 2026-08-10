@@ -295,7 +295,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
             setDragOver(false);
             if (e.dataTransfer.getData('text/plain') === 'club-logo') feedLogo();
           }}
-          className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-milk/95 shadow-lift backdrop-blur-sm transition-colors ${
+          className={`fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-milk/95 shadow-lift backdrop-blur-sm transition-colors ${
             dragOver
               ? 'border-accent bg-accent-soft/40'
               : challenge && !logoFed
