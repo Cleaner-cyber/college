@@ -20,6 +20,7 @@ import { loadMeta, unlockedLegacyTraits } from '@/engine/meta';
 import { useProfile } from '@/engine/profile';
 import { Button } from '@/components/ui/Button';
 import { Typewriter } from '@/components/ui/Typewriter';
+import { spotlightMove } from '@/components/fx/spotlight';
 
 const FLAG_KEYS = ['salaryBand', 'city', 'workStyle', 'offTime'] as const;
 const TRAIT_SHOW = 8; // 每局随机亮出的特质数
@@ -45,7 +46,8 @@ const PathSelect: React.FC<{ api: FlowAPI; onConfirm: (id: string) => void }> = 
             <button
               key={p.id}
               onClick={() => setPicked(p.id)}
-              className={`rounded-xl border p-3.5 text-left transition ${
+              onMouseMove={spotlightMove}
+              className={`fx-spotlight relative rounded-xl border p-3.5 text-left transition ${
                 on
                   ? 'border-accent bg-accent-soft shadow-glow'
                   : 'border-line bg-card shadow-soft hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift'
@@ -121,7 +123,8 @@ const TraitDraw: React.FC<{ api: FlowAPI; onConfirm: (ids: string[]) => void }> 
             <button
               key={t.id}
               onClick={() => toggle(t.id)}
-              className={`rounded-xl border p-3.5 text-left transition ${
+              onMouseMove={spotlightMove}
+              className={`fx-spotlight relative rounded-xl border p-3.5 text-left transition ${
                 on
                   ? 'border-accent bg-accent-soft shadow-glow'
                   : 'border-line bg-card shadow-soft hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift'

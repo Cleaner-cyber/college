@@ -1,0 +1,55 @@
+/* 组件库调研落地的微动效（docs/13）。共同纪律：
+   只做 hover 触发的一次性效果或一次性入场，不引入无限循环动画；
+   面积小、透明度低、暖色系；reduced-motion 下降级为静态。 */
+
+/* 鼠标跟随暖光（React Bits SpotlightCard 机制，CSS 变量版） */
+.fx-spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    200px circle at var(--fx-x, 50%) var(--fx-y, 50%),
+    var(--fx-spot, rgba(255, 179, 92, 0.13)),
+    transparent 70%
+  );
+}
+.fx-spotlight:hover::after {
+  opacity: 1;
+}
+
+/* 主按钮 hover 扫光（Uiverse/GlareHover 类工艺：一次性斜向 sheen，非循环） */
+.fx-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.fx-sheen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -70%;
+  width: 45%;
+  transform: skewX(-18deg);
+  background: linear-gradient(105deg, transparent, rgba(255, 235, 200, 0.16), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: left 0.05s linear, opacity 0.05s linear;
+}
+.fx-sheen:hover::before {
+  left: 130%;
+  opacity: 1;
+  transition: left 0.65s ease, opacity 0.1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-spotlight::after {
+    transition: none;
+  }
+  .fx-sheen::before {
+    display: none;
+  }
+}

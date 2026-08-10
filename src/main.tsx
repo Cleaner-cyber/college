@@ -6,6 +6,7 @@ import { App } from '@/engine/App';
 import 'lxgw-wenkai-lite-webfont/lxgwwenkailite-regular.css';
 import 'lxgw-wenkai-lite-webfont/lxgwwenkailite-bold.css';
 import './index.css';
+import './components/fx/fx.css';
 
 // HashRouter：纯静态托管零配置（无需服务端 rewrite）。
 // 部署到支持 rewrite 的平台（如 Vercel）时可换 BrowserRouter，见 docs/07。

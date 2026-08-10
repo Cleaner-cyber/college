@@ -35,6 +35,7 @@ import { DormScene } from '@/components/DormScene';
 import { useAuth } from '@/services/auth';
 import { isCloudMode } from '@/services/supabase';
 import { Button } from '@/components/ui/Button';
+import { spotlightMove } from '@/components/fx/spotlight';
 import { Panel } from '@/components/ui/Panel';
 import { PromptText } from '@/components/ui/Markdown';
 import { DocViewer } from '@/components/ui/DocViewer';
@@ -532,8 +533,9 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                     data-action-tile
                     disabled={locked || done || unaffordable}
                     onClick={() => runSimAction(action)}
+                    onMouseMove={spotlightMove}
                     className={`group relative flex items-center gap-2.5 rounded-xl border border-line bg-card px-3 py-2.5 text-left shadow-soft transition hover:z-30 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
-                      done ? 'opacity-50' : locked ? 'opacity-60' : unaffordable ? 'opacity-40' : ''
+                      done ? 'opacity-50' : locked ? 'opacity-60' : unaffordable ? 'opacity-40' : 'fx-spotlight'
                     }`}
                   >
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-paper text-lg">

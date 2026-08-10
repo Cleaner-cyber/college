@@ -17,7 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
     'rounded-xl px-5 py-3 text-[15px] font-medium transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed disabled:border-transparent disabled:bg-ink-soft/70 disabled:text-paper/90 disabled:shadow-none disabled:active:scale-100 disabled:hover:translate-y-0 disabled:hover:shadow-none';
   const styles = {
     primary:
-      'bg-dusk-2 text-cream shadow-soft hover:-translate-y-0.5 hover:bg-dusk-2/90 hover:shadow-lift',
+      'fx-sheen bg-dusk-2 text-cream shadow-soft hover:-translate-y-0.5 hover:bg-dusk-2/90 hover:shadow-lift',
     secondary:
       'bg-milk border border-line-warm text-ink shadow-soft hover:-translate-y-0.5 hover:border-ink/30 hover:shadow-lift',
     ghost: 'text-ink-soft underline underline-offset-4 hover:text-ink',

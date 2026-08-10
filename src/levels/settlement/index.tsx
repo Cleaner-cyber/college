@@ -30,6 +30,8 @@ import {
   sumTier,
 } from '@/engine/ending';
 import { Button } from '@/components/ui/Button';
+import { CountUp } from '@/components/fx/CountUp';
+import { TiltCard } from '@/components/fx/TiltCard';
 import { Typewriter } from '@/components/ui/Typewriter';
 import { Folder as FolderIcon, Zap } from 'lucide-react';
 
@@ -77,7 +79,9 @@ const AxesBars: React.FC<{ axes: Readonly<PlayerState['axes']>; animate?: boolea
               }}
             />
           </div>
-          <span className="w-5 text-sm font-semibold">{axes[axis]}</span>
+          <span className="w-5 text-sm font-semibold tabular-nums">
+            {animate ? <CountUp to={axes[axis]} duration={700} delay={150} /> : axes[axis]}
+          </span>
         </div>
       ))}
     </div>
@@ -119,7 +123,9 @@ const Recap: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({ api, 
           {interpolate(api.copy('s1-title'), { semester: semesterName(state.semester) })}
         </h1>
         <span className="rounded-xl bg-accent-soft px-3 py-1.5 text-sm font-semibold tabular-nums text-accent">
-          {interpolate(api.copy('s1-gpa'), { gpa: gpa.toFixed(2) })}
+          {/* \u6a21\u677f\u662f\u300c\u672c\u5b66\u671f\u7ee9\u70b9 {gpa}\u300d\uff0c\u6570\u5b57\u4f4d\u5728\u672b\u5c3e\u2014\u2014\u524d\u7f00\u7167\u6392\uff0c\u6570\u5b57\u4ea4\u7ed9 CountUp \u6eda\u52a8 */}
+          {api.copy('s1-gpa').replace('{gpa}', '')}
+          <CountUp to={gpa} decimals={2} duration={900} delay={150} />
         </span>
       </div>
       <AxesBars axes={state.axes} animate max={AXIS_MAX} />
@@ -348,7 +354,9 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({
             </div>
             <div className="flex items-center gap-4 rounded-xl bg-accent-soft/50 p-4">
               <div className="text-center">
-                <div className="text-3xl font-bold tabular-nums text-accent">{path.prob}%</div>
+                <div className="text-3xl font-bold tabular-nums text-accent">
+                  <CountUp to={path.prob} duration={1200} delay={250} />%
+                </div>
                 <div className="mt-0.5 text-[11px] text-ink-soft">{api.copy('grad-path-prob-label')}</div>
               </div>
               <p className="min-w-0 flex-1 text-[13px] leading-relaxed text-ink-soft">
@@ -381,12 +389,12 @@ const GradReport: React.FC<{ api: FlowAPI; state: Readonly<PlayerState> }> = ({
           </div>
         )}
 
-        {/* 身份卡 */}
-        <div className="mt-5 rounded-xl bg-accent-soft/70 p-4 text-center shadow-soft animate-pop-in">
+        {/* 身份卡：轻 tilt 给一点"捏在手里的证件卡"质感 */}
+        <TiltCard className="mt-5 rounded-xl bg-accent-soft/70 p-4 text-center shadow-soft animate-pop-in">
           <div className="text-[11px] tracking-widest text-ink-soft">{api.copy('grad-card-title')}</div>
           <div className="mt-1.5 text-2xl font-semibold text-accent">{ending.title}</div>
           <p className="mt-2 text-[14px] leading-relaxed">{ending.verdict}</p>
-        </div>
+        </TiltCard>
 
         {/* 差一点 */}
         {almost && (
