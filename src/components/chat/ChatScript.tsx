@@ -42,7 +42,7 @@ interface ChatScriptProps {
 }
 
 const Thinking: React.FC<{ label: string }> = ({ label }) => (
-  <div className="flex items-center gap-2 text-[13px] text-ink-soft">
+  <div className="flex items-center gap-2 text-[13px] text-cream-soft">
     <Writing />
     {label}
   </div>
@@ -191,7 +191,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
       {/* 文件面板（有文件步骤才显示） */}
       {fileSteps.length > 0 && (
         <aside>
-          <div className="mb-2 text-[11px] tracking-widest text-ink-soft">
+          <div className="mb-2 text-[11px] tracking-widest text-cream-soft">
             {api.copy('files-title')}
           </div>
           <div className="flex flex-col gap-2.5">
@@ -207,7 +207,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                     e.dataTransfer.effectAllowed = 'copy';
                   }}
                   onDoubleClick={() => feed(f.id)}
-                  className={`select-none rounded-xl border bg-milk/95 p-3 shadow-soft transition ${
+                  className={`select-none rounded-xl border bg-milk/95 p-3 text-ink shadow-soft transition ${
                     isFed
                       ? 'border-line-warm opacity-50 shadow-none'
                       : active
@@ -242,7 +242,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
             })}
           </div>
           {waitingFile && (
-            <p className="mt-3 rounded-xl bg-accent-soft/60 p-2.5 text-[11.5px] leading-relaxed text-ink-soft">
+            <p className="mt-3 rounded-xl border border-cream/15 bg-dusk/70 p-2.5 text-[11.5px] leading-relaxed text-cream-soft shadow-glass backdrop-blur-md">
               {hints['files-drag']}
             </p>
           )}
@@ -263,26 +263,26 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
           setDragOver(false);
           feed(e.dataTransfer.getData('text/plain'));
         }}
-        className={`fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-milk/95 shadow-soft transition-colors ${
-          dragOver ? 'border-accent bg-accent-soft/40' : waitingFile ? 'border-dashed border-line-warm' : 'border-line-warm'
+        className={`fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-dusk/85 shadow-glass backdrop-blur-md transition-colors ${
+          dragOver ? 'border-ember bg-dusk-2/85' : waitingFile ? 'border-dashed border-cream/25' : 'border-cream/12'
         }`}
       >
-        <div className="flex items-center gap-2 border-b border-line-warm bg-parchment/70 px-4 py-2.5">
+        <div className="flex items-center gap-2 border-b border-cream/10 bg-dusk-2/70 px-4 py-2.5">
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-accent" />
-            <span className="h-2 w-2 rounded-full bg-line" />
-            <span className="h-2 w-2 rounded-full bg-line" />
+            <span className="h-2 w-2 rounded-full bg-cream/20" />
+            <span className="h-2 w-2 rounded-full bg-cream/20" />
           </span>
-          <span className="ml-1 text-[13px] font-medium">{api.copy('chat-title')}</span>
+          <span className="ml-1 text-[13px] font-medium text-cream">{api.copy('chat-title')}</span>
           {streaming && (
-            <span className="ml-auto text-[11px] text-ink-soft">{api.copy('chat-skip-hint')}</span>
+            <span className="ml-auto text-[11px] text-cream-soft">{api.copy('chat-skip-hint')}</span>
           )}
         </div>
 
         {/* 消息区 */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4">
           {msgs.length === 0 && waitingFile && (
-            <div className="flex h-full items-center justify-center text-sm text-ink-soft">
+            <div className="flex h-full items-center justify-center text-sm text-cream-soft">
               {dragOver ? api.copy('chat-drop-active') : api.copy('chat-empty-hint')}
             </div>
           )}
@@ -291,7 +291,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
               if (m.kind === 'file') {
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
-                    <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line-warm bg-parchment/70 px-3 py-2 text-[12.5px]">
+                    <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line-warm bg-parchment/95 px-3 py-2 text-[12.5px] text-ink">
                       <FileText size={14} strokeWidth={1.75} className="shrink-0 text-accent" /> <span className="break-all">{api.copy(m.nameKey)}</span>
                     </span>
                   </div>
@@ -300,7 +300,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
               if (m.kind === 'user') {
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
-                    <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-dusk-2 px-4 py-2.5 text-[13px] leading-relaxed text-cream">
+                    <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md border border-ember/30 bg-dusk-2 px-4 py-2.5 text-[13px] leading-relaxed text-cream">
                       {m.text}
                     </div>
                   </div>
@@ -310,14 +310,14 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                 return (
                   <div key={i} className="flex items-start gap-2 py-1 animate-fade-up">
                     <SenpaiAvatar size={26} />
-                    <p className="pt-0.5 text-[12.5px] leading-relaxed text-accent">{m.text}</p>
+                    <p className="pt-0.5 text-[12.5px] leading-relaxed text-ember">{m.text}</p>
                   </div>
                 );
               }
               if (m.kind === 'npc') {
                 return (
                   <div key={i} className="mx-auto w-[88%] animate-fade-up">
-                    <div className="rounded-2xl border border-line-warm bg-parchment/70 p-3.5 shadow-soft">
+                    <div className="rounded-2xl border border-line-warm bg-parchment/95 p-3.5 text-ink shadow-soft">
                       <div className="mb-1.5 flex items-center gap-2">
                         <NpcAvatar name={m.name} size={24} />
                         <span className="text-[11px] tracking-widest text-ink-soft">{m.app}</span>
@@ -335,7 +335,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
                     onClick={() => {
                       if (!m.done && streaming) setStreamCount(m.text.length);
                     }}
-                    className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line-warm/70 bg-parchment/70 px-4 py-3 shadow-soft"
+                    className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line-warm/70 bg-parchment/95 px-4 py-3 text-ink shadow-soft"
                   >
                     {renderMarkdown(shown)}
                     {m.img && m.done && (
@@ -355,7 +355,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
         </div>
 
         {/* 输入区 */}
-        <div className="border-t border-line-warm px-4 py-3">
+        <div className="border-t border-cream/10 px-4 py-3">
           {step?.type === 'chip' && typingText === null && (
             <button
               onClick={() => {
@@ -370,7 +370,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
           {step?.type === 'chips' && typingText === null && (
             <div className="mb-2.5 animate-fade-up">
               {step.titleKey && (
-                <p className="mb-2 text-[12.5px] text-ink-soft">{api.copy(step.titleKey)}</p>
+                <p className="mb-2 text-[12.5px] text-cream-soft">{api.copy(step.titleKey)}</p>
               )}
               <div className="flex flex-wrap gap-2">
                 {step.options.map((opt) => (
@@ -397,16 +397,16 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
           <div className="flex items-end gap-2">
             <div
               ref={inputRef}
-              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line-warm bg-parchment/70 px-3.5 py-2.5 text-[13px] leading-relaxed ${
-                inputText ? 'text-ink' : 'text-ink-soft/60'
+              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-cream/12 bg-dusk-2/70 px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                inputText ? 'text-cream' : 'text-cream-soft/50'
               }`}
             >
               {inputText || api.copy('chat-input-placeholder', '…')}
-              {typingText !== null && <span className="animate-pulse text-accent">▍</span>}
+              {typingText !== null && <span className="animate-pulse text-ember">▍</span>}
             </div>
             <button
               disabled
-              className="rounded-xl bg-dusk-2 px-4 py-2.5 text-[13px] text-cream opacity-40"
+              className="rounded-xl bg-ember px-4 py-2.5 text-[13px] text-dusk opacity-40"
             >
               {ui.common.confirm}
             </button>

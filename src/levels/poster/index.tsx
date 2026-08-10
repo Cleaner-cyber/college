@@ -71,15 +71,57 @@ const PosterImage: React.FC<{ src?: string; fakeQr?: boolean; tag?: string }> = 
   </div>
 );
 
-const Thinking: React.FC<{ label: string; tip: string }> = ({ label, tip }) => (
-  <div className="flex flex-col gap-1.5">
-    <div className="flex items-center gap-2 text-[13px] text-ink-soft">
-      <Writing />
-      {label}
+/** 假生成等待：铅笔 + 分步清单（Aceternity Multi Step Loader 的零依赖重写，见 docs/13）。
+ * 步骤按 THINK_MS 均分点亮，勾用 .fx-tick 画出来。 */
+const THINK_MS = 2600;
+const Thinking: React.FC<{ label: string; tip: string; steps: string[] }> = ({
+  label,
+  tip,
+  steps,
+}) => {
+  const [done, setDone] = useState(0);
+  useEffect(() => {
+    const per = THINK_MS / (steps.length + 1); // 最后留一段"出图"余量，不让清单先全亮
+    const t = window.setInterval(() => setDone((d) => Math.min(steps.length, d + 1)), per);
+    return () => window.clearInterval(t);
+  }, [steps.length]);
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2 text-[13px] text-cream-soft">
+        <Writing />
+        {label}
+      </div>
+      <ul className="flex flex-col gap-1.5 pl-1">
+        {steps.map((s, i) => {
+          const isDone = i < done;
+          return (
+            <li key={s} className="flex items-center gap-2 text-[12px]">
+              <span
+                className={`flex h-3.5 w-3.5 items-center justify-center rounded border transition-colors duration-300 ${
+                  isDone ? 'border-ember bg-ember' : 'border-cream/25 bg-transparent'
+                }`}
+              >
+                <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" aria-hidden>
+                  <path
+                    d="M4.5 12.5 L9.5 17.5 L19.5 6.5"
+                    stroke="#26180F"
+                    strokeWidth={3.2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="fx-tick"
+                    style={{ strokeDasharray: 26, strokeDashoffset: isDone ? 0 : 26 }}
+                  />
+                </svg>
+              </span>
+              <span className={isDone ? 'text-cream' : 'text-cream-soft/60'}>{s}</span>
+            </li>
+          );
+        })}
+      </ul>
+      <span className="text-[11.5px] text-cream-soft/70">{tip}</span>
     </div>
-    <span className="text-[11.5px] text-ink-soft/70">{tip}</span>
-  </div>
-);
+  );
+};
 
 const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ api, assets }) => {
   const [stage, setStage] = useState<Stage>('build');
@@ -141,7 +183,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
         ]);
         setStage('qrfail');
       }
-    }, 2600);
+    }, THINK_MS);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
@@ -203,7 +245,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
       <div className="grid grid-cols-[264px_minmax(0,1fr)] gap-5">
         {/* 需求单 + 参数面板 */}
         <aside className="flex flex-col gap-3">
-          <div className="rounded-2xl border border-accent/30 bg-milk/95 p-4 shadow-lift backdrop-blur-sm">
+          <div className="fx-paper rounded-2xl border border-accent/30 bg-parchment/95 p-4 text-ink shadow-lift">
             <div className="mb-2.5 font-display text-[13px] font-bold tracking-widest text-accent">
               <ClipboardList size={14} strokeWidth={1.75} className="inline align-[-2px]" /> {api.copy('req-title')}
             </div>
@@ -218,8 +260,8 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
           </div>
 
           {building && (
-            <div className="rounded-2xl border border-line-warm bg-milk/95 p-4 shadow-lift backdrop-blur-sm">
-              <div className="mb-1.5 font-display text-[12px] tracking-widest text-ink-soft">
+            <div className="rounded-2xl border border-cream/12 bg-dusk/80 p-4 shadow-glass backdrop-blur-md">
+              <div className="mb-1.5 font-display text-[12px] tracking-widest text-cream-soft">
                 {api.copy('s3-size-label')}
               </div>
               <div className="flex flex-col gap-1.5">
@@ -231,7 +273,9 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                       if (r === 'portrait') api.check('ck-ratio');
                     }}
                     className={`rounded-lg border-2 px-2.5 py-1.5 text-[12.5px] transition ${
-                      ratio === r ? 'border-accent bg-accent-soft' : 'border-line-warm bg-parchment/60'
+                      ratio === r
+                        ? 'border-ember bg-ember/15 text-ember'
+                        : 'border-cream/20 bg-dusk-2/60 text-cream hover:border-ember/50'
                     }`}
                   >
                     {api.copy(`size-${r}`)}
@@ -239,11 +283,11 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 ))}
               </div>
               {ratio === 'landscape' && (
-                <p className="mt-1.5 text-[11px] text-accent animate-fade-up">
+                <p className="mt-1.5 text-[11px] text-ember animate-fade-up">
                   {api.copy('s3-size-warn')}
                 </p>
               )}
-              <p className="mt-1.5 text-[11px] leading-relaxed text-ink-soft">
+              <p className="mt-1.5 text-[11px] leading-relaxed text-cream-soft">
                 {api.copy('s3-size-note')}
               </p>
             </div>
@@ -259,7 +303,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                   e.dataTransfer.effectAllowed = 'copy';
                 }}
                 onDoubleClick={feedLogo}
-                className="cursor-grab select-none rounded-xl border border-accent bg-milk p-3 shadow-glow transition hover:-translate-y-0.5 hover:shadow-lift"
+                className="cursor-grab select-none rounded-xl border border-accent bg-milk p-3 text-ink shadow-glow transition hover:-translate-y-0.5 hover:shadow-lift"
               >
                 <div className="flex items-start gap-2.5">
                   <img
@@ -306,21 +350,21 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
             setDragOver(false);
             if (e.dataTransfer.getData('text/plain') === 'club-logo') feedLogo();
           }}
-          className={`fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-milk/95 shadow-lift backdrop-blur-sm transition-colors ${
+          className={`fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-dusk/85 shadow-glass backdrop-blur-md transition-colors ${
             dragOver
-              ? 'border-accent bg-accent-soft/40'
+              ? 'border-ember bg-dusk-2/85'
               : challenge && !logoFed
-                ? 'border-dashed border-line-warm'
-                : 'border-line-warm'
+                ? 'border-dashed border-cream/25'
+                : 'border-cream/12'
           }`}
         >
-          <div className="flex items-center gap-2 border-b border-line-warm bg-parchment/70 px-4 py-2.5">
+          <div className="flex items-center gap-2 border-b border-cream/10 bg-dusk-2/70 px-4 py-2.5">
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-accent" />
-              <span className="h-2 w-2 rounded-full bg-line-warm" />
-              <span className="h-2 w-2 rounded-full bg-line-warm" />
+              <span className="h-2 w-2 rounded-full bg-cream/20" />
+              <span className="h-2 w-2 rounded-full bg-cream/20" />
             </span>
-            <span className="ml-1 font-display text-[13.5px] font-medium tracking-wide">
+            <span className="ml-1 font-display text-[13.5px] font-medium tracking-wide text-cream">
               {api.copy('chat-title')}
             </span>
           </div>
@@ -332,12 +376,12 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 if (m.kind === 'user') {
                   return (
                     <div key={i} className="flex flex-col items-end gap-1 animate-fade-up">
-                      <div className="max-w-[85%] rounded-2xl rounded-br-md bg-dusk-2 px-4 py-2.5 text-[13px] leading-relaxed text-cream">
+                      <div className="max-w-[85%] rounded-2xl rounded-br-md border border-ember/30 bg-dusk-2 px-4 py-2.5 text-[13px] leading-relaxed text-cream">
                         {m.prefix && <span className="mr-1 opacity-60">{m.prefix}</span>}
                         <span className="whitespace-pre-wrap">{m.text}</span>
                       </div>
                       {m.param && (
-                        <span className="rounded-full border border-line-warm bg-parchment/70 px-2.5 py-0.5 text-[11px] text-ink-soft">
+                        <span className="rounded-full border border-cream/15 bg-dusk-2/70 px-2.5 py-0.5 text-[11px] text-cream-soft">
                           ⚙ {m.param}
                         </span>
                       )}
@@ -347,7 +391,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 if (m.kind === 'file') {
                   return (
                     <div key={i} className="flex justify-end animate-fade-up">
-                      <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line-warm bg-parchment/70 px-3 py-2 text-[12.5px]">
+                      <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line-warm bg-parchment/95 px-3 py-2 text-[12.5px] text-ink">
                         <ImageIcon size={14} strokeWidth={1.75} className="shrink-0 text-accent" /> <span>{m.text}</span>
                       </span>
                     </div>
@@ -356,7 +400,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 if (m.kind === 'qrfile') {
                   return (
                     <div key={i} className="mx-auto w-[88%] animate-fade-up">
-                      <div className="flex items-center gap-3 rounded-2xl border border-line-warm bg-parchment/70 p-3 shadow-soft">
+                      <div className="flex items-center gap-3 rounded-2xl border border-line-warm bg-parchment/95 p-3 text-ink shadow-soft">
                         <img
                           src={assets['qr-signup']}
                           alt=""
@@ -375,7 +419,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 if (m.kind === 'compare') {
                   return (
                     <div key={i} className="flex justify-start animate-fade-up">
-                      <div className="w-full max-w-[250px] rounded-2xl rounded-tl-md border border-line-warm bg-parchment/70 p-2.5">
+                      <div className="w-full max-w-[250px] rounded-2xl rounded-tl-md border border-line-warm bg-parchment/95 p-2.5">
                         <Compare
                           before={assets['poster-acg-v1']}
                           after={assets['poster-acg-v2']}
@@ -391,7 +435,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                   return (
                     <div key={i} className="flex items-start gap-2 py-1 animate-fade-up">
                       <SenpaiAvatar size={26} />
-                      <p className="whitespace-pre-wrap pt-0.5 text-[12.5px] leading-relaxed text-accent">
+                      <p className="whitespace-pre-wrap pt-0.5 text-[12.5px] leading-relaxed text-ember">
                         {m.text}
                       </p>
                     </div>
@@ -400,7 +444,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 if (m.kind === 'xuejie') {
                   return (
                     <div key={i} className="mx-auto w-[88%] animate-fade-up">
-                      <div className="rounded-2xl border border-line-warm bg-parchment/70 p-3.5 shadow-soft">
+                      <div className="rounded-2xl border border-line-warm bg-parchment/95 p-3.5 text-ink shadow-soft">
                         <div className="mb-1.5 flex items-center gap-2">
                           <NpcAvatar name={api.copy('xuejie-name')} size={24} avatar={assets['avatar-xuejie']} />
                           <span className="text-[11px] tracking-widest text-ink-soft">
@@ -414,19 +458,25 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
                 }
                 return (
                   <div key={i} className="flex justify-start animate-fade-up">
-                    <div className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line-warm bg-parchment/70 px-4 py-3">
+                    <div className="flex max-w-[92%] flex-col gap-2.5 rounded-2xl rounded-tl-md border border-line-warm bg-parchment/95 px-4 py-3 text-ink">
                       <p className="text-[13px] leading-relaxed">{m.text}</p>
                       {m.img && <PosterImage src={m.img} fakeQr={m.fakeQr} tag={m.tag} />}
                     </div>
                   </div>
                 );
               })}
-              {thinking && <Thinking label={api.copy('gen-thinking')} tip={api.copy('gen-tip')} />}
+              {thinking && (
+                <Thinking
+                  label={api.copy('gen-thinking')}
+                  tip={api.copy('gen-tip')}
+                  steps={['gen-step-1', 'gen-step-2', 'gen-step-3'].map((k) => api.copy(k))}
+                />
+              )}
             </div>
           </div>
 
           {/* 输入区（阶段操作） */}
-          <div className="border-t border-line-warm px-4 py-3">
+          <div className="border-t border-cream/10 px-4 py-3">
             {stage === 'v1' && (
               <div className="mb-2.5 animate-fade-up">
                 <Button onClick={sendToXuejie}>{api.copy('btn-to-xuejie')}</Button>
@@ -470,22 +520,22 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
 
             {/* 提示词预览：build 阶段展示待发送的完整提示词 */}
             <div className="flex items-end gap-2">
-              <div className="max-h-[150px] min-h-[64px] flex-1 overflow-y-auto rounded-xl border border-line-warm bg-parchment/60 px-3.5 py-2.5 text-[12.5px] leading-relaxed">
+              <div className="max-h-[150px] min-h-[64px] flex-1 overflow-y-auto rounded-xl border border-cream/12 bg-dusk-2/70 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-cream">
                 {building ? (
                   <>
-                    <div className="mb-1 text-[10.5px] tracking-widest text-accent">
+                    <div className="mb-1 text-[10.5px] tracking-widest text-ember">
                       {api.copy('prompt-preview-label')}
                     </div>
                     <p className="whitespace-pre-wrap">{api.copy('p-v1')}</p>
                   </>
                 ) : (
-                  <span className="text-ink-soft/50">…</span>
+                  <span className="text-cream-soft/40">…</span>
                 )}
               </div>
               <button
                 disabled={!building || ratio !== 'portrait'}
                 onClick={generateV1}
-                className="rounded-xl bg-dusk-2 px-4 py-2.5 text-[13px] text-cream transition disabled:opacity-40"
+                className="rounded-xl bg-ember px-4 py-2.5 text-[13px] font-medium text-dusk transition hover:brightness-105 disabled:opacity-40"
               >
                 {api.copy('s3-generate')}
               </button>
@@ -537,26 +587,26 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
             return (
               <li
                 key={k}
-                className={`flex items-center gap-3 rounded-xl border p-3 transition ${
+                className={`flex items-center gap-3 rounded-xl border p-3 backdrop-blur-md transition ${
                   state === 'done'
-                    ? 'border-line-warm bg-parchment/80 opacity-60'
+                    ? 'border-cream/10 bg-dusk/60 opacity-70'
                     : state === 'now'
-                      ? 'border-accent/60 bg-milk/95 shadow-lift'
-                      : 'border-line-warm bg-parchment/60 opacity-40'
+                      ? 'border-ember/60 bg-dusk/85 shadow-glass'
+                      : 'border-cream/10 bg-dusk/60 opacity-45'
                 }`}
               >
                 <span
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold ${
                     state === 'done'
-                      ? 'bg-dusk-2 text-cream'
+                      ? 'bg-ember text-dusk'
                       : state === 'now'
                         ? 'bg-accent text-white shadow-glow'
-                        : 'bg-line-warm text-ink-soft'
+                        : 'bg-cream/15 text-cream-soft'
                   }`}
                 >
                   {state === 'done' ? '✓' : i + 1}
                 </span>
-                <span className="flex-1 text-[13.5px] leading-relaxed">{api.copy(k)}</span>
+                <span className="flex-1 text-[13.5px] leading-relaxed text-cream">{api.copy(k)}</span>
                 {state === 'now' && i !== DRAG_STEP && (
                   <Button onClick={next} className="shrink-0 !px-3 !py-1.5 text-[12.5px]">
                     {api.copy('jy-next')}
@@ -568,7 +618,7 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
         </ol>
         {/* 第 5 步的素材：学姐发的真二维码（拖进右侧海报虚线框） */}
         {step === DRAG_STEP && (
-          <div className="flex items-center gap-4 rounded-2xl border border-accent bg-milk p-3.5 shadow-glow animate-fade-up">
+          <div className="flex items-center gap-4 rounded-2xl border border-accent bg-milk p-3.5 text-ink shadow-glow animate-fade-up">
             <img
               draggable
               onDragStart={(e) => {
@@ -588,13 +638,13 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
             </div>
           </div>
         )}
-        <div className="rounded-xl border border-line-warm bg-milk/90 p-3.5 text-[12.5px] leading-relaxed backdrop-blur-sm">
-          <span className="mr-2 font-semibold text-accent"><Droplet size={13} strokeWidth={1.75} className="inline" /> {api.copy('jy-tip-title')}</span>
+        <div className="rounded-xl border border-cream/12 bg-dusk/70 p-3.5 text-[12.5px] leading-relaxed text-cream shadow-glass backdrop-blur-md">
+          <span className="mr-2 font-semibold text-ember"><Droplet size={13} strokeWidth={1.75} className="inline" /> {api.copy('jy-tip-title')}</span>
           {api.copy('jy-tip')}
         </div>
         {done && (
           <div className="animate-fade-up">
-            <p className="mb-3 rounded-xl border border-line-warm bg-milk/90 p-3.5 text-[13.5px] leading-relaxed backdrop-blur-sm">
+            <p className="mb-3 rounded-xl border border-cream/12 bg-dusk/70 p-3.5 text-[13.5px] leading-relaxed text-cream shadow-glass backdrop-blur-md">
               <span className="mr-1.5 rounded bg-accent-soft px-1.5 py-0.5 text-xs font-semibold text-accent">
                 {ui.board['senpai-prefix']}
               </span>
@@ -651,7 +701,7 @@ const Deliver: React.FC<{
   const img = escape ? assets['poster-senpai-34'] : assets['poster-acg-final'];
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-line-warm bg-milk/95 p-6 shadow-lift backdrop-blur-sm">
+    <div className="fx-paper flex flex-col gap-5 rounded-2xl border border-line-warm bg-parchment/95 p-6 text-ink shadow-lift">
       <img
         src={img}
         alt=""
@@ -703,7 +753,7 @@ const EscapeOverlay: React.FC<{ api: FlowAPI }> = ({ api }) => {
       </button>
       {confirming && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
-          <div className="w-full max-w-sm rounded-2xl bg-milk p-6 shadow-pop animate-pop-in">
+          <div className="w-full max-w-sm rounded-2xl bg-milk p-6 text-ink shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{api.copy('esc-confirm-title')}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button
