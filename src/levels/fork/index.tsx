@@ -18,7 +18,7 @@ const ForkResponse: React.FC<{ api: FlowAPI; onDone: (direction: string) => void
   const direction = api.vars.direction || 'job';
   return (
     <div className="flex flex-col gap-5">
-      <div className="rounded-2xl border border-accent/40 bg-card p-5 text-center shadow-lift">
+      <div className="fx-paper rounded-2xl border border-accent/40 bg-parchment/95 p-5 text-center text-ink shadow-lift">
         <div className="text-[11px] tracking-widest text-ink-soft">{api.copy('s4-card-title')}</div>
         <div className="mt-1.5 text-3xl font-semibold text-accent">
           {api.copy(`dir-${direction}`)}
@@ -27,7 +27,7 @@ const ForkResponse: React.FC<{ api: FlowAPI; onDone: (direction: string) => void
       </div>
       <div className="flex items-start gap-2.5">
         <SenpaiAvatar size={32} />
-        <div className="flex-1 rounded-2xl rounded-tl-md border border-line bg-card p-4">
+        <div className="flex-1 rounded-2xl rounded-tl-md border border-line-warm bg-parchment/95 p-4 text-ink">
           <Typewriter
             text={api.copy(`resp-${direction}`)}
             onDone={() => setTyped(true)}

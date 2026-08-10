@@ -45,7 +45,7 @@ type Msg =
   | { kind: 'calllog'; dur: string };
 
 const Thinking: React.FC<{ label: string }> = ({ label }) => (
-  <div className="flex items-center gap-2 text-[13px] text-ink-soft">
+  <div className="flex items-center gap-2 text-[13px] text-cream-soft">
     <Writing />
     {label}
   </div>
@@ -137,20 +137,20 @@ const SpeakingChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="rounded-xl bg-accent-soft/60 p-2.5 text-[12px] leading-relaxed text-ink-soft">
+      <p className="rounded-xl border border-cream/15 bg-dusk/70 p-2.5 text-[12px] leading-relaxed text-cream-soft shadow-glass backdrop-blur-md">
         {api.copy('s3-steps')}
       </p>
 
-      <div className="flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 border-line bg-card shadow-soft">
-        <div className="flex items-center gap-2 border-b border-line bg-paper/60 px-4 py-2.5">
+      <div className="fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 border-cream/12 bg-dusk/85 shadow-glass backdrop-blur-md">
+        <div className="flex items-center gap-2 border-b border-cream/10 bg-dusk-2/70 px-4 py-2.5">
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-accent" />
-            <span className="h-2 w-2 rounded-full bg-line" />
-            <span className="h-2 w-2 rounded-full bg-line" />
+            <span className="h-2 w-2 rounded-full bg-cream/20" />
+            <span className="h-2 w-2 rounded-full bg-cream/20" />
           </span>
-          <span className="ml-1 text-[13px] font-medium">{api.copy('chat-title')}</span>
+          <span className="ml-1 text-[13px] font-medium text-cream">{api.copy('chat-title')}</span>
           {streaming && (
-            <span className="ml-auto text-[11px] text-ink-soft">{api.copy('chat-skip-hint')}</span>
+            <span className="ml-auto text-[11px] text-cream-soft">{api.copy('chat-skip-hint')}</span>
           )}
         </div>
 
@@ -161,7 +161,7 @@ const SpeakingChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
               if (m.kind === 'user') {
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
-                    <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13px] leading-relaxed text-paper">
+                    <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md border border-ember/30 bg-dusk-2 px-4 py-2.5 text-[13px] leading-relaxed text-cream">
                       {m.text}
                     </div>
                   </div>
@@ -171,7 +171,7 @@ const SpeakingChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
                 return (
                   <div key={i} className="flex items-start gap-2 py-1 animate-fade-up">
                     <SenpaiAvatar size={26} />
-                    <p className="whitespace-pre-wrap pt-0.5 text-[12.5px] leading-relaxed text-accent">
+                    <p className="whitespace-pre-wrap pt-0.5 text-[12.5px] leading-relaxed text-ember">
                       {m.text}
                     </p>
                   </div>
@@ -180,7 +180,7 @@ const SpeakingChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
               if (m.kind === 'calllog') {
                 return (
                   <div key={i} className="flex justify-center animate-fade-up">
-                    <span className="flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-1.5 text-[12px] text-ink-soft">
+                    <span className="flex items-center gap-2 rounded-full border border-cream/15 bg-dusk-2/70 px-4 py-1.5 text-[12px] text-cream-soft">
                       📞 {formatCallLog(api.copy('calllog-line'), m.dur)}
                     </span>
                   </div>
@@ -194,7 +194,7 @@ const SpeakingChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
                     onClick={() => {
                       if (!m.done && streaming) setStreamCount(m.text.length);
                     }}
-                    className="max-w-[92%] rounded-2xl rounded-tl-md border border-line/70 bg-paper px-4 py-3 shadow-soft"
+                    className="max-w-[92%] rounded-2xl rounded-tl-md border border-line-warm/70 bg-parchment/95 px-4 py-3 text-ink shadow-soft"
                   >
                     {renderMarkdown(shown)}
                     {!m.done && isLast && <span className="animate-pulse text-accent">▍</span>}
@@ -207,7 +207,7 @@ const SpeakingChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
         </div>
 
         {/* 输入区 */}
-        <div className="border-t border-line px-4 py-3">
+        <div className="border-t border-cream/10 px-4 py-3">
           {step?.k === 'chip' && typingText === null && (
             <button
               onClick={() => {
@@ -249,16 +249,16 @@ const SpeakingChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
           <div className="flex items-end gap-2">
             <div
               ref={inputRef}
-              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
-                inputText ? 'text-ink' : 'text-ink-soft/60'
+              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-cream/12 bg-dusk-2/70 px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                inputText ? 'text-cream' : 'text-cream-soft/50'
               }`}
             >
               {inputText || api.copy('chat-input-placeholder')}
-              {typingText !== null && <span className="animate-pulse text-accent">▍</span>}
+              {typingText !== null && <span className="animate-pulse text-ember">▍</span>}
             </div>
             <button
               disabled
-              className="rounded-xl bg-ink px-4 py-2.5 text-[13px] text-paper opacity-40"
+              className="rounded-xl bg-ember px-4 py-2.5 text-[13px] text-dusk opacity-40"
             >
               {ui.common.confirm}
             </button>
