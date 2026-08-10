@@ -39,7 +39,7 @@ export const DocViewer: React.FC<{ title: string; md: string; onClose: () => voi
       onClick={onClose}
     >
       <div
-        className="flex h-[90dvh] w-full max-w-[1080px] flex-col overflow-hidden rounded-2xl bg-card shadow-pop animate-pop-in"
+        className="flex h-[90dvh] w-full max-w-[1080px] flex-col overflow-hidden rounded-2xl bg-card text-ink shadow-pop animate-pop-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 文档头 */}

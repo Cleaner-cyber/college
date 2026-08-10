@@ -60,12 +60,12 @@ const FileCard: React.FC<{
       e.dataTransfer.effectAllowed = 'copy';
     }}
     onDoubleClick={() => !fed && onFallbackFeed(id)}
-    className={`select-none rounded-xl border bg-card p-3 transition ${
+    className={`select-none rounded-xl border bg-milk/95 p-3 text-ink shadow-soft transition ${
       fed
-        ? 'border-line opacity-50'
+        ? 'border-line-warm opacity-50 shadow-none'
         : highlight
           ? 'cursor-grab border-accent shadow-glow hover:-translate-y-0.5 hover:shadow-lift'
-          : 'cursor-grab border-line hover:-translate-y-0.5 hover:shadow-lift'
+          : 'cursor-grab border-line-warm'
     }`}
   >
     <div className="flex items-start gap-2.5">
@@ -92,7 +92,7 @@ const FileCard: React.FC<{
 );
 
 const ThinkingDots: React.FC<{ label: string }> = ({ label }) => (
-  <div className="flex items-center gap-2 text-[13px] text-ink-soft">
+  <div className="flex items-center gap-2 text-[13px] text-cream-soft">
     <Writing />
     {label}
   </div>
@@ -215,7 +215,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
     <div className="grid grid-cols-[220px_minmax(0,1fr)] gap-5">
       {/* 文件面板 */}
       <aside>
-        <div className="mb-2 text-[11px] tracking-widest text-ink-soft">
+        <div className="mb-2 text-[11px] tracking-widest text-cream-soft">
           {api.copy('files-title')}
         </div>
         <div className="flex flex-col gap-2.5">
@@ -236,7 +236,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
         </div>
         {/* 保姆级拖拽提示（对刚拿到电脑的新生） */}
         {needFile && (
-          <p className="mt-3 rounded-xl bg-accent-soft/60 p-2.5 text-[11.5px] leading-relaxed text-ink-soft">
+          <p className="mt-3 rounded-xl border border-cream/15 bg-dusk/70 p-2.5 text-[11.5px] leading-relaxed text-cream-soft shadow-glass backdrop-blur-md">
             {(ui.hints as Record<string, string>)['files-drag']}
           </p>
         )}
@@ -255,23 +255,23 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
           setDragOver(false);
           feed(e.dataTransfer.getData('text/plain') as FileId);
         }}
-        className={`flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-card transition-colors ${
-          dragOver ? 'border-accent bg-accent-soft/40' : needFile ? 'border-dashed border-line' : 'border-line'
+        className={`fx-paper flex h-[560px] flex-col overflow-hidden rounded-2xl border-2 bg-dusk/85 shadow-glass backdrop-blur-md transition-colors ${
+          dragOver ? 'border-ember bg-dusk-2/85' : needFile ? 'border-dashed border-cream/25' : 'border-cream/12'
         }`}
       >
         {/* 对话框标题栏 */}
-        <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
+        <div className="flex items-center gap-2 border-b border-cream/10 bg-dusk-2/70 px-4 py-2.5">
           <span className="h-2 w-2 rounded-full bg-accent" />
-          <span className="text-[13px] font-medium">{api.copy('chat-title')}</span>
+          <span className="text-[13px] font-medium text-cream">{api.copy('chat-title')}</span>
           {streaming && (
-            <span className="ml-auto text-[11px] text-ink-soft">{api.copy('chat-skip-hint')}</span>
+            <span className="ml-auto text-[11px] text-cream-soft">{api.copy('chat-skip-hint')}</span>
           )}
         </div>
 
         {/* 消息区 */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4">
           {msgs.length === 0 && (
-            <div className="flex h-full items-center justify-center text-sm text-ink-soft">
+            <div className="flex h-full items-center justify-center text-sm text-cream-soft">
               {dragOver ? api.copy('chat-drop-active') : api.copy('chat-empty-hint')}
             </div>
           )}
@@ -280,7 +280,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
               if (m.kind === 'file') {
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
-                    <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line bg-paper px-3 py-2 text-[12.5px]">
+                    <span className="flex max-w-[75%] items-center gap-2 rounded-xl border border-line-warm bg-parchment/95 px-3 py-2 text-[12.5px] text-ink">
                       <FileText size={14} strokeWidth={1.75} className="shrink-0 text-accent" /> <span className="break-all">{api.copy(`file-${m.file}-name`)}</span>
                     </span>
                   </div>
@@ -289,7 +289,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
               if (m.kind === 'user') {
                 return (
                   <div key={i} className="flex justify-end animate-fade-up">
-                    <div className="max-w-[80%] rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[13.5px] leading-relaxed text-paper">
+                    <div className="max-w-[80%] rounded-2xl rounded-br-md border border-ember/30 bg-dusk-2 px-4 py-2.5 text-[13.5px] leading-relaxed text-cream">
                       {m.text}
                     </div>
                   </div>
@@ -299,7 +299,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
                 return (
                   <div key={i} className="flex items-start gap-2 py-1 animate-fade-up">
                     <SenpaiAvatar size={26} />
-                    <p className="pt-0.5 text-[12.5px] leading-relaxed text-accent">{m.text}</p>
+                    <p className="pt-0.5 text-[12.5px] leading-relaxed text-ember">{m.text}</p>
                   </div>
                 );
               }
@@ -310,7 +310,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
                   <div key={i} className="flex justify-start animate-fade-up">
                     <button
                       onClick={() => setOpenDoc(m.n)}
-                      className="flex w-[340px] max-w-[92%] items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-card p-3.5 text-left shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
+                      className="flex w-[340px] max-w-[92%] items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-card p-3.5 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
                     >
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
                         📄
@@ -344,7 +344,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
                     onClick={() => {
                       if (!m.done && streaming) setStreamCount(m.text.length);
                     }}
-                    className="max-w-[92%] rounded-2xl rounded-tl-md border border-line bg-paper px-4 py-3"
+                    className="max-w-[92%] rounded-2xl rounded-tl-md border border-line-warm/70 bg-parchment/95 px-4 py-3 text-ink shadow-soft"
                   >
                     {renderMarkdown(shown)}
                     {!m.done && isLast && <span className="animate-pulse text-accent">▍</span>}
@@ -357,7 +357,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
         </div>
 
         {/* 输入区 */}
-        <div className="border-t border-line px-4 py-3">
+        <div className="border-t border-cream/10 px-4 py-3">
           {chipStage && (
             <button
               onClick={() => setStage(`typing-q${round}` as Stage)}
@@ -374,16 +374,16 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
           <div className="flex items-end gap-2">
             <div
               ref={inputRef}
-              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed ${
-                inputText ? 'text-ink' : 'text-ink-soft/60'
+              className={`max-h-[130px] min-h-[42px] flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-cream/12 bg-dusk-2/70 px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                inputText ? 'text-cream' : 'text-cream-soft/50'
               }`}
             >
               {inputText || api.copy('chat-input-placeholder')}
-              {stage.startsWith('typing-') && <span className="animate-pulse text-accent">▍</span>}
+              {stage.startsWith('typing-') && <span className="animate-pulse text-ember">▍</span>}
             </div>
             <button
               disabled
-              className="rounded-xl bg-ink px-4 py-2.5 text-[13px] text-paper opacity-40"
+              className="rounded-xl bg-ember px-4 py-2.5 text-[13px] font-medium text-dusk opacity-40"
             >
               {api.copy('chat-send')}
             </button>
@@ -406,7 +406,7 @@ const DeliverList: React.FC<{ api: FlowAPI }> = ({ api }) => {
   const [typed, setTyped] = useState(false);
   return (
     <div>
-      <div className="rounded-2xl border border-accent/40 bg-card p-5 shadow-lift">
+      <div className="rounded-2xl border border-accent/40 bg-card p-5 text-ink shadow-lift">
         <div className="text-base font-semibold">{api.copy('s6-card-title')}</div>
         <ul className="mt-3 space-y-2.5 text-[14px] leading-relaxed">
           {[1, 2, 3, 4, 5]
@@ -420,12 +420,12 @@ const DeliverList: React.FC<{ api: FlowAPI }> = ({ api }) => {
             ))}
         </ul>
       </div>
-      <p className="mt-2 text-center text-xs text-ink-soft">{api.copy('s6-footer')}</p>
+      <p className="mt-2 text-center text-xs text-cream-soft">{api.copy('s6-footer')}</p>
       <div className="mt-6">
         <Typewriter
           text={api.t(api.screen.text ?? '')}
           onDone={() => setTyped(true)}
-          className="text-[16px]"
+          className="text-[16px] text-cream"
         />
       </div>
       {typed && (
