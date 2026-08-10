@@ -86,11 +86,11 @@ const CoursesPanel: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => 
   return (
     <Panel title={home['courses-title']} sub={home['courses-sub']}>
       {courses.length === 0 ? (
-        <p className="text-sm text-ink-soft">{home['courses-empty']}</p>
+        <p className="text-sm text-cream-soft">{home['courses-empty']}</p>
       ) : (
         <div className="flex flex-wrap gap-1.5">
           {courses.map((c) => (
-            <span key={c} className="flex items-center gap-1.5 rounded-lg border border-line bg-paper px-2.5 py-1 text-[13px]">
+            <span key={c} className="flex items-center gap-1.5 rounded-lg border border-line bg-paper px-2.5 py-1 text-[13px] text-ink">
               <BookOpen size={13} strokeWidth={1.75} className="text-accent" /> {c}
             </span>
           ))}
@@ -128,7 +128,7 @@ const FolderMajorCard: React.FC<{ majorId: string; copy: Record<string, string> 
     [copy['card-paths'], card.paths],
   ];
   return (
-    <div className="rounded-xl border border-accent/40 bg-card p-4">
+    <div className="rounded-xl border border-accent/40 bg-card p-4 text-ink">
       <div className="mb-2 flex items-baseline justify-between">
         <span className="text-lg font-semibold">{major.name}</span>
         <span className="text-[11px] text-ink-soft">
@@ -208,14 +208,14 @@ const AxisBar: React.FC<{ label: string; value: number; strong?: boolean }> = ({
   strong = false,
 }) => (
   <div className="flex items-center gap-3">
-    <span className="w-8 shrink-0 text-right text-xs text-ink-soft">{label}</span>
-    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+    <span className="w-8 shrink-0 text-right text-xs text-cream-soft">{label}</span>
+    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-cream/15">
       <div
-        className={`h-full rounded-full transition-[width] duration-500 ${strong ? 'bg-accent' : 'bg-ink'}`}
+        className={`h-full rounded-full transition-[width] duration-500 ${strong ? 'bg-ember' : 'bg-cream-soft'}`}
         style={{ width: `${Math.max(0, Math.min(100, (value / AXIS_MAX) * 100))}%` }}
       />
     </div>
-    <span className="w-4 text-right text-xs font-semibold">{value}</span>
+    <span className="w-4 text-right text-xs font-semibold text-cream">{value}</span>
   </div>
 );
 
@@ -320,17 +320,17 @@ const TimelinePanel: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) =>
   const currentIdx = TL_IDX[state.semester] ?? 1;
   return (
     <Panel title={home['timeline-title']}>
-      <ol className="relative flex flex-col gap-1 px-1 before:absolute before:bottom-2 before:left-[6.5px] before:top-2 before:w-px before:bg-line">
+      <ol className="relative flex flex-col gap-1 px-1 before:absolute before:bottom-2 before:left-[6.5px] before:top-2 before:w-px before:bg-cream/20">
         {timeline.map((t, i) => (
           <li
             key={t}
             className={`flex items-center gap-2 text-xs ${
-              i === currentIdx ? 'font-semibold text-accent' : i < currentIdx ? 'text-ink' : 'text-ink-soft/50'
+              i === currentIdx ? 'font-semibold text-ember' : i < currentIdx ? 'text-cream' : 'text-cream-soft/50'
             }`}
           >
             <span
-              className={`relative z-10 inline-block h-1.5 w-1.5 rounded-full ring-2 ring-paper ${
-                i === currentIdx ? 'bg-accent shadow-glow' : i < currentIdx ? 'bg-ink' : 'bg-line'
+              className={`relative z-10 inline-block h-1.5 w-1.5 rounded-full ring-2 ring-dusk ${
+                i === currentIdx ? 'bg-ember shadow-glow' : i < currentIdx ? 'bg-cream' : 'bg-cream/25'
               }`}
             />
             {t}
@@ -374,7 +374,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
       {!mainlineDone && (
         <button
           onClick={() => setMapOpen(true)}
-          className="flex items-center gap-4 rounded-2xl border border-accent/50 bg-card/85 p-4 text-left shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:shadow-lift"
+          className="flex items-center gap-4 rounded-2xl border border-accent/50 bg-card/85 p-4 text-left text-ink shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:shadow-lift"
         >
           <span className="text-ember"><MapIcon size={26} strokeWidth={1.6} /></span>
           <span className="min-w-0 flex-1">
@@ -406,7 +406,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             return (
               <li
                 key={m.id}
-                className={`flex items-center gap-4 rounded-xl border p-4 transition ${
+                className={`flex items-center gap-4 rounded-xl border p-4 text-ink transition ${
                   done
                     ? 'border-line bg-paper opacity-70'
                     : unlocked
@@ -462,10 +462,10 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         {/* 过日子：抽学期事件卡（模拟层 P0，仅配置了事件池的学期显示） */}
         {getSimEvents(state.semester).length > 0 && (
           <div
-            className={`mb-3 flex items-center gap-4 rounded-xl border border-dashed p-4 transition ${
+            className={`mb-3 flex items-center gap-4 rounded-xl border border-dashed p-4 text-ink transition ${
               firstMainlineDone && canDraw
                 ? 'border-accent/60 bg-accent-soft/40'
-                : 'border-line bg-paper opacity-70'
+                : 'border-line-warm bg-paper/80'
             } ${firstMainlineDone ? '' : 'pointer-events-none'}`}
           >
             <span className="text-accent"><Dices size={26} strokeWidth={1.6} /></span>
@@ -534,7 +534,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                     disabled={locked || done || unaffordable}
                     onClick={() => runSimAction(action)}
                     onMouseMove={spotlightMove}
-                    className={`group relative flex items-center gap-2.5 rounded-xl border border-line bg-card px-3 py-2.5 text-left shadow-soft transition hover:z-30 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
+                    className={`group relative flex items-center gap-2.5 rounded-xl border border-line bg-card px-3 py-2.5 text-left text-ink shadow-soft transition hover:z-30 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift disabled:hover:translate-y-0 disabled:hover:border-line disabled:hover:shadow-soft ${
                       done ? 'opacity-50' : locked ? 'opacity-60' : unaffordable ? 'opacity-40' : 'fx-spotlight'
                     }`}
                   >
@@ -572,7 +572,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
       </div>
 
       <div className="flex items-center justify-end gap-4">
-        <span className="text-sm text-ink-soft">
+        <span className="text-sm text-cream-soft">
           {mainlineDone ? home['settle-hint-ready'] : home['settle-hint-mainline']}
         </span>
         <Button disabled={!mainlineDone} onClick={() => navigate('/settlement')}>
@@ -630,7 +630,7 @@ const SemesterEnded: React.FC = () => {
     <Panel>
       <div className="py-6 text-center">
         <h2 className="text-xl font-semibold">{home['demo-end-title']}</h2>
-        <p className="mt-2 text-sm text-ink-soft">{home['demo-end-desc']}</p>
+        <p className="mt-2 text-sm text-cream-soft">{home['demo-end-desc']}</p>
         <div className="mx-auto mt-6 flex max-w-xs flex-col gap-2">
           <Button onClick={() => navigate('/settlement')}>{home['view-ending']}</Button>
           <Button variant="ghost" onClick={() => setConfirming(true)}>
@@ -640,7 +640,7 @@ const SemesterEnded: React.FC = () => {
       </div>
       {confirming && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
-          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 shadow-pop animate-pop-in">
+          <div className="w-full max-w-sm rounded-2xl bg-paper p-6 text-ink shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{home['restart-confirm']}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button full onClick={() => void reset()}>
@@ -668,9 +668,9 @@ const SectionHead: React.FC<{ title: string; sub: string; count: number }> = ({
     <h3 className="border-b-2 border-accent pb-1 text-[15px] font-semibold tracking-wide">
       {title}
     </h3>
-    <span className="text-xs text-ink-soft">{sub}</span>
+    <span className="text-xs text-cream-soft">{sub}</span>
     {count > 0 && (
-      <span className="ml-auto rounded-full bg-line px-2 py-0.5 text-[11px] text-ink-soft">
+      <span className="ml-auto rounded-full bg-cream/15 px-2 py-0.5 text-[11px] text-cream-soft">
         {count}
       </span>
     )}
@@ -683,7 +683,7 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
   return (
     <button
       onClick={onOpen}
-      className="w-[270px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
+      className="w-[270px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
     >
       <div className="h-[180px] w-full overflow-hidden border-b border-line bg-paper">
         {item.assetRef && imgOk ? (
@@ -718,7 +718,7 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
 const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
   <button
     onClick={onOpen}
-    className="flex w-full items-center gap-3.5 rounded-2xl border border-line bg-card p-4 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
+    className="flex w-full items-center gap-3.5 rounded-2xl border border-line bg-card p-4 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
   >
     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
       <Zap size={14} strokeWidth={1.75} className="text-accent" />
@@ -742,7 +742,7 @@ const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item,
 const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => (
   <button
     onClick={onOpen}
-    className="relative break-inside-avoid overflow-hidden rounded-xl border border-line bg-card p-4 pr-8 text-left shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
+    className="relative break-inside-avoid overflow-hidden rounded-xl border border-line bg-card p-4 pr-8 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
   >
     <span className="absolute right-0 top-0 h-0 w-0 border-l-[18px] border-t-[18px] border-l-transparent border-t-line" />
     <div className="text-[14.5px] font-medium">{item.title}</div>
@@ -778,7 +778,7 @@ const ArchiveDetail: React.FC<{
             <span className="mr-2 font-semibold text-accent">{home['prompt-usage-label']}</span>
             {levelCopy['prompt-usage']}
           </div>
-          <div className="rounded-xl border border-line bg-card p-4">
+          <div className="rounded-xl border border-line bg-card p-4 text-ink">
             <PromptText text={levelCopy['prompt-template'] ?? ''} className="text-[14px]" />
           </div>
           <div className="flex items-center justify-between gap-3">
@@ -798,7 +798,7 @@ const ArchiveDetail: React.FC<{
     if (item.id === 'course-map') {
       return (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-accent/40 bg-card p-4">
+          <div className="rounded-xl border border-accent/40 bg-card p-4 text-ink">
             <div className="mb-2 text-[13px] font-semibold text-accent">
               {home['detail-summary']}
             </div>
@@ -824,7 +824,7 @@ const ArchiveDetail: React.FC<{
               </div>
               <button
                 onClick={() => setOpenDoc(n)}
-                className="flex w-[360px] max-w-full items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-card p-3.5 text-left shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
+                className="flex w-[360px] max-w-full items-center gap-3 rounded-2xl rounded-tl-md border border-accent/40 bg-card p-3.5 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift"
               >
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl">
                   <FileText size={18} strokeWidth={1.75} className="text-accent" />
@@ -868,7 +868,7 @@ const ArchiveDetail: React.FC<{
       onClick={onClose}
     >
       <div
-        className="flex max-h-[88dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-paper shadow-pop animate-pop-in"
+        className="flex max-h-[88dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-paper text-ink shadow-pop animate-pop-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 固定头部：标题 + 关闭（不随内容滚动） */}
@@ -995,15 +995,15 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
       <dl className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
         {state.pathGoal && (
           <div className="flex items-baseline justify-between">
-            <dt className="text-xs text-ink-soft">{home['hud-path-label']}</dt>
-            <dd className="font-semibold text-accent">
+            <dt className="text-xs text-cream-soft">{home['hud-path-label']}</dt>
+            <dd className="font-semibold text-ember">
               {getPath(state.pathGoal)?.icon} {getPath(state.pathGoal)?.name}
             </dd>
           </div>
         )}
         <div className="flex items-baseline justify-between">
-          <dt className="text-xs text-ink-soft">{home['hud-gpa-label']}</dt>
-          <dd className="font-semibold tabular-nums text-accent">
+          <dt className="text-xs text-cream-soft">{home['hud-gpa-label']}</dt>
+          <dd className="font-semibold tabular-nums text-ember">
             {cumulativeGpa(state)?.toFixed(2) ?? home['hud-gpa-empty']}
           </dd>
         </div>
@@ -1016,7 +1016,7 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
           ] as const
         ).map(([k, v]) => (
           <div key={k} className="flex items-baseline justify-between">
-            <dt className="text-xs text-ink-soft">{home[k]}</dt>
+            <dt className="text-xs text-cream-soft">{home[k]}</dt>
             <dd className="font-medium">{v}</dd>
           </div>
         ))}
@@ -1028,7 +1028,7 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
           <AxisBar key={a} label={ui.axes[a]} value={state.axes[a]} />
         ))}
         <AxisBar label={ui.axes.energy} value={state.axes.energy} strong />
-        <p className="text-xs text-ink-soft">{home['stats-energy-note']}</p>
+        <p className="text-xs text-cream-soft">{home['stats-energy-note']}</p>
       </div>
     </Panel>
     {state.traits.length > 0 && (
@@ -1038,7 +1038,7 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
             const t = getTrait(id);
             if (!t) return null;
             return (
-              <div key={id} className="rounded-xl border border-line bg-card px-3.5 py-2.5">
+              <div key={id} className="rounded-xl border border-line bg-card px-3.5 py-2.5 text-ink">
                 <span className="text-sm font-semibold">{t.name}</span>
                 <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">{t.desc}</p>
               </div>
@@ -1049,7 +1049,7 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
     )}
     <Panel title={home['stats-tags-title']}>
       {Object.keys(state.tags).length === 0 ? (
-        <p className="text-sm text-ink-soft">{home['stats-tags-empty']}</p>
+        <p className="text-sm text-cream-soft">{home['stats-tags-empty']}</p>
       ) : (
         <div className="flex flex-col gap-2.5">
           {tagDefs
@@ -1060,16 +1060,16 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
               const awakened = n >= t.threshold;
               return (
                 <div key={t.id} className="flex items-center gap-3">
-                  <span className={`w-16 shrink-0 text-sm ${awakened ? 'font-semibold text-accent' : ''}`}>
+                  <span className={`w-16 shrink-0 text-sm ${awakened ? 'font-semibold text-ember' : 'text-cream'}`}>
                     {t.name}
                   </span>
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-cream/15">
                     <div
-                      className={`h-full rounded-full transition-[width] duration-500 ${awakened ? 'bg-accent' : 'bg-ink/60'}`}
+                      className={`h-full rounded-full transition-[width] duration-500 ${awakened ? 'bg-ember' : 'bg-cream-soft/60'}`}
                       style={{ width: `${Math.min(100, (n / t.threshold) * 100)}%` }}
                     />
                   </div>
-                  <span className="w-14 shrink-0 text-right text-xs tabular-nums text-ink-soft">
+                  <span className="w-14 shrink-0 text-right text-xs tabular-nums text-cream-soft">
                     {awakened ? `✦ ${home['stats-tags-awakened']}` : `${n}/${t.threshold}`}
                   </span>
                 </div>
