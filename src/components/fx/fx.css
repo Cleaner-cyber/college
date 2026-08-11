@@ -195,6 +195,50 @@
   to { transform: scaleX(1); }
 }
 
+/* 和纸胶带（水彩文具风 v2.9）：贴在纸面卡顶部中央的一小截半透明胶带，
+   端口用 clip-path 做撕边。静态装饰，无动画。 */
+.fx-washi {
+  position: relative;
+}
+.fx-washi::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 68px;
+  height: 17px;
+  transform: translateX(-50%) rotate(-2deg);
+  background: rgba(217, 179, 106, 0.48);
+  box-shadow: 0 1px 2px rgba(28, 27, 24, 0.08);
+  clip-path: polygon(
+    3% 0%, 97% 4%, 100% 22%, 96% 46%, 100% 72%, 97% 100%,
+    4% 96%, 0% 74%, 3% 48%, 0% 24%
+  );
+  pointer-events: none;
+}
+.fx-washi--sage::before {
+  background: rgba(169, 177, 143, 0.5);
+}
+.fx-washi--rose::before {
+  background: rgba(201, 137, 123, 0.42);
+}
+
+/* 叶影（水彩文具风 v2.9）：大纸面左上角一片虚化的植物影，像窗边的光。
+   内联 SVG 数据地址 + 模糊，透明度压得很低，只是气氛不抢内容。 */
+.fx-leafshadow::after {
+  content: '';
+  position: absolute;
+  top: -18px;
+  left: -14px;
+  width: 220px;
+  height: 170px;
+  pointer-events: none;
+  opacity: 0.07;
+  filter: blur(5px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 170'%3E%3Cg fill='%232A1E10'%3E%3Cpath d='M30 10 q30 -14 58 4 q-26 16 -58 -4z'/%3E%3Cpath d='M70 44 q34 -10 60 12 q-30 14 -60 -12z'/%3E%3Cpath d='M24 66 q28 -8 50 12 q-26 12 -50 -12z'/%3E%3Cpath d='M84 92 q30 -6 52 16 q-28 10 -52 -16z'/%3E%3Cpath d='M40 120 q26 -8 46 12 q-24 12 -46 -12z'/%3E%3Cpath d='M10 20 q10 60 40 108' stroke='%232A1E10' stroke-width='3' fill='none'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fx-book-page {
     animation: none;

@@ -752,17 +752,41 @@ const PROMPT_ICONS: Record<string, LucideIcon> = {
   'prompt-thesis': GraduationCap,
 };
 
+/** 水彩三色签（v2.9）：按能力类别给图标底轮换低饱和色，像参考图里的彩色标签角 */
+const WASH_TINTS: Record<string, { bg: string; fg: string }> = {
+  sage: { bg: 'bg-wash-soft-sage', fg: 'text-wash-sage' },
+  rose: { bg: 'bg-wash-soft-rose', fg: 'text-wash-rose' },
+  ochre: { bg: 'bg-wash-soft-ochre', fg: 'text-wash-ochre' },
+};
+const PROMPT_WASH: Record<string, keyof typeof WASH_TINTS> = {
+  'prompt-doc-feeding': 'sage',
+  'prompt-lit-review': 'sage',
+  'prompt-note-taking': 'sage',
+  'prompt-data-analysis': 'sage',
+  'prompt-thesis': 'sage',
+  'prompt-image-gen': 'rose',
+  'prompt-structured-gen': 'rose',
+  'prompt-multimodal': 'rose',
+  'prompt-ai-coding': 'rose',
+  'prompt-examiner': 'ochre',
+  'prompt-role-play': 'ochre',
+  'prompt-resume': 'ochre',
+};
+
 /** 提示词卡：图标为主的紧凑法宝卡。hover 浮起并露出"复制"角标（图形示意，不占常驻文字） */
 const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
   const Icon = PROMPT_ICONS[item.id] ?? Zap;
+  const tint = WASH_TINTS[PROMPT_WASH[item.id] ?? 'ochre'];
   return (
     <button
       onClick={onOpen}
       aria-label={`${item.title}｜${home['prompt-open-hint']}`}
       className="group relative flex flex-col items-center gap-2.5 rounded-2xl border border-line bg-card px-3 py-4 text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
     >
-      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent-soft transition group-hover:shadow-glow">
-        <Icon size={22} strokeWidth={1.75} className="text-accent" />
+      <span
+        className={`flex h-12 w-12 items-center justify-center rounded-xl ${tint.bg} transition group-hover:shadow-glow`}
+      >
+        <Icon size={22} strokeWidth={1.75} className={tint.fg} />
       </span>
       <span className="w-full truncate text-center text-[13px] font-medium leading-snug">
         {item.title.replace(/[·・]?\s*提示词模板$/, '')}
@@ -791,16 +815,28 @@ const DOC_ICONS: Record<string, LucideIcon> = {
 };
 
 /** 档案卡：信纸折角 + 图标牌 + 学期章。标题一行，其余进详情 */
+const DOC_WASH: Record<string, keyof typeof WASH_TINTS> = {
+  'major-card': 'ochre',
+  'course-map': 'sage',
+  'coding-fix': 'rose',
+  'notes-doc': 'sage',
+  'mentor-email': 'ochre',
+  'exam-sheet': 'rose',
+  'interview-review': 'ochre',
+  'doc-ppt-tools': 'rose',
+  'ielts-speaking': 'ochre',
+};
 const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
   const Icon = DOC_ICONS[item.id] ?? ScrollText;
+  const tint = WASH_TINTS[DOC_WASH[item.id] ?? 'sage'];
   return (
     <button
       onClick={onOpen}
       className="relative flex w-full break-inside-avoid items-center gap-3 overflow-hidden rounded-xl border border-line bg-card p-3.5 pr-7 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
     >
       <span className="absolute right-0 top-0 h-0 w-0 border-l-[18px] border-t-[18px] border-l-transparent border-t-line" />
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-paper">
-        <Icon size={18} strokeWidth={1.75} className="text-accent" />
+      <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tint.bg}`}>
+        <Icon size={18} strokeWidth={1.75} className={tint.fg} />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[13.5px] font-medium">{item.title}</span>
@@ -1112,11 +1148,15 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
     {state.traits.length > 0 && (
       <Panel title={home['stats-traits-title']}>
         <div className="flex flex-col gap-2.5">
-          {state.traits.map((id) => {
+          {state.traits.map((id, i) => {
             const t = getTrait(id);
             if (!t) return null;
+            const washi = ['fx-washi--rose', '', 'fx-washi--sage'][i % 3];
             return (
-              <div key={id} className="rounded-xl border border-line bg-card px-3.5 py-2.5 text-ink">
+              <div
+                key={id}
+                className={`fx-washi ${washi} mt-1.5 rounded-xl border border-line bg-card px-3.5 py-2.5 text-ink`}
+              >
                 <span className="text-sm font-semibold">{t.name}</span>
                 <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">{t.desc}</p>
               </div>

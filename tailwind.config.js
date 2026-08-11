@@ -23,6 +23,10 @@ export default {
         parchment: '#F7EDD9',
         milk: '#FFFBF0',
         'line-warm': '#E7D8BC',
+        // 水彩文具三色签（v2.9）：用户生图定调的轻水彩治愈风辅助色，
+        // 只做纸面上的分类标记/图标底，不做大面积底色
+        wash: { rose: '#C9897B', ochre: '#D9B36A', sage: '#A9B18F' },
+        'wash-soft': { rose: '#F2E0DA', ochre: '#F4E9D2', sage: '#E8EBDD' },
       },
       boxShadow: {
         soft: '0 1px 2px rgba(28,27,24,0.04), 0 4px 16px rgba(28,27,24,0.05)',

@@ -18,8 +18,8 @@ export const DeliverScreen: React.FC<{
   const [showPrompt, setShowPrompt] = useState(false);
   return (
     /* custom 屏是裸渲染（没有 ScreenPlayer 的暖纸垫卡），交付屏必须自带纸底，
-       否则正文直接排在深色实景上看不清 */
-    <div className="fx-paper flex flex-col gap-5 rounded-2xl border border-line-warm bg-parchment/95 p-6 text-ink shadow-lift">
+       否则正文直接排在深色实景上看不清。和纸胶带+叶影：水彩文具气氛件（v2.9） */
+    <div className="fx-paper fx-washi fx-leafshadow flex flex-col gap-5 rounded-2xl border border-line-warm bg-parchment/95 p-6 text-ink shadow-lift">
       {img && (
         <img src={img} alt="" className="w-full rounded-xl border border-line-warm shadow-soft animate-fade-up" />
       )}

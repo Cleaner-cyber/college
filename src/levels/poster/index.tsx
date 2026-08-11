@@ -701,7 +701,7 @@ const Deliver: React.FC<{
   const img = escape ? assets['poster-senpai-34'] : assets['poster-acg-final'];
 
   return (
-    <div className="fx-paper flex flex-col gap-5 rounded-2xl border border-line-warm bg-parchment/95 p-6 text-ink shadow-lift">
+    <div className="fx-paper fx-washi fx-leafshadow flex flex-col gap-5 rounded-2xl border border-line-warm bg-parchment/95 p-6 text-ink shadow-lift">
       <img
         src={img}
         alt=""
