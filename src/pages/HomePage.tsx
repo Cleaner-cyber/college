@@ -328,38 +328,115 @@ const SceneChip: React.FC<{
 
 // ---------- 四年时间轴（属性页展示） ----------
 
-const TimelinePanel: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
-  const timeline = home['timeline'].split('｜');
-  const TL_IDX: Record<string, number> = {
-    prologue: 0, y1s1: 1, 'y1s1-end': 1, y1s2: 2, 'y1s2-end': 2,
-    y2s1: 3, y2s2: 4, y3s1: 5, y3s2: 6, y4: 7, 'grad-end': 8,
-  };
-  const currentIdx = TL_IDX[state.semester] ?? 1;
+/** 角色立绘卡（v3.0 角色面板）：玩家形象 + 名字/专业 + 四年目标速览。
+ * 立绘资产 avatar-player.jpg 未就位时回退首字徽章（铁律 5：同名替换即可换真图）。 */
+const PortraitCard: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const [imgOk, setImgOk] = useState(true);
+  const major = getMajor(state.player.majorId);
+  const path = state.pathGoal ? getPath(state.pathGoal) : null;
+  const goals: [string, React.ReactNode][] = [
+    [home['hud-gpa-label'], cumulativeGpa(state)?.toFixed(2) ?? home['hud-gpa-empty']],
+    [home['stats-flag-salary'], state.flag.salaryBand],
+    [home['stats-flag-city'], state.flag.city],
+    [home['stats-flag-work'], state.flag.workStyle],
+    [home['stats-flag-time'], state.flag.offTime],
+  ];
   return (
-    /* 横向步进条：九站一行走完，不再占一大块竖版留出空右侧 */
-    <Panel title={home['timeline-title']}>
-      <ol className="relative flex items-start justify-between px-3 pt-1">
-        <span aria-hidden className="absolute left-6 right-6 top-[8px] h-px bg-cream/20" />
-        {timeline.map((t, i) => (
-          <li
-            key={t}
-            className={`relative z-10 flex flex-col items-center gap-1.5 text-xs ${
-              i === currentIdx ? 'font-semibold text-ember' : i < currentIdx ? 'text-cream' : 'text-cream-soft/50'
-            }`}
-          >
-            <span
-              className={`inline-block h-2 w-2 rounded-full ring-4 ring-dusk ${
-                i === currentIdx ? 'bg-ember shadow-glow' : i < currentIdx ? 'bg-cream' : 'bg-cream/25'
-              }`}
-            />
-            <span className="whitespace-nowrap">{t}</span>
-            {i === currentIdx && (
-              <span className="text-[10px] leading-none">▲ {home['timeline-current']}</span>
+    <div className="overflow-hidden rounded-2xl border border-cream/12 bg-dusk/80 shadow-glass backdrop-blur-md backdrop-saturate-125">
+      <div className="relative h-[220px]">
+        {imgOk ? (
+          <img
+            src="/assets/avatar-player.jpg"
+            alt=""
+            onError={() => setImgOk(false)}
+            className="h-full w-full object-cover object-top"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center bg-gradient-to-b from-dusk-2/70 to-dusk/60">
+            <span className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-ember/50 bg-ember/15 font-display text-4xl text-ember shadow-glow">
+              {state.player.name.slice(0, 1)}
+            </span>
+          </div>
+        )}
+        {/* 底部渐隐压名牌：名字/专业叠在立绘上，不另占版面 */}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-dusk/95 via-dusk/60 to-transparent px-4 pb-3 pt-12">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="truncate font-display text-[17px] font-bold text-cream">
+              {state.player.name}
+            </span>
+            {path && (
+              <span className="shrink-0 text-xs font-semibold text-ember">
+                {path.icon} {path.name}
+              </span>
             )}
-          </li>
+          </div>
+          <div className="mt-0.5 truncate text-xs text-cream-soft">{major?.name ?? state.player.majorId}</div>
+        </div>
+      </div>
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-1 px-4 py-3 text-[11.5px]">
+        {goals.map(([k, v]) => (
+          <div key={k} className="flex items-baseline justify-between gap-2">
+            <dt className="text-cream-soft/80">{k}</dt>
+            <dd className="truncate font-medium text-cream">{v}</dd>
+          </div>
         ))}
-      </ol>
-    </Panel>
+      </dl>
+    </div>
+  );
+};
+
+/** 词条墙（v3.0）：金=入学人设、紫=已觉醒轨迹、蓝=养成中。
+ * 词条只留名字，说明与进度进 hover 浮层——不堆常驻文字。 */
+const ENTRY_TIERS = {
+  gold: 'border-tier-gold/60 text-[#EACF8F] shadow-[0_0_10px_rgba(217,179,106,0.22)]',
+  purple: 'border-tier-purple/60 text-[#C9B3DE] shadow-[0_0_10px_rgba(169,143,192,0.22)]',
+  blue: 'border-tier-blue/50 text-[#A5C1D6]',
+} as const;
+
+const EntryChip: React.FC<{ tier: keyof typeof ENTRY_TIERS; name: string; desc: string }> = ({
+  tier,
+  name,
+  desc,
+}) => (
+  <span
+    className={`group relative inline-flex cursor-default items-center gap-1.5 rounded-lg border bg-dusk-2/70 px-2.5 py-1.5 text-[12.5px] font-medium ${ENTRY_TIERS[tier]}`}
+  >
+    <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
+    {name}
+    <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 w-56 -translate-x-1/2 rounded-xl border border-cream/15 bg-dusk/95 p-2.5 text-left text-[11.5px] font-normal leading-relaxed text-cream opacity-0 shadow-glass backdrop-blur-md transition duration-150 group-hover:opacity-100">
+      {desc}
+    </span>
+  </span>
+);
+
+const EntryChips: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const traits = state.traits.map((id) => getTrait(id)).filter(Boolean);
+  const grown = tagDefs.filter((t) => (state.tags[t.id] ?? 0) > 0);
+  const awakened = grown.filter((t) => (state.tags[t.id] ?? 0) >= t.threshold);
+  const progressing = grown.filter((t) => (state.tags[t.id] ?? 0) < t.threshold);
+  if (traits.length === 0 && grown.length === 0) {
+    return <p className="text-sm text-cream-soft">{home['stats-tags-empty']}</p>;
+  }
+  return (
+    <div className="flex flex-wrap gap-2">
+      {traits.map((t) => (
+        <EntryChip key={t!.id} tier="gold" name={t!.name} desc={t!.desc} />
+      ))}
+      {awakened.map((t) => (
+        <EntryChip key={t.id} tier="purple" name={t.name} desc={t.awakenText} />
+      ))}
+      {progressing.map((t) => (
+        <EntryChip
+          key={t.id}
+          tier="blue"
+          name={t.name}
+          desc={`${t.awakenText}｜${interpolate(home['entry-progress'], {
+            n: state.tags[t.id] ?? 0,
+            threshold: t.threshold,
+          })}`}
+        />
+      ))}
+    </div>
   );
 };
 
@@ -1100,108 +1177,28 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
 
 
 const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
-  <div className="flex flex-col gap-4">
-    <TimelinePanel state={state} />
-    <div className="grid grid-cols-2 items-start gap-4">
-    <Panel title={home['stats-flag-title']}>
-      <dl className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
-        {state.pathGoal && (
-          <div className="flex items-baseline justify-between">
-            <dt className="text-xs text-cream-soft">{home['hud-path-label']}</dt>
-            <dd className="font-semibold text-ember">
-              {getPath(state.pathGoal)?.icon} {getPath(state.pathGoal)?.name}
-            </dd>
-          </div>
-        )}
-        <div className="flex items-baseline justify-between">
-          <dt className="text-xs text-cream-soft">{home['hud-gpa-label']}</dt>
-          <dd className="font-semibold tabular-nums text-ember">
-            {cumulativeGpa(state)?.toFixed(2) ?? home['hud-gpa-empty']}
-          </dd>
-        </div>
-        {(
-          [
-            ['stats-flag-salary', state.flag.salaryBand],
-            ['stats-flag-city', state.flag.city],
-            ['stats-flag-work', state.flag.workStyle],
-            ['stats-flag-time', state.flag.offTime],
-          ] as const
-        ).map(([k, v]) => (
-          <div key={k} className="flex items-baseline justify-between">
-            <dt className="text-xs text-cream-soft">{home[k]}</dt>
-            <dd className="font-medium">{v}</dd>
-          </div>
-        ))}
-      </dl>
-    </Panel>
-    <Panel title={home['stats-title']}>
-      <div className="flex flex-col gap-3">
-        {VISIBLE_AXES.map((a) => (
-          <AxisBar key={a} label={ui.axes[a]} value={state.axes[a]} />
-        ))}
-        <AxisBar label={ui.axes.energy} value={state.axes.energy} strong />
-        <p className="text-xs text-cream-soft">{home['stats-energy-note']}</p>
-      </div>
-    </Panel>
-    </div>
-    <div className="grid grid-cols-2 items-start gap-4">
-    {state.traits.length > 0 && (
-      <Panel title={home['stats-traits-title']}>
-        <div className="flex flex-col gap-2.5">
-          {state.traits.map((id, i) => {
-            const t = getTrait(id);
-            if (!t) return null;
-            const washi = ['fx-washi--rose', '', 'fx-washi--sage'][i % 3];
-            return (
-              <div
-                key={id}
-                className={`fx-washi ${washi} mt-1.5 rounded-xl border border-line bg-card px-3.5 py-2.5 text-ink`}
-              >
-                <span className="text-sm font-semibold">{t.name}</span>
-                <p className="mt-0.5 text-xs leading-relaxed text-ink-soft">{t.desc}</p>
-              </div>
-            );
-          })}
+  /* 角色面板（v3.0）：左立绘+词条，右五轴+能力树——单屏放下，不出滚动条 */
+  <div className="grid grid-cols-[300px_minmax(0,1fr)] items-start gap-4">
+    <aside className="flex flex-col gap-4">
+      <PortraitCard state={state} />
+      <Panel title={home['stats-entries-title']} sub={home['stats-entries-sub']}>
+        <EntryChips state={state} />
+      </Panel>
+    </aside>
+    <section className="flex flex-col gap-4">
+      <Panel title={home['stats-title']}>
+        <div className="flex flex-col gap-2">
+          {VISIBLE_AXES.map((a) => (
+            <AxisBar key={a} label={ui.axes[a]} value={state.axes[a]} />
+          ))}
+          <AxisBar label={ui.axes.energy} value={state.axes.energy} strong />
+          <p className="text-xs text-cream-soft">{home['stats-energy-note']}</p>
         </div>
       </Panel>
-    )}
-    <div className={state.traits.length > 0 ? '' : 'col-span-2'}>
-    <Panel title={home['stats-tags-title']}>
-      {Object.keys(state.tags).length === 0 ? (
-        <p className="text-sm text-cream-soft">{home['stats-tags-empty']}</p>
-      ) : (
-        <div className="flex flex-col gap-2.5">
-          {tagDefs
-            .filter((t) => (state.tags[t.id] ?? 0) > 0)
-            .sort((a, b) => (state.tags[b.id] ?? 0) - (state.tags[a.id] ?? 0))
-            .map((t) => {
-              const n = state.tags[t.id] ?? 0;
-              const awakened = n >= t.threshold;
-              return (
-                <div key={t.id} className="flex items-center gap-3">
-                  <span className={`w-16 shrink-0 text-sm ${awakened ? 'font-semibold text-ember' : 'text-cream'}`}>
-                    {t.name}
-                  </span>
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-cream/15">
-                    <div
-                      className={`h-full rounded-full transition-[width] duration-500 ${awakened ? 'bg-ember' : 'bg-cream-soft/60'}`}
-                      style={{ width: `${Math.min(100, (n / t.threshold) * 100)}%` }}
-                    />
-                  </div>
-                  <span className="w-14 shrink-0 text-right text-xs tabular-nums text-cream-soft">
-                    {awakened ? `✦ ${home['stats-tags-awakened']}` : `${n}/${t.threshold}`}
-                  </span>
-                </div>
-              );
-            })}
-        </div>
-      )}
-    </Panel>
-    </div>
-    </div>
-    <Panel title={home['stats-abilities-title']} sub={home['stats-tree-sub']}>
-      <AbilityTree abilities={state.abilities} />
-    </Panel>
+      <Panel title={home['stats-abilities-title']} sub={home['stats-tree-sub']}>
+        <AbilityTree abilities={state.abilities} />
+      </Panel>
+    </section>
   </div>
 );
 
@@ -1209,9 +1206,9 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
  * 节点沿支线按主线解锁顺序推进；SVG 连线随目标节点解锁点亮。
  * 节点只有图标+短名，学期与状态进 hover title——不堆常驻文字。 */
 const TREE_W = 660;
-const TREE_H = 352;
+const TREE_H = 326;
 const TREE_ROOT = { x: 64, y: TREE_H / 2 - 4 };
-const TREE_ROWS_Y = [46, 132, 218, 304];
+const TREE_ROWS_Y = [42, 122, 202, 282];
 const TREE_COLS_X = [232, 388, 544];
 const TREE_BRANCHES: {
   key: string;
@@ -1559,7 +1556,11 @@ export const HomePage: React.FC = () => {
           className="fixed inset-x-0 bottom-0 top-[52px] z-40 flex items-start justify-center overflow-y-auto bg-ink/65 p-6 backdrop-blur-[6px]"
           onClick={() => setPanel(null)}
         >
-          <div className="w-full max-w-[860px] pb-10 pt-2" onClick={(e) => e.stopPropagation()}>
+          {/* 属性页是单屏角色面板，需要更宽的画布且不留触发滚动的底部余量 */}
+          <div
+            className={`w-full ${panel === 'stats' ? 'max-w-[1080px] pb-2' : 'max-w-[860px] pb-10'} pt-2`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="mb-3 flex justify-end">
               <button
                 className="rounded-full border border-cream/25 bg-dusk/80 px-4 py-1.5 text-sm text-cream shadow-glass backdrop-blur-md backdrop-saturate-125 transition hover:border-ember/60 hover:text-ember"

@@ -27,6 +27,9 @@ export default {
         // 只做纸面上的分类标记/图标底，不做大面积底色
         wash: { rose: '#C9897B', ochre: '#D9B36A', sage: '#A9B18F' },
         'wash-soft': { rose: '#F2E0DA', ochre: '#F4E9D2', sage: '#E8EBDD' },
+        // 词条稀有度（v3.0 角色面板）：金=入学人设、紫=已觉醒轨迹、蓝=养成中——
+        // 低饱和压暗过的游戏稀有度色，只用于词条描边/字色
+        tier: { gold: '#D9B36A', purple: '#A98FC0', blue: '#7FA3BD' },
       },
       boxShadow: {
         soft: '0 1px 2px rgba(28,27,24,0.04), 0 4px 16px rgba(28,27,24,0.05)',
