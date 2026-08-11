@@ -385,21 +385,57 @@ const PortraitCard: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => 
   );
 };
 
-/** 词条墙（v3.0）：金=入学人设、紫=已觉醒轨迹、蓝=养成中。
- * 词条只留名字，说明与进度进 hover 浮层——不堆常驻文字。 */
+/** 词条墙（v3.1）：稀有度按词条本质分级，与来源无关——
+ * 金=传说（内核与价值观、上一世的馈赠）、紫=史诗（强能力/强条件）、
+ * 蓝=普通（习惯与日常）、红=反面词条。词条只留名字，说明与进度进 hover 浮层。 */
 const ENTRY_TIERS = {
   gold: 'border-tier-gold/60 text-[#EACF8F] shadow-[0_0_10px_rgba(217,179,106,0.22)]',
   purple: 'border-tier-purple/60 text-[#C9B3DE] shadow-[0_0_10px_rgba(169,143,192,0.22)]',
   blue: 'border-tier-blue/50 text-[#A5C1D6]',
+  red: 'border-tier-red/55 text-[#DFA095]',
 } as const;
+type EntryTier = keyof typeof ENTRY_TIERS;
+const TIER_ORDER: EntryTier[] = ['gold', 'purple', 'blue', 'red'];
+const ENTRY_TIER: Record<string, EntryTier> = {
+  // 入学人设
+  'small-town': 'gold',
+  artsy: 'gold',
+  pragmatic: 'gold',
+  'legacy-scholar': 'gold',
+  'legacy-maker': 'gold',
+  'legacy-voice': 'gold',
+  'legacy-hustle': 'gold',
+  'legacy-ease': 'gold',
+  'well-off': 'purple',
+  'social-king': 'purple',
+  athlete: 'purple',
+  'thick-skin': 'purple',
+  'night-owl': 'blue',
+  grinder: 'blue',
+  homesick: 'blue',
+  perfectionist: 'blue',
+  shy: 'red',
+  // 后天轨迹
+  voice: 'purple',
+  maker: 'purple',
+  lone: 'blue',
+  grind: 'blue',
+  night: 'blue',
+  social: 'blue',
+  thrift: 'blue',
+  nice: 'red',
+};
 
-const EntryChip: React.FC<{ tier: keyof typeof ENTRY_TIERS; name: string; desc: string }> = ({
-  tier,
-  name,
-  desc,
-}) => (
+const EntryChip: React.FC<{
+  tier: EntryTier;
+  name: string;
+  desc: string;
+  dim?: boolean; // 养成中（未觉醒）：同稀有度但暗显
+}> = ({ tier, name, desc, dim = false }) => (
   <span
-    className={`group relative inline-flex cursor-default items-center gap-1.5 rounded-lg border bg-dusk-2/70 px-2.5 py-1.5 text-[12.5px] font-medium ${ENTRY_TIERS[tier]}`}
+    className={`group relative inline-flex cursor-default items-center gap-1.5 rounded-lg border bg-dusk-2/70 px-2.5 py-1.5 text-[12.5px] font-medium ${ENTRY_TIERS[tier]} ${
+      dim ? 'border-dashed opacity-55 shadow-none' : ''
+    }`}
   >
     <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
     {name}
@@ -410,31 +446,40 @@ const EntryChip: React.FC<{ tier: keyof typeof ENTRY_TIERS; name: string; desc: 
 );
 
 const EntryChips: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
-  const traits = state.traits.map((id) => getTrait(id)).filter(Boolean);
+  const traits = state.traits
+    .map((id) => getTrait(id))
+    .filter((t): t is NonNullable<typeof t> => Boolean(t));
   const grown = tagDefs.filter((t) => (state.tags[t.id] ?? 0) > 0);
-  const awakened = grown.filter((t) => (state.tags[t.id] ?? 0) >= t.threshold);
-  const progressing = grown.filter((t) => (state.tags[t.id] ?? 0) < t.threshold);
   if (traits.length === 0 && grown.length === 0) {
     return <p className="text-sm text-cream-soft">{home['stats-tags-empty']}</p>;
   }
+  // 统一成词条列表后按稀有度排序：金 → 紫 → 蓝 → 红；养成中的暗显
+  const entries = [
+    ...traits.map((t) => ({
+      id: t.id,
+      name: t.name,
+      desc: t.desc,
+      tier: ENTRY_TIER[t.id] ?? 'blue',
+      dim: false,
+    })),
+    ...grown.map((t) => {
+      const n = state.tags[t.id] ?? 0;
+      const awakened = n >= t.threshold;
+      return {
+        id: t.id,
+        name: t.name,
+        desc: awakened
+          ? t.awakenText
+          : `${t.awakenText}｜${interpolate(home['entry-progress'], { n, threshold: t.threshold })}`,
+        tier: ENTRY_TIER[t.id] ?? 'blue',
+        dim: !awakened,
+      };
+    }),
+  ].sort((a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier));
   return (
     <div className="flex flex-wrap gap-2">
-      {traits.map((t) => (
-        <EntryChip key={t!.id} tier="gold" name={t!.name} desc={t!.desc} />
-      ))}
-      {awakened.map((t) => (
-        <EntryChip key={t.id} tier="purple" name={t.name} desc={t.awakenText} />
-      ))}
-      {progressing.map((t) => (
-        <EntryChip
-          key={t.id}
-          tier="blue"
-          name={t.name}
-          desc={`${t.awakenText}｜${interpolate(home['entry-progress'], {
-            n: state.tags[t.id] ?? 0,
-            threshold: t.threshold,
-          })}`}
-        />
+      {entries.map((e) => (
+        <EntryChip key={e.id} tier={e.tier} name={e.name} desc={e.desc} dim={e.dim} />
       ))}
     </div>
   );
@@ -1181,7 +1226,7 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   <div className="grid grid-cols-[300px_minmax(0,1fr)] items-start gap-4">
     <aside className="flex flex-col gap-4">
       <PortraitCard state={state} />
-      <Panel title={home['stats-entries-title']} sub={home['stats-entries-sub']}>
+      <Panel title={home['stats-entries-title']}>
         <EntryChips state={state} />
       </Panel>
     </aside>
