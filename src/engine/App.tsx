@@ -9,6 +9,7 @@ import {
   LocalSaveAdapter,
   SupabaseSaveAdapter,
   setSaveAdapter,
+  flushState,
 } from '@/services/saveAdapter';
 import { SEMESTER_CHAIN, useEngine } from './store';
 import { getBoard, semesterName, ui } from './content';
@@ -149,6 +150,16 @@ export const App: React.FC = () => {
   useEffect(() => {
     init();
   }, [init]);
+
+  // 关标签页/刷新前把防抖窗口里的最后一笔进度落盘（云端模式下尤其重要）
+  useEffect(() => {
+    const flush = () => flushState();
+    window.addEventListener('beforeunload', flush);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flush();
+    });
+    return () => window.removeEventListener('beforeunload', flush);
+  }, []);
 
   // 认证状态 → 存档适配器
   useEffect(() => {

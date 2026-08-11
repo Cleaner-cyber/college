@@ -5,6 +5,7 @@
  */
 import { create } from 'zustand';
 import { supabase, isCloudMode } from './supabase';
+import { flushState } from './saveAdapter';
 
 export type AuthStatus = 'loading' | 'signed-out' | 'signed-in' | 'local';
 
@@ -15,10 +16,14 @@ interface AuthStore {
   busy: boolean;
   errorKey: string | null;
   noticeKey: string | null;
+  /** 用户点了重置邮件里的链接、带恢复会话回来：登录页据此弹「设置新密码」 */
+  recovery: boolean;
   init: () => void;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
   clearFeedback: () => void;
 }
 
@@ -40,6 +45,7 @@ export const useAuth = create<AuthStore>((set) => ({
   busy: false,
   errorKey: null,
   noticeKey: null,
+  recovery: false,
 
   init: () => {
     if (initialized) return;
@@ -48,15 +54,16 @@ export const useAuth = create<AuthStore>((set) => ({
       set({ status: 'local' });
       return;
     }
-    supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         set({
           status: 'signed-in',
           userId: session.user.id,
           email: session.user.email ?? null,
+          ...(event === 'PASSWORD_RECOVERY' ? { recovery: true } : {}),
         });
       } else {
-        set({ status: 'signed-out', userId: null, email: null });
+        set({ status: 'signed-out', userId: null, email: null, recovery: false });
       }
     });
     void supabase.auth.getSession().then(({ data }) => {
@@ -90,7 +97,32 @@ export const useAuth = create<AuthStore>((set) => ({
 
   signOut: async () => {
     if (!supabase) return;
+    flushState(); // 防抖窗口里的最后一笔进度先落云，再断会话
     await supabase.auth.signOut();
+  },
+
+  resetPassword: async (email) => {
+    if (!supabase) return;
+    set({ busy: true, errorKey: null, noticeKey: null });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    });
+    set({
+      busy: false,
+      errorKey: error ? mapError(error.message) : null,
+      noticeKey: error ? null : 'reset-email-sent',
+    });
+  },
+
+  updatePassword: async (password) => {
+    if (!supabase) return;
+    set({ busy: true, errorKey: null, noticeKey: null });
+    const { error } = await supabase.auth.updateUser({ password });
+    set({
+      busy: false,
+      errorKey: error ? mapError(error.message) : null,
+      ...(error ? {} : { recovery: false, noticeKey: 'reset-done' }),
+    });
   },
 
   clearFeedback: () => set({ errorKey: null, noticeKey: null }),

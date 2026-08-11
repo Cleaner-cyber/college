@@ -41,7 +41,17 @@
     "local-mode-title": "本地试玩模式",
     "local-mode-desc": "未配置云端数据库（Supabase），进度只存在这台电脑的浏览器里。",
     "local-mode-btn": "开始本地试玩",
-    "logout": "退出登录"
+    "logout": "退出登录",
+    "forgot-link": "忘了密码？",
+    "forgot-title": "重置密码",
+    "forgot-desc": "输入注册邮箱，我们发一封重置邮件给你。",
+    "reset-submit": "发送重置邮件",
+    "reset-email-sent": "重置邮件已发出。去邮箱点击链接，会带你回到这里设置新密码。",
+    "back-to-login": "← 回到登录",
+    "recovery-title": "设置新密码",
+    "new-password-label": "新密码",
+    "set-password-btn": "确认新密码",
+    "reset-done": "新密码已生效，正在进入游戏…"
   },
   "home": {
     "nav-semester": "本学期",
