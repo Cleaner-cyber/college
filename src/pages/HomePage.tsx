@@ -446,41 +446,140 @@ const EntryChip: React.FC<{
 );
 
 const EntryChips: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  // 词条墙只放入学人设（金/紫/蓝/红按本质分级）；后天轨迹进下方的觉醒树
   const traits = state.traits
     .map((id) => getTrait(id))
     .filter((t): t is NonNullable<typeof t> => Boolean(t));
-  const grown = tagDefs.filter((t) => (state.tags[t.id] ?? 0) > 0);
-  if (traits.length === 0 && grown.length === 0) {
+  if (traits.length === 0) {
     return <p className="text-sm text-cream-soft">{home['stats-tags-empty']}</p>;
   }
-  // 统一成词条列表后按稀有度排序：金 → 紫 → 蓝 → 红；养成中的暗显
-  const entries = [
-    ...traits.map((t) => ({
-      id: t.id,
-      name: t.name,
-      desc: t.desc,
-      tier: ENTRY_TIER[t.id] ?? 'blue',
-      dim: false,
-    })),
-    ...grown.map((t) => {
-      const n = state.tags[t.id] ?? 0;
-      const awakened = n >= t.threshold;
-      return {
-        id: t.id,
-        name: t.name,
-        desc: awakened
-          ? t.awakenText
-          : `${t.awakenText}｜${interpolate(home['entry-progress'], { n, threshold: t.threshold })}`,
-        tier: ENTRY_TIER[t.id] ?? 'blue',
-        dim: !awakened,
-      };
-    }),
-  ].sort((a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier));
+  const entries = traits
+    .map((t) => ({ id: t.id, name: t.name, desc: t.desc, tier: ENTRY_TIER[t.id] ?? 'blue' }))
+    .sort((a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier));
   return (
     <div className="flex flex-wrap gap-2">
       {entries.map((e) => (
-        <EntryChip key={e.id} tier={e.tier} name={e.name} desc={e.desc} dim={e.dim} />
+        <EntryChip key={e.id} tier={e.tier} name={e.name} desc={e.desc} />
       ))}
+    </div>
+  );
+};
+
+/** 人设轨迹·觉醒树（v3.2）：八条轨迹围成星环，中心是「我」。
+ * 每个节点带进度环（琥珀弧随计数增长），觉醒时按词条稀有度整环点亮并连线到中心；
+ * 未开始的暗显。说明与进度全部进 hover 浮层。 */
+const TIER_HEX: Record<EntryTier, string> = {
+  gold: '#D9B36A',
+  purple: '#A98FC0',
+  blue: '#7FA3BD',
+  red: '#C0574A',
+};
+const AWAKEN_W = 300;
+const AWAKEN_H = 252;
+
+const AwakeningTree: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
+  const cx = AWAKEN_W / 2;
+  const cy = AWAKEN_H / 2;
+  const rx = 112;
+  const ry = 88;
+  const R = 16; // 进度环半径
+  const C = 2 * Math.PI * R;
+  const nodes = tagDefs.map((t, i) => {
+    const ang = (Math.PI * 2 * i) / tagDefs.length - Math.PI / 2;
+    return { t, x: cx + rx * Math.cos(ang), y: cy + ry * Math.sin(ang) };
+  });
+  return (
+    <div className="relative mx-auto" style={{ width: AWAKEN_W, height: AWAKEN_H }}>
+      <svg
+        aria-hidden
+        className="absolute inset-0"
+        width={AWAKEN_W}
+        height={AWAKEN_H}
+        viewBox={`0 0 ${AWAKEN_W} ${AWAKEN_H}`}
+      >
+        {nodes.map(({ t, x, y }) => {
+          const n = state.tags[t.id] ?? 0;
+          const awakened = n >= t.threshold;
+          const frac = Math.min(1, n / t.threshold);
+          const tier = TIER_HEX[ENTRY_TIER[t.id] ?? 'blue'];
+          return (
+            <g key={t.id}>
+              {/* 中心连线：觉醒才点亮 */}
+              <line
+                x1={cx}
+                y1={cy}
+                x2={x}
+                y2={y}
+                stroke={awakened ? tier : '#F6E7CC'}
+                strokeOpacity={awakened ? 0.55 : 0.1}
+                strokeWidth={awakened ? 1.5 : 1}
+              />
+              {/* 进度环：底环 + 进度弧（觉醒后整环换稀有度色） */}
+              <circle cx={x} cy={y} r={R} fill="none" stroke="#F6E7CC" strokeOpacity={0.14} strokeWidth={3} />
+              {frac > 0 && (
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={R}
+                  fill="none"
+                  stroke={awakened ? tier : '#FFB35C'}
+                  strokeOpacity={awakened ? 0.95 : 0.8}
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  strokeDasharray={`${frac * C} ${C}`}
+                  transform={`rotate(-90 ${x} ${y})`}
+                />
+              )}
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* 中心：我 */}
+      <div
+        className="absolute flex h-11 w-11 items-center justify-center rounded-full border-2 border-ember/60 bg-dusk-2/80 font-display text-[15px] text-ember shadow-glow"
+        style={{ left: cx - 22, top: cy - 22 }}
+      >
+        {state.player.name.slice(0, 1)}
+      </div>
+
+      {/* 轨迹节点（热区 + 名字 + hover 浮层） */}
+      {nodes.map(({ t, x, y }) => {
+        const n = state.tags[t.id] ?? 0;
+        const awakened = n >= t.threshold;
+        const started = n > 0;
+        const tierKey = ENTRY_TIER[t.id] ?? 'blue';
+        const desc = awakened
+          ? t.awakenText
+          : `${t.awakenText}｜${interpolate(home['entry-progress'], { n, threshold: t.threshold })}`;
+        return (
+          <div
+            key={t.id}
+            className="group absolute flex flex-col items-center"
+            style={{ left: x - 30, top: y - 17, width: 60 }}
+          >
+            <span
+              className={`flex h-[34px] w-[34px] items-center justify-center rounded-full text-[11px] font-medium ${
+                awakened ? '' : started ? 'text-cream' : 'text-cream-soft/40'
+              }`}
+              style={awakened ? { color: TIER_HEX[tierKey] } : undefined}
+            >
+              {awakened ? '✦' : n > 0 ? n : ''}
+            </span>
+            <span
+              className={`mt-0.5 whitespace-nowrap text-[10.5px] ${
+                awakened ? 'font-semibold' : started ? 'text-cream-soft' : 'text-cream-soft/40'
+              }`}
+              style={awakened ? { color: TIER_HEX[tierKey] } : undefined}
+            >
+              {t.name}
+            </span>
+            <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-52 -translate-x-1/2 rounded-xl border border-cream/15 bg-dusk/95 p-2.5 text-left text-[11.5px] leading-relaxed text-cream opacity-0 shadow-glass backdrop-blur-md transition duration-150 group-hover:opacity-100">
+              {desc}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -823,10 +922,27 @@ const SectionHead: React.FC<{ title: string; sub: string; count: number }> = ({
 /** 作品卡：封面优先的大图卡片。真实图（jpg/webp/png）直接当封面；
  * 其余作品用 covers/cover-<id>.svg 专属封面（占位可同名替换，见 scripts/gen-covers.py）。
  * 简历措辞不再排在卡面上（详情里看），卡面只留封面+标题。 */
+/** 已有用户生成封面的作品（cover-<id>.webp）；其余真图作品用 assetRef，兜底占位 SVG */
+const GENERATED_COVERS = new Set([
+  'doc-course-rules',
+  'doc-summer-plan',
+  'doc-ppt-outline',
+  'ppt-deck',
+  'homepage-v1',
+  'dachuang-report',
+  'gig-board',
+  'resume-doc',
+  'thesis-doc',
+]);
+
 const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
   const [imgOk, setImgOk] = useState(true);
   const raster = item.assetRef && /\.(jpe?g|png|webp)$/i.test(item.assetRef);
-  const cover = raster ? assetUrl(item.assetRef!) : `/assets/covers/cover-${item.id}.svg`;
+  const cover = GENERATED_COVERS.has(item.id)
+    ? `/assets/covers/cover-${item.id}.webp`
+    : raster
+      ? assetUrl(item.assetRef!)
+      : `/assets/covers/cover-${item.id}.svg`;
   return (
     <button
       onClick={onOpen}
@@ -1228,6 +1344,9 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
       <PortraitCard state={state} />
       <Panel title={home['stats-entries-title']}>
         <EntryChips state={state} />
+      </Panel>
+      <Panel title={home['stats-tags-title']}>
+        <AwakeningTree state={state} />
       </Panel>
     </aside>
     <section className="flex flex-col gap-4">
