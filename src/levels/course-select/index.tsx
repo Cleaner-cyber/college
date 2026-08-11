@@ -212,7 +212,7 @@ const AiChat: React.FC<{ api: FlowAPI }> = ({ api }) => {
     stage === 'need-plan' ? 'plan' : stage === 'need-handbook' ? 'handbook' : null;
 
   return (
-    <div className="grid grid-cols-[220px_minmax(0,1fr)] gap-5">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-[220px_minmax(0,1fr)] md:gap-5">
       {/* 文件面板 */}
       <aside>
         <div className="mb-2 text-[11px] tracking-widest text-cream-soft">

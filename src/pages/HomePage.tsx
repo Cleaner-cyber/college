@@ -241,8 +241,9 @@ const HudStrip: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   const gpa = cumulativeGpa(state);
   const path = getPath(state.pathGoal);
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-x-5 gap-y-1 font-display text-[13px]">
-      <span className="flex items-center gap-1.5">
+    /* 窄屏只留 行动点/精力/绩点（五轴与出路在属性面板都有），避免逐字换行的灾难 */
+    <div className="flex min-w-0 items-center gap-x-3 font-display text-[13px] md:flex-wrap md:gap-x-5 md:gap-y-1">
+      <span className="flex items-center gap-1.5 whitespace-nowrap">
         <span className="text-xs text-cream-soft">{home['action-points']}</span>
         {Array.from({ length: 3 }).map((_, i) => (
           <span
@@ -254,23 +255,23 @@ const HudStrip: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         ))}
       </span>
       {VISIBLE_AXES.map((a) => (
-        <span key={a} className="flex items-baseline gap-1">
+        <span key={a} className="hidden items-baseline gap-1 md:flex">
           <span className="text-xs text-cream-soft">{ui.axes[a]}</span>
           <span className="font-sans font-semibold tabular-nums text-cream">{state.axes[a]}</span>
         </span>
       ))}
-      <span className="flex items-baseline gap-1">
+      <span className="flex items-baseline gap-1 whitespace-nowrap">
         <span className="text-xs text-cream-soft">{ui.axes.energy}</span>
         <span className="font-sans font-semibold tabular-nums text-ember">{state.axes.energy}</span>
       </span>
-      <span className="flex items-baseline gap-1">
+      <span className="flex items-baseline gap-1 whitespace-nowrap">
         <span className="text-xs text-cream-soft">{home['hud-gpa-label']}</span>
         <span className="font-sans font-semibold tabular-nums text-ember">
           {gpa?.toFixed(2) ?? home['hud-gpa-empty']}
         </span>
       </span>
       {path && (
-        <span className="flex items-baseline gap-1">
+        <span className="hidden items-baseline gap-1 md:flex">
           <span className="text-xs text-cream-soft">{home['hud-path-label']}</span>
           <span className="font-semibold text-cream">
             {path.icon} {path.name}
@@ -433,13 +434,14 @@ const EntryChip: React.FC<{
   dim?: boolean; // 养成中（未觉醒）：同稀有度但暗显
 }> = ({ tier, name, desc, dim = false }) => (
   <span
-    className={`group relative inline-flex cursor-default items-center gap-1.5 rounded-lg border bg-dusk-2/70 px-2.5 py-1.5 text-[12.5px] font-medium ${ENTRY_TIERS[tier]} ${
+    tabIndex={0}
+    className={`group relative inline-flex cursor-default items-center gap-1.5 rounded-lg border bg-dusk-2/70 px-2.5 py-1.5 text-[12.5px] font-medium outline-none ${ENTRY_TIERS[tier]} ${
       dim ? 'border-dashed opacity-55 shadow-none' : ''
     }`}
   >
     <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
     {name}
-    <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 w-56 -translate-x-1/2 rounded-xl border border-cream/15 bg-dusk/95 p-2.5 text-left text-[11.5px] font-normal leading-relaxed text-cream opacity-0 shadow-glass backdrop-blur-md transition duration-150 group-hover:opacity-100">
+    <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 w-56 -translate-x-1/2 rounded-xl border border-cream/15 bg-dusk/95 p-2.5 text-left text-[11.5px] font-normal leading-relaxed text-cream opacity-0 shadow-glass backdrop-blur-md transition duration-150 group-focus-within:opacity-100 group-hover:opacity-100">
       {desc}
     </span>
   </span>
@@ -555,7 +557,8 @@ const AwakeningTree: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) =>
         return (
           <div
             key={t.id}
-            className="group absolute flex flex-col items-center"
+            tabIndex={0}
+            className="group absolute flex flex-col items-center outline-none"
             style={{ left: x - 30, top: y - 17, width: 60 }}
           >
             <span
@@ -574,7 +577,7 @@ const AwakeningTree: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) =>
             >
               {t.name}
             </span>
-            <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-52 -translate-x-1/2 rounded-xl border border-cream/15 bg-dusk/95 p-2.5 text-left text-[11.5px] leading-relaxed text-cream opacity-0 shadow-glass backdrop-blur-md transition duration-150 group-hover:opacity-100">
+            <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-52 -translate-x-1/2 rounded-xl border border-cream/15 bg-dusk/95 p-2.5 text-left text-[11.5px] leading-relaxed text-cream opacity-0 shadow-glass backdrop-blur-md transition duration-150 group-focus-within:opacity-100 group-hover:opacity-100">
               {desc}
             </span>
           </div>
@@ -612,7 +615,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
 
   return (
     /* 单屏双栏（v3.3）：左=出门/主线/课程/结算，右=行动板。整页不出竖向滚动条 */
-    <div className="grid grid-cols-[minmax(0,7fr)_minmax(0,6fr)] items-start gap-4">
+    <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-[minmax(0,7fr)_minmax(0,6fr)]">
       <div className="flex flex-col gap-4">
       {/* 出门 · 校园地图（v2.6 场景化：主线关卡从地图地标进入） */}
       {!mainlineDone && (
@@ -669,8 +672,8 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                   {done ? '✓' : i + 1}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[16px] font-medium">{m.label}</span>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="whitespace-nowrap text-[16px] font-medium">{m.label}</span>
                     <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[11px] text-accent">
                       {m.tag}
                     </span>
@@ -813,7 +816,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                       </span>
                     </span>
                     {/* hover 浮层：描述 / 解锁条件（渐进披露） */}
-                    <span className="pointer-events-none absolute left-0 top-full z-20 mt-1.5 hidden w-64 rounded-xl bg-ink p-3 text-[12px] leading-relaxed text-paper shadow-pop group-hover:block">
+                    <span className="pointer-events-none absolute left-0 top-full z-20 mt-1.5 hidden w-64 rounded-xl bg-ink p-3 text-[12px] leading-relaxed text-paper shadow-pop group-focus-within:block group-hover:block">
                       {locked ? `🔒 ${action.lockedHint}` : action.desc}
                     </span>
                   </button>
@@ -1299,7 +1302,7 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             {home['folder-empty-prompts']}
           </div>
         ) : (
-          <div className="grid grid-cols-6 gap-2.5">
+          <div className="grid grid-cols-3 gap-2.5 md:grid-cols-6">
             {prompts.map((item) => (
               <PromptCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
             ))}
@@ -1343,7 +1346,7 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
 
 const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   /* 角色面板（v3.0）：左立绘+词条，右五轴+能力树——单屏放下，不出滚动条 */
-  <div className="grid grid-cols-[300px_minmax(0,1fr)] items-start gap-4">
+  <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-[300px_minmax(0,1fr)]">
     <aside className="flex flex-col gap-4">
       <PortraitCard state={state} />
       <Panel title={home['stats-entries-title']}>
@@ -1613,9 +1616,9 @@ export const HomePage: React.FC = () => {
         className="relative z-20 border-b border-cream/10 bg-gradient-to-b from-dusk/90 to-dusk/70 text-cream backdrop-blur-md backdrop-saturate-125"
         data-tour="rail"
       >
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-6 px-6 py-2.5">
-          <div className="flex shrink-0 items-baseline gap-3">
-            <span className="font-display text-[17px] font-semibold tracking-[0.25em] text-cream">
+        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-3 px-3 py-2.5 md:gap-6 md:px-6">
+          <div className="flex shrink-0 items-baseline gap-3 max-md:gap-2">
+            <span className="font-display text-[17px] font-semibold tracking-[0.25em] text-cream max-md:text-[15px] max-md:tracking-[0.1em]">
               {ui['app-title']}
             </span>
             {/* grad-end 复用 y4 的行动板配置，但顶栏不能跟着写「大四 · 秋冬」——人已经毕业了 */}
@@ -1636,7 +1639,7 @@ export const HomePage: React.FC = () => {
                 ？{(ui.tour as Record<string, string>)['replay']}
               </button>
             )}
-            <span className="font-medium text-cream">
+            <span className="font-medium text-cream max-md:hidden">
               {interpolate(home['greeting'], {
                 playerName: state.player.name,
                 majorName: major.name,
@@ -1644,7 +1647,7 @@ export const HomePage: React.FC = () => {
             </span>
             {isCloudMode ? (
               <>
-                <span className="text-cream-soft/70">{email}</span>
+                <span className="text-cream-soft/70 max-md:hidden">{email}</span>
                 <button
                   className="text-cream-soft underline underline-offset-4 hover:text-ember"
                   onClick={() => void signOut()}
@@ -1653,7 +1656,7 @@ export const HomePage: React.FC = () => {
                 </button>
               </>
             ) : (
-              <span className="rounded bg-cream/10 px-2 py-0.5 text-cream-soft">
+              <span className="rounded bg-cream/10 px-2 py-0.5 text-cream-soft max-md:hidden">
                 {(ui.auth as Record<string, string>)['local-mode-title']}
               </span>
             )}
@@ -1721,7 +1724,7 @@ export const HomePage: React.FC = () => {
       {/* 面板浮层：点热点弹出对应内容 */}
       {panel && (
         <div
-          className="fixed inset-x-0 bottom-0 top-[52px] z-40 flex items-start justify-center overflow-y-auto bg-ink/65 p-6 backdrop-blur-[6px]"
+          className="fixed inset-x-0 bottom-0 top-[52px] z-40 flex items-start justify-center overflow-y-auto bg-ink/65 p-3 backdrop-blur-[6px] md:p-6"
           onClick={() => setPanel(null)}
         >
           {/* 本学期/文件夹/属性都是单屏面板：更宽画布 + 不留触发滚动的底部余量 */}

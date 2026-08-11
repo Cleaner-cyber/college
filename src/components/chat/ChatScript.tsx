@@ -187,7 +187,7 @@ export const ChatScript: React.FC<ChatScriptProps> = ({ api, steps, assets, onDo
   }, [inputText]);
 
   return (
-    <div className={fileSteps.length > 0 ? 'grid grid-cols-[220px_minmax(0,1fr)] gap-5' : ''}>
+    <div className={fileSteps.length > 0 ? 'grid grid-cols-1 gap-4 md:grid-cols-[220px_minmax(0,1fr)] md:gap-5' : ''}>
       {/* 文件面板（有文件步骤才显示） */}
       {fileSteps.length > 0 && (
         <aside>

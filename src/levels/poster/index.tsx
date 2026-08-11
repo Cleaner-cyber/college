@@ -242,7 +242,7 @@ const GenChat: React.FC<{ api: FlowAPI; assets: Record<string, string> }> = ({ a
       <p className="self-start rounded-full border border-cream/15 bg-dusk/70 px-4 py-1.5 text-[12px] tracking-wide text-cream-soft shadow-glass backdrop-blur-md">
         {api.copy('s3-steps')}
       </p>
-      <div className="grid grid-cols-[264px_minmax(0,1fr)] gap-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[264px_minmax(0,1fr)] md:gap-5">
         {/* 需求单 + 参数面板 */}
         <aside className="flex flex-col gap-3">
           <div className="fx-paper rounded-2xl border border-accent/30 bg-parchment/95 p-4 text-ink shadow-lift">
@@ -573,7 +573,7 @@ const JianyingSteps: React.FC<{ api: FlowAPI; assets: Record<string, string> }> 
   };
 
   return (
-    <div className="mx-auto grid max-w-4xl grid-cols-[minmax(0,1fr)_300px] gap-6">
+    <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_300px] md:gap-6">
       <div className="flex flex-col gap-4">
         <header>
           <h1 className="font-display text-xl font-bold tracking-wide text-cream">

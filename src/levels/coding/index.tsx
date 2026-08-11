@@ -167,7 +167,7 @@ const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
   };
 
   return (
-    <div className="grid grid-cols-[360px_minmax(0,1fr)] gap-6">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-[360px_minmax(0,1fr)] md:gap-6">
       <div className="flex flex-col gap-4">
         <header>
           <h1 className="text-xl font-semibold text-cream">{api.copy('s4-title')}</h1>
