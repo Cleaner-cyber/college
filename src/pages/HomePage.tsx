@@ -611,12 +611,14 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    /* 单屏双栏（v3.3）：左=出门/主线/课程/结算，右=行动板。整页不出竖向滚动条 */
+    <div className="grid grid-cols-[minmax(0,7fr)_minmax(0,6fr)] items-start gap-4">
+      <div className="flex flex-col gap-4">
       {/* 出门 · 校园地图（v2.6 场景化：主线关卡从地图地标进入） */}
       {!mainlineDone && (
         <button
           onClick={() => setMapOpen(true)}
-          className="flex items-center gap-4 rounded-2xl border border-accent/50 bg-card/85 p-4 text-left text-ink shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:shadow-lift"
+          className="flex items-center gap-4 rounded-2xl border border-accent/50 bg-card/85 p-3.5 text-left text-ink shadow-soft backdrop-blur-md transition hover:-translate-y-0.5 hover:shadow-lift"
         >
           <span className="text-ember"><MapIcon size={26} strokeWidth={1.6} /></span>
           <span className="min-w-0 flex-1">
@@ -638,7 +640,6 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
           }}
         />
       )}
-      <CoursesPanel state={state} />
       <div data-tour="mainline">
         <Panel title={home['mainline-title']} sub={home['mainline-sub']}>
         <ol className="flex flex-col gap-3">
@@ -680,7 +681,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
                       </span>
                     )}
                   </div>
-                  <p className="mt-0.5 truncate text-sm text-ink-soft">{m.desc}</p>
+                  <p className="mt-0.5 line-clamp-2 text-[12.5px] leading-snug text-ink-soft">{m.desc}</p>
                 </div>
                 {done ? (
                   <span className="text-xs text-ink-soft">{home['mainline-done-tag']}</span>
@@ -694,6 +695,16 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
           })}
         </ol>
         </Panel>
+      </div>
+      <CoursesPanel state={state} />
+      <div className="flex items-center justify-end gap-4">
+        <span className="text-sm text-cream-soft">
+          {mainlineDone ? home['settle-hint-ready'] : home['settle-hint-mainline']}
+        </span>
+        <Button disabled={!mainlineDone} onClick={() => navigate('/settlement')}>
+          {home['settle-btn']}
+        </Button>
+      </div>
       </div>
 
       <div data-tour="electives">
@@ -763,7 +774,7 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
               );
             })}
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {actionViews
               .filter(({ action }) => (action.group ?? 'life') === activeGroup)
               .map(({ action, locked, done, times }) => {
@@ -812,16 +823,6 @@ const SemesterTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         </div>
       </Panel>
       </div>
-
-      <div className="flex items-center justify-end gap-4">
-        <span className="text-sm text-cream-soft">
-          {mainlineDone ? home['settle-hint-ready'] : home['settle-hint-mainline']}
-        </span>
-        <Button disabled={!mainlineDone} onClick={() => navigate('/settlement')}>
-          {home['settle-btn']}
-        </Button>
-      </div>
-
     </div>
   );
 };
@@ -946,9 +947,9 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
   return (
     <button
       onClick={onOpen}
-      className="w-[240px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
+      className="w-[204px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
     >
-      <div className="h-[168px] w-full overflow-hidden border-b border-line bg-paper">
+      <div className="h-[138px] w-full overflow-hidden border-b border-line bg-paper">
         {imgOk ? (
           <img
             src={cover}
@@ -962,8 +963,8 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
           </div>
         )}
       </div>
-      <div className="flex items-center justify-between gap-2 p-3.5">
-        <span className="truncate text-[14px] font-medium">{item.title}</span>
+      <div className="flex items-center justify-between gap-2 p-3">
+        <span className="truncate text-[13px] font-medium">{item.title}</span>
         {item.borrowed && (
           <span className="shrink-0 rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
             {home['borrowed-tag']}
@@ -1019,14 +1020,14 @@ const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item,
     <button
       onClick={onOpen}
       aria-label={`${item.title}｜${home['prompt-open-hint']}`}
-      className="group relative flex flex-col items-center gap-2.5 rounded-2xl border border-line bg-card px-3 py-4 text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
+      className="group relative flex flex-col items-center gap-2 rounded-2xl border border-line bg-card px-2 py-3 text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
     >
       <span
-        className={`flex h-12 w-12 items-center justify-center rounded-xl ${tint.bg} transition group-hover:shadow-glow`}
+        className={`flex h-10 w-10 items-center justify-center rounded-xl ${tint.bg} transition group-hover:shadow-glow`}
       >
-        <Icon size={22} strokeWidth={1.75} className={tint.fg} />
+        <Icon size={19} strokeWidth={1.75} className={tint.fg} />
       </span>
-      <span className="w-full truncate text-center text-[13px] font-medium leading-snug">
+      <span className="w-full truncate text-center text-[12px] font-medium leading-snug">
         {item.title.replace(/[·・]?\s*提示词模板$/, '')}
       </span>
       <span
@@ -1298,7 +1299,7 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             {home['folder-empty-prompts']}
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-6 gap-2.5">
             {prompts.map((item) => (
               <PromptCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
             ))}
@@ -1314,9 +1315,12 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             sub={home['folder-sec-docs-sub']}
             count={docs.length}
           />
-          <div className="columns-2 gap-3 [&>*]:mb-3 [&>*]:w-full">
+          {/* 档案改横向滑列：数量会一直涨，纵向摆会把整页顶出滚动条 */}
+          <div className="flex gap-3 overflow-x-auto pb-1">
             {docs.map((item) => (
-              <DocCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
+              <div key={item.id} className="w-[244px] shrink-0">
+                <DocCard item={item} onOpen={() => setOpenItem(item)} />
+              </div>
             ))}
           </div>
         </div>
@@ -1720,9 +1724,11 @@ export const HomePage: React.FC = () => {
           className="fixed inset-x-0 bottom-0 top-[52px] z-40 flex items-start justify-center overflow-y-auto bg-ink/65 p-6 backdrop-blur-[6px]"
           onClick={() => setPanel(null)}
         >
-          {/* 属性页是单屏角色面板，需要更宽的画布且不留触发滚动的底部余量 */}
+          {/* 本学期/文件夹/属性都是单屏面板：更宽画布 + 不留触发滚动的底部余量 */}
           <div
-            className={`w-full ${panel === 'stats' ? 'max-w-[1080px] pb-2' : 'max-w-[860px] pb-10'} pt-2`}
+            className={`w-full ${
+              panel === 'log' ? 'max-w-[860px] pb-10' : 'max-w-[1080px] pb-2'
+            } pt-2`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-3 flex justify-end">
