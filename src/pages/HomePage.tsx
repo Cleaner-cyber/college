@@ -63,6 +63,7 @@ import {
   MessagesSquare,
   Mic,
   Presentation,
+  Sparkles,
   Zap,
   Map as MapIcon,
   NotebookPen,
@@ -335,22 +336,26 @@ const TimelinePanel: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) =>
   };
   const currentIdx = TL_IDX[state.semester] ?? 1;
   return (
+    /* 横向步进条：九站一行走完，不再占一大块竖版留出空右侧 */
     <Panel title={home['timeline-title']}>
-      <ol className="relative flex flex-col gap-1 px-1 before:absolute before:bottom-2 before:left-[6.5px] before:top-2 before:w-px before:bg-cream/20">
+      <ol className="relative flex items-start justify-between px-3 pt-1">
+        <span aria-hidden className="absolute left-6 right-6 top-[8px] h-px bg-cream/20" />
         {timeline.map((t, i) => (
           <li
             key={t}
-            className={`flex items-center gap-2 text-xs ${
+            className={`relative z-10 flex flex-col items-center gap-1.5 text-xs ${
               i === currentIdx ? 'font-semibold text-ember' : i < currentIdx ? 'text-cream' : 'text-cream-soft/50'
             }`}
           >
             <span
-              className={`relative z-10 inline-block h-1.5 w-1.5 rounded-full ring-2 ring-dusk ${
+              className={`inline-block h-2 w-2 rounded-full ring-4 ring-dusk ${
                 i === currentIdx ? 'bg-ember shadow-glow' : i < currentIdx ? 'bg-cream' : 'bg-cream/25'
               }`}
             />
-            {t}
-            {i === currentIdx && <span className="text-[10px]">◀ {home['timeline-current']}</span>}
+            <span className="whitespace-nowrap">{t}</span>
+            {i === currentIdx && (
+              <span className="text-[10px] leading-none">▲ {home['timeline-current']}</span>
+            )}
           </li>
         ))}
       </ol>
@@ -1061,6 +1066,7 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
 const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
   <div className="flex flex-col gap-4">
     <TimelinePanel state={state} />
+    <div className="grid grid-cols-2 items-start gap-4">
     <Panel title={home['stats-flag-title']}>
       <dl className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
         {state.pathGoal && (
@@ -1101,6 +1107,8 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
         <p className="text-xs text-cream-soft">{home['stats-energy-note']}</p>
       </div>
     </Panel>
+    </div>
+    <div className="grid grid-cols-2 items-start gap-4">
     {state.traits.length > 0 && (
       <Panel title={home['stats-traits-title']}>
         <div className="flex flex-col gap-2.5">
@@ -1117,6 +1125,7 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
         </div>
       </Panel>
     )}
+    <div className={state.traits.length > 0 ? '' : 'col-span-2'}>
     <Panel title={home['stats-tags-title']}>
       {Object.keys(state.tags).length === 0 ? (
         <p className="text-sm text-cream-soft">{home['stats-tags-empty']}</p>
@@ -1148,87 +1157,179 @@ const StatsTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => (
         </div>
       )}
     </Panel>
+    </div>
+    </div>
     <Panel title={home['stats-abilities-title']} sub={home['stats-tree-sub']}>
       <AbilityTree abilities={state.abilities} />
     </Panel>
   </div>
 );
 
-/** 能力树：按学期分列的科技树。已解锁点亮，未解锁挂锁变暗——
- * 越靠后的能力天然越"高阶"（顺序解锁由主线保证）。节点只有图标+短名，说明进 hover title。 */
-const ABILITY_TREE: { sem: string; nodes: { id: string; icon: LucideIcon }[] }[] = [
-  { sem: 'y1s1', nodes: [{ id: 'doc-feeding', icon: FileText }, { id: 'image-gen', icon: ImageIcon }] },
-  { sem: 'y1s2', nodes: [{ id: 'structured-gen', icon: Presentation }, { id: 'ai-coding', icon: CodeXml }] },
-  { sem: 'y2s1', nodes: [{ id: 'lit-review', icon: BookOpen }, { id: 'note-taking', icon: NotebookPen }] },
-  { sem: 'y2s2', nodes: [{ id: 'data-analysis', icon: ChartColumn }, { id: 'multimodal', icon: Clapperboard }] },
-  { sem: 'y3s1', nodes: [{ id: 'examiner', icon: Mic }] },
-  { sem: 'y3s2', nodes: [{ id: 'role-play', icon: MessagesSquare }] },
+/** 能力树：游戏技能树式的分支节点图。根节点（学长系统）分出四条支线，
+ * 节点沿支线按主线解锁顺序推进；SVG 连线随目标节点解锁点亮。
+ * 节点只有图标+短名，学期与状态进 hover title——不堆常驻文字。 */
+const TREE_W = 660;
+const TREE_H = 352;
+const TREE_ROOT = { x: 64, y: TREE_H / 2 - 4 };
+const TREE_ROWS_Y = [46, 132, 218, 304];
+const TREE_COLS_X = [232, 388, 544];
+const TREE_BRANCHES: {
+  key: string;
+  nodes: { id: string; sem: string; icon: LucideIcon }[];
+}[] = [
+  {
+    key: 'academic',
+    nodes: [
+      { id: 'doc-feeding', sem: 'y1s1', icon: FileText },
+      { id: 'lit-review', sem: 'y2s1', icon: BookOpen },
+      { id: 'data-analysis', sem: 'y2s2', icon: ChartColumn },
+    ],
+  },
+  {
+    key: 'create',
+    nodes: [
+      { id: 'image-gen', sem: 'y1s1', icon: ImageIcon },
+      { id: 'structured-gen', sem: 'y1s2', icon: Presentation },
+      { id: 'multimodal', sem: 'y2s2', icon: Clapperboard },
+    ],
+  },
+  {
+    key: 'express',
+    nodes: [
+      { id: 'examiner', sem: 'y3s1', icon: Mic },
+      { id: 'role-play', sem: 'y3s2', icon: MessagesSquare },
+    ],
+  },
+  {
+    key: 'build',
+    nodes: [
+      { id: 'ai-coding', sem: 'y1s2', icon: CodeXml },
+      { id: 'note-taking', sem: 'y2s1', icon: NotebookPen },
+    ],
+  },
 ];
 
 const AbilityTree: React.FC<{ abilities: readonly string[] }> = ({ abilities }) => {
   const semNames = home['timeline'].split('｜');
+  const semName = (sem: string) =>
+    semNames[['y1s1', 'y1s2', 'y2s1', 'y2s2', 'y3s1', 'y3s2', 'y4'].indexOf(sem) + 1] ?? sem;
+  const lit = (id: string) => abilities.includes(id);
   return (
-    <div className="relative overflow-x-auto pb-1">
-      {/* 干线：贯穿各学期列圆点中心的水平轨道（标签行高 + 间距 + 半个点 ≈ 28px） */}
-      <div aria-hidden className="absolute left-6 right-6 top-[28px] h-px bg-cream/20" />
-      <div className="relative flex min-w-[560px] items-start justify-between gap-2">
-        {ABILITY_TREE.map((col, ci) => {
-          const colUnlocked = col.nodes.some((n) => abilities.includes(n.id));
+    <div className="overflow-x-auto">
+      <div className="relative mx-auto" style={{ width: TREE_W, height: TREE_H }}>
+        {/* 连线层：进入某节点的边，随该节点解锁点亮 */}
+        <svg
+          aria-hidden
+          className="absolute inset-0"
+          width={TREE_W}
+          height={TREE_H}
+          viewBox={`0 0 ${TREE_W} ${TREE_H}`}
+        >
+          {TREE_BRANCHES.map((b, bi) => {
+            const y = TREE_ROWS_Y[bi];
+            const first = b.nodes[0];
+            const stroke = (on: boolean) => ({
+              stroke: on ? '#FFB35C' : '#F6E7CC',
+              strokeOpacity: on ? 0.75 : 0.14,
+              strokeWidth: 2,
+              fill: 'none' as const,
+            });
+            return (
+              <g key={b.key}>
+                <path
+                  d={`M ${TREE_ROOT.x + 34} ${TREE_ROOT.y} C ${TREE_ROOT.x + 96} ${TREE_ROOT.y}, ${
+                    TREE_COLS_X[0] - 110
+                  } ${y}, ${TREE_COLS_X[0] - 34} ${y}`}
+                  {...stroke(lit(first.id))}
+                />
+                {b.nodes.slice(1).map((n, i) => (
+                  <line
+                    key={n.id}
+                    x1={TREE_COLS_X[i] + 34}
+                    y1={y}
+                    x2={TREE_COLS_X[i + 1] - 34}
+                    y2={y}
+                    {...stroke(lit(n.id))}
+                  />
+                ))}
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* 根节点：学长系统，永远点亮 */}
+        <div
+          className="absolute flex flex-col items-center"
+          style={{ left: TREE_ROOT.x - 32, top: TREE_ROOT.y - 32, width: 64 }}
+        >
+          <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-ember bg-ember/15 shadow-glow">
+            <Sparkles size={24} strokeWidth={1.75} className="text-ember" />
+          </span>
+          <span className="mt-1.5 whitespace-nowrap text-[10.5px] tracking-widest text-cream">
+            {home['tree-root']}
+          </span>
+        </div>
+
+        {/* 支线标签 */}
+        {TREE_BRANCHES.map((b, bi) => {
+          const branchLit = b.nodes.some((n) => lit(n.id));
           return (
-            <div key={col.sem} className="flex flex-1 flex-col items-center gap-2.5">
-              <span className={`text-[10.5px] tracking-widest ${colUnlocked ? 'text-ember' : 'text-cream-soft/50'}`}>
-                {semNames[ci + 1] ?? col.sem}
-              </span>
-              {/* 干线上的结点 */}
-              <span
-                aria-hidden
-                className={`h-2.5 w-2.5 rounded-full ring-4 ring-dusk ${colUnlocked ? 'bg-ember' : 'bg-cream/25'}`}
-              />
-              <div className="flex flex-col gap-2">
-                {col.nodes.map((n) => {
-                  const unlocked = abilities.includes(n.id);
-                  const name = (ui.abilities as Record<string, string>)[n.id] ?? n.id;
-                  const Icon = n.icon;
-                  return (
-                    <div
-                      key={n.id}
-                      title={unlocked ? name : `${name}｜${home['stats-tree-locked']}`}
-                      className={`flex w-[76px] flex-col items-center gap-1.5 rounded-xl border px-1.5 py-2.5 transition ${
-                        unlocked
-                          ? 'border-ember/50 bg-ember/10'
-                          : 'border-cream/10 bg-dusk-2/40 opacity-60'
-                      }`}
-                    >
-                      <span
-                        className={`relative flex h-9 w-9 items-center justify-center rounded-lg ${
-                          unlocked ? 'bg-accent-soft shadow-glow' : 'bg-cream/8'
-                        }`}
-                      >
-                        <Icon
-                          size={17}
-                          strokeWidth={1.75}
-                          className={unlocked ? 'text-accent' : 'text-cream-soft/60'}
-                        />
-                        {!unlocked && (
-                          <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-dusk-2 ring-1 ring-cream/20">
-                            <Lock size={9} strokeWidth={2} className="text-cream-soft" />
-                          </span>
-                        )}
-                      </span>
-                      <span
-                        className={`w-full truncate text-center text-[10.5px] leading-tight ${
-                          unlocked ? 'text-cream' : 'text-cream-soft/60'
-                        }`}
-                      >
-                        {name.replace(/^AI\s*/, '')}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <span
+              key={b.key}
+              className={`absolute whitespace-nowrap text-[10px] tracking-widest ${
+                branchLit ? 'text-ember' : 'text-cream-soft/45'
+              }`}
+              style={{ left: 132, top: TREE_ROWS_Y[bi] - 26 }}
+            >
+              {home[`tree-branch-${b.key}`]}
+            </span>
           );
         })}
+
+        {/* 能力节点 */}
+        {TREE_BRANCHES.map((b, bi) =>
+          b.nodes.map((n, ni) => {
+            const unlocked = lit(n.id);
+            const name = (ui.abilities as Record<string, string>)[n.id] ?? n.id;
+            const Icon = n.icon;
+            const x = TREE_COLS_X[ni];
+            const y = TREE_ROWS_Y[bi];
+            return (
+              <div
+                key={n.id}
+                title={`${name}｜${semName(n.sem)}${unlocked ? '' : `｜${home['stats-tree-locked']}`}`}
+                className="absolute flex flex-col items-center"
+                style={{ left: x - 34, top: y - 27, width: 68 }}
+              >
+                <span
+                  className={`relative flex h-[54px] w-[54px] items-center justify-center rounded-2xl border-2 transition ${
+                    unlocked
+                      ? 'border-ember bg-ember/15 shadow-glow'
+                      : 'border-cream/15 bg-dusk-2/60 opacity-70'
+                  }`}
+                >
+                  <Icon
+                    size={20}
+                    strokeWidth={1.75}
+                    className={unlocked ? 'text-ember' : 'text-cream-soft/60'}
+                  />
+                  {!unlocked && (
+                    <span className="absolute -bottom-1.5 -right-1.5 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-dusk-2 ring-1 ring-cream/25">
+                      <Lock size={10} strokeWidth={2} className="text-cream-soft" />
+                    </span>
+                  )}
+                </span>
+                <span
+                  className={`mt-1 w-full truncate text-center text-[10.5px] leading-tight ${
+                    unlocked ? 'text-cream' : 'text-cream-soft/60'
+                  }`}
+                >
+                  {name.replace(/^AI\s*/, '')}
+                </span>
+              </div>
+            );
+          }),
+        )}
       </div>
     </div>
   );

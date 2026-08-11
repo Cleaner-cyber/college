@@ -17,7 +17,9 @@ export const DeliverScreen: React.FC<{
 }> = ({ api, total, img, escape = false, onDone }) => {
   const [showPrompt, setShowPrompt] = useState(false);
   return (
-    <div className="flex flex-col gap-5">
+    /* custom 屏是裸渲染（没有 ScreenPlayer 的暖纸垫卡），交付屏必须自带纸底，
+       否则正文直接排在深色实景上看不清 */
+    <div className="fx-paper flex flex-col gap-5 rounded-2xl border border-line-warm bg-parchment/95 p-6 text-ink shadow-lift">
       {img && (
         <img src={img} alt="" className="w-full rounded-xl border border-line-warm shadow-soft animate-fade-up" />
       )}
@@ -72,7 +74,7 @@ export const EscapeOverlay: React.FC<{ api: FlowAPI; screens?: string[] }> = ({
       </button>
       {confirming && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/30 p-6 backdrop-blur-[2px]">
-          <div className="w-full max-w-sm rounded-2xl bg-parchment/70 p-6 shadow-pop animate-pop-in">
+          <div className="w-full max-w-sm rounded-2xl bg-parchment p-6 text-ink shadow-pop animate-pop-in">
             <p className="text-[16px] font-medium">{api.copy('esc-confirm-title')}</p>
             <div className="mt-5 flex flex-col gap-2">
               <Button
