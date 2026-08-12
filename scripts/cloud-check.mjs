@@ -26,7 +26,7 @@ const fail = (label, extra) => {
 };
 
 const client = createClient(url, key, { auth: { persistSession: false } });
-const email = `unisim-check-${Date.now()}@example.com`;
+const email = `unisim-check-${Date.now()}@gmail.com`;
 const password = `Uc-${Math.random().toString(36).slice(2, 10)}!9`;
 
 console.log('云端联调自检 →', url);
