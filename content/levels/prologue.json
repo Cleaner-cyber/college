@@ -244,6 +244,13 @@
     "sprite-senpai": "/assets/sprite-senpai.svg"
   },
   "copy": {
+    "envelope-en": "NOTICE OF ADMISSION",
+    "envelope-title": "录取通知书",
+    "envelope-seal": "启",
+    "envelope-sub": "四年的时间，装在这封信里。",
+    "envelope-date": "二〇二六年 · 秋",
+    "envelope-hint": "按住滑块，向右滑动启封",
+    "envelope-open-btn": "点击启封",
     "scene-S1": "bg-desk",
     "scene-S2": "bg-desk",
     "scene-S4a": "bg-gate",
