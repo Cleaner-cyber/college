@@ -1024,7 +1024,7 @@ const PromptCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item,
     <button
       onClick={onOpen}
       aria-label={`${item.title}｜${home['prompt-open-hint']}`}
-      className="group relative flex flex-col items-center gap-2 rounded-2xl border border-line bg-card px-2 py-3 text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
+      className="group relative flex w-full flex-col items-center gap-2 rounded-2xl border border-line bg-card px-2 py-3 text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
     >
       <span
         className={`flex h-10 w-10 items-center justify-center rounded-xl ${tint.bg} transition group-hover:shadow-glow`}
@@ -1201,19 +1201,49 @@ const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, on
   return (
     <button
       onClick={onOpen}
-      className="relative flex w-full break-inside-avoid items-center gap-3 overflow-hidden rounded-xl border border-line bg-card p-3.5 pr-7 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
+      className="relative flex w-full items-center gap-2.5 overflow-hidden rounded-xl border border-line bg-card p-3 pr-6 text-left text-ink shadow-soft transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lift"
     >
       <span className="absolute right-0 top-0 h-0 w-0 border-l-[18px] border-t-[18px] border-l-transparent border-t-line" />
-      <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tint.bg}`}>
-        <Icon size={18} strokeWidth={1.75} className={tint.fg} />
+      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${tint.bg}`}>
+        <Icon size={17} strokeWidth={1.75} className={tint.fg} />
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-[13.5px] font-medium">{item.title}</span>
-        <span className="mt-0.5 block text-[11px] text-ink-soft">
-          {getBoard(item.semester).header}
-        </span>
-      </span>
+      <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{item.title}</span>
     </button>
+  );
+};
+
+/** 档案区：按学期分组的横向索引卡列——学期做成竖排纸签分隔，
+ * 卡面只留图标+标题（学期信息由分隔签承担，文字减法） */
+const DocShelf: React.FC<{ docs: ArchiveItem[]; onOpen: (item: ArchiveItem) => void }> = ({
+  docs,
+  onOpen,
+}) => {
+  const sems = [...CODEX_SEMS, ...docs.map((d) => d.semester)].filter(
+    (s, i, a) => a.indexOf(s) === i,
+  );
+  const groups = sems
+    .map((sem) => ({ sem, items: docs.filter((d) => d.semester === sem) }))
+    .filter((g) => g.items.length > 0);
+  return (
+    <div className="flex items-stretch gap-2.5 overflow-x-auto pb-1">
+      {groups.map((g) => (
+        <React.Fragment key={g.sem}>
+          <div className="flex w-8 shrink-0 items-center justify-center rounded-lg border border-cream/12 bg-dusk-2/60">
+            <span
+              className="font-display text-[11px] tracking-[0.2em] text-cream-soft"
+              style={{ writingMode: 'vertical-rl' }}
+            >
+              {codexSemName(g.sem)}
+            </span>
+          </div>
+          {g.items.map((item) => (
+            <div key={item.id} className="w-[216px] shrink-0 self-center">
+              <DocCard item={item} onOpen={() => onOpen(item)} />
+            </div>
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
   );
 };
 
@@ -1430,14 +1460,8 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             sub={home['folder-sec-docs-sub']}
             count={docs.length}
           />
-          {/* 档案改横向滑列：数量会一直涨，纵向摆会把整页顶出滚动条 */}
-          <div className="flex gap-3 overflow-x-auto pb-1">
-            {docs.map((item) => (
-              <div key={item.id} className="w-[244px] shrink-0">
-                <DocCard item={item} onOpen={() => setOpenItem(item)} />
-              </div>
-            ))}
-          </div>
+          {/* 学期纸签分组的横向索引卡列（数量会一直涨，横滑不顶出页面滚动条） */}
+          <DocShelf docs={docs} onOpen={setOpenItem} />
         </div>
       )}
 
