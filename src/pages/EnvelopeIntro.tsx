@@ -85,13 +85,18 @@ export const EnvelopeIntro: React.FC<{
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (done) return;
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    // 捕获必须挂在滑块本体上：e.target 可能是内部的箭头 SVG，捕获到它身上
+    // 一旦在滑块外松手，up 事件就会丢，滑块永远等不到「完成」判定
+    e.currentTarget.setPointerCapture(e.pointerId);
     setDragging(true);
     setP(posToP(e.clientX));
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (!dragging || done) return;
-    setP(posToP(e.clientX));
+    const np = posToP(e.clientX);
+    setP(np);
+    // 拖满即启封，不等松手——松手事件在边缘情况下（窗口外/元素外释放）可能收不到
+    if (np >= 0.97) complete();
   };
   const onPointerUp = () => {
     if (done) return;

@@ -1073,7 +1073,8 @@ const WorkCodex: React.FC<{ works: ArchiveItem[]; onOpen: (item: ArchiveItem) =>
         <ChevronLeft size={18} strokeWidth={2} />
       </button>
 
-      <div className="relative h-[270px] w-[390px]">
+      {/* isolate：牌堆内部 zIndex(40-rel) 只在舞台里比大小，别压住 z-30 的详情/文档弹层 */}
+      <div className="isolate relative h-[270px] w-[390px]">
         {deck.map(({ key, node }, i) => {
           const rel = (i - cur + n) % n;
           if (rel > 3) return null;
