@@ -116,7 +116,11 @@ const clean = (s: string) => s.replace(/[<>"'`]/g, '').trim();
 
 const COLORS = ['a', 'b', 'c'] as const;
 
-const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
+/** 固定精品版式池：进关随机抽一套，玩家填内容——「版式是抽的，内容是你的」 */
+const TEMPLATES = ['a', 'b', 'c'] as const;
+export type TemplateId = (typeof TEMPLATES)[number];
+
+const SiteForm: React.FC<{ api: FlowAPI; tpl: TemplateId }> = ({ api, tpl }) => {
   const [tagline, setTagline] = useState(() => api.copy('form-tagline-default'));
   const [hobbies, setHobbies] = useState(() => api.copy('form-hobbies-default'));
   const [showcase, setShowcase] = useState(() => api.copy('form-showcase-default'));
@@ -129,6 +133,8 @@ const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
         hobbies: clean(hobbies),
         showcase: clean(showcase),
         colorName: api.copy(`color-${color}-label`),
+        styleName: api.copy(`tpl-${tpl}-name`),
+        styleDesc: api.copy(`tpl-${tpl}-desc`),
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [tagline, hobbies, showcase, color],
@@ -162,6 +168,8 @@ const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
     api.setVar('showcase', clean(showcase));
     api.setVar('colorName', api.copy(`color-${color}-label`));
     api.setVar('accentColor', api.copy(`color-${color}-value`));
+    api.setVar('styleName', api.copy(`tpl-${tpl}-name`));
+    api.setVar('styleDesc', api.copy(`tpl-${tpl}-desc`));
     api.setVar('hobbyTags', tags.map((h) => `<span class="tag">${h}</span>`).join(''));
     api.advance();
   };
@@ -173,6 +181,23 @@ const SiteForm: React.FC<{ api: FlowAPI }> = ({ api }) => {
           <h1 className="text-xl font-semibold text-cream">{api.copy('s4-title')}</h1>
           <p className="mt-1 text-[13px] leading-relaxed text-cream-soft">{api.copy('s4-sub')}</p>
         </header>
+        {/* 抽到的版式：玩家不选版式，随机分配制造「每个人的网站长得不一样」 */}
+        <div className="rounded-xl border border-ember/40 bg-dusk-2/70 p-3.5 shadow-glass backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <span className="text-[10.5px] tracking-widest text-cream-soft">
+              {api.copy('s4-style-label')}
+            </span>
+            <span className="rounded bg-ember/15 px-1.5 py-0.5 text-[10px] font-medium text-ember">
+              {api.copy('s4-style-badge')}
+            </span>
+          </div>
+          <div className="mt-1 text-[16px] font-semibold text-cream">
+            {api.copy(`tpl-${tpl}-name`)}
+          </div>
+          <p className="mt-0.5 text-[12px] leading-relaxed text-cream-soft">
+            {api.copy(`tpl-${tpl}-desc`)}
+          </p>
+        </div>
         {field(api.copy('form-tagline-label'), tagline, setTagline, 40)}
         {field(api.copy('form-hobbies-label'), hobbies, setHobbies, 30)}
         {field(api.copy('form-showcase-label'), showcase, setShowcase, 60)}
@@ -365,6 +390,10 @@ const SitePreview: React.FC<{ api: FlowAPI; html: string; filename: string }> = 
 
 const CodingComponent: React.FC<LevelProps> = ({ state, content, onComplete, onEscape }) => {
   const [checked, setChecked] = useState<string[]>([]);
+  // 进关时随机抽版式，本局内固定（重进会重抽）
+  const [tpl] = useState<TemplateId>(
+    () => TEMPLATES[Math.floor(Math.random() * TEMPLATES.length)],
+  );
   const checklist = content.checklist ?? [];
   const assets = content.presetAssets ?? {};
   const majorName = getMajor(state.player.majorId).name;
@@ -417,7 +446,7 @@ const CodingComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
         onCheckChange={setChecked}
         custom={{
           S3: (api) => <ToolSelect api={api} assets={assets} />,
-          S4: (api) => <SiteForm api={api} />,
+          S4: (api) => <SiteForm api={api} tpl={tpl} />,
           S5: (api) => (
             <ChatScript api={api} steps={BUILD_STEPS} assets={assets} onDone={api.advance} />
           ),
@@ -428,7 +457,7 @@ const CodingComponent: React.FC<LevelProps> = ({ state, content, onComplete, onE
           S9P: (api) => (
             <SitePreview
               api={api}
-              html={interpolate(content.copy['site-html'] ?? '', buildSiteVars(api.vars))}
+              html={interpolate(content.copy[`site-html-${tpl}`] ?? '', buildSiteVars(api.vars))}
               filename={interpolate(content.copy['site-filename'] ?? 'index.html', {
                 playerName: clean(state.player.name),
               })}
