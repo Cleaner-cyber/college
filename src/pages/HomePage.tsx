@@ -47,6 +47,8 @@ import {
   BookOpen,
   Bug,
   ChartColumn,
+  ChevronLeft,
+  ChevronRight,
   Clapperboard,
   ClipboardCheck,
   CodeXml,
@@ -954,7 +956,6 @@ const WORK_CODEX: { id: string; level: string; sem: string; icon: LucideIcon }[]
   { id: 'resume-doc', level: 'resume', sem: 'y3s1', icon: IdCard },
   { id: 'thesis-doc', level: 'thesis', sem: 'y4', icon: GraduationCap },
 ];
-const WORK_ROT = [-2.4, 1.6, -1.2, 2.2];
 
 const workCover = (item: ArchiveItem) => {
   const raster = item.assetRef && /\.(jpe?g|png|webp)$/i.test(item.assetRef);
@@ -999,63 +1000,122 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
   );
 };
 
+/** 锁定作品的暗卡面（hover/聚焦浮出解锁预告） */
+const LockedWorkFace: React.FC<{ c: (typeof WORK_CODEX)[number] }> = ({ c }) => {
+  const Icon = c.icon;
+  return (
+    <div
+      tabIndex={0}
+      className="group relative flex h-full w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-cream/10 bg-dusk-2/80 outline-none"
+    >
+      <span className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-cream/8">
+        <Icon size={22} strokeWidth={1.75} className="text-cream-soft/30" />
+        <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-dusk-2 ring-1 ring-cream/20">
+          <Lock size={9} strokeWidth={2} className="text-cream-soft/70" />
+        </span>
+      </span>
+      <span className="text-[12px] tracking-widest text-cream-soft/30">？？？</span>
+      <span className="pointer-events-none absolute inset-x-2 bottom-2 rounded-lg bg-dusk/95 p-2 text-center text-[11px] leading-relaxed text-cream opacity-0 transition duration-150 group-focus-within:opacity-100 group-hover:opacity-100">
+        {interpolate(home['prompt-locked-hint'], {
+          sem: codexSemName(c.sem),
+          level: codexLevelLabel(c.sem, c.level),
+        })}
+      </span>
+    </div>
+  );
+};
+
+/** 作品牌堆（v3.6）：叠在一起的卡牌，左右按钮翻牌——当前牌居前，
+ * 后面几张露边错角垫底；同一组元素换 transform 过渡，翻牌自带动画。 */
 const WorkCodex: React.FC<{ works: ArchiveItem[]; onOpen: (item: ArchiveItem) => void }> = ({
   works,
   onOpen,
 }) => {
+  const [idx, setIdx] = useState(0);
   const byId = new Map(works.map((w) => [w.id, w]));
   const extras = works.filter((w) => !WORK_CODEX.some((c) => c.id === w.id));
-  const slots: React.ReactNode[] = [];
-  let i = 0;
-  const push = (node: React.ReactNode, key: string) => {
-    const rot = WORK_ROT[i % WORK_ROT.length];
-    slots.push(
-      <div
-        key={key}
-        className={`w-[168px] shrink-0 snap-start transition-transform duration-300 hover:z-20 hover:rotate-0 ${
-          i > 0 ? '-ml-4' : ''
-        }`}
-        style={{ transform: undefined, rotate: `${rot}deg` }}
-      >
-        {node}
-      </div>,
-    );
-    i += 1;
-  };
-  for (const c of WORK_CODEX) {
-    const item = byId.get(c.id);
-    if (item) {
-      push(<WorkCard item={item} onOpen={() => onOpen(item)} />, c.id);
-    } else {
-      const Icon = c.icon;
-      push(
-        <div
-          tabIndex={0}
-          className="group relative flex h-[226px] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-cream/10 bg-dusk-2/40 outline-none"
-        >
-          <span className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-cream/8">
-            <Icon size={22} strokeWidth={1.75} className="text-cream-soft/30" />
-            <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-dusk-2 ring-1 ring-cream/20">
-              <Lock size={9} strokeWidth={2} className="text-cream-soft/70" />
-            </span>
-          </span>
-          <span className="text-[12px] tracking-widest text-cream-soft/30">？？？</span>
-          <span className="pointer-events-none absolute inset-x-2 bottom-2 rounded-lg bg-dusk/95 p-2 text-center text-[11px] leading-relaxed text-cream opacity-0 transition duration-150 group-focus-within:opacity-100 group-hover:opacity-100">
-            {interpolate(home['prompt-locked-hint'], {
-              sem: codexSemName(c.sem),
-              level: codexLevelLabel(c.sem, c.level),
-            })}
-          </span>
-        </div>,
-        c.id,
-      );
-    }
-  }
-  for (const item of extras) {
-    push(<WorkCard item={item} onOpen={() => onOpen(item)} />, item.id);
-  }
+  const deck: { key: string; node: React.ReactNode }[] = [
+    ...WORK_CODEX.map((c) => {
+      const item = byId.get(c.id);
+      return {
+        key: c.id,
+        node: item ? (
+          <WorkCard item={item} onOpen={() => onOpen(item)} />
+        ) : (
+          <LockedWorkFace c={c} />
+        ),
+      };
+    }),
+    ...extras.map((item) => ({
+      key: item.id,
+      node: <WorkCard item={item} onOpen={() => onOpen(item)} />,
+    })),
+  ];
+  const n = deck.length;
+  const cur = ((idx % n) + n) % n;
+  // 牌堆姿态：rel=0 当前牌，1-3 依次垫底露边
+  const POSE = [
+    { rot: 0, x: 0, y: 0, s: 1, o: 1 },
+    { rot: 5, x: 26, y: 8, s: 0.96, o: 0.85 },
+    { rot: -4, x: -22, y: 12, s: 0.92, o: 0.6 },
+    { rot: 8, x: 44, y: 18, s: 0.88, o: 0.35 },
+  ];
   return (
-    <div className="flex snap-x items-stretch overflow-x-auto py-2 pl-1 pr-2">{slots}</div>
+    <div className="flex flex-col items-center gap-2.5 py-1">
+    <div className="flex items-center justify-center gap-5">
+      <button
+        onClick={() => setIdx((v) => v - 1)}
+        aria-label={home['deck-prev']}
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cream/20 bg-dusk/70 text-cream shadow-glass backdrop-blur-md transition hover:-translate-x-0.5 hover:border-ember/60 hover:text-ember"
+      >
+        <ChevronLeft size={18} strokeWidth={2} />
+      </button>
+
+      <div className="relative h-[240px] w-[230px]">
+        {deck.map(({ key, node }, i) => {
+          const rel = (i - cur + n) % n;
+          if (rel > 3) return null;
+          const p = POSE[rel];
+          return (
+            <div
+              key={key}
+              className="absolute left-1/2 top-1/2 h-[226px] w-[168px] transition-all duration-300"
+              style={{
+                transform: `translate(-50%, -50%) translate(${p.x}px, ${p.y}px) rotate(${p.rot}deg) scale(${p.s})`,
+                zIndex: 40 - rel,
+                opacity: p.o,
+                pointerEvents: rel === 0 ? 'auto' : 'none',
+              }}
+            >
+              {node}
+            </div>
+          );
+        })}
+      </div>
+
+      <button
+        onClick={() => setIdx((v) => v + 1)}
+        aria-label={home['deck-next']}
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cream/20 bg-dusk/70 text-cream shadow-glass backdrop-blur-md transition hover:translate-x-0.5 hover:border-ember/60 hover:text-ember"
+      >
+        <ChevronRight size={18} strokeWidth={2} />
+      </button>
+
+    </div>
+      {/* 位置点：第几张一目了然，不用数字 */}
+      <div className="flex items-center gap-1.5">
+        {deck.map((d, i) => (
+          <button
+            key={d.key}
+            onClick={() => setIdx(i)}
+            aria-label={`${i + 1}/${n}`}
+            className={`h-1.5 rounded-full transition-all ${
+              i === cur ? 'w-4 bg-ember' : 'w-1.5 bg-cream/25 hover:bg-cream/50'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 

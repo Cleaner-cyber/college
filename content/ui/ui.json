@@ -121,6 +121,8 @@
     "prompt-locked-hint": "{sem} · 通关「{level}」解锁",
     "prompt-claim-hint": "点击解锁",
     "prompt-new-badge": "NEW",
+    "deck-prev": "上一张",
+    "deck-next": "下一张",
     "stats-energy-note": "精力过低时，学长会提醒你歇歇",
     "log-title": "记录",
     "log-empty": "还没有记录。",
