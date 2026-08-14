@@ -940,42 +940,122 @@ const GENERATED_COVERS = new Set([
   'thesis-doc',
 ]);
 
-const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
-  const [imgOk, setImgOk] = useState(true);
+/** 作品集卡牌图鉴（v3.5）：10 个作品位竖版卡牌、微扇形错角排开、横向滑动浏览；
+ * 未获得的是暗卡剪影（hover 浮出解锁预告）。收藏卡册的手感。 */
+const WORK_CODEX: { id: string; level: string; sem: string; icon: LucideIcon }[] = [
+  { id: 'doc-course-rules', level: 'course-select', sem: 'y1s1', icon: FileText },
+  { id: 'doc-summer-plan', level: 'course-select', sem: 'y1s1', icon: NotebookPen },
+  { id: 'poster-y1', level: 'poster', sem: 'y1s1', icon: ImageIcon },
+  { id: 'doc-ppt-outline', level: 'ppt', sem: 'y1s2', icon: ScrollText },
+  { id: 'ppt-deck', level: 'ppt', sem: 'y1s2', icon: Presentation },
+  { id: 'homepage-v1', level: 'coding', sem: 'y1s2', icon: CodeXml },
+  { id: 'dachuang-report', level: 'dachuang', sem: 'y2s2', icon: ChartColumn },
+  { id: 'gig-board', level: 'gig', sem: 'y2s2', icon: Clapperboard },
+  { id: 'resume-doc', level: 'resume', sem: 'y3s1', icon: IdCard },
+  { id: 'thesis-doc', level: 'thesis', sem: 'y4', icon: GraduationCap },
+];
+const WORK_ROT = [-2.4, 1.6, -1.2, 2.2];
+
+const workCover = (item: ArchiveItem) => {
   const raster = item.assetRef && /\.(jpe?g|png|webp)$/i.test(item.assetRef);
-  const cover = GENERATED_COVERS.has(item.id)
+  return GENERATED_COVERS.has(item.id)
     ? `/assets/covers/cover-${item.id}.webp`
     : raster
       ? assetUrl(item.assetRef!)
       : `/assets/covers/cover-${item.id}.svg`;
+};
+
+const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
+  const [imgOk, setImgOk] = useState(true);
   return (
     <button
       onClick={onOpen}
-      className="w-[204px] shrink-0 snap-start overflow-hidden rounded-2xl border border-line bg-card text-left text-ink shadow-soft transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift"
+      className="group relative block h-[226px] w-full overflow-hidden rounded-2xl border-2 border-line-warm bg-card text-left shadow-soft transition duration-300 hover:-translate-y-2 hover:border-ember/70 hover:shadow-lift"
     >
-      <div className="h-[138px] w-full overflow-hidden border-b border-line bg-paper">
-        {imgOk ? (
-          <img
-            src={cover}
-            alt=""
-            onError={() => setImgOk(false)}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-ink-soft">
-            <FolderOpen size={36} strokeWidth={1.5} />
-          </div>
-        )}
-      </div>
-      <div className="flex items-center justify-between gap-2 p-3">
-        <span className="truncate text-[13px] font-medium">{item.title}</span>
+      {imgOk ? (
+        <img
+          src={workCover(item)}
+          alt=""
+          onError={() => setImgOk(false)}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <div className="flex h-full items-center justify-center bg-paper text-ink-soft">
+          <FolderOpen size={34} strokeWidth={1.5} />
+        </div>
+      )}
+      {/* 底部渐隐压标题：卡牌化后标题直接躺在封面上 */}
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent px-3 pb-2.5 pt-9">
+        <span className="line-clamp-2 text-[12.5px] font-medium leading-snug text-paper">
+          {item.title}
+        </span>
         {item.borrowed && (
-          <span className="shrink-0 rounded bg-line px-1.5 py-0.5 text-[11px] text-ink-soft">
+          <span className="mt-1 inline-block rounded bg-paper/25 px-1.5 py-0.5 text-[10px] text-paper/90">
             {home['borrowed-tag']}
           </span>
         )}
       </div>
     </button>
+  );
+};
+
+const WorkCodex: React.FC<{ works: ArchiveItem[]; onOpen: (item: ArchiveItem) => void }> = ({
+  works,
+  onOpen,
+}) => {
+  const byId = new Map(works.map((w) => [w.id, w]));
+  const extras = works.filter((w) => !WORK_CODEX.some((c) => c.id === w.id));
+  const slots: React.ReactNode[] = [];
+  let i = 0;
+  const push = (node: React.ReactNode, key: string) => {
+    const rot = WORK_ROT[i % WORK_ROT.length];
+    slots.push(
+      <div
+        key={key}
+        className={`w-[168px] shrink-0 snap-start transition-transform duration-300 hover:z-20 hover:rotate-0 ${
+          i > 0 ? '-ml-4' : ''
+        }`}
+        style={{ transform: undefined, rotate: `${rot}deg` }}
+      >
+        {node}
+      </div>,
+    );
+    i += 1;
+  };
+  for (const c of WORK_CODEX) {
+    const item = byId.get(c.id);
+    if (item) {
+      push(<WorkCard item={item} onOpen={() => onOpen(item)} />, c.id);
+    } else {
+      const Icon = c.icon;
+      push(
+        <div
+          tabIndex={0}
+          className="group relative flex h-[226px] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-cream/10 bg-dusk-2/40 outline-none"
+        >
+          <span className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-cream/8">
+            <Icon size={22} strokeWidth={1.75} className="text-cream-soft/30" />
+            <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-dusk-2 ring-1 ring-cream/20">
+              <Lock size={9} strokeWidth={2} className="text-cream-soft/70" />
+            </span>
+          </span>
+          <span className="text-[12px] tracking-widest text-cream-soft/30">？？？</span>
+          <span className="pointer-events-none absolute inset-x-2 bottom-2 rounded-lg bg-dusk/95 p-2 text-center text-[11px] leading-relaxed text-cream opacity-0 transition duration-150 group-focus-within:opacity-100 group-hover:opacity-100">
+            {interpolate(home['prompt-locked-hint'], {
+              sem: codexSemName(c.sem),
+              level: codexLevelLabel(c.sem, c.level),
+            })}
+          </span>
+        </div>,
+        c.id,
+      );
+    }
+  }
+  for (const item of extras) {
+    push(<WorkCard item={item} onOpen={() => onOpen(item)} />, item.id);
+  }
+  return (
+    <div className="flex snap-x items-stretch overflow-x-auto py-2 pl-1 pr-2">{slots}</div>
   );
 };
 
@@ -1421,25 +1501,10 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         title={home['folder-sec-works']}
         sub={home['folder-sec-works-sub']}
         count={works.length}
+        total={WORK_CODEX.length}
       />
-      {works.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-cream/25 p-6 text-center text-sm text-cream-soft">
-          {/* 纸页扇出的文件夹（hover 时纸探出来）：档案的字面隐喻，见 docs/13 */}
-          <div aria-hidden className="fx-folder">
-            <div className="fx-folder-back" />
-            <div className="fx-folder-paper" />
-            <div className="fx-folder-paper fx-folder-paper2" />
-            <div className="fx-folder-front" />
-          </div>
-          {home['folder-empty-works']}
-        </div>
-      ) : (
-        <div className="flex snap-x gap-4 overflow-x-auto pb-2">
-          {works.map((item) => (
-            <WorkCard key={item.id} item={item} onOpen={() => open(item)} />
-          ))}
-        </div>
-      )}
+      {/* 卡牌图鉴：10 位竖卡微扇形横滑，未获得为暗卡剪影（空态不复存在） */}
+      <WorkCodex works={works} onOpen={open} />
 
       {/* 提示词库：图鉴式 12 槽位（锁定/可解锁/已入库三态），空态不复存在 */}
       <div className="mt-6">
@@ -1749,7 +1814,7 @@ export const HomePage: React.FC = () => {
 
       {/* 顶栏 HUD 数值条：深棕玻璃 + 奶油字 + 琥珀数值（与傍晚底图同色系） */}
       <header
-        className="relative z-20 border-b border-cream/10 bg-gradient-to-b from-dusk/90 to-dusk/70 text-cream backdrop-blur-md backdrop-saturate-125"
+        className="relative z-50 border-b border-cream/10 bg-gradient-to-b from-dusk/90 to-dusk/70 text-cream backdrop-blur-md backdrop-saturate-125"
         data-tour="rail"
       >
         <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-3 px-3 py-2.5 md:gap-6 md:px-6">
@@ -1842,7 +1907,7 @@ export const HomePage: React.FC = () => {
           关掉后用床位那个「查看毕业身份卡」热点随时再看。 */}
       {graduated && !panel && gradCard && (
         <div
-          className="fixed inset-x-0 bottom-0 top-[52px] z-30 flex items-start justify-center overflow-y-auto bg-ink/60 px-6 py-16 backdrop-blur-[4px]"
+          className="fixed inset-0 z-30 flex items-start justify-center overflow-y-auto bg-ink/60 px-6 pb-16 pt-24 backdrop-blur-[4px]"
           onClick={() => setGradCard(false)}
         >
           <div className="w-full max-w-md" onClick={(e) => e.stopPropagation()}>
@@ -1860,7 +1925,7 @@ export const HomePage: React.FC = () => {
       {/* 面板浮层：点热点弹出对应内容 */}
       {panel && (
         <div
-          className="fixed inset-x-0 bottom-0 top-[52px] z-40 flex items-start justify-center overflow-y-auto bg-ink/65 p-3 backdrop-blur-[6px] md:p-6"
+          className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-ink/65 p-3 pt-16 backdrop-blur-[6px] md:p-6 md:pt-16"
           onClick={() => setPanel(null)}
         >
           {/* 本学期/文件夹/属性都是单屏面板：更宽画布 + 不留触发滚动的底部余量 */}
