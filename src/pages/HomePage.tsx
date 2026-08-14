@@ -905,19 +905,20 @@ const SemesterEnded: React.FC = () => {
 
 // ---------- 文件夹：作品集 / 提示词库 / 档案 ----------
 
-const SectionHead: React.FC<{ title: string; sub: string; count: number }> = ({
+const SectionHead: React.FC<{ title: string; sub: string; count: number; total?: number }> = ({
   title,
   sub,
   count,
+  total,
 }) => (
   <header className="mb-3 mt-1 flex items-baseline gap-3">
     <h3 className="border-b-2 border-accent pb-1 text-[15px] font-semibold tracking-wide">
       {title}
     </h3>
     <span className="text-xs text-cream-soft">{sub}</span>
-    {count > 0 && (
-      <span className="ml-auto rounded-full bg-cream/15 px-2 py-0.5 text-[11px] text-cream-soft">
-        {count}
+    {(count > 0 || total !== undefined) && (
+      <span className="ml-auto rounded-full bg-cream/15 px-2 py-0.5 text-[11px] tabular-nums text-cream-soft">
+        {total !== undefined ? `${count}/${total}` : count}
       </span>
     )}
   </header>
@@ -1054,6 +1055,132 @@ const DOC_ICONS: Record<string, LucideIcon> = {
   'interview-review': MessagesSquare,
   'doc-ppt-tools': Presentation,
   'ielts-speaking': Mic,
+};
+
+/** 提示词图鉴（v3.4 · 方案A+B+D+可解锁中间态）：12 个槽位从第一天起全部可见。
+ * 三态：锁定（剪影 + hover 预告解锁点）→ 可解锁（关卡已产出，等玩家亲手点亮）→ 已入库。
+ * 「认领」是纯演出层状态（不动 PlayerState 契约），存 localStorage；
+ * 换设备丢失只会让卡退回「可解锁」，再点一次即可，无进度损失。 */
+const CLAIM_KEY = 'unisim_prompt_claims_v1';
+const PROMPT_CODEX: { id: string; level: string; sem: string }[] = [
+  { id: 'prompt-doc-feeding', level: 'course-select', sem: 'y1s1' },
+  { id: 'prompt-image-gen', level: 'poster', sem: 'y1s1' },
+  { id: 'prompt-structured-gen', level: 'ppt', sem: 'y1s2' },
+  { id: 'prompt-ai-coding', level: 'coding', sem: 'y1s2' },
+  { id: 'prompt-lit-review', level: 'mentor', sem: 'y2s1' },
+  { id: 'prompt-note-taking', level: 'notes', sem: 'y2s1' },
+  { id: 'prompt-data-analysis', level: 'dachuang', sem: 'y2s2' },
+  { id: 'prompt-multimodal', level: 'gig', sem: 'y2s2' },
+  { id: 'prompt-resume', level: 'resume', sem: 'y3s1' },
+  { id: 'prompt-examiner', level: 'examiner', sem: 'y3s1' },
+  { id: 'prompt-role-play', level: 'interview', sem: 'y3s2' },
+  { id: 'prompt-thesis', level: 'thesis', sem: 'y4' },
+];
+const CODEX_SEMS = ['y1s1', 'y1s2', 'y2s1', 'y2s2', 'y3s1', 'y3s2', 'y4'];
+const codexSemName = (sem: string) =>
+  home['timeline'].split('｜')[CODEX_SEMS.indexOf(sem) + 1] ?? sem;
+const codexLevelLabel = (sem: string, level: string) =>
+  getBoard(sem).mainline.find((m) => m.id === level)?.label ?? level;
+
+function readClaims(): Record<string, number> {
+  try {
+    return JSON.parse(localStorage.getItem(CLAIM_KEY) ?? '{}') as Record<string, number>;
+  } catch {
+    return {};
+  }
+}
+
+const PromptCodex: React.FC<{
+  prompts: ArchiveItem[];
+  onOpen: (item: ArchiveItem) => void;
+}> = ({ prompts, onOpen }) => {
+  const [claims, setClaims] = useState<Record<string, number>>(readClaims);
+  const [claiming, setClaiming] = useState<string | null>(null);
+  const byId = new Map(prompts.map((p) => [p.id, p]));
+
+  const claim = (item: ArchiveItem) => {
+    if (claiming) return;
+    setClaiming(item.id);
+    // 先播点亮动画，再入库+弹详情——「亲手解锁」的那一下要看得见
+    window.setTimeout(() => {
+      const next = { ...readClaims(), [item.id]: Date.now() };
+      localStorage.setItem(CLAIM_KEY, JSON.stringify(next));
+      setClaims(next);
+      setClaiming(null);
+      onOpen(item);
+    }, 620);
+  };
+
+  return (
+    <div className="grid grid-cols-3 gap-2.5 md:grid-cols-6">
+      {PROMPT_CODEX.map(({ id, level, sem }) => {
+        const item = byId.get(id);
+        const Icon = PROMPT_ICONS[id] ?? Zap;
+        const tint = WASH_TINTS[PROMPT_WASH[id] ?? 'ochre'];
+        // 锁定：剪影槽位 + hover 预告解锁点（图鉴的「还差这张」）
+        if (!item) {
+          return (
+            <div
+              key={id}
+              tabIndex={0}
+              className="group relative flex flex-col items-center gap-2 rounded-2xl border border-cream/10 bg-dusk-2/40 px-2 py-3 outline-none"
+            >
+              <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-cream/8">
+                <Icon size={19} strokeWidth={1.75} className="text-cream-soft/30" />
+                <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-dusk-2 ring-1 ring-cream/20">
+                  <Lock size={9} strokeWidth={2} className="text-cream-soft/70" />
+                </span>
+              </span>
+              <span className="w-full truncate text-center text-[12px] text-cream-soft/30">
+                ？？？
+              </span>
+              <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-44 -translate-x-1/2 rounded-xl border border-cream/15 bg-dusk/95 p-2.5 text-center text-[11.5px] leading-relaxed text-cream opacity-0 shadow-glass backdrop-blur-md transition duration-150 group-focus-within:opacity-100 group-hover:opacity-100">
+                {interpolate(home['prompt-locked-hint'], {
+                  sem: codexSemName(sem),
+                  level: codexLevelLabel(sem, level),
+                })}
+              </span>
+            </div>
+          );
+        }
+        // 可解锁：关卡已产出但还没被亲手点亮——呼吸光候着这一下
+        if (!claims[id]) {
+          const isClaiming = claiming === id;
+          return (
+            <button
+              key={id}
+              onClick={() => claim(item)}
+              className={`flex flex-col items-center gap-2 rounded-2xl border-2 px-2 py-3 text-ink transition ${
+                isClaiming
+                  ? 'animate-pop-in border-ember bg-card shadow-ember-glow'
+                  : 'animate-ember-breathe border-ember/70 bg-card shadow-glow hover:-translate-y-1'
+              }`}
+            >
+              <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${tint.bg}`}>
+                <Icon size={19} strokeWidth={1.75} className={tint.fg} />
+              </span>
+              <span className="flex w-full items-center justify-center gap-1 truncate text-center text-[12px] font-semibold text-ember-deep">
+                <Sparkles size={11} strokeWidth={2} />
+                {home['prompt-claim-hint']}
+              </span>
+            </button>
+          );
+        }
+        // 已入库：常规卡 + 24 小时 NEW 角标
+        const isNew = Date.now() - claims[id] < 86_400_000;
+        return (
+          <div key={id} className="relative">
+            <PromptCard item={item} onOpen={() => onOpen(item)} />
+            {isNew && (
+              <span className="pointer-events-none absolute -right-1 -top-1 rounded-full bg-ember px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-dusk shadow-soft">
+                {home['prompt-new-badge']}
+              </span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 /** 档案卡：信纸折角 + 图标牌 + 学期章。标题一行，其余进详情 */
@@ -1284,30 +1411,15 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
         </div>
       )}
 
-      {/* 提示词库：瀑布流 */}
+      {/* 提示词库：图鉴式 12 槽位（锁定/可解锁/已入库三态），空态不复存在 */}
       <div className="mt-6">
         <SectionHead
           title={home['folder-sec-prompts']}
           sub={home['folder-sec-prompts-sub']}
           count={prompts.length}
+          total={PROMPT_CODEX.length}
         />
-        {prompts.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-cream/25 p-6 text-center text-sm text-cream-soft">
-            <div aria-hidden className="fx-folder">
-              <div className="fx-folder-back" />
-              <div className="fx-folder-paper" />
-              <div className="fx-folder-paper fx-folder-paper2" />
-              <div className="fx-folder-front" />
-            </div>
-            {home['folder-empty-prompts']}
-          </div>
-        ) : (
-          <div className="grid grid-cols-3 gap-2.5 md:grid-cols-6">
-            {prompts.map((item) => (
-              <PromptCard key={item.id} item={item} onOpen={() => setOpenItem(item)} />
-            ))}
-          </div>
-        )}
+        <PromptCodex prompts={prompts} onOpen={setOpenItem} />
       </div>
 
       {/* 档案：瀑布流 */}
