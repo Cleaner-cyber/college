@@ -19,6 +19,7 @@ import forkJson from '@content/levels/fork.json';
 import interviewJson from '@content/levels/interview.json';
 import thesisJson from '@content/levels/thesis.json';
 import settlementJson from '@content/levels/settlement.json';
+import libraryJson from '@content/levels/library.json';
 import majorsJson from '@content/majors/catalog.json';
 import actionsJson from '@content/sim/actions.json';
 import boardY1s1 from '@content/board/y1s1.json';
@@ -60,6 +61,8 @@ const levelContents: Record<string, LevelContent> = {
   interview: interviewJson as LevelContent,
   thesis: thesisJson as LevelContent,
   settlement: settlementJson as LevelContent,
+  // 非关卡的内容库（知识文档等），只作为文案源被 DocViewer 引用
+  library: libraryJson as unknown as LevelContent,
 };
 
 export function getLevelContent(id: string): LevelContent {

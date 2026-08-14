@@ -4,7 +4,7 @@
  * 中间内容区（主线任务 / 选修行动板 / 档案 / 属性 / 记录）
  * 右侧状态栏（行动点 / 四轴 / 四年目标 / 已解锁能力）
  */
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { ArchiveItem, MajorDetail, PlayerState } from '@/contracts';
 import {
@@ -206,11 +206,13 @@ const FolderMajorCard: React.FC<{ majorId: string; copy: Record<string, string> 
 const assetUrl = (ref: string) => (ref.includes('.') ? `/assets/${ref}` : `/assets/${ref}.svg`);
 
 /** AI 长文档型作品：点开直接进文档查看器（标题与正文取自来源关卡的内容 JSON） */
-const DOC_ITEMS: Record<string, { titleKey: string; mdKey: string }> = {
+const DOC_ITEMS: Record<string, { titleKey: string; mdKey: string; level?: string }> = {
   'doc-course-rules': { titleKey: 'doc1-title', mdKey: 'a1' },
   'doc-summer-plan': { titleKey: 'doc2-title', mdKey: 'a2' },
   'doc-ppt-outline': { titleKey: 'outline-doc-title', mdKey: 'outline-doc-md' },
   'doc-ppt-tools': { titleKey: 'tools-doc-title', mdKey: 'tools-doc-md' },
+  // 速结行动发放的知识文档：levelId 是 action:xxx，文案源固定指到 library
+  'contest-map-doc': { titleKey: 'contest-map-title', mdKey: 'contest-map-md', level: 'library' },
 };
 
 type Tab = 'semester' | 'folder' | 'stats' | 'log';
@@ -971,17 +973,17 @@ const WorkCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, o
   return (
     <button
       onClick={onOpen}
-      className="group relative block h-[226px] w-full overflow-hidden rounded-2xl border-2 border-line-warm bg-card text-left shadow-soft transition duration-300 hover:-translate-y-2 hover:border-ember/70 hover:shadow-lift"
+      className="group relative block overflow-hidden rounded-2xl border-2 border-line-warm bg-card text-left shadow-soft transition duration-300 hover:-translate-y-2 hover:border-ember/70 hover:shadow-lift"
     >
       {imgOk ? (
         <img
           src={workCover(item)}
           alt=""
           onError={() => setImgOk(false)}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="block h-auto max-h-[236px] w-auto max-w-[300px]"
         />
       ) : (
-        <div className="flex h-full items-center justify-center bg-paper text-ink-soft">
+        <div className="flex h-[184px] w-[276px] items-center justify-center bg-paper text-ink-soft">
           <FolderOpen size={34} strokeWidth={1.5} />
         </div>
       )}
@@ -1006,7 +1008,7 @@ const LockedWorkFace: React.FC<{ c: (typeof WORK_CODEX)[number] }> = ({ c }) => 
   return (
     <div
       tabIndex={0}
-      className="group relative flex h-full w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-cream/10 bg-dusk-2/80 outline-none"
+      className="group relative flex h-[184px] w-[276px] flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-cream/10 bg-dusk-2/80 outline-none"
     >
       <span className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-cream/8">
         <Icon size={22} strokeWidth={1.75} className="text-cream-soft/30" />
@@ -1071,7 +1073,7 @@ const WorkCodex: React.FC<{ works: ArchiveItem[]; onOpen: (item: ArchiveItem) =>
         <ChevronLeft size={18} strokeWidth={2} />
       </button>
 
-      <div className="relative h-[240px] w-[230px]">
+      <div className="relative h-[270px] w-[390px]">
         {deck.map(({ key, node }, i) => {
           const rel = (i - cur + n) % n;
           if (rel > 3) return null;
@@ -1079,7 +1081,7 @@ const WorkCodex: React.FC<{ works: ArchiveItem[]; onOpen: (item: ArchiveItem) =>
           return (
             <div
               key={key}
-              className="absolute left-1/2 top-1/2 h-[226px] w-[168px] transition-all duration-300"
+              className="absolute left-1/2 top-1/2 w-max transition-all duration-300"
               style={{
                 transform: `translate(-50%, -50%) translate(${p.x}px, ${p.y}px) rotate(${p.rot}deg) scale(${p.s})`,
                 zIndex: 40 - rel,
@@ -1195,6 +1197,7 @@ const DOC_ICONS: Record<string, LucideIcon> = {
   'interview-review': MessagesSquare,
   'doc-ppt-tools': Presentation,
   'ielts-speaking': Mic,
+  'contest-map-doc': MapIcon,
 };
 
 /** 提示词图鉴（v3.4 · 方案A+B+D+可解锁中间态）：12 个槽位从第一天起全部可见。
@@ -1334,6 +1337,7 @@ const DOC_WASH: Record<string, keyof typeof WASH_TINTS> = {
   'interview-review': 'ochre',
   'doc-ppt-tools': 'rose',
   'ielts-speaking': 'ochre',
+  'contest-map-doc': 'ochre',
 };
 const DocCard: React.FC<{ item: ArchiveItem; onOpen: () => void }> = ({ item, onOpen }) => {
   const Icon = DOC_ICONS[item.id] ?? ScrollText;
@@ -1396,7 +1400,14 @@ const ArchiveDetail: React.FC<{
   const [copied, setCopied] = useState(false);
   const [openDoc, setOpenDoc] = useState<1 | 2 | null>(null);
   const section = getFolderSection(item.id);
-  const levelCopy = getLevelContent(item.levelId).copy;
+  // 速结行动发放的条目 levelId 是 action:xxx，没有对应关卡文案——降级为空 copy，别让详情弹层白屏
+  const levelCopy = useMemo<Record<string, string>>(() => {
+    try {
+      return getLevelContent(item.levelId).copy;
+    } catch {
+      return {};
+    }
+  }, [item.levelId]);
 
   const copyTemplate = () => {
     const tpl = levelCopy['prompt-template'] ?? '';
@@ -1586,7 +1597,7 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
             count={docs.length}
           />
           {/* 学期纸签分组的横向索引卡列（数量会一直涨，横滑不顶出页面滚动条） */}
-          <DocShelf docs={docs} onOpen={setOpenItem} />
+          <DocShelf docs={docs} onOpen={open} />
         </div>
       )}
 
@@ -1595,8 +1606,16 @@ const FolderTab: React.FC<{ state: Readonly<PlayerState> }> = ({ state }) => {
       )}
       {openDocItem && DOC_ITEMS[openDocItem.id] && (
         <DocViewer
-          title={getLevelContent(openDocItem.levelId).copy[DOC_ITEMS[openDocItem.id].titleKey] ?? openDocItem.title}
-          md={getLevelContent(openDocItem.levelId).copy[DOC_ITEMS[openDocItem.id].mdKey] ?? ''}
+          title={
+            getLevelContent(DOC_ITEMS[openDocItem.id].level ?? openDocItem.levelId).copy[
+              DOC_ITEMS[openDocItem.id].titleKey
+            ] ?? openDocItem.title
+          }
+          md={
+            getLevelContent(DOC_ITEMS[openDocItem.id].level ?? openDocItem.levelId).copy[
+              DOC_ITEMS[openDocItem.id].mdKey
+            ] ?? ''
+          }
           onClose={() => setOpenDocItem(null)}
         />
       )}

@@ -428,6 +428,29 @@
     "group": "work"
   },
   {
+    "id": "contest-map",
+    "label": "找学长要竞赛地图",
+    "desc": "大学里值得打的比赛，一次看全——哪些人人能打，哪些是你专业的主场。",
+    "icon": "🗺️",
+    "cost": 0,
+    "once": true,
+    "senpaiComment": "比赛的真正奖品不是证书，是逼你做完一件完整的事。地图给你，路自己挑。",
+    "branches": [
+      {
+        "result": {
+          "text": "学长翻出一份他整理了四年的文档拍给你：「全都在这了。白名单的含金量、各专业的主场、什么时间该干什么——收好，别只是收藏。」\n《大学竞赛全景地图》已放进你的档案。",
+          "deltas": {},
+          "archive": {
+            "id": "contest-map-doc",
+            "title": "大学竞赛全景地图",
+            "resumeLine": ""
+          }
+        }
+      }
+    ],
+    "group": "research"
+  },
+  {
     "id": "research-group",
     "label": "联系老师进课题组",
     "desc": "给专业课老师发邮件，问能不能进组打杂。",
