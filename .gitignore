@@ -10,3 +10,7 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# 宣传片：原始采集截图与渲染产物（可由 promo/ 下脚本重新生成）
+promo/.raw/
+promo/out/
